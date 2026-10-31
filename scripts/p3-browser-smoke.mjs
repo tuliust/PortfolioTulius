@@ -285,6 +285,139 @@ try {
       console.log("P3_ABOUT_RESULTS_INTERACTION " + JSON.stringify({
         photoLoaded: true, categoryChanged: true, overviewRestored: true, result: "PASS",
       }))
+
+      stage = "mobile experience sticky progress and project details"
+      for (const viewport of [
+        { width: 320, height: 568 },
+        { width: 360, height: 740 },
+        { width: 375, height: 667 },
+        { width: 390, height: 844 },
+        { width: 430, height: 932 },
+      ]) {
+        await page.setViewport({ ...viewport, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+        await page.evaluate(() => document.getElementById("invest-rs")?.scrollIntoView({ behavior: "instant" }))
+        await page.waitForFunction(() =>
+          document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href") === "#invest-rs",
+          { timeout: 10000 },
+        )
+        const snapshot = await page.evaluate(() => {
+          const strip = document.querySelector(".experience-index")
+          const cards = [...document.querySelectorAll(".experience-stack > .experience-card")]
+          const projectPanel = document.querySelector("#invest-rs-b")
+          const contentPanel = document.querySelector("#invest-rs-a")
+          const mainHeader = document.querySelector(".site-header")
+          const logos = strip?.querySelectorAll("a") ?? []
+          const copy = contentPanel?.getBoundingClientRect()
+          const nav = strip?.getBoundingClientRect()
+          const tabs = contentPanel?.querySelectorAll(".experience-view-switch button") ?? []
+          return {
+            companies: cards.length,
+            logos: logos.length,
+            panels: cards.map(card => card.querySelectorAll(".mobile-panel").length),
+            tabs: tabs.length,
+            navBelowHeader: Boolean(nav && mainHeader && nav.top >= mainHeader.getBoundingClientRect().bottom - 3),
+            summaryBelowNav: Boolean(nav && copy && copy.top >= nav.bottom - 3),
+            summarySticky: contentPanel ? getComputedStyle(contentPanel).position === "sticky" : false,
+            naturalScroll: projectPanel ? getComputedStyle(projectPanel).overflowY === "visible" : false,
+            horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 2,
+          }
+        })
+        console.log("P3_EXPERIENCE_MOBILE_STRUCTURE " + JSON.stringify({ viewport, ...snapshot }))
+        if (snapshot.companies !== 6 || snapshot.logos !== 6 ||
+            snapshot.panels.join(",") !== "2,2,2,2,2,2" || snapshot.tabs !== 2 ||
+            !snapshot.navBelowHeader || !snapshot.summaryBelowNav ||
+            (viewport.height > 620 && !snapshot.summarySticky) ||
+            !snapshot.naturalScroll || snapshot.horizontalOverflow) {
+          throw new Error("Experience sticky structure mismatch: " + JSON.stringify(viewport))
+        }
+        if (viewport.height > 620) {
+          await page.evaluate(() => {
+            const panel = document.getElementById("invest-rs-b")
+            const body = panel?.querySelector(".experience-mobile-body")
+            if (!body) return
+            window.scrollTo({ top: window.scrollY + body.getBoundingClientRect().top + 140, behavior: "instant" })
+          })
+          const sticky = await page.evaluate(() => {
+            const index = document.querySelector(".experience-index")?.getBoundingClientRect()
+            const head = document.querySelector("#invest-rs-a")?.getBoundingClientRect()
+            return { navBottom: index?.bottom ?? -1, headTop: head?.top ?? -1,
+              headBottom: head?.bottom ?? -1 }
+          })
+          console.log("P3_EXPERIENCE_STICKY " + JSON.stringify({ viewport, ...sticky }))
+          if (sticky.headTop < sticky.navBottom - 3 ||
+              sticky.headTop > sticky.navBottom + 4 ||
+              sticky.headBottom >= viewport.height - 70) {
+            throw new Error("Experience sticky overlap or insufficient reading area")
+          }
+        }
+      }
+      await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+      await page.evaluate(() => document.getElementById("invest-rs")?.scrollIntoView({ behavior: "instant" }))
+      await page.waitForFunction(() =>
+        document.querySelector("#invest-rs-b .experience-project-choice") !== null,
+        { timeout: 10000 },
+      )
+      await page.click("#invest-rs-b .experience-project:nth-child(2) .experience-project-choice")
+      const project = await page.evaluate(() => {
+        const list = document.querySelector("#invest-rs-b .experience-mobile-project-list")
+        const open = [...(list?.querySelectorAll('.experience-project-choice[aria-expanded="true"]') ?? [])]
+        const selected = open[0]?.closest(".experience-project")
+        const gallery = selected?.querySelector(".experience-gallery")
+        const title = selected?.querySelector("h4")?.textContent?.trim()
+        const galleryTitle = gallery?.querySelector(".experience-gallery-footer h3")?.textContent?.trim()
+        return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery),
+          noPlaceholder: !list?.textContent?.includes("Fotografia do projeto pendente") }
+      })
+      console.log("P3_EXPERIENCE_MOBILE_PROJECT " + JSON.stringify(project))
+      if (project.openCount !== 1 || !project.gallery || project.galleryTitle !== project.title ||
+          !project.noPlaceholder) throw new Error("Project/gallery linkage failure")
+      await page.waitForFunction(() =>
+        !document.querySelector("#invest-rs-a .experience-view-trajectory")?.disabled,
+        { timeout: 15000 },
+      )
+      await page.click("#invest-rs-a .experience-view-trajectory")
+      const trajectory = await page.evaluate(() => ({
+        pressed: document.querySelector("#invest-rs-a .experience-view-trajectory")?.getAttribute("aria-pressed"),
+        paragraphs: document.querySelectorAll("#invest-rs-b .experience-full-body p").length,
+        projectsHidden: document.querySelector("#invest-rs-b .experience-mobile-project-list") === null,
+        overflow: getComputedStyle(document.querySelector("#invest-rs-b .experience-full-body")).overflowY,
+      }))
+      console.log("P3_EXPERIENCE_MOBILE_TRAJECTORY " + JSON.stringify(trajectory))
+      if (trajectory.pressed !== "true" || trajectory.paragraphs < 2 ||
+          !trajectory.projectsHidden || trajectory.overflow !== "visible") {
+        throw new Error("Trajectory must expose full, naturally scrolling text")
+      }
+      await page.click("#invest-rs-a .experience-view-projects")
+      await page.waitForFunction(() =>
+        document.querySelector("#invest-rs-b .experience-project-choice[aria-expanded='true']") !== null,
+        { timeout: 10000 },
+      )
+      await page.click('.experience-index a[href="#vale"]')
+      await page.waitForFunction(() =>
+        document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href") === "#vale",
+        { timeout: 10000 },
+      )
+      const changed = await page.evaluate(() => ({
+        company: document.querySelector("#vale-a .experience-heading h2")?.textContent?.trim(),
+        active: document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href"),
+        firstProject: document.querySelector("#vale-b .experience-project-choice h4")?.textContent?.trim(),
+      }))
+      console.log("P3_EXPERIENCE_MOBILE_COMPANY_CHANGE " + JSON.stringify(changed))
+      if (changed.company !== "Vale" || changed.active !== "#vale" || !changed.firstProject) {
+        throw new Error("Company navigation did not update editorial identity")
+      }
+      await page.evaluate(() => document.getElementById("ferramentas")?.scrollIntoView({ behavior: "instant" }))
+      const after = await page.evaluate(() => {
+        const tools = document.getElementById("ferramentas")?.getBoundingClientRect()
+        const index = document.querySelector(".experience-index")?.getBoundingClientRect()
+        return { toolsTop: tools?.top ?? -1, navBottom: index?.bottom ?? -1,
+          toolsVisible: Boolean(tools && tools.top <= innerHeight * .5) }
+      })
+      console.log("P3_EXPERIENCE_TO_TOOLS " + JSON.stringify(after))
+      if (!after.toolsVisible || after.navBottom > after.toolsTop + 5) {
+        throw new Error("Experience header remains over Tools")
+      }
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }))
       stage = "training and tools compact mobile layout"
       const compactViewports = [
         { width: 320, height: 568 },
