@@ -1974,8 +1974,6 @@
   }
   .public-site #ferramentas-a .panel-heading h2 {
     margin-bottom: .4rem;
-    font-size: clamp(2.75rem, 11.7vw, 3.8rem);
-    line-height: .94;
   }
   .public-site #ferramentas .mobile-items {
     gap: 0;
