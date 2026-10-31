@@ -1917,3 +1917,148 @@
     overflow-wrap: break-word;
   }
 }
+
+/* Formação e Ferramentas: compactação editorial restrita ao mobile.
+ * Os conteúdos, ícones e a ordenação publicados no CMS permanecem intactos. */
+@media (max-width: 767px) {
+  .public-site #formacao .mobile-panel {
+    min-height: 0;
+    padding: calc(var(--header) + .55rem) var(--gutter) .2rem;
+  }
+  .public-site #formacao-b.mobile-panel {
+    padding-top: .35rem;
+    padding-bottom: clamp(1rem, 2.5svh, 1.5rem);
+  }
+  .public-site #formacao .panel-heading {
+    margin-bottom: .5rem;
+  }
+  .public-site #formacao-a .panel-heading h2 {
+    margin-bottom: .65rem;
+  }
+  .public-site #formacao-b .mobile-panel-subheading {
+    margin: .15rem 0 .2rem;
+    font-size: clamp(1.1rem, 5vw, 1.45rem);
+    line-height: 1.08;
+  }
+  .public-site #formacao .mobile-items {
+    gap: .15rem;
+  }
+  .public-site #formacao .mobile-items .content-item {
+    min-width: 0;
+    padding: .5rem 0;
+  }
+  .public-site #formacao .mobile-items .content-item h3 {
+    margin: .15rem 0 .3rem;
+    font-size: var(--item-mobile-title-size, clamp(1.15rem, 4.85vw, 1.5rem));
+    line-height: 1.08;
+  }
+  .public-site #formacao .mobile-items .content-item p {
+    line-height: 1.35;
+  }
+
+  .public-site #ferramentas .mobile-panel {
+    min-height: 0;
+    padding: calc(var(--header) + .55rem) var(--gutter) 0;
+  }
+  .public-site #ferramentas-b.mobile-panel {
+    padding-top: 0;
+    padding-bottom: clamp(.9rem, 2svh, 1.3rem);
+    border-top: 0;
+  }
+  /* Subtítulo redundante: não integra a experiência visual nem a árvore de acessibilidade. */
+  .public-site #ferramentas-b .mobile-panel-secondary-heading {
+    display: none;
+  }
+  .public-site #ferramentas-a .panel-heading {
+    margin-bottom: .5rem;
+  }
+  .public-site #ferramentas-a .panel-heading h2 {
+    margin-bottom: .4rem;
+    font-size: clamp(2.75rem, 11.7vw, 3.8rem);
+    line-height: .94;
+  }
+  .public-site #ferramentas .mobile-items {
+    gap: 0;
+  }
+  .public-site #ferramentas .mobile-items .content-item {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    align-items: center;
+    min-width: 0;
+    min-height: 0;
+    gap: clamp(.5rem, 2.1vw, .7rem);
+    padding: .4rem 0;
+  }
+  .public-site #ferramentas .tools-icon-cluster {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    width: 5.5rem;
+    max-width: 100%;
+    height: 5rem;
+    transform: none;
+  }
+  .public-site #ferramentas .tools-icon-badge-1 {
+    width: 3.15rem;
+    height: 3.15rem;
+  }
+  .public-site #ferramentas .tools-icon-badge-2 {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  .public-site #ferramentas .tools-icon-badge-3 {
+    width: 1.95rem;
+    height: 1.95rem;
+  }
+  .public-site #ferramentas .mobile-items .item-copy {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .public-site #ferramentas .mobile-items .content-item h3 {
+    margin: 0 0 .3rem;
+    font-size: var(--item-mobile-title-size, clamp(1.15rem, 5vw, 1.48rem));
+    line-height: 1.05;
+  }
+  .public-site #ferramentas .mobile-items .content-item p {
+    font-size: var(--item-mobile-text-size, clamp(.8rem, 3.25vw, .9rem));
+    line-height: 1.33;
+  }
+
+  /* Ícones/textos alternados na sequência CMS: A(1,2,3) + B(4,5,6). */
+  .public-site #ferramentas-a .mobile-items .content-item:nth-child(even),
+  .public-site #ferramentas-b .mobile-items .content-item:nth-child(odd) {
+    grid-template-columns: minmax(0, 1fr) 5.5rem;
+  }
+  .public-site #ferramentas-a .mobile-items .content-item:nth-child(even) .tools-icon-cluster,
+  .public-site #ferramentas-b .mobile-items .content-item:nth-child(odd) .tools-icon-cluster {
+    grid-column: 2;
+    justify-self: end;
+  }
+  .public-site #ferramentas-a .mobile-items .content-item:nth-child(even) .item-copy,
+  .public-site #ferramentas-b .mobile-items .content-item:nth-child(odd) .item-copy {
+    grid-column: 1;
+  }
+}
+@media (max-width: 360px) {
+  .public-site #ferramentas .mobile-items .content-item {
+    grid-template-columns: 4.9rem minmax(0, 1fr);
+    gap: .45rem;
+  }
+  .public-site #ferramentas-a .mobile-items .content-item:nth-child(even),
+  .public-site #ferramentas-b .mobile-items .content-item:nth-child(odd) {
+    grid-template-columns: minmax(0, 1fr) 4.9rem;
+  }
+  .public-site #ferramentas .tools-icon-cluster {
+    width: 4.9rem;
+    height: 4.65rem;
+  }
+  .public-site #ferramentas .tools-icon-badge-1 {
+    width: 2.9rem;
+    height: 2.9rem;
+  }
+  .public-site #ferramentas .tools-icon-badge-2 {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+}

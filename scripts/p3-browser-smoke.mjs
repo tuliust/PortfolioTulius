@@ -285,6 +285,78 @@ try {
       console.log("P3_ABOUT_RESULTS_INTERACTION " + JSON.stringify({
         photoLoaded: true, categoryChanged: true, overviewRestored: true, result: "PASS",
       }))
+      stage = "training and tools compact mobile layout"
+      const compactViewports = [
+        { width: 320, height: 568 },
+        { width: 360, height: 740 },
+        { width: 375, height: 667 },
+        { width: 390, height: 844 },
+        { width: 430, height: 932 },
+      ]
+      for (const viewport of compactViewports) {
+        await page.setViewport({ ...viewport, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+        const state = await page.evaluate(() => {
+          const form = document.getElementById("formacao")
+          const tools = document.getElementById("ferramentas")
+          const formItems = [...(form?.querySelectorAll(".mobile-items .content-item") ?? [])]
+          const toolItems = [...(tools?.querySelectorAll(".mobile-items .content-item") ?? [])]
+          const formSubtitle = form?.querySelector(".mobile-panel-subheading")
+          const toolsSubtitle = tools?.querySelector(".mobile-panel-secondary-heading")
+          const fullVisible = (container, items) => {
+            const box = container?.getBoundingClientRect()
+            return Boolean(box && items.every((item) => {
+              const rect = item.getBoundingClientRect()
+              return rect.top >= box.top - 2 && rect.bottom <= box.bottom + 2
+            }))
+          }
+          const toolPositions = toolItems.map((item) => {
+            const icon = item.querySelector(".tools-icon-cluster")?.getBoundingClientRect()
+            const copy = item.querySelector(".item-copy")?.getBoundingClientRect()
+            if (!icon || !copy) return "missing"
+            return icon.right < copy.left + 2 ? "left" :
+              copy.right < icon.left + 2 ? "right" : "overlap"
+          })
+          const fullDocumentWidth = document.documentElement.scrollWidth
+          return {
+            formCount: formItems.length,
+            formPanelA: document.querySelectorAll("#formacao-a .content-item").length,
+            formPanelB: document.querySelectorAll("#formacao-b .content-item").length,
+            toolsCount: toolItems.length,
+            toolsPanelA: document.querySelectorAll("#ferramentas-a .content-item").length,
+            toolsPanelB: document.querySelectorAll("#ferramentas-b .content-item").length,
+            formHeadings: form?.querySelectorAll(".panel-heading h2").length ?? 0,
+            toolsHeadings: tools?.querySelectorAll(".panel-heading h2").length ?? 0,
+            formSubtitle: Boolean(formSubtitle && getComputedStyle(formSubtitle).display !== "none"),
+            toolsSubtitleHidden: !toolsSubtitle || getComputedStyle(toolsSubtitle).display === "none",
+            toolPositions,
+            formVisible: fullVisible(form, formItems),
+            toolsVisible: fullVisible(tools, toolItems),
+            formHeight: Math.round(form?.getBoundingClientRect().height ?? 0),
+            toolsHeight: Math.round(tools?.getBoundingClientRect().height ?? 0),
+            viewportHeight: innerHeight,
+            horizontalOverflow: fullDocumentWidth > innerWidth + 2,
+            toolOverflow: toolItems.some((item) => {
+              const box = item.getBoundingClientRect()
+              const icon = item.querySelector(".tools-icon-cluster")?.getBoundingClientRect()
+              const copy = item.querySelector(".item-copy")?.getBoundingClientRect()
+              return Boolean((icon && (icon.left < box.left - 2 || icon.right > box.right + 2)) ||
+                (copy && (copy.left < box.left - 2 || copy.right > box.right + 2)))
+            }),
+          }
+        })
+        console.log("P3_TRAINING_TOOLS_MOBILE " + JSON.stringify({ viewport, ...state }))
+        if (state.formCount !== 5 || state.formPanelA !== 3 || state.formPanelB !== 2 ||
+            state.toolsCount !== 6 || state.toolsPanelA !== 3 || state.toolsPanelB !== 3 ||
+            state.formHeadings !== 1 || state.toolsHeadings !== 1 ||
+            !state.formSubtitle || !state.toolsSubtitleHidden ||
+            state.toolPositions.join(",") !== "left,right,left,right,left,right" ||
+            !state.formVisible || !state.toolsVisible ||
+            state.horizontalOverflow || state.toolOverflow) {
+          throw new Error("Training/Tools layout invalid at " + viewport.width + "px")
+        }
+      }
+      await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }))
 
       await page.click(".menu-button")
