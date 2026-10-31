@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react"
-import type { ExperienceSlide, PortfolioSection } from "../../types/content"
+import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { imageFramingStyle } from "../../lib/media-framing"
 import {
   complementaryCareerLines,
   matchExperienceSlides,
+  experienceTitleKey,
   splitExperienceBullet,
 } from "../../lib/experience-text"
 import { publicReadClient } from "../../lib/public-read"
@@ -54,12 +55,14 @@ function PhotoGallery({
   section,
   active,
   onSlideChange,
+  gallerySlides,
 }: {
   section: PortfolioSection
   active: number
   onSlideChange: (index: number) => void
+  gallerySlides?: ExperienceSlide[]
 }) {
-  const slides = section.experienceMedia?.slides ?? []
+  const slides = gallerySlides ?? section.experienceMedia?.slides ?? []
   const count = slides.length
   const index = count ? Math.min(active, count - 1) : 0
   const slide: ExperienceSlide | undefined = slides[index]
@@ -152,10 +155,21 @@ function ExperienceCompetencies({ tags }: { tags: string[] }) {
   )
 }
 
-function ExperienceDetails({ description, slug }: { description: string; slug: string }) {
+function ExperienceDetails({
+  description,
+  slug,
+  complete = false,
+}: {
+  description: string
+  slug: string
+  complete?: boolean
+}) {
+  const lines = complete
+    ? description.split(/\n+/).map((line) => line.trim()).filter(Boolean)
+    : complementaryCareerLines(description, slug)
   return (
     <div className="experience-full-body">
-      {complementaryCareerLines(description, slug).map((line, index) => {
+      {lines.map((line, index) => {
         const bullet = splitExperienceBullet(line)
         return (
           <p key={index} className={bullet ? "experience-full-point" : undefined}>
@@ -278,6 +292,134 @@ function ExperienceContent({
   )
 }
 
+
+/**
+ * Mobile keeps the CMS order and the existing slide association, but combines
+ * each project's copy and its own images in a single natural page flow.
+ * Desktop ExperienceContent and PhotoGallery retain their original layout.
+ */
+function ExperienceMobileBody({
+  section,
+  items,
+  detail,
+  view,
+  activeSlide,
+  onSlideChange,
+}: {
+  section: PortfolioSection
+  items: ContentItem[]
+  detail?: string
+  view: "projects" | "trajectory"
+  activeSlide: number
+  onSlideChange: (index: number) => void
+}) {
+  const [selectedProject, setSelectedProject] = useState(0)
+  const slides = section.experienceMedia?.slides ?? []
+  const matches = matchExperienceSlides(slides, items)
+  const projects: { title: string; item?: ContentItem; slideIndices: number[] }[] = []
+
+  for (const { title, item, slideIndex } of matches) {
+    const project = projects.find(
+      (entry) => experienceTitleKey(entry.title) === experienceTitleKey(title),
+    )
+    if (project) {
+      project.slideIndices.push(slideIndex)
+    } else {
+      projects.push({ title, item, slideIndices: [slideIndex] })
+    }
+  }
+  for (const item of items) {
+    if (item.value || projects.some((entry) =>
+      experienceTitleKey(entry.title) === experienceTitleKey(item.title))) continue
+    projects.push({ title: item.title, item, slideIndices: [] })
+  }
+  const extraMetrics = items.filter(
+    (item) => Boolean(item.value) && !matches.some(({ item: matched }) => matched === item),
+  )
+  const selectProject = (index: number) => {
+    setSelectedProject(index)
+    if (projects[index]?.slideIndices.length) {
+      onSlideChange(projects[index].slideIndices[0])
+    }
+  }
+  const showTrajectory = view === "trajectory" && Boolean(detail?.trim())
+
+  return (
+    <div className="experience-mobile-body" aria-live="polite">
+      {showTrajectory ? (
+        <ExperienceDetails description={detail!} slug={section.slug} complete />
+      ) : (
+        <>
+          <div className="experience-mobile-project-list" aria-label={`Projetos de ${section.title}`}>
+            {projects.map((project, index) => {
+              const isOpen = index === selectedProject
+              const projectSlides = project.slideIndices.map((slideIndex) => slides[slideIndex])
+              const galleryIndex = Math.max(0, project.slideIndices.indexOf(activeSlide))
+              const currentSlide = projectSlides[galleryIndex]
+              const hasMedia = Boolean(currentSlide?.image?.trim())
+              const contentId = `${section.slug}-mobile-project-${index}`
+              return (
+                <article
+                  key={`${experienceTitleKey(project.title)}-${index}`}
+                  className={isOpen ? "experience-project is-active" : "experience-project"}
+                >
+                  <button
+                    type="button"
+                    className="experience-project-choice"
+                    aria-expanded={isOpen}
+                    aria-controls={contentId}
+                    onClick={() => selectProject(index)}
+                  >
+                    {project.item?.meta && (
+                      <span className="experience-project-meta">{project.item.meta}</span>
+                    )}
+                    <span className="experience-mobile-project-title">
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <h4>{project.title}</h4>
+                      <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="experience-mobile-project-detail" id={contentId}>
+                      {project.item?.value && (
+                        <strong className="experience-value">{project.item.value}</strong>
+                      )}
+                      {project.item?.text && <p>{project.item.text}</p>}
+                      {project.item?.tags?.length ? (
+                        <p>{project.item.tags.join(" · ")}</p>
+                      ) : null}
+                      {hasMedia && (
+                        <PhotoGallery
+                          section={section}
+                          gallerySlides={projectSlides}
+                          active={galleryIndex}
+                          onSlideChange={(slideIndex) =>
+                            onSlideChange(project.slideIndices[slideIndex])
+                          }
+                        />
+                      )}
+                    </div>
+                  )}
+                </article>
+              )
+            })}
+          </div>
+          {extraMetrics.length > 0 && (
+            <div className="experience-extra-metrics" aria-label="Indicadores complementares">
+              {extraMetrics.map((item, index) => (
+                <div key={`${item.title}-${index}`}>
+                  <span>{item.title}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 function ExperienceCard({
   section,
   order,
@@ -297,6 +439,20 @@ function ExperienceCard({
     items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []
   const projectItems = items.filter((item) => item.title.toLowerCase() !== "competências aplicadas")
   const [activeSlide, setActiveSlide] = useState(0)
+  const [mobileView, setMobileView] = useState<"projects" | "trajectory">("projects")
+  const changeMobileView = (next: "projects" | "trajectory") => {
+    setMobileView(next)
+    requestAnimationFrame(() => {
+      const header = document.getElementById(`${section.slug}-a`)
+      const content = document.getElementById(`${section.slug}-b`)
+      if (!header || !content) return
+      window.scrollTo({
+        top: window.scrollY + content.getBoundingClientRect().top -
+          header.getBoundingClientRect().bottom,
+        behavior: "instant",
+      })
+    })
+  }
   return (
     <section
       id={section.slug}
@@ -331,26 +487,46 @@ function ExperienceCard({
             data-panel="a"
           >
             <header className="experience-heading">
-              <CompanyMark section={section} />
               <h2>{section.title}</h2>
               {section.eyebrow && <p className="experience-eyebrow">{section.eyebrow}</p>}
               {section.intro && <p>{section.intro}</p>}
               <ExperienceCompetencies tags={competencies} />
             </header>
-            <ExperienceContent
-              section={section}
-              items={projectItems}
-              detail={detail}
-              activeSlide={activeSlide}
-              onSlideChange={setActiveSlide}
-            />
+            <div className="experience-view-switch" role="group" aria-label={`Conteúdo de ${section.title}`}>
+              <button
+                type="button"
+                className={mobileView === "projects" ? "experience-view-projects is-active" : "experience-view-projects"}
+                aria-pressed={mobileView === "projects"}
+                aria-controls={`${section.slug}-b`}
+                onClick={() => changeMobileView("projects")}
+              >
+                Projetos e realizações
+              </button>
+              <button
+                type="button"
+                className={mobileView === "trajectory" ? "experience-view-trajectory is-active" : "experience-view-trajectory"}
+                aria-pressed={mobileView === "trajectory"}
+                aria-controls={`${section.slug}-b`}
+                disabled={!detail?.trim()}
+                onClick={() => changeMobileView("trajectory")}
+              >
+                Trajetória
+              </button>
+            </div>
           </div>
           <div
             id={`${section.slug}-b`}
             className="mobile-panel experience-mobile-gallery"
             data-panel="b"
           >
-            <PhotoGallery section={section} active={activeSlide} onSlideChange={setActiveSlide} />
+            <ExperienceMobileBody
+              section={section}
+              items={projectItems}
+              detail={detail}
+              view={mobileView}
+              activeSlide={activeSlide}
+              onSlideChange={setActiveSlide}
+            />
           </div>
         </div>
       )}
