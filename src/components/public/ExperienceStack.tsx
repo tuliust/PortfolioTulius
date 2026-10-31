@@ -165,7 +165,10 @@ function ExperienceDetails({
   complete?: boolean
 }) {
   const lines = complete
-    ? description.split(/\n+/).map((line) => line.trim()).filter(Boolean)
+    ? description
+        .split(/\n+/)
+        .map((line) => line.trim())
+        .filter(Boolean)
     : complementaryCareerLines(description, slug)
   return (
     <div className="experience-full-body">
@@ -292,7 +295,6 @@ function ExperienceContent({
   )
 }
 
-
 /**
  * Mobile keeps the CMS order and the existing slide association, but combines
  * each project's copy and its own images in a single natural page flow.
@@ -329,8 +331,11 @@ function ExperienceMobileBody({
     }
   }
   for (const item of items) {
-    if (item.value || projects.some((entry) =>
-      experienceTitleKey(entry.title) === experienceTitleKey(item.title))) continue
+    if (
+      item.value ||
+      projects.some((entry) => experienceTitleKey(entry.title) === experienceTitleKey(item.title))
+    )
+      continue
     projects.push({ title: item.title, item, slideIndices: [] })
   }
   const extraMetrics = items.filter(
@@ -350,7 +355,10 @@ function ExperienceMobileBody({
         <ExperienceDetails description={detail!} slug={section.slug} complete />
       ) : (
         <>
-          <div className="experience-mobile-project-list" aria-label={`Projetos de ${section.title}`}>
+          <div
+            className="experience-mobile-project-list"
+            aria-label={`Projetos de ${section.title}`}
+          >
             {projects.map((project, index) => {
               const isOpen = index === selectedProject
               const projectSlides = project.slideIndices.map((slideIndex) => slides[slideIndex])
@@ -385,9 +393,7 @@ function ExperienceMobileBody({
                         <strong className="experience-value">{project.item.value}</strong>
                       )}
                       {project.item?.text && <p>{project.item.text}</p>}
-                      {project.item?.tags?.length ? (
-                        <p>{project.item.tags.join(" · ")}</p>
-                      ) : null}
+                      {project.item?.tags?.length ? <p>{project.item.tags.join(" · ")}</p> : null}
                       {hasMedia && (
                         <PhotoGallery
                           section={section}
@@ -447,7 +453,9 @@ function ExperienceCard({
       const content = document.getElementById(`${section.slug}-b`)
       if (!header || !content) return
       window.scrollTo({
-        top: window.scrollY + content.getBoundingClientRect().top -
+        top:
+          window.scrollY +
+          content.getBoundingClientRect().top -
           header.getBoundingClientRect().bottom,
         behavior: "instant",
       })
@@ -492,10 +500,18 @@ function ExperienceCard({
               {section.intro && <p>{section.intro}</p>}
               <ExperienceCompetencies tags={competencies} />
             </header>
-            <div className="experience-view-switch" role="group" aria-label={`Conteúdo de ${section.title}`}>
+            <div
+              className="experience-view-switch"
+              role="group"
+              aria-label={`Conteúdo de ${section.title}`}
+            >
               <button
                 type="button"
-                className={mobileView === "projects" ? "experience-view-projects is-active" : "experience-view-projects"}
+                className={
+                  mobileView === "projects"
+                    ? "experience-view-projects is-active"
+                    : "experience-view-projects"
+                }
                 aria-pressed={mobileView === "projects"}
                 aria-controls={`${section.slug}-b`}
                 onClick={() => changeMobileView("projects")}
@@ -504,7 +520,11 @@ function ExperienceCard({
               </button>
               <button
                 type="button"
-                className={mobileView === "trajectory" ? "experience-view-trajectory is-active" : "experience-view-trajectory"}
+                className={
+                  mobileView === "trajectory"
+                    ? "experience-view-trajectory is-active"
+                    : "experience-view-trajectory"
+                }
                 aria-pressed={mobileView === "trajectory"}
                 aria-controls={`${section.slug}-b`}
                 disabled={!detail?.trim()}
