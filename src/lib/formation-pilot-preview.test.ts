@@ -146,9 +146,7 @@ describe("sobreposição protegida e não persistente de Formação/A", () => {
     const original = structuredClone(section)
     const next = overlayApprovedFormationA(section, proposed)
     expect(next.panelA.map((item) => item.text)).toEqual(proposed.map((item) => item.text))
-    expect(next.desktopPanelA?.map((item) => item.text)).toEqual(
-      proposed.map((item) => item.text),
-    )
+    expect(next.desktopPanelA?.map((item) => item.text)).toEqual(proposed.map((item) => item.text))
     expect(next.panelA.map((item) => item.placement)).toEqual(
       section.panelA.map((item) => item.placement),
     )
@@ -158,7 +156,10 @@ describe("sobreposição protegida e não persistente de Formação/A", () => {
   it("falha se os textos ou metadados originais mudarem", () => {
     expect(() =>
       overlayApprovedFormationA(
-        { ...section, panelA: [{ ...section.panelA[0], meta: "Alterado" }, ...section.panelA.slice(1)] },
+        {
+          ...section,
+          panelA: [{ ...section.panelA[0], meta: "Alterado" }, ...section.panelA.slice(1)],
+        },
         proposed,
       ),
     ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")

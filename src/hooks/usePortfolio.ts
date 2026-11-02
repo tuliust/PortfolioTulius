@@ -22,12 +22,7 @@ import {
 import type { DesignTokens, PortfolioSection } from "../types/content"
 import { selectSectionExperienceMedia } from "../lib/cms-contract"
 import { parseCardRadius } from "../lib/design-tokens"
-import {
-  buildApprovedFormationAPreview,
-  FORMATION_A_BLOCK_ID,
-  overlayApprovedFormationA,
-  type FormationPilotEducationRow,
-} from "../lib/formation-pilot-preview"
+import type { FormationPilotEducationRow } from "../lib/formation-pilot-preview"
 
 type SectionResult = {
   id: string
@@ -331,6 +326,12 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
               let preparedSections = mappedSections
               if (includeDrafts && formationPilot) {
                 try {
+                  const {
+                    buildApprovedFormationAPreview,
+                    FORMATION_A_BLOCK_ID,
+                    overlayApprovedFormationA,
+                  } = await import("../lib/formation-pilot-preview")
+                  if (cancelled) return
                   const formRow = sectionRows.find((section) => section.slug === "formacao")
                   const formBlock = formRow?.content_blocks?.find(
                     (block) => block.id === FORMATION_A_BLOCK_ID,
