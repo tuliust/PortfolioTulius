@@ -36,10 +36,7 @@ export function createMediaMetadataDraft(asset: StoredMediaMetadata): MediaMetad
   }
 }
 
-export function hasMediaMetadataChanges(
-  asset: StoredMediaMetadata,
-  draft: MediaMetadataDraft,
-) {
+export function hasMediaMetadataChanges(asset: StoredMediaMetadata, draft: MediaMetadataDraft) {
   const previous = createMediaMetadataDraft(asset)
   return (Object.keys(previous) as (keyof MediaMetadataDraft)[]).some(
     (key) => draft[key] !== previous[key],
@@ -65,7 +62,10 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
     return { ok: false, error: "Texto alternativo ou crédito acima do limite permitido." }
   }
   const validPoint = (value: string) =>
-    value.trim() !== "" && Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= 100
+    value.trim() !== "" &&
+    Number.isFinite(Number(value)) &&
+    Number(value) >= 0 &&
+    Number(value) <= 100
   if (!validPoint(draft.focalX) || !validPoint(draft.focalY)) {
     return { ok: false, error: "O ponto focal deve ficar entre 0% e 100%." }
   }

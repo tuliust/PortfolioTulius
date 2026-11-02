@@ -3058,7 +3058,9 @@ export function EnhancedMediaLibrary() {
       .select("id")
       .maybeSingle()
     if (error || !data) {
-      setMessage(error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.")
+      setMessage(
+        error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.",
+      )
       return
     }
     setMessage("Metadados salvos.")
@@ -3078,10 +3080,10 @@ export function EnhancedMediaLibrary() {
     if (!supabase) return
     if (asset.storage_bucket === "portfolio-public") return save(asset)
     if (
-      !(await adminConfirm(
-        `Publicar mídia “${mediaDisplayTitle(asset)}” no site público?`,
-        { title: "Publicar mídia", confirmLabel: "Publicar" },
-      ))
+      !(await adminConfirm(`Publicar mídia “${mediaDisplayTitle(asset)}” no site público?`, {
+        title: "Publicar mídia",
+        confirmLabel: "Publicar",
+      }))
     )
       return
     setMessage("Publicando mídia…")
@@ -3187,9 +3189,7 @@ export function EnhancedMediaLibrary() {
                 <input
                   maxLength={180}
                   value={mediaDraft.title}
-                  onChange={(event) =>
-                    setMediaDraft({ ...mediaDraft, title: event.target.value })
-                  }
+                  onChange={(event) => setMediaDraft({ ...mediaDraft, title: event.target.value })}
                 />
               </label>
               <label>
@@ -3209,9 +3209,7 @@ export function EnhancedMediaLibrary() {
                   rows={2}
                   maxLength={300}
                   value={mediaDraft.credit}
-                  onChange={(event) =>
-                    setMediaDraft({ ...mediaDraft, credit: event.target.value })
-                  }
+                  onChange={(event) => setMediaDraft({ ...mediaDraft, credit: event.target.value })}
                 />
               </label>
               <div className="field-grid">
@@ -3243,7 +3241,9 @@ export function EnhancedMediaLibrary() {
               <small>Arquivo físico (não renomeado): {mediaFileName(asset.storage_path)}</small>
               <div className="media-library-publication">
                 <span>Status</span>
-                <strong>{asset.storage_bucket === "portfolio-public" ? "Publicado" : "Privado"}</strong>
+                <strong>
+                  {asset.storage_bucket === "portfolio-public" ? "Publicado" : "Privado"}
+                </strong>
                 {asset.storage_bucket === "portfolio-private" && (
                   <small>
                     Arquivo privado protegido. Use “Disponibilizar no site” para torná-lo acessível
@@ -3310,6 +3310,7 @@ export function EnhancedMediaLibrary() {
             </button>
           ),
         )}
-      </div>    </>
+      </div>
+    </>
   )
 }
