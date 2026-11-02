@@ -25,6 +25,7 @@ import {
   hasMediaMetadataChanges,
   mediaDisplayTitle,
   type MediaMetadataDraft,
+  type StoredMediaMetadata,
 } from "../../lib/media-metadata"
 import { experienceTitleKey } from "../../lib/experience-text"
 import { withOpenGraphImage } from "../../lib/media-selection"
@@ -3008,8 +3009,10 @@ function IssueRow({
   )
 }
 
+type MediaLibraryAsset = StoredMediaMetadata & Record<string, any>
+
 export function EnhancedMediaLibrary() {
-  const [assets, setAssets] = useState<Record<string, any>[]>([])
+  const [assets, setAssets] = useState<MediaLibraryAsset[]>([])
   const [previews, setPreviews] = useState<Record<string, MediaPreview>>({})
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
   const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
@@ -3044,7 +3047,7 @@ export function EnhancedMediaLibrary() {
   useEffect(() => {
     void load()
   }, [])
-  async function save(asset: Record<string, any>) {
+  async function save(asset: MediaLibraryAsset) {
     if (!supabase || !mediaDraft) return
     const result = buildMediaMetadataPayload(mediaDraft)
     if (!result.ok) return setMessage(result.error)
@@ -3076,7 +3079,7 @@ export function EnhancedMediaLibrary() {
     setMessage(result.message)
     if (result.ok) await load()
   }
-  async function promote(asset: Record<string, any>) {
+  async function promote(asset: MediaLibraryAsset) {
     if (!supabase) return
     if (asset.storage_bucket === "portfolio-public") return save(asset)
     if (
@@ -3096,7 +3099,7 @@ export function EnhancedMediaLibrary() {
     setMessage(result.message)
     if (result.ok) await load()
   }
-  async function replace(event: React.ChangeEvent<HTMLInputElement>, asset: Record<string, any>) {
+  async function replace(event: React.ChangeEvent<HTMLInputElement>, asset: MediaLibraryAsset) {
     const file = event.target.files?.[0]
     if (!file || !supabase) return
     if (
