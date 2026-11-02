@@ -67,7 +67,7 @@ export function validateCollectionSaveDraft(
       problems.push(`Campo obrigatório não preenchido: ${field}.`)
     }
   }
-  if (!Number.isInteger(draft.sort_order) || Number(draft.sort_order) < 1) {
+  if (typeof draft.sort_order !== "number" || !Number.isInteger(draft.sort_order) || draft.sort_order < 1) {
     problems.push("A ordem precisa ser um número inteiro maior que zero.")
   }
   const allowedStatuses = isUnpublishOnlyCollection(table)

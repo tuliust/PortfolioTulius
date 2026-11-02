@@ -26,7 +26,9 @@ export function resolveCareerSectionSlug(row: {
   id?: string | null
   company?: string | null
 }): string | undefined {
-  return (row.id && CAREER_ID_TO_SLUG[row.id]) ||
+  return (
+    (row.id && CAREER_ID_TO_SLUG[row.id]) ||
     (row.company ? LEGACY_CAREER_NAMES[row.company] : undefined) ||
     undefined
+  )
 }

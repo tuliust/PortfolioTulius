@@ -2251,13 +2251,13 @@ export function CollectionsStudio({
                   {config.table === "contact_channels" && field.key === "channel_type" ? (
                     <select
                       value={draft.channel_type ?? ""}
-                      onChange={(event) =>
-                        setDraft({ ...draft, channel_type: event.target.value })
-                      }
+                      onChange={(event) => setDraft({ ...draft, channel_type: event.target.value })}
                     >
                       <option value="">Selecione o tipo</option>
                       {CONTACT_CHANNEL_TYPES.map((type) => (
-                        <option key={type} value={type}>{type}</option>
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
                       ))}
                     </select>
                   ) : field.multiline ? (
