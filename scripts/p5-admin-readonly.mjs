@@ -131,30 +131,6 @@ try {
   }))
   if (initial.overflow || initial.saveDisabled !== true || !initial.altOptional || initial.editorialNoteVisible)
     throw new Error("CMS mobile inicial inválido: " + JSON.stringify(initial))
-  // A library dialog cancellation must leave the current saved image untouched.
-  const originalImage = await page.$eval(
-    ".block-item-body .published-media-picker .published-media-current img",
-    (image) => image.getAttribute("src"),
-  )
-  if (!originalImage) throw new Error("Retrato atual não disponível no editor.")
-  await page.click(
-    '.block-item-body .published-media-picker .published-media-actions button[aria-label="Escolher da biblioteca"]',
-  )
-  await page.waitForSelector(".published-media-dialog footer button", { timeout: 12000 })
-  await page.click(".published-media-dialog footer button")
-  await page.waitForFunction(() => !document.querySelector(".published-media-dialog"), { timeout: 7000 })
-  const retainedImage = await page.$eval(
-    ".block-item-body .published-media-picker .published-media-current img",
-    (image) => image.getAttribute("src"),
-  )
-  if (retainedImage !== originalImage || mutations.length) {
-    throw new Error("Cancelar seleção de mídia alterou o retrato ou tentou gravar conteúdo.")
-  }
-  passed++
-  console.log("P5_P4_MEDIA_CANCEL " + JSON.stringify({
-    result: "PASS", imagePreserved: true, contentMutations: mutations.length,
-  }))
-
   // Change a text field locally; assert the floating save and custom leave
   // guard, then cancel and explicitly discard the draft without writing data.
   const title = await page.$(".block-item-body input")
@@ -251,6 +227,38 @@ try {
 
   await page.goto(new URL("/admin", base).href, { waitUntil: "domcontentloaded", timeout: 30000 })
   await page.waitForSelector(".logout-button", { visible: true, timeout: 15000 })
+  // Exercise image selection cancellation after all other CMS interactions,
+  // to keep the icon and unsaved-edit tests independent of modal focus changes.
+  await page[String.fromCharCode(36, 36) + "eval"](".admin-sidebar nav button", (nodes) => {
+    nodes.find((node) => node.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-body .block-item-toggle", { timeout: 15000 })
+  await page.click(".site-editor-body .block-item-toggle")
+  await page.waitForSelector(".block-item-body .published-media-picker", { timeout: 10000 })
+  // A library dialog cancellation must leave the current saved image untouched.
+  const originalImage = await page.$eval(
+    ".block-item-body .published-media-picker .published-media-current img",
+    (image) => image.getAttribute("src"),
+  )
+  if (!originalImage) throw new Error("Retrato atual não disponível no editor.")
+  await page.click(
+    '.block-item-body .published-media-picker .published-media-actions button[aria-label="Escolher da biblioteca"]',
+  )
+  await page.waitForSelector(".published-media-dialog footer button", { timeout: 12000 })
+  await page.click(".published-media-dialog footer button")
+  await page.waitForFunction(() => !document.querySelector(".published-media-dialog"), { timeout: 7000 })
+  const retainedImage = await page.$eval(
+    ".block-item-body .published-media-picker .published-media-current img",
+    (image) => image.getAttribute("src"),
+  )
+  if (retainedImage !== originalImage || mutations.length) {
+    throw new Error("Cancelar seleção de mídia alterou o retrato ou tentou gravar conteúdo.")
+  }
+  passed++
+  console.log("P5_P4_MEDIA_CANCEL " + JSON.stringify({
+    result: "PASS", imagePreserved: true, contentMutations: mutations.length,
+  }))
+
   const logoutClickable = await page.$eval(".logout-button", (button) => {
     const rect = button.getBoundingClientRect()
     return rect.width > 0 && rect.height > 0 &&
