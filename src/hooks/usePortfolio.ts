@@ -21,6 +21,7 @@ import {
 } from "../lib/placements"
 import type { DesignTokens, PortfolioSection } from "../types/content"
 import { selectSectionExperienceMedia } from "../lib/cms-contract"
+import { parseCardRadius } from "../lib/design-tokens"
 
 type SectionResult = {
   id: string
@@ -253,8 +254,8 @@ export function usePortfolio(includeDrafts = false) {
             if (contentError) {
               // Fail closed: never substitute stale fallback content when
               // an explicitly configured publication database is unavailable.
-              setData([])
-              setNavigation([])
+              // Preserve any live first-fold content already painted. Never
+              // replace configured Supabase content with the local fallback.
               setSource("supabase")
               setError("Não foi possível carregar o conteúdo do site. Tente novamente.")
             } else {
@@ -353,6 +354,8 @@ export function usePortfolio(includeDrafts = false) {
                   next.container = Math.min(1920, Math.max(960, Number(t.token_value) || 1680))
                 if (t.token_key === "space.section")
                   next.sectionSpace = Math.min(120, Math.max(32, Number(t.token_value) || 64))
+                if (t.token_key === "radius.card")
+                  next.cardRadius = parseCardRadius(t.token_value)
                 if (t.token_key === "motion.duration")
                   next.motionDuration = Math.min(1200, Math.max(0, Number(t.token_value) || 520))
               })
@@ -364,8 +367,7 @@ export function usePortfolio(includeDrafts = false) {
         )
         .catch(() => {
           if (cancelled) return
-          setData([])
-          setNavigation([])
+          // A failed collection query must not erase a profile already shown.
           setSource("supabase")
           setError("Não foi possível carregar o conteúdo do site. Tente novamente.")
           setLoading(false)
@@ -428,8 +430,7 @@ export function usePortfolio(includeDrafts = false) {
       }
     })().catch(() => {
       if (cancelled) return
-      setData([])
-      setNavigation([])
+      // Retain any published first-fold content on a partial network failure.
       setSource("supabase")
       setError("Não foi possível carregar o conteúdo do site. Tente novamente.")
       setLoading(false)

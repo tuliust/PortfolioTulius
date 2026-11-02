@@ -11,5 +11,6 @@ export const defaultTokens: DesignTokens = {
   bodyFont: "Inter",
   container: 1680,
   sectionSpace: 64,
+  cardRadius: 4,
   motionDuration: 520,
 }

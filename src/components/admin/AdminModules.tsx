@@ -374,16 +374,22 @@ export function ContentStudio({
     if (!sectionId && sections[0]) setSectionId(sections[0].id)
   }, [sections, sectionId])
 
-  const load = async () => {
-    if (!supabase || !sectionId) return
+  const load = async (): Promise<boolean> => {
+    if (!supabase || !sectionId) return false
     const { data, error } = await supabase
       .from("content_blocks")
       .select("*")
       .eq("section_id", sectionId)
       .order("sort_order")
+    if (error) {
+      // A transient read failure must not erase loaded blocks or an unsaved form.
+      setMessage(error.message)
+      return false
+    }
     setBlocks((data as BlockRow[]) ?? [])
-    setMessage(error?.message ?? "")
+    setMessage("")
     if (data?.length && !data.some((block) => block.id === selectedId)) setSelectedId(data[0].id)
+    return true
   }
 
   useEffect(() => {
@@ -548,8 +554,14 @@ export function ContentStudio({
       p_placements: placementUpdates,
     })
     if (error) return setMessage(error.message)
+    const reloaded = await load()
+    if (!reloaded) {
+      setMessage(
+        "O banco confirmou a transação, mas a recuperação do bloco falhou. Verifique antes de salvar novamente.",
+      )
+      return
+    }
     setMessage("Bloco e placements salvos em uma transação.")
-    await load()
     onSaved?.()
   }
 

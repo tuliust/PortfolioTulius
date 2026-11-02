@@ -1135,7 +1135,8 @@ export function AdminApp() {
       .select("*")
       .order("sort_order")
       .then(({ data, error }) => {
-        setSections(data ?? [])
+        // Keep the last successfully loaded section list when a later fetch fails.
+        if (!error) setSections(data ?? [])
         setLoadError(error?.message ?? "")
         setLoadStatus(error ? "error" : "ready")
       })

@@ -135,5 +135,6 @@ export type DesignTokens = {
   bodyFont: "Inter" | "Big Shoulders Display"
   container: number
   sectionSpace: number
+  cardRadius: number
   motionDuration: number
 }
