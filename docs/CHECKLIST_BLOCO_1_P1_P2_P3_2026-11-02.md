@@ -45,15 +45,13 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [x] Adicionar workflow de auditoria somente leitura com verificação do SHA e coleta de capturas e requisições.
 - [x] Integrar opção **desativada por padrão** de Formação/A à prévia protegida do CMS; validar **P5 7/7** em desktop/mobile e zero mutações.
 - [x] Adicionar guarda fail-closed de destino do staging (bloqueio de produção, URLs divergentes e confirmação inválida), aprovada em **5 testes offline**.
-- [x] Ensaiar contratos editoriais sintéticos em memória com cinco testes, sem banco real, e separar a validação transacional futura.
-- [x] Simular quatro cenários de publicação SEO sem rede, credenciais ou integração Vercel.
+- [x] Preparar **cinco cenários offline de CMS fictício** ([contrato de testes](../scripts/p2-cms-offline-contract.check.mjs)): edição/publicação, arquivamento/restauração, duplicação/ordem, bloqueio não administrador e rollback por erro injetado. **Não são CRUD reais.**
+- [x] Simular **quatro contratos SEO** ([simulador offline](../scripts/p6-seo-publish-simulation.mjs)): rascunho bloqueado, permissão fictícia, deduplicação e retentativa; sem rede ou integração Vercel.
 
 **Pendente (3)**
 
-- [x] Preparar **cinco ensaios offline com fixtures fictícias** de edição, publicação, arquivamento, duplicação, reordenação, restauração, rollback, acesso não administrador e erro injetado ([contrato em memória](../scripts/p2-cms-offline-contract.check.mjs)). **Não são testes de CRUD no CMS real.**
 - [ ] Validar esses mesmos fluxos **contra Supabase local/Docker**, incluindo histórico real, RLS, limpeza e rollback; adiado até a inicialização local.
 - [ ] Testar falhas de leitura, perda de conexão e recuperação de mídia em ambiente de testes isolado.
-- [x] Preparar **quatro testes offline** para publicação SEO fictícia: rascunho não dispara, perfil não administrador bloqueado, deduplicação por versão e falha seguida de nova tentativa. Sem rede nem credenciais ([simulador](../scripts/p6-seo-publish-simulation.mjs)).
 - [ ] Validar o mesmo contrato em **servidor de teste local**, com JWTs efetivos e acionamento simulado de deployment; não configurar o gatilho de produção.
 
 ### P3 — Desempenho e confiabilidade
