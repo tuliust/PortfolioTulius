@@ -629,7 +629,7 @@
 }
 .experience-project { border-top: 1px solid #17161733; padding: .7rem 0; }
 .experience-view-body > .experience-project:first-child { border-top: 0; }
-.experience-project h4 { font-family: var(--font-display); font-size: clamp(1.1rem, 1.3vw, 1.5rem);
+.experience-project .experience-project-heading { display: block; font-family: var(--font-display); font-size: clamp(1.1rem, 1.3vw, 1.5rem);
   line-height: 1.1; text-transform: uppercase; }
 .experience-project p { margin: .3rem 0 0; font-size: clamp(.74rem, .87vw, .95rem); line-height: 1.4; }
 .experience-value { display: block; font-size: 1.3rem; color: var(--orange-dark); }
@@ -1375,18 +1375,18 @@
 .experience-project { transition: border-color .15s, color .15s; border-left: 3px solid transparent; }
 .experience-project.is-active { border-left-color: var(--orange); padding-left: .55rem; }
 .experience-project-choice { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
-.experience-project-choice:hover h4,
-.experience-project-choice:focus-visible h4,
-.experience-project.is-active h4 { color: var(--orange-dark); }
+.experience-project-choice:hover .experience-project-heading,
+.experience-project-choice:focus-visible .experience-project-heading,
+.experience-project.is-active .experience-project-heading { color: var(--orange-dark); }
 .experience-project-choice:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
 .experience-project.is-active .experience-project-choice { color: inherit; }
 .experience-extra-metrics { display: flex; flex-wrap: wrap; gap: .65rem; border-top: 1px solid #17161733; padding: .7rem 0 0; }
 .experience-extra-metrics > div { display: grid; gap: .2rem; min-width: 7rem; flex: 1 1 7rem; }
 .experience-extra-metrics span { font-size: .68rem; line-height: 1.4; }
 .experience-extra-metrics strong { font-size: .9rem; color: var(--orange-dark); }
-.experience-card.theme-ink .experience-project-choice:hover h4,
-.experience-card.theme-ink .experience-project-choice:focus-visible h4,
-.experience-card.theme-ink .experience-project.is-active h4 { color: var(--orange); }
+.experience-card.theme-ink .experience-project-choice:hover .experience-project-heading,
+.experience-card.theme-ink .experience-project-choice:focus-visible .experience-project-heading,
+.experience-card.theme-ink .experience-project.is-active .experience-project-heading { color: var(--orange); }
 
 /* Unified competencies and slide/trajectory mapping editor for every experience. */
 .experience-admin-competencies { display: grid; gap: .4rem; margin: .75rem 0 1.15rem; }
@@ -2206,7 +2206,7 @@
     text-align: right;
     font-size: 1.25rem;
   }
-  .public-site .experience-card .experience-mobile-project-title h4 {
+  .public-site .experience-card .experience-mobile-project-title .experience-project-heading {
     margin: 0;
     min-width: 0;
     font-size: clamp(1.2rem, 5.25vw, 1.6rem);
@@ -2248,7 +2248,7 @@
     overflow-wrap: break-word;
   }
   .public-site .experience-card.theme-ink .experience-mobile-project-title > span:first-child,
-  .public-site .experience-card.theme-ink .experience-mobile-body .experience-project.is-active h4 {
+  .public-site .experience-card.theme-ink .experience-mobile-body .experience-project.is-active .experience-project-heading {
     color: var(--orange);
   }
 }

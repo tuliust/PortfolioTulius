@@ -363,7 +363,7 @@ try {
         const open = [...(list?.querySelectorAll('.experience-project-choice[aria-expanded="true"]') ?? [])]
         const selected = open[0]?.closest(".experience-project")
         const gallery = selected?.querySelector(".experience-gallery")
-        const title = selected?.querySelector("h4")?.textContent?.trim()
+        const title = selected?.querySelector(".experience-project-heading")?.textContent?.trim()
         const galleryTitle = gallery?.querySelector(".experience-gallery-footer h3")?.textContent?.trim()
         return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery),
           noPlaceholder: !list?.textContent?.includes("Fotografia do projeto pendente") }
@@ -400,7 +400,7 @@ try {
       const changed = await page.evaluate(() => ({
         company: document.querySelector("#vale-a .experience-heading h2")?.textContent?.trim(),
         active: document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href"),
-        firstProject: document.querySelector("#vale-b .experience-project-choice h4")?.textContent?.trim(),
+        firstProject: document.querySelector("#vale-b .experience-project-choice .experience-project-heading")?.textContent?.trim(),
       }))
       console.log("P3_EXPERIENCE_MOBILE_COMPANY_CHANGE " + JSON.stringify(changed))
       if (changed.company !== "Vale" || changed.active !== "#vale" || !changed.firstProject) {
@@ -805,13 +805,13 @@ try {
       const secondProject = "#invest-rs .desktop-panel .experience-project-choice[aria-label='Exibir imagem de Organização de eventos']"
       await page.click(secondProject)
       const projectToGallery = await page.evaluate(() => ({
-        activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active h4")?.textContent?.trim(),
+        activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
         galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
         count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
       }))
       await page.click("#invest-rs .desktop-panel .experience-gallery-controls button[aria-label^='Próxima foto']")
       const galleryToProject = await page.evaluate(() => ({
-        activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active h4")?.textContent?.trim(),
+        activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
         galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
       }))
       if (

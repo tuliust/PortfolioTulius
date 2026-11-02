@@ -264,7 +264,9 @@ function ExperienceContent({
                   onClick={() => onSlideChange(slideIndex)}
                 >
                   {item?.meta && <span className="experience-project-meta">{item.meta}</span>}
-                  <h4>{title}</h4>
+                  <span className="experience-project-heading" role="heading" aria-level={3}>
+                    {title}
+                  </span>
                   {item?.value && <strong className="experience-value">{item.value}</strong>}
                   {item?.text && <p>{item.text}</p>}
                   {item?.tags && <p>{item.tags.join(" · ")}</p>}
@@ -376,7 +378,9 @@ function ExperienceMobileBody({
                     )}
                     <span className="experience-mobile-project-title">
                       <span>{String(index + 1).padStart(2, "0")}</span>
-                      <h4>{project.title}</h4>
+                      <span className="experience-project-heading" role="heading" aria-level={3}>
+                        {project.title}
+                      </span>
                       <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
                     </span>
                   </button>
