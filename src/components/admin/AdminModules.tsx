@@ -19,6 +19,13 @@ import {
 import { AdminNotice, statusPt } from "./AdminNotice"
 import { adminConfirm } from "./AdminConfirmationHost"
 import { mediaFileName } from "../../lib/media-framing"
+import {
+  buildMediaMetadataPayload,
+  createMediaMetadataDraft,
+  hasMediaMetadataChanges,
+  mediaDisplayTitle,
+  type MediaMetadataDraft,
+} from "../../lib/media-metadata"
 import { experienceTitleKey } from "../../lib/experience-text"
 import { withOpenGraphImage } from "../../lib/media-selection"
 import {
@@ -3006,6 +3013,7 @@ export function EnhancedMediaLibrary() {
   const [previews, setPreviews] = useState<Record<string, MediaPreview>>({})
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
   const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
+  const [mediaDraft, setMediaDraft] = useState<MediaMetadataDraft | null>(null)
   const [message, setMessage] = useState("")
   const load = async () => {
     const client = supabase
@@ -3037,17 +3045,26 @@ export function EnhancedMediaLibrary() {
     void load()
   }, [])
   async function save(asset: Record<string, any>) {
-    if (!supabase) return
-    setMessage("Salvando mídia…")
-    const { error } = await supabase
+    if (!supabase || !mediaDraft) return
+    const result = buildMediaMetadataPayload(mediaDraft)
+    if (!result.ok) return setMessage(result.error)
+    setMessage("Salvando metadados…")
+    // Prevent stale edits from silently overwriting another admin's changes.
+    const { data, error } = await supabase
       .from("media_assets")
-      .update({
-        title: mediaFileName(asset.storage_path),
-        status: "published",
-      })
+      .update(result.payload)
       .eq("id", asset.id)
-    setMessage(error?.message ?? "Metadados salvos.")
-    if (!error) await load()
+      .eq("updated_at", asset.updated_at)
+      .select("id")
+      .maybeSingle()
+    if (error || !data) {
+      setMessage(error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.")
+      return
+    }
+    setMessage("Metadados salvos.")
+    setMediaDraft(null)
+    setSelectedMediaId(null)
+    await load()
   }
   async function upload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -3062,7 +3079,7 @@ export function EnhancedMediaLibrary() {
     if (asset.storage_bucket === "portfolio-public") return save(asset)
     if (
       !(await adminConfirm(
-        `Publicar mídia “${mediaFileName(asset.storage_path)}” no site público?`,
+        `Publicar mídia “${mediaDisplayTitle(asset)}” no site público?`,
         { title: "Publicar mídia", confirmLabel: "Publicar" },
       ))
     )
@@ -3103,7 +3120,7 @@ export function EnhancedMediaLibrary() {
           .from("media_assets")
           .update({
             storage_path: newPath,
-            title: mediaFileName(newPath),
+            title: asset.title?.trim() || file.name,
             mime_type: file.type,
             file_size: file.size,
             status: "published",
@@ -3141,34 +3158,92 @@ export function EnhancedMediaLibrary() {
       <StatusMessage>{message}</StatusMessage>
       <div className="media-grid media-library-grid" aria-label="Arquivos da biblioteca">
         {assets.map((asset) =>
-          selectedMediaId === asset.id ? (
+          selectedMediaId === asset.id && mediaDraft ? (
             <section
               className="admin-card media-library-detail"
               key={asset.id}
-              aria-label={"Editar mídia " + mediaFileName(asset.storage_path)}
+              aria-label={"Editar mídia " + mediaDisplayTitle(asset)}
             >
               <div className="card-heading">
                 <div>
                   <p>Mídia selecionada</p>
-                  <h2>{mediaFileName(asset.storage_path)}</h2>
+                  <h2>{mediaDisplayTitle(asset)}</h2>
                 </div>
                 <button
                   type="button"
                   className="icon-button media-detail-close"
                   aria-label="Fechar detalhes da mídia"
                   title="Fechar detalhes"
-                  onClick={() => setSelectedMediaId(null)}
+                  onClick={() => {
+                    setSelectedMediaId(null)
+                    setMediaDraft(null)
+                  }}
                 >
                   <Icon name="close" />
                 </button>
               </div>
               <label>
-                Nome do arquivo (título)
-                <input value={mediaFileName(asset.storage_path)} readOnly />
+                Título editorial
+                <input
+                  maxLength={180}
+                  value={mediaDraft.title}
+                  onChange={(event) =>
+                    setMediaDraft({ ...mediaDraft, title: event.target.value })
+                  }
+                />
               </label>
+              <label>
+                Texto alternativo (opcional)
+                <textarea
+                  rows={3}
+                  maxLength={500}
+                  value={mediaDraft.altText}
+                  onChange={(event) =>
+                    setMediaDraft({ ...mediaDraft, altText: event.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Crédito / procedência (não inventar autoria)
+                <textarea
+                  rows={2}
+                  maxLength={300}
+                  value={mediaDraft.credit}
+                  onChange={(event) =>
+                    setMediaDraft({ ...mediaDraft, credit: event.target.value })
+                  }
+                />
+              </label>
+              <div className="field-grid">
+                <label>
+                  Ponto focal X (%)
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={mediaDraft.focalX}
+                    onChange={(event) =>
+                      setMediaDraft({ ...mediaDraft, focalX: event.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  Ponto focal Y (%)
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={mediaDraft.focalY}
+                    onChange={(event) =>
+                      setMediaDraft({ ...mediaDraft, focalY: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+              <small>Arquivo físico (não renomeado): {mediaFileName(asset.storage_path)}</small>
               <div className="media-library-publication">
                 <span>Status</span>
-                <strong>Publicado</strong>
+                <strong>{asset.storage_bucket === "portfolio-public" ? "Publicado" : "Privado"}</strong>
                 {asset.storage_bucket === "portfolio-private" && (
                   <small>
                     Arquivo privado protegido. Use “Disponibilizar no site” para torná-lo acessível
@@ -3177,6 +3252,14 @@ export function EnhancedMediaLibrary() {
                 )}
               </div>
               <div className="media-actions">
+                <button
+                  type="button"
+                  className="primary-button"
+                  disabled={!hasMediaMetadataChanges(asset, mediaDraft)}
+                  onClick={() => save(asset)}
+                >
+                  Salvar metadados
+                </button>
                 <label className="secondary-button replace-button">
                   Substituir arquivo
                   <input
@@ -3185,7 +3268,6 @@ export function EnhancedMediaLibrary() {
                     onChange={(event) => replace(event, asset)}
                   />
                 </label>
-                {/* No Save button here: file name is read-only; upload and publish are immediate actions. */}
                 {asset.storage_bucket === "portfolio-private" && (
                   <button type="button" className="primary-button" onClick={() => promote(asset)}>
                     Disponibilizar no site
@@ -3199,13 +3281,16 @@ export function EnhancedMediaLibrary() {
               type="button"
               className="media-library-card"
               aria-expanded={false}
-              onClick={() => setSelectedMediaId(asset.id)}
+              onClick={() => {
+                setSelectedMediaId(asset.id)
+                setMediaDraft(createMediaMetadataDraft(asset))
+              }}
             >
               <div className="media-placeholder media-preview">
                 {previews[asset.id]?.url && !failedImages[asset.id] ? (
                   <img
                     src={previews[asset.id].url}
-                    alt={asset.alt_text?.trim() || mediaFileName(asset.storage_path)}
+                    alt={asset.alt_text?.trim() || mediaDisplayTitle(asset)}
                     loading="lazy"
                     decoding="async"
                     onError={() => setFailedImages((current) => ({ ...current, [asset.id]: true }))}
@@ -3221,11 +3306,10 @@ export function EnhancedMediaLibrary() {
                   </div>
                 )}
               </div>
-              <strong>{mediaFileName(asset.storage_path)}</strong>
+              <strong>{mediaDisplayTitle(asset)}</strong>
             </button>
           ),
         )}
-      </div>
-    </>
+      </div>    </>
   )
 }

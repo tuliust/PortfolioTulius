@@ -29,7 +29,7 @@ export async function uploadPrivateMedia(file: File): Promise<MediaAction> {
         mime_type: file.type,
         file_size: file.size,
         alt_text: "",
-        title: mediaFileName(path),
+        title: file.name.trim() || mediaFileName(path),
         status: "published",
       }),
     undoStage: () => client.storage.from("portfolio-private").remove([path]),
@@ -64,7 +64,6 @@ export async function publishPrivateMedia(asset: PrivateMediaAsset): Promise<Med
     .update({
       storage_bucket: "portfolio-public",
       status: "published",
-      title: mediaFileName(asset.storage_path),
     })
     .eq("id", asset.id)
     .eq("storage_bucket", "portfolio-private")
