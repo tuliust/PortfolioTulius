@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   buildApprovedFormationAPreview,
   FORMATION_A_BLOCK_ID,
+  overlayApprovedFormationA,
   type FormationPilotEducationRow,
 } from "./formation-pilot-preview"
 
@@ -113,6 +114,56 @@ describe("prévia isolada das seis decisões Formação/A", () => {
         },
         rows,
       ),
+    ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+  })
+})
+
+describe("sobreposição protegida e não persistente de Formação/A", () => {
+  const proposed = buildApprovedFormationAPreview(block, rows).items
+  const panel = block.content_json.items.map((item) => ({
+    ...item,
+    placement: {
+      layoutVariant: "default",
+      styleConfig: { width: 80 },
+      motionConfig: { preset: "fade-up" },
+    },
+  }))
+  const section = {
+    id: "formacao-section",
+    slug: "formacao",
+    number: 5,
+    title: "Formação",
+    theme: "ink" as const,
+    layout: "timeline" as const,
+    status: "published" as const,
+    visible: true,
+    panelA: panel,
+    panelB: [{ title: "Idiomas" }],
+    desktopPanelA: panel,
+    desktopPanelB: [{ title: "Idiomas" }],
+  }
+  it("aplica somente texto às duas apresentações sem perder placements e sem mutar o original", () => {
+    const original = structuredClone(section)
+    const next = overlayApprovedFormationA(section, proposed)
+    expect(next.panelA.map((item) => item.text)).toEqual(proposed.map((item) => item.text))
+    expect(next.desktopPanelA?.map((item) => item.text)).toEqual(
+      proposed.map((item) => item.text),
+    )
+    expect(next.panelA.map((item) => item.placement)).toEqual(
+      section.panelA.map((item) => item.placement),
+    )
+    expect(next.panelB).toEqual(section.panelB)
+    expect(section).toEqual(original)
+  })
+  it("falha se os textos ou metadados originais mudarem", () => {
+    expect(() =>
+      overlayApprovedFormationA(
+        { ...section, panelA: [{ ...section.panelA[0], meta: "Alterado" }, ...section.panelA.slice(1)] },
+        proposed,
+      ),
+    ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+    expect(() =>
+      overlayApprovedFormationA({ ...section, desktopPanelA: undefined }, proposed),
     ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
   })
 })

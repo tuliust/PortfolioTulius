@@ -1,4 +1,4 @@
-import type { ContentItem } from "../types/content"
+import type { ContentItem, PortfolioSection } from "../types/content"
 import { compareCollectionItemChanges } from "./collection-link-review"
 import type { ContentBlockRow } from "./placements"
 
@@ -87,5 +87,41 @@ export function buildApprovedFormationAPreview(
   return {
     items: proposed,
     differences: compareCollectionItemChanges(originals, proposed),
+  }
+}
+
+/** Overlay only in a protected admin preview; never persist or affect public rendering. */
+export function overlayApprovedFormationA(
+  section: PortfolioSection,
+  items: readonly ContentItem[],
+): PortfolioSection {
+  if (section.slug !== "formacao" || items.length !== approvedItems.length) {
+    throw new Error("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+  }
+  const overlay = (current: ContentItem[]): ContentItem[] => {
+    if (current.length !== items.length) {
+      throw new Error("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+    }
+    return current.map((existing, index) => {
+      const expected = items[index]
+      if (
+        existing.title !== expected.title ||
+        existing.label !== expected.label ||
+        existing.meta !== expected.meta ||
+        existing.text !== undefined ||
+        !expected.text
+      ) {
+        throw new Error("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+      }
+      return { ...existing, text: expected.text }
+    })
+  }
+  if (!section.desktopPanelA) {
+    throw new Error("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+  }
+  return {
+    ...section,
+    panelA: overlay(section.panelA),
+    desktopPanelA: overlay(section.desktopPanelA),
   }
 }

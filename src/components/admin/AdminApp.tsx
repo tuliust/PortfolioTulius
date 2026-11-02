@@ -610,6 +610,7 @@ function SiteEditor({
   const [pane, setPane] = useState<SiteEditorPane>("content")
   const [collectionSource, setCollectionSource] = useState("career_experiences")
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop")
+  const [formationPilot, setFormationPilot] = useState(false)
   const [linkedSources, setLinkedSources] = useState<string[]>([])
   const [sourcesRevision, setSourcesRevision] = useState(0)
   const [lastExperienceId, setLastExperienceId] = useState("")
@@ -882,6 +883,16 @@ function SiteEditor({
                       Prévia protegida dos dados já salvos. Alterações abertas nos formulários
                       aparecem somente depois de gravadas.
                     </p>
+                    {selected.slug === "formacao" && (
+                      <label className="site-editor-note">
+                        <input
+                          type="checkbox"
+                          checked={formationPilot}
+                          onChange={(event) => setFormationPilot(event.target.checked)}
+                        />{" "}
+                        Simular os três nomes completos aprovados (somente nesta prévia, sem salvar)
+                      </label>
+                    )}
                     <div
                       className="site-editor-preview-controls"
                       role="group"
@@ -906,9 +917,9 @@ function SiteEditor({
                     </div>
                     <div className={`site-editor-preview-frame ${previewDevice}`}>
                       <iframe
-                        key={selected.slug}
+                        key={`${selected.slug}-${selected.slug === "formacao" && formationPilot}`}
                         title={`Prévia ${previewDevice} da seção ${selected.title}`}
-                        src={`/admin/preview#${selected.slug}`}
+                        src={`/admin/preview${selected.slug === "formacao" && formationPilot ? "?formationPilot=1" : ""}#${selected.slug}`}
                       />
                     </div>
                     <small>
@@ -1189,5 +1200,6 @@ export function AdminPreview() {
   const guard = useAdminGuard()
   if (guard === "loading") return <div className="admin-loading">Abrindo prévia…</div>
   if (guard === "denied") return <Navigate to="/admin/login" replace />
-  return <PublicSite preview />
+  const formationPilot = new URLSearchParams(window.location.search).get("formationPilot") === "1"
+  return <PublicSite preview formationPilot={formationPilot} />
 }

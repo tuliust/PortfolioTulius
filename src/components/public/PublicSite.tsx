@@ -1149,8 +1149,17 @@ function Section({
   )
 }
 
-export function PublicSite({ preview = false }: { preview?: boolean }) {
-  const { sections, navigation, tokens, source, loading, error } = usePortfolio(preview)
+export function PublicSite({
+  preview = false,
+  formationPilot = false,
+}: {
+  preview?: boolean
+  formationPilot?: boolean
+}) {
+  const { sections, navigation, tokens, source, loading, error } = usePortfolio(
+    preview,
+    preview && formationPilot,
+  )
   const visible = useMemo(
     () => sections.filter((section) => preview || section.visible),
     [sections, preview],

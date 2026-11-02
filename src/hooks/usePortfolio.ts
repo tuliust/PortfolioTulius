@@ -22,6 +22,12 @@ import {
 import type { DesignTokens, PortfolioSection } from "../types/content"
 import { selectSectionExperienceMedia } from "../lib/cms-contract"
 import { parseCardRadius } from "../lib/design-tokens"
+import {
+  buildApprovedFormationAPreview,
+  FORMATION_A_BLOCK_ID,
+  overlayApprovedFormationA,
+  type FormationPilotEducationRow,
+} from "../lib/formation-pilot-preview"
 
 type SectionResult = {
   id: string
@@ -71,7 +77,7 @@ function toSection(
   }
 }
 
-export function usePortfolio(includeDrafts = false) {
+export function usePortfolio(includeDrafts = false, formationPilot = false) {
   const [data, setData] = useState<PortfolioSection[]>([])
   const [tokens, setTokens] = useState(defaultTokens)
   const [navigation, setNavigation] = useState<PublicNavigationItem[]>([])
@@ -321,6 +327,36 @@ export function usePortfolio(includeDrafts = false) {
                   collectionItems,
                 ),
               )
+              let previewError = false
+              let preparedSections = mappedSections
+              if (includeDrafts && formationPilot) {
+                try {
+                  const formRow = sectionRows.find((section) => section.slug === "formacao")
+                  const formBlock = formRow?.content_blocks?.find(
+                    (block) => block.id === FORMATION_A_BLOCK_ID,
+                  )
+                  if (!formBlock) throw new Error("Bloco Formação/A ausente")
+                  const result = await supabaseClient
+                    .from("education")
+                    .select("id,course,degree_type,institution,sort_order,status")
+                    .eq("status", "published")
+                    .order("sort_order")
+                  if (result.error) throw result.error
+                  if (cancelled) return
+                  const proposal = buildApprovedFormationAPreview(
+                    formBlock,
+                    (result.data ?? []) as FormationPilotEducationRow[],
+                  )
+                  preparedSections = mappedSections.map((section) =>
+                    section.slug === "formacao"
+                      ? overlayApprovedFormationA(section, proposal.items)
+                      : section,
+                  )
+                } catch {
+                  // Fail closed: the CMS still shows original saved content.
+                  previewError = true
+                }
+              }
               const navRecords = (navigationResult.data ?? []) as NavigationRow[]
               const linked = buildPublicNavigation(mappedSections, navRecords)
               setNavigation(
@@ -336,7 +372,7 @@ export function usePortfolio(includeDrafts = false) {
                   : linked,
               )
               setData(
-                mappedSections.map((section) => ({
+                preparedSections.map((section) => ({
                   ...section,
                   navLabel:
                     navRecords.find(
@@ -349,9 +385,11 @@ export function usePortfolio(includeDrafts = false) {
               )
               setSource("supabase")
               setError(
-                collectionReadFailed
-                  ? "Parte do acervo não pôde ser atualizada. Exibindo conteúdo editorial salvo."
-                  : null,
+                previewError
+                  ? "Prévia experimental de Formação/A bloqueada: confira os dados aprovados. Nenhum conteúdo foi alterado."
+                  : collectionReadFailed
+                    ? "Parte do acervo não pôde ser atualizada. Exibindo conteúdo editorial salvo."
+                    : null,
               )
             }
             if (!tokenResult.error && tokenResult.data?.length) {
@@ -454,7 +492,7 @@ export function usePortfolio(includeDrafts = false) {
       cancelAnimationFrame(seoFirstFrame)
       cancelAnimationFrame(seoSecondFrame)
     }
-  }, [includeDrafts])
+  }, [includeDrafts, formationPilot])
 
   return { sections: data, navigation, tokens, source, loading, error }
 }
