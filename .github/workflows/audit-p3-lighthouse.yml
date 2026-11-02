@@ -9,6 +9,7 @@ on:
       - scripts/p3-lcp-triage.mjs
       - scripts/p3-lcp-repeats.mjs
       - scripts/p4-visual-audit.mjs
+      - scripts/p4-partial-failure.mjs
       - scripts/p5-public-rls.mjs
       - scripts/p6-lighthouse-guard.mjs
       - src/index.css

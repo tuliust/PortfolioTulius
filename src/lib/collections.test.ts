@@ -141,6 +141,12 @@ describe("fontes de coleção editoriais", () => {
     expect(
       resolveCollectionBlocks([linked], new Map<CollectionSource, ContentItem[]>())[0].content_json
         ?.items,
+    ).toEqual([{ title: "Versão editorial original" }])
+    expect(
+      resolveCollectionBlocks(
+        [linked],
+        new Map<CollectionSource, ContentItem[]>([["metrics", []]]),
+      )[0].content_json?.items,
     ).toEqual([])
   })
   it("distribui os depoimentos em dois painéis preservando fotos e blocos manuais", () => {
@@ -190,5 +196,48 @@ describe("fontes de coleção editoriais", () => {
     expect(result[0].content_json?.items?.[0].image).toBe("/media/pessoa-a.jpg")
     expect(result[1].content_json?.items?.[0].image).toBe("/media/pessoa-c.jpg")
     expect(a.content_json?.items).toHaveLength(1)
+  })
+
+  it("preserva três depoimentos e fotografias originais quando a fonte falha", () => {
+    const original: ContentBlockRow = {
+      id: "a",
+      section_id: "depoimentos",
+      sort_order: 1,
+      mobile_panel: "a",
+      status: "published",
+      content_json: {
+        source_collection: "testimonials",
+        collection_start: 0,
+        collection_limit: 2,
+        items: [
+          { title: "Matheus", image: "/media/matheus.jpg", text: "Texto editorial A" },
+          { title: "Ana", image: "/media/ana.jpg", text: "Texto editorial B" },
+        ],
+      },
+    }
+    const second: ContentBlockRow = {
+      ...original,
+      id: "b",
+      mobile_panel: "b",
+      content_json: {
+        source_collection: "testimonials",
+        collection_start: 2,
+        items: [{ title: "Fábio", image: "/media/fabio.jpg", text: "Texto editorial C" }],
+      },
+    }
+    const snapshot = structuredClone([original, second])
+    const missing = resolveCollectionBlocks([original, second], new Map())
+    expect(missing).toEqual(snapshot)
+    expect(missing.flatMap((block) => block.content_json?.items ?? []).map((item) => item.image)).toEqual([
+      "/media/matheus.jpg",
+      "/media/ana.jpg",
+      "/media/fabio.jpg",
+    ])
+    const loadedEmpty = resolveCollectionBlocks(
+      [original, second],
+      new Map<CollectionSource, ContentItem[]>([["testimonials", []]]),
+    )
+    expect(loadedEmpty.every((block) => block.content_json?.items?.length === 0)).toBe(true)
+    expect([original, second]).toEqual(snapshot)
   })
 })

@@ -33,12 +33,13 @@ try {
         }
       })
       await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
-      await page.waitForFunction(() =>
-        !!document.querySelector(".public-site .data-error") &&
-        !!document.querySelector("section#perfil") &&
-        !!document.querySelector("#perfil-a .mobile-profile-hero img"),
-        { timeout: 20000 },
-      )
+      await page.waitForFunction((source) => {
+        const count = document.querySelectorAll("section.portfolio-section").length
+        return !!document.querySelector(".public-site .data-error") &&
+          !!document.querySelector("section#perfil") &&
+          !!document.querySelector("#perfil-a .mobile-profile-hero img") &&
+          (source === "testimonials" ? count === 13 : count >= 1)
+      }, { timeout: 20000 }, endpoint)
       const result = await page.evaluate(() => ({
         sections: document.querySelectorAll("section.portfolio-section").length,
         profileVisible: !!document.querySelector("section#perfil"),
@@ -47,9 +48,13 @@ try {
           const image = document.querySelector("#perfil-a .mobile-profile-hero img")
           return !!image && image.complete && image.naturalWidth > 0
         })(),
+        testimonials: document.querySelectorAll("#depoimentos .testimonial-card").length,
+        savedPortraits: [...document.querySelectorAll("#depoimentos .testimonial-person img")]
+          .filter((img) => img.getAttribute("src")?.startsWith("/media/")).length,
       }))
       if (!failuresInjected || !result.profileVisible || !result.errorNotice ||
-          !result.portraitLoaded) {
+          !result.portraitLoaded || (endpoint === "testimonials" &&
+            (result.sections !== 13 || result.testimonials !== 3 || result.savedPortraits !== 3))) {
         throw new Error("Recovery contract failed: " + JSON.stringify({ endpoint, failuresInjected, result }))
       }
       console.log("P4_PUBLIC_PARTIAL_FAILURE " + JSON.stringify({

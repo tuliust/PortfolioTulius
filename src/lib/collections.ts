@@ -129,6 +129,10 @@ export function resolveCollectionBlocks(
   return blocks.map((block) => {
     const source = block.content_json?.source_collection
     if (!isCollectionSource(source)) return block
+    // A failed collection request is not an instruction to remove approved
+    // cards. Render the original manual snapshot until the source recovers.
+    // An explicitly loaded, empty collection remains empty as intended.
+    if (!sources.has(source)) return block
     const records = sources.get(source) ?? []
     const start = Number.isInteger(block.content_json?.collection_start)
       ? Math.max(0, block.content_json?.collection_start ?? 0)

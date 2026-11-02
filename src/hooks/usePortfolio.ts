@@ -274,32 +274,43 @@ export function usePortfolio(includeDrafts = false) {
                 CollectionSource,
                 import("../types/content").ContentItem[]
               >()
+              let collectionReadFailed = false
               if (activeSources.size) {
                 const results = await Promise.all(
                   Array.from(activeSources).map(async (source) => {
-                    const response =
-                      source === "testimonials"
-                        ? await testimonialsRequest
-                        : includeDrafts
-                          ? await supabaseClient
-                              .from(source)
-                              .select("*")
-                              .order("sort_order")
-                              .neq("status", "archived")
-                          : await supabaseClient
-                              .from(source)
-                              .select("*")
-                              .order("sort_order")
-                              .eq("status", "published")
-                    if (response.error) throw response.error
-                    return [
-                      source,
-                      collectionToItems(source, response.data ?? [], includeDrafts),
-                    ] as const
+                    try {
+                      const response =
+                        source === "testimonials"
+                          ? await testimonialsRequest
+                          : includeDrafts
+                            ? await supabaseClient
+                                .from(source)
+                                .select("*")
+                                .order("sort_order")
+                                .neq("status", "archived")
+                            : await supabaseClient
+                                .from(source)
+                                .select("*")
+                                .order("sort_order")
+                                .eq("status", "published")
+                      if (response.error) {
+                        collectionReadFailed = true
+                        return null
+                      }
+                      return [
+                        source,
+                        collectionToItems(source, response.data ?? [], includeDrafts),
+                      ] as const
+                    } catch {
+                      collectionReadFailed = true
+                      return null
+                    }
                   }),
                 )
                 if (cancelled) return
-                for (const [source, items] of results) collectionItems.set(source, items)
+                for (const entry of results) {
+                  if (entry) collectionItems.set(entry[0], entry[1])
+                }
               }
               const mappedSections = sectionRows.map((section) =>
                 toSection(
@@ -337,7 +348,11 @@ export function usePortfolio(includeDrafts = false) {
                 })),
               )
               setSource("supabase")
-              setError(null)
+              setError(
+                collectionReadFailed
+                  ? "Parte do acervo não pôde ser atualizada. Exibindo conteúdo editorial salvo."
+                  : null,
+              )
             }
             if (!tokenResult.error && tokenResult.data?.length) {
               const next = { ...defaultTokens }
