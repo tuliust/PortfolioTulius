@@ -7,7 +7,7 @@ on:
       - .github/workflows/p1-p3-isolated-preview.yml
       - scripts/p4-formation-visual-preview.mjs
       - scripts/p2-synthetic-fixtures.mjs
-      - scripts/p2-synthetic-fixtures.test.mjs
+      - scripts/p2-synthetic-fixtures.check.mjs
   workflow_dispatch:
 
 permissions:
