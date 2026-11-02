@@ -85,7 +85,7 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [x] Os testes autenticados do CMS passaram **7/7**, com zero mutações ([P5 read-only #41404376390](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390)).
 - [x] Os cinco testes offline de isolamento de staging passaram no [CI #41514624001](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001).
 - [x] O commit de referência `51825abf` passou na [validação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41515245255), teve [exportação de documentação aprovada](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41515245364) e deployment Vercel **READY**.
-- [ ] Validar o CI e o deployment do **novo commit deste checklist**, sem confundir atualização documental com encerramento técnico.
+- [x] Confirmar CI, exportação e Vercel `READY` do commit documental `262240f5`: [validação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41516613463) e [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41516613444). Uma documentação validada **não** encerra as 11 pendências técnicas.
 
 ## Arquivos de evidência
 
