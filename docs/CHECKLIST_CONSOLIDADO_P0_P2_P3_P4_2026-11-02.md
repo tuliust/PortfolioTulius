@@ -99,7 +99,7 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [ ] Repetir medidas de LCP mobile, decompondo fontes, CSS, JS, rede e consultas; perseguir ≤2,5 s, atualmente sem comprovação.
 - [x] Implementar preservação do conteúdo já carregado e da lista administrativa diante de falha posterior de leitura.
 - [x] Injetar falhas GET de `section_panels` e `testimonials` em navegador; primeira dobra preservada com aviso, 2/2 cenários aprovados no ensaio anterior.
-- [ ] Homologar o novo comportamento: em falha da coleção de depoimentos, manter todas as demais seções e restaurar os três cards/fotografias editoriais do JSONB, sem esvaziar o site.
+- [x] Homologar no navegador a recuperação de depoimentos com GET 503: 13 seções, três retratos e aviso de erro preservados; leitura completa da coleção continua sendo fonte primária quando disponível ([P3/P4 41389455933](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41389455933)).
 - [ ] Verificar outros cenários de falha parcial, recuperação de mídia e carregamento após reconexão.
 - [x] Fazer `radius.card` publicado alimentar o CSS dos cartões de depoimento, com validação e testes unitários.
 - [x] Revisar os 12 tokens publicados e ligar `font.heading` também ao seletor visual `--font-display`, preservando a tipografia atual por padrão.
@@ -166,3 +166,15 @@ Inventário e comparações preliminares, auditoria do Storage, correções de r
 - [x] Adicionar ao workflow P3 a verificação via navegador do fallback de coleção; a homologação é considerada concluída somente quando o workflow correspondente terminar com sucesso.
 - [x] Auditar os 12 tokens publicados e corrigir o vínculo de `font.heading` com os seletores `--font-display`, sem alterar a escolha tipográfica existente.
 - [x] Gerar lista de decisão de 14 arquivos com metadados alt a conferir, sem editar a biblioteca.
+
+## Encerramento do escopo executável automaticamente — 02/11/2026
+
+- [x] CI no commit funcional `38097a4`: formatação, TypeScript, testes, build e smoke ([run 41389455931](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41389455931)).
+- [x] Auditoria de navegador P3/P4 no mesmo SHA: zero falhas, 38 capturas sem violações detectadas, anônimo RLS 3/3 e falhas parciais 2/2 ([run 41389455933](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41389455933)).
+- [x] Verificar o efeito do token publicado `font.heading` em `--font-display`, mantendo o valor atual Big Shoulders Display; todos os 12 tokens publicados foram revisados.
+- [x] Fornecer [inventário dos 14 atributos alt para revisão](P4_INVENTARIO_ALT_2026-11-02.md).
+- [x] Atualizar [relatório executivo das ações automáticas e bloqueios restantes](P4_ENCERRAMENTO_AUTOMATICO_2026-11-02.md).
+- [ ] LCP mobile ≤2,5 segundos: **não atingido**; 3,389 s de mediana do Lighthouse simulado no SHA funcional (três execuções).
+- [ ] Testes CRUD transacionais, mudanças de segurança, migrações editoriais, substituição de imagens e SEO estático sem redeploy **não estão autorizados ou homologados** automaticamente.
+
+A vistoria humana final e novos testes transacionais permanecem explicitamente pendentes.
