@@ -573,11 +573,11 @@ export function ContentStudio({
       }
       const previous = savedBlock.content_json.source_collection
       const currentItems = isCollectionSource(previous)
-        ? resolveCollectionBlocks(
+        ? (resolveCollectionBlocks(
             [savedBlock],
             new Map([[previous, await publishedItems(previous)]]),
-          )[0].content_json?.items ?? []
-        : savedBlock.content_json.items ?? []
+          )[0].content_json?.items ?? [])
+        : (savedBlock.content_json.items ?? [])
       // Switching collections resets old pagination, which might silently hide
       // cards belonging to the new collection. Restore manual items when unlinked.
       const proposedJson = {
@@ -587,11 +587,11 @@ export function ContentStudio({
         collection_limit: undefined,
       }
       const proposedItems = isCollectionSource(next)
-        ? resolveCollectionBlocks(
+        ? (resolveCollectionBlocks(
             [{ ...draft, content_json: proposedJson }],
             new Map([[next, await publishedItems(next)]]),
-          )[0].content_json?.items ?? []
-        : draft.content_json.items ?? []
+          )[0].content_json?.items ?? [])
+        : (draft.content_json.items ?? [])
       const changes = compareCollectionItemChanges(currentItems, proposedItems)
       if (changes.length > 80) {
         setMessage(
