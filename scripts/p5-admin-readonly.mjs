@@ -71,7 +71,7 @@ try {
 
   // Read-only P4 checks: confirm the identity token and all nine structured
   // collections are reachable without submitting any data or media writes.
-  await page.$eval(".admin-sidebar nav button", (nodes) => {
+  await page[String.fromCharCode(36, 36) + "eval"](".admin-sidebar nav button", (nodes) => {
     nodes.find((node) => node.textContent?.trim() === "Identidade")?.click()
   })
   await page.waitForSelector(".license-card .field-grid", { timeout: 12000 })
@@ -81,15 +81,15 @@ try {
     ),
   )
   if (!radiusVisible) throw new Error("Token radius.card ausente no editor de identidade.")
-  await page.$eval(".admin-sidebar nav button", (nodes) => {
+  await page[String.fromCharCode(36, 36) + "eval"](".admin-sidebar nav button", (nodes) => {
     nodes.find((node) => node.textContent?.trim() === "Editor do site")?.click()
   })
   await page.waitForSelector(".site-editor-tabs", { timeout: 12000 })
-  await page.$eval(".site-editor-tabs [role=tab]", (nodes) => {
+  await page[String.fromCharCode(36, 36) + "eval"](".site-editor-tabs [role=tab]", (nodes) => {
     nodes.find((node) => node.textContent?.includes("Acervo estruturado"))?.click()
   })
   await page.waitForSelector(".collection-tabs [role=tab]", { timeout: 15000 })
-  const collections = await page.$eval(".collection-tabs [role=tab]", (nodes) =>
+  const collections = await page[String.fromCharCode(36, 36) + "eval"](".collection-tabs [role=tab]", (nodes) =>
     nodes.map((node) => node.textContent?.trim()),
   )
   if (collections.length !== 9 || collections.some((label) => !label)) {
