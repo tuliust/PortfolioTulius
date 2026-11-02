@@ -9,6 +9,7 @@ import {
   splitExperienceBullet,
 } from "../../lib/experience-text"
 import { publicReadClient } from "../../lib/public-read"
+import { resolveCareerSectionSlug } from "../../lib/career-record-link"
 
 export const EXPERIENCE_SLUGS = [
   "invest-rs",
@@ -134,15 +135,6 @@ function PhotoGallery({
       )}
     </div>
   )
-}
-
-const CAREER_COMPANY_SLUGS: Record<string, string> = {
-  "Invest RS": "invest-rs",
-  "Prefeitura de São Paulo": "prefeitura-sp",
-  Vale: "vale",
-  "TV Globo/SporTV": "globo-sportv",
-  "Grupo InPress": "inpress",
-  "CDI Comunicação": "cdi",
 }
 
 function ExperienceCompetencies({ tags }: { tags: string[] }) {
@@ -575,14 +567,14 @@ export function ExperienceStack({
         ? (await import("../../lib/supabase")).supabase
         : publicReadClient) as unknown as PostgrestClient | null
       if (cancelled || !client) return
-      const query = client.from("career_experiences").select("company,description")
+      const query = client.from("career_experiences").select("id,company,description")
       const { data, error } = await (preview
         ? query.neq("status", "archived")
         : query.eq("status", "published"))
       if (cancelled || error) return
       const published: Record<string, string> = {}
       for (const row of data ?? []) {
-        const slug = CAREER_COMPANY_SLUGS[row.company]
+        const slug = resolveCareerSectionSlug(row)
         if (slug && row.description) published[slug] = row.description
       }
       setCareerDetails(published)

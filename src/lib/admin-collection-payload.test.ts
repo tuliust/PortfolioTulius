@@ -3,6 +3,7 @@ import {
   buildCollectionSavePayload,
   normalizeCollectionRecord,
   isUnpublishOnlyCollection,
+  validateCollectionSaveDraft,
 } from "./admin-collection-payload"
 
 describe("Campos do acervo ao salvar", () => {
@@ -40,6 +41,72 @@ describe("Campos do acervo ao salvar", () => {
     expect(isUnpublishOnlyCollection("contact_channels")).toBe(true)
     expect(isUnpublishOnlyCollection("testimonials")).toBe(false)
     expect(isUnpublishOnlyCollection("career_experiences")).toBe(false)
+  })
+
+  it("bloqueia campos obrigatórios ausentes, sem depender de gravação real", () => {
+    expect(
+      validateCollectionSaveDraft(
+        { company: "Invest RS", role: "", sort_order: 1, status: "published" },
+        "career_experiences",
+      ),
+    ).toEqual(["Campo obrigatório não preenchido: role."])
+    expect(
+      validateCollectionSaveDraft(
+        { label: "Resultado", value_text: "12", sort_order: 1, status: "published" },
+        "metrics",
+      ),
+    ).toEqual([])
+  })
+
+  it("não rejeita períodos editoriais livres como datas SQL", () => {
+    expect(
+      validateCollectionSaveDraft(
+        {
+          company: "Invest RS",
+          role: "Direção",
+          start_date: "2020–2024",
+          end_date: "Atual",
+          sort_order: 1,
+          status: "published",
+        },
+        "career_experiences",
+      ),
+    ).toEqual([])
+  })
+
+  it("respeita os estados permitidos e URLs seguras de contato", () => {
+    expect(
+      validateCollectionSaveDraft(
+        { title: "Design", sort_order: 1, status: "archived" },
+        "tool_categories",
+      ),
+    ).toContain("Este status não é aceito para a coleção.")
+    expect(
+      validateCollectionSaveDraft(
+        {
+          channel_type: "website",
+          label: "Site",
+          value: "Visite",
+          url: "javascript:alert(1)",
+          sort_order: 1,
+          status: "published",
+        },
+        "contact_channels",
+      ),
+    ).toContain("A URL de contato precisa usar HTTPS ou um endereço mailto válido.")
+    expect(
+      validateCollectionSaveDraft(
+        {
+          channel_type: "email",
+          label: "Email",
+          value: "Contato",
+          url: "mailto:contato@example.com",
+          sort_order: 1,
+          status: "published",
+        },
+        "contact_channels",
+      ),
+    ).toEqual([])
   })
 
   it("não altera o input original e remove campos de interface", () => {

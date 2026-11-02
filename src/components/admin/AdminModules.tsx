@@ -26,6 +26,8 @@ import {
   buildCollectionSavePayload,
   normalizeCollectionRecord,
   isUnpublishOnlyCollection,
+  validateCollectionSaveDraft,
+  CONTACT_CHANNEL_TYPES,
 } from "../../lib/admin-collection-payload"
 import type {
   ContentItem,
@@ -2108,6 +2110,8 @@ export function CollectionsStudio({
 
   async function save() {
     if (!supabase || !draft) return
+    const validationErrors = validateCollectionSaveDraft(draft, config.table)
+    if (validationErrors.length) return setMessage(validationErrors.join(" "))
     setMessage("Salvando registro…")
     const payload = buildCollectionSavePayload(draft, config.table)
     const result = draft.id
@@ -2244,7 +2248,19 @@ export function CollectionsStudio({
               {config.fields.map((field) => (
                 <label key={field.key} className={field.multiline ? "field-wide" : ""}>
                   {field.label}
-                  {field.multiline ? (
+                  {config.table === "contact_channels" && field.key === "channel_type" ? (
+                    <select
+                      value={draft.channel_type ?? ""}
+                      onChange={(event) =>
+                        setDraft({ ...draft, channel_type: event.target.value })
+                      }
+                    >
+                      <option value="">Selecione o tipo</option>
+                      {CONTACT_CHANNEL_TYPES.map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
+                  ) : field.multiline ? (
                     <textarea
                       rows={4}
                       value={draft[field.key] ?? ""}
