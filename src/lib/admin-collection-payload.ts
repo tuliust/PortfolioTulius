@@ -90,7 +90,7 @@ export function validateCollectionSaveDraft(
   }
   if (table === "contact_channels" && typeof draft.url === "string" && draft.url.trim()) {
     const url = draft.url.trim()
-    const isMailto = /^mailto:[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/i.test(url)
+    const isMailto = /^mailto:[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(url)
     let isHttps = false
     try {
       isHttps = new URL(url).protocol === "https:"
