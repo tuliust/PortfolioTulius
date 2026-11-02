@@ -42,3 +42,7 @@ Depoimentos: Matheus Gomes (`ad029e66-9797-48bc-bb72-17b98004afcc`) usa `/media/
 ## F. Formação/A — contrato de prévia aprovado, sem gravação
 
 Para os três registros, `meta=A` preserva a versão curta publicada do período e `text=B` acrescenta o nome completo da instituição. A função `src/lib/formation-pilot-preview.ts` compõe a prévia usando os IDs editoriais aprovados e falha se a fonte ou o bloco original divergir. **Não está integrada ao fluxo público nem vinculada ao bloco.** Antes de aplicar, revisar [prévia de conteúdo](P4_PILOTO_FORMACAO_A_2026-11-02.md) e homologar a renderização real no CMS/desktop/mobile; aplicar apenas com autorização individual posterior.
+
+## G. Preparação segura adicional de staging — verificação do destino
+
+Foi adicionada `scripts/p2-stage-destination.mjs`, reutilizada por `scripts/p2-transactional-staging.mjs`, e uma verificação anterior à instalação de dependências no workflow exclusivamente manual `.github/workflows/p2-transactional-staging.yml`. O teste local `scripts/p2-stage-destination.check.mjs` inclui cinco cenários, entre eles recusa do **projeto de produção conhecido**, HTTPS/hostname estritos e frase de confirmação exata. [CI da guarda](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001). Isso **não prova** que qualquer novo ref seja ambiente isolado: validar a propriedade e a ausência de dados reais manualmente antes de execução. Nenhum projeto foi provisionado e o workflow transacional não foi disparado.

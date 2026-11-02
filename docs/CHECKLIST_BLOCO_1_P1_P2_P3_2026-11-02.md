@@ -12,10 +12,12 @@
 - [x] Relacionar os nove formulários de coleções aos campos do esquema e identificar atributos sem campo direto (`experience_id`, `photo_media_id`, `skills` etc.).
 - [x] Triar [53 objetos privados sem cadastro por MIME e diretório](BLOCO_1_P1_STORAGE_2026-11-02.md), sem leitura dos bytes privados ou exclusões.
 - [x] Reaproveitar o mapa dos três retratos confirmados dos depoimentos, sem inventar UUIDs e sem ingestão.
-- [ ] Comparar **cada valor** (inclusive imagem, link, estado e estilo responsivo) dos 26 blocos com uma projeção específica revisada; relatório inicial traz candidatos e campos, não equivalência nem migração.
+- [x] Medir **139 divergências de atributos** em nove projeções hipotéticas de coleções, com contagens por campo e sem salvar qualquer alteração; [matriz P1 detalhada](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md).
+- [x] Identificar os **17 demais blocos manuais** sem projeção estruturada completa; nenhum recebeu vínculo por inferência.
+- [ ] Revisar **todos os valores editoriais** (fotografias, links, estados ocultos, responsividade, ordem e conteúdo) individualmente, em particular nos 17 blocos heterogêneos; uma comparação automática de atributos **não** equivale a aprovação de substituição.
 - [x] Verificar referências textuais nos 145 registros históricos de revisão: **53/53 objetos privados aparecem no histórico**; **28/53** também aparecem nos blocos atuais, sem leitura de bytes nem exclusões. [Relatório](BLOCO_1_P1_STORAGE_2026-11-02.md).
 - [ ] Confirmar dependências efetivas, comparação de bytes e eventual duplicidade antes de propor limpeza; a simples referência histórica não prova uso corrente.
-- [ ] Homologar ciclo completo formulário → gravação → banco → recuperação → prévia → público em staging; leitura de esquema não substitui teste transacional.
+- [ ] Homologar ciclo completo formulário → gravação → banco → recuperação → prévia → público em staging; **transferido à P4 do Bloco 2** e condicionado à autorização do ambiente isolado.
 
 ## P2 — Prévia isolada, dados sintéticos e testes preparatórios
 
@@ -28,7 +30,8 @@
 - [x] Integrar na aba **Prévia** do CMS um modo opcional de Formação/A, autenticado, não persistente e desativado por padrão; [teste P5 7/7](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390), aprovado em desktop e mobile, 0 mutações.
 - [ ] Obter **aceite humano** da composição visual da prévia real, em desktop e mobile; a verificação automatizada de elementos não equivale à homologação editorial.
 - [ ] Receber revisão das seis capturas isoladas **e da prévia real do CMS**, com autorização separada antes de qualquer vínculo `Formação/A` com `education`.
-- [ ] Preparar/validar mais testes sintéticos para duplicação, ordenação, arquivamento, histórico, rollback e restauração em staging; fixture pronta não significa fluxo transacional testado.
+- [x] Implementar [guarda de destino fail-closed](../scripts/p2-stage-destination.mjs), reutilizada no executor de staging e validada por **5 testes offline** (incluindo rejeição do ref de produção); [CI 41514624001](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001).
+- [ ] Preparar/validar mais testes sintéticos para duplicação, ordenação, arquivamento, histórico, rollback e restauração em staging; fixture e guarda prontas **não** significam CRUD transacional testado.
 - [ ] Executar com credenciais distintas os ensaios administrativos e operações privadas **somente depois de staging provisionado e autorizado**.
 - [ ] Testar falhas/reconexão de mídia e publicação estática de SEO com servidor de teste isolado.
 - [ ] Implantar o gatilho real de SEO apenas após autorização específica para infraestrutura e segredos.
@@ -56,3 +59,11 @@
 - [x] Validar CI, exportação de documentação e Vercel `READY` no commit do dossiê `6b651c6` ([CI](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402900908), [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402900905)).
 
 **Dossiês:** [inventário 26 blocos](BLOCO_1_P1_INVENTARIO_2026-11-02.md) · [seis experiências](BLOCO_1_P1_EXPERIENCIAS_2026-11-02.md) · [53 objetos privados](BLOCO_1_P1_STORAGE_2026-11-02.md).
+
+## Fechamento da parcela automática e passagem para o Bloco 2
+
+- [x] Consolidar a matriz de **9 painéis candidatos** e **17 sem candidato completo**, com alerta contra sincronização indevida e [139 diferenças de atributos](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md).
+- [x] Proteger o workflow de staging com preflight antes de instalar dependências, sem disparar testes de escrita; cinco verificações negativas/positivas executadas no CI.
+- [x] Atualizar [o checklist de início do Bloco 2 (P4–P6)](CHECKLIST_BLOCO_2_P4_P5_P6_2026-11-02.md), diferenciando planejamento, testes offline e tarefas que exigem autorização.
+- [ ] **Bloco 1 — fechamento total:** requer aceites editoriais por bloco e desempenho LCP ≤ 2,5 s (última mediana registrada: **3,314 s**); não marcar como integralmente encerrado.
+- [ ] **Bloco 2 — homologação real:** só criar staging/credenciais, executar testes com escrita, vincular Formação/A, alterar RLS/Auth ou implantar gatilho SEO após aprovações específicas.

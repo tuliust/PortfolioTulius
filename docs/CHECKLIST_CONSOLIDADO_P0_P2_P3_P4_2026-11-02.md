@@ -265,3 +265,10 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [ ] Provar benefícios de desempenho em experimentos antes/depois; evitar mudanças visuais ou editoriais de qualquer natureza sem aceite.
 
 [Checklist operacional P1–P3](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md) · [evidências](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md).
+
+## Transição Bloco 1 → Bloco 2 (02/11/2026)
+
+- [x] Comparar atributos das nove projeções estruturadas candidatas: **139 divergências** levantadas (mapeamento, não autorização editorial); 17 blocos sem alternativa integral segura; [relatório](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md).
+- [x] Verificar [guarda offline de staging](../scripts/p2-stage-destination.mjs) (5/5 testes) e inserir preflight de destino no workflow de homologação, preservando a execução **somente manual**.
+- [x] Iniciar o [checklist Bloco 2 P4–P6](CHECKLIST_BLOCO_2_P4_P5_P6_2026-11-02.md) com P4 staging, P5 integração editorial e P6 SEO/segurança sem implementar mudanças não autorizadas.
+- [ ] Homologar staging separado, concluir as aprovações visuais, demonstrar LCP ≤2,5 s e obter aceite humano; nenhuma dessas pendências foi encerrada por testes offline.
