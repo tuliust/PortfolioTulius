@@ -8,8 +8,8 @@
 | --- | ---: | ---: | --- |
 | **P1** — Inventário e comparação editorial | 9 | 2 | Parcial |
 | **P2** — Prévias e testes preparatórios | 7 | 3 | Parcial |
-| **P3** — Desempenho e confiabilidade | 5 | 6 | Parcial |
-| **Total** | **21** | **11** | **Bloco 1 parcialmente concluído** |
+| **P3** — Desempenho e confiabilidade | 7 | 5 | Parcial |
+| **Total** | **23** | **10** | **Bloco 1 parcialmente concluído** |
 
 Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque precisam de autorização, ambiente isolado ou aceite editorial.
 
@@ -54,23 +54,23 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 
 ### P3 — Desempenho e confiabilidade
 
-**Realizado (5)**
+**Realizado (7)**
 
 - [x] Medir a rede pública nos três viewports: **10 GETs a nove endpoints** por viewport, sem gravações.
 - [x] Identificar as duas consultas a `sections` (Perfil antecipado + grafo completo) como oportunidade de investigação, não erro comprovado.
 - [x] Registrar baseline anterior de LCP mobile mediano **3,419 s** em laboratório.
 - [x] Repetir três medições Lighthouse mobile: nova mediana **3,314 s**, sem atribuir a diferença a uma otimização.
 - [x] Reexecutar verificações de navegador, SEO estático e capturas editoriais, sem regressões detectadas no ciclo registrado.
+- [x] **Meta vigente LCP mobile ≤ 3,5 s:** último ensaio de três amostras (mediana **3,386 s**, [Lighthouse #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045)) atende ao novo gate. Não é medida de campo nem comprovação de melhora causada por código.
+- [x] Revalidar o limite de **3,5 s** com o **novo gate** após a alteração de código, em três amostras (mediana **3,386 s**; nenhuma regressão visual na auditoria). Repetir após futuras mudanças relevantes.
 
-**Pendente (6)**
+**Pendente (5)**
 
 - [ ] Medir Lighthouse mobile em **três ou mais execuções antes e depois** de cada otimização candidata, incluindo rede, CSS, fontes, JavaScript e tempo de renderização.
 - [ ] Implementar somente otimizações técnicas não visuais com benefício demonstrado e plano de reversão.
 - [ ] Testar desduplicação ou reuso das consultas a `sections`, sem atrasar o Perfil nem alterar os dados exibidos.
 - [ ] Investigar estratégias de cache e invalidação, bundles administrativos e responsabilidades dos componentes com métricas comparáveis.
 - [ ] Reexecutar testes unitários, TypeScript, build, smoke, SEO, acessibilidade, RLS e capturas desktop/mobile depois de cada alteração técnica.
-- [x] **Meta vigente LCP mobile ≤ 3,5 s:** último ensaio de três amostras (mediana **3,386 s**, [Lighthouse #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045)) atende ao novo gate. Não é medida de campo nem comprovação de melhora causada por código.
-- [x] Revalidar o limite de **3,5 s** com o **novo gate** após a alteração de código, em três amostras (mediana **3,386 s**; nenhuma regressão visual na auditoria). Repetir após futuras mudanças relevantes.
 
 ## Dependências transferidas ao Bloco 2
 
