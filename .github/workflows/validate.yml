@@ -50,6 +50,11 @@ jobs:
           node --check scripts/p2-transactional-staging.mjs
           node --check scripts/p2-staging-preflight.mjs
           node --check scripts/p2-stage-destination.mjs
+          node --check scripts/p2-local-isolation.mjs
+          node --check scripts/p2-local-isolation.check.mjs
+          node --check scripts/p2-local-preflight.mjs
+          node --check scripts/p2-local-readonly.mjs
+          node --test scripts/p2-local-isolation.check.mjs
           node --check scripts/p2-stage-destination.check.mjs
           node --test scripts/p2-stage-destination.check.mjs
           node --check scripts/p5-public-rls.mjs

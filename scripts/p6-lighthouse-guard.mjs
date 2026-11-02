@@ -1,13 +1,13 @@
 import { existsSync, readFileSync } from "node:fs"
 import path from "node:path"
 
-// Conservative synthetic budgets. Use the median of three mobile samples, not
-// whichever single run happens to be the first, while retaining the strictest
-// accessibility/SEO checks across the samples.
+// Owner-approved mobile LCP target: median of three Lighthouse lab samples <= 3.5s
+// (02/11/2026). Keep strict accessibility/SEO checks across all samples.
+// Lighthouse simulated results do not replace field Core Web Vitals.
 const directory = process.argv[2]
 if (!directory) throw new Error("Usage: node p6-lighthouse-guard.mjs <reports-directory>")
 const bounds = {
-  mobile: { performance: 0.55, lcpMs: 6500 },
+  mobile: { performance: 0.55, lcpMs: 3500 },
   desktop: { performance: 0.90, lcpMs: 3000 },
 }
 const median = (values) => {

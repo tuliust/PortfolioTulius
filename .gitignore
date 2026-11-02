@@ -5,3 +5,7 @@ dist/
 .env.*
 .env*
 !.env.example
+
+# Supabase CLI local runtime state (never commit or sync).
+supabase/.temp/
+supabase/.branches/

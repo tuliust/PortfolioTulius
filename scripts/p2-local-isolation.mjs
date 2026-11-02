@@ -11,8 +11,9 @@ export function validateLocalSupabaseConfig(config) {
       !/^sql_paths\s*=\s*\[\s*"\.\/seed\.local\.synthetic\.sql"\s*\]\s*$/m.test(section)) {
     throw new Error("P2_LOCAL_SEED_NOT_ISOLATED")
   }
-  // Fail if a remote-ref or remote URLs enter the checked-in config.
-  if (/zfnrhzplwpjpdljraypt|\.supabase\.co|seed\.sql(?=["'\]\s])/i.test(config)) {
+  // Ignore documentation comments but never allow remote refs or the real seed in active config.
+  const active = config.split("\n").filter((line) => !line.trim().startsWith("#")).join("\n")
+  if (/zfnrhzplwpjpdljraypt|\.supabase\.co|seed\.sql(?=["'\]\s])/i.test(active)) {
     throw new Error("P2_LOCAL_CONFIG_REMOTE_OR_REAL_SEED")
   }
   return true
