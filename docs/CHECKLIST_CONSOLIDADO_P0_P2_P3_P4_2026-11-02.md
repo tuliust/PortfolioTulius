@@ -1,6 +1,23 @@
-# Checklist consolidado — PortfolioTulius após P3
+# Checklist de execução — PortfolioTulius
 
-**Vigência:** 02/11/2026 (UTC). **Base funcional P3:** `5accb752908442856cec8af0003f89a599cb3497`. Este documento substitui a classificação operacional anterior **sem apagar** os históricos e documentos de etapas originais. Ele distingue entrega automática de aceite humano e representa pendências **transferidas**, não concluídas.
+**Etapa 2 · P4 em execução parcial, com decisões editoriais registradas**
+
+**Atualizado em:** 02/11/2026. **Último SHA validado antes desta atualização:** `47874e42d32dc3df5257d02f4281275615a2fb35` ([CI aprovado](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41397758622)). O documento preserva o histórico de P0–P3 e a classificação das pendências em P4.1–P4.6.
+
+**Status correto:** parte das correções de código e das auditorias **já foi executada e validada**; as seis decisões de Formação/A e a aplicação do mesmo conjunto de campos às seis experiências **já foram aprovadas como diretrizes**. Isso **não** autoriza publicar a vinculação de Formação/A, sincronizar os dados das experiências ou modificar fotografias e configurações de produção sem as aprovações restantes.
+
+## Resumo operacional vigente
+
+| Frente | Executado ou decidido | Ainda pendente |
+| --- | --- | --- |
+| **P4.1 — Blocos e editorial** | 26 blocos manuais inventariados; Formação/A: 6 escolhas individuais respondidas (`meta=A`, `text=B`) e prévia **isolada em memória** implementada/testada; campos adicionais comuns às seis experiências definidos | Prévia **visual** em desktop/mobile e aceite de publicação; comparação/aceite dos valores de cada experiência; vínculos individuais |
+| **P4.2 — CMS e staging** | CMS autenticado em modo leitura validado (6/6); plano de staging **isolado com dados fictícios** documentado | Provisionamento autorizado, testes de gravação, revisão, publicação e recuperação em staging |
+| **P4.3 — Fotografia e mídia** | 75 mídias cadastradas verificadas; 53 objetos privados preservados; 19 slides e 6 logos auditados; proprietário confirmou as 3 fotografias atuais dos depoimentos; decisão de **manter** os 14 metadados alt | Vincular fotografias por IDs após ingestão e aprovação; homologação visual de enquadramentos; nenhum arquivo excluído |
+| **P4.4 — Site, SEO e LCP** | 4 falhas de Contato corrigidas; falhas HTTP simuladas 4/4; 8 campos estáticos de SEO conferidos; plano de disparo seguro após publicação documentado | Implantar SEO automático somente após autorização; LCP mobile ≤2,5 s **não atingido** (última mediana simulada 3,419 s) |
+| **P4.5 — Segurança** | Auditoria de leitura realizada; plano de endurecimento preparado | Staging com JWTs reais de teste e autorizações específicas para qualquer mudança em Auth, RLS ou RPCs |
+| **P4.6 — Otimizações** | Login admin separado em chunk próprio; inventário técnico realizado | Otimizações adicionais com benefício mensurável e sem alteração da identidade visual |
+
+**Critérios de encerramento:** uma implementação validada em CI **não** equivale a homologação editorial. Formação/A continua manual até a prévia visual e o aceite específico para publicação. As revisões humanas, as operações transacionais e a meta de desempenho permanecem abertas.
 
 ## Política de consolidação
 
@@ -138,6 +155,10 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 
 ## Verificações finais automatizadas
 
+- [x] Confirmar **CI e exportação de documentação** aprovados para o último ciclo da prévia isolada de Formação/A: commit `47874e42`, [Validate](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41397758622) e [Export](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41397758538).
+- [x] Confirmar que a prévia `formation-pilot-preview.ts` ainda **não** alimenta o renderizador público e que nenhuma gravação ou vinculação foi aprovada. As verificações finais de toda a P4 continuam abertas abaixo.
+
+
 - [ ] Rodar formatação, TypeScript, unit tests, build e smoke no **SHA final após P4**, não apenas no SHA P3.
 - [ ] Rodar testes de CMS sem escrita em produção; staging transacional só com autorização.
 - [ ] Reexecutar P3 navegador, P4 visual, P5 RLS/admin e medições de LCP.
@@ -197,7 +218,7 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [x] CI do código funcional: formatação, TS, testes, build e smoke [Validate 41391579816](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579816).
 - [x] Reexecutar auditoria de navegador: zero falhas; **38 capturas**, RLS anônimo 3/3; Lighthouse acessibilidade 100/100 na medição anterior; [run 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658).
 - [ ] SEO atualizado automaticamente no HTML após novo salvamento, LCP ≤2,5 s e testes transacionais **continuam pendentes**.
-- [ ] Reunir respostas às perguntas da [matriz de decisões pendentes](P4_TESTES_SEO_FALHAS_E_DECISOES_2026-11-02.md) para preparar propostas específicas sem substituir conteúdos.
+- [x] Reunir respostas à [matriz de decisões](P4_TESTES_SEO_FALHAS_E_DECISOES_2026-11-02.md) e registrar as escolhas efetivas em [P4_DECISOES_2026-11-02.md](P4_DECISOES_2026-11-02.md); a autorização de publicação e as homologações restantes **não** foram concedidas.
 
 ## P4 — Decisões recebidas e preparação técnica (02/11/2026)
 
