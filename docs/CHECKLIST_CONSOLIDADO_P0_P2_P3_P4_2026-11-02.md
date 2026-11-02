@@ -62,7 +62,8 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 
 ## P4.1 — Blocos manuais e integração editorial (P0/P1 anterior)
 
-- [ ] Inventariar/comparar os **26 blocos manuais** individualmente com coleções de destino e campos efetivamente apresentados.
+- [x] Inventariar os **26 blocos manuais**; comparação automatizada preliminar registrada na auditoria P4.
+- [ ] Confirmar candidatos e comparar/aprovar individualmente cada campo, mídia, ordem e efeito visual antes do vínculo.
 - [ ] Confrontar textos, fotos, links, ordem, estado, metadados e estilos por painel.
 - [ ] Solicitar aprovação de **cada divergência** antes de substituir origem.
 - [ ] Vincular gradualmente apenas os blocos aprovados, mantendo originais recuperáveis.
@@ -75,25 +76,29 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [ ] Verificar, campo a campo, formulário → gravação → Supabase → recuperação → prévia → público.
 - [ ] Corrigir divergências remanescentes entre dados estruturados e `content_json`.
 - [ ] Validar criar/editar/duplicar/ordenar/arquivar/publicar/ocultar seções e blocos.
-- [ ] Homologar prévia de rascunhos e guardas de mudanças não salvas.
+- [x] Executar testes autenticados de leitura: 8 módulos, 9 coleções, 50 ícones, alterações não salvas, prévia de 14 seções e bloqueio após logout; 5/5, sem escrita.
+- [ ] Homologar prévia de rascunhos e guardas em cenários adicionais com operações salvas no staging.
 - [ ] Homologar histórico e recuperação limitada.
 - [ ] Executar testes de gravação somente em staging isolado com autorização específica.
 
 ## P4.3 — Fotografia, biblioteca e galerias (P1 anterior)
 
-- [ ] Auditar correspondência dos 75 registros de mídia com objetos Storage.
+- [x] Conferir 75/75 registros de mídia com seus objetos Storage por bucket e caminho, sem alteração de dados.
 - [ ] Investigar 53 objetos privados sem cadastro, **sem exclusão automática**.
 - [ ] Revisar textos alternativos e metadados, inclusive 14 registros sinalizados por alt vazio ou curto na consulta de P2.
 - [ ] Homologar upload privado, publicação deliberada, seleção, substituição e cancelamento sem alterações.
-- [ ] Verificar logos, 19 slides de seis experiências, enquadramentos e legendas.
+- [x] Validar por consultas a existência dos seis logos e 19 slides e a presença de título, legenda e texto alternativo em todos.
+- [ ] Homologar visualmente enquadramentos, textos sobre imagens e galeria nos dispositivos finais.
 - [ ] Associar depoimentos aos IDs das fotos aprovadas, sem inferência por nome ou ordem.
 
 ## P4.4 — Site, SEO e desempenho (P1 anterior)
 
-- [ ] Resolver quatro critérios P3 ainda falhos na seção Contato, sem alteração involuntária de design.
+- [x] Corrigir os quatro critérios P3 de alinhamento da seção Contato; verificação de navegador posterior: zero falhas.
 - [ ] Repetir medidas de LCP mobile, decompondo fontes, CSS, JS, rede e consultas; perseguir ≤2,5 s, atualmente sem comprovação.
-- [ ] Testar degradação segura com falhas parciais do Supabase.
-- [ ] Corrigir `radius.card` e outros tokens sem correspondência pública.
+- [x] Implementar preservação do conteúdo já carregado e da lista administrativa diante de falha posterior de leitura.
+- [ ] Testar falhas de rede injetadas em navegador e validar recuperação sem regressões.
+- [x] Fazer `radius.card` publicado alimentar o CSS dos cartões de depoimento, com validação e testes unitários.
+- [ ] Verificar se outros tokens configuráveis permanecem sem efeito público correspondente.
 - [ ] Verificar SEO de CMS versus HTML publicado, inclusive atualização após salvar.
 
 ## P4.5 — Segurança, isolamento e acessibilidade pendentes de P2
@@ -140,3 +145,7 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [CI P3 com chunks de login independentes](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41381532791)
 
 **Limites:** sem alteração de schema, políticas RLS, grants, dados editoriais, imagens, Storage ou configurações de Vercel. Revisões manuais e ensaios autenticados ainda pendentes. A produção é publicada automaticamente em pushes à `main`.
+
+## Execução automática P4.1–P4.4 em 02/11/2026
+
+Inventário e comparações preliminares, auditoria do Storage, correções de recuperação, raio de cartões e Contato e ensaios P3/P5: consultar [relatório P4](P4_AUDITORIA_AUTOMATICA_2026-11-02.md). **Os testes transacionais, aprovações editoriais individuais, fotos de depoimentos, LCP ≤ 2,5 s e SEO imediatamente atualizado para robôs continuam pendentes.** A conclusão parcial não autoriza migração de dados.

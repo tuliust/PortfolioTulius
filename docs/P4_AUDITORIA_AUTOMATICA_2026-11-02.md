@@ -1,0 +1,94 @@
+# P4 — Auditoria automática de leitura e comparação editorial (02/11/2026)
+
+**Escopo:** P4.1–P4.4; execução por conectores com `SELECT` nas tabelas públicas e `storage.objects`, inspeção de código e CI. Nenhuma instrução de migração, `INSERT`, `UPDATE`, `DELETE`, transformação de fotos ou alteração de Auth/RLS/DDL foi aplicada no Supabase.
+
+## P4.1 — Inventário dos 26 blocos manuais
+
+Os **28 blocos publicados** permanecem: 26 manuais e 2 com `source_collection=testimonials` (com paginação 0–2 e 2+). A matriz abaixo é uma **comparação preliminar**, não uma decisão editorial, e não altera vínculos. Campos adicionais e fotografia podem demandar aprovação mesmo quando os títulos coincidirem.
+
+| Bloco / painel | Itens manuais | Coleção candidata, se houver | Itens propostos | Títulos coincidentes | Diferenças brutas de atributos |
+|---|---:|---|---:|---:|---:|
+| `perfil/a` | 5 | Sem candidato seguro | — | — | — |
+| `perfil/b` | 11 | Sem candidato seguro | — | — | — |
+| `sobre/a` | 1 | Sem candidato seguro | — | — | — |
+| `sobre/b` | 5 | Sem candidato seguro | — | — | — |
+| `resultados/a` | 4 | `metrics` | 6 | 0 | 31 |
+| `resultados/b` | 5 | Sem candidato seguro | — | — | — |
+| `competencias/a` | 2 | `skills` | 7 | 0 | 14 |
+| `competencias/b` | 3 | `skills` | 7 | 0 | 14 |
+| `formacao/a` | 3 | `education` | 3 | 3 | 6 |
+| `formacao/b` | 2 | `language_levels` | 2 | 0 | 8 |
+| `invest-rs/a` | 3 | Sem candidato seguro | — | — | — |
+| `invest-rs/b` | 5 | Sem candidato seguro | — | — | — |
+| `prefeitura-sp/a` | 6 | Sem candidato seguro | — | — | — |
+| `prefeitura-sp/b` | 4 | Sem candidato seguro | — | — | — |
+| `vale/a` | 4 | Sem candidato seguro | — | — | — |
+| `vale/b` | 3 | Sem candidato seguro | — | — | — |
+| `globo-sportv/a` | 4 | Sem candidato seguro | — | — | — |
+| `globo-sportv/b` | 11 | Sem candidato seguro | — | — | — |
+| `inpress/a` | 3 | Sem candidato seguro | — | — | — |
+| `inpress/b` | 2 | Sem candidato seguro | — | — | — |
+| `cdi/a` | 3 | Sem candidato seguro | — | — | — |
+| `cdi/b` | 2 | Sem candidato seguro | — | — | — |
+| `ferramentas/a` | 3 | `tool_categories` | 3 | 3 | 5 |
+| `ferramentas/b` | 3 | `tool_categories` | 3 | 3 | 4 |
+| `contato/a` | 1 | Sem candidato seguro | — | — | — |
+| `contato/b` | 3 | `contact_channels` | 4 | 3 | 9 |
+
+**Como ler:** diferenças são calculadas com os itens pela **posição atual**, incluindo atributos editoriais/manuais ausentes na projeção da coleção; um valor alto não é uma medida de qualidade. Títulos coincidentes são apenas uma pista, não identidade comprovada. As sugestões de `competencias`, `resultados` e `formacao/b` exigem revisão semântica. A divisão 3+3 de `tool_categories` é uma hipótese somente para o relatório; **não** será aplicada a blocos sem autorização. Nos demais blocos, inclusive as seis experiências, não se inferiu vínculo por coincidência ou ordem. Não existe aprovação por bloco nesta consulta.
+
+**Acervo publicado (somente leitura):**
+
+| Coleção | Registros publicados |
+|---|---:|
+| `career_experiences` | 6 |
+| `portfolio_projects` | 4 |
+| `metrics` | 6 |
+| `skills` | 7 |
+| `education` | 3 |
+| `language_levels` | 2 |
+| `tool_categories` | 6 |
+| `testimonials` | 3 |
+| `contact_channels` | 4 |
+
+**Ação dependente do proprietário:** para cada bloco, aprovar (ou rejeitar) o destino, a posição, os campos e as diferenças. Fotografias e conteúdo já publicado continuam prevalecendo até essa aprovação. As seis experiências seguem com sincronização de descrição vigente; o restante aguarda seleção de campos.
+
+## P4.2 — CMS e operações
+
+- Login administrativo com credencial protegida via GitHub Actions; oito módulos navegáveis.
+- Consulta autenticada de leitura confirmou nove abas do acervo, campo `radius.card`, 50 ícones com rótulo, editor mobile a 390×844, proteção de alterações não salvas, prévia com 14 seções incluindo uma oculta e bloqueio após logout.
+- **P5 autenticado:** [run 41383983069](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383983069) — 5/5, zero escrita de conteúdo.
+- Código corrigido para reter seções já exibidas se nova leitura falhar, tanto no hook público quanto na lista do painel; leitura de blocos com erro não zera o estado editável. Essas salvaguardas **não** equivalem à injeção de falhas em rede em navegador.
+- Permanecem pendentes: transações CRUD (criar/duplicar/arquivar/publicar/recuperar), testes com usuário não administrador e recuperação histórica num staging isolado com autorização específica.
+
+## P4.3 — Mídias
+
+- `media_assets`: **75 registros**, cada um com objeto correspondente no Storage por `bucket_id + name`: 72 públicos e 3 privados.
+- `storage.objects`: **128 objetos**, 72 públicos e 56 privados. Os 53 objetos sem cadastro estão **todos no bucket privado**, de 26/10/2026 a 31/10/2026. Não são necessariamente lixo; **não apagar**.
+- **13 registros** têm `alt_text` vazio; **14** têm `alt_text` com menos de seis caracteres. Precisam de conferência visual individual. O `alt_text` no catálogo não é necessariamente a mesma legenda que o `alt` já fornecido em um bloco editorial.
+- **Seis logotipos de experiências** referenciam objetos existentes no Storage e têm `logoAlt`. Os **19 slides** (Invest RS 4; Prefeitura 3; Vale 3; Globo/SporTV 3; InPress 3; CDI 3) têm título, descrição alternativa e legenda, e cada URL corresponde a um objeto público existente. Isso confirma integridade dos arquivos e metadados, **não o enquadramento visual dos 19 slides**.
+- Os três depoimentos publicados permanecem sem `photo_media_id`. Seus três retratos históricos ficam nos blocos manuais como `/media/` e não foram atribuídos a algum objeto do catálogo pela semelhança de nomes. Exige correspondência e aprovação explícita.
+- Testes de upload, promoção, substituição e cancelamento com gravação aguardam staging isolado.
+
+## P4.4 — Site público, desempenho e SEO
+
+- Os quatro critérios antes pendentes do contato foram corrigidos por ajustes localizados de alinhamento: rodapé do desktop coincide com base da coluna de fotografia e imagem mobile coincide com a borda inferior do painel em 360, 390 e 430 px.
+- [Auditoria P3 após correção](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383597122): **0 falhas** de navegador; **38/38** capturas editoriais sem violações capturadas; RLS anônima **3/3**; Lighthouse acessibilidade **100** mobile e desktop.
+- `radius.card` publicado no banco como `4` agora tem leitura validada 0–32 e aplica-se como CSS variável ao cartão de depoimento. Fotos não mudaram.
+- Em falha da leitura do grafo completo, o conteúdo de primeira dobra carregado anteriormente permanece na tela com aviso de erro. A falha inicial, antes de qualquer conteúdo recuperado, continua mostrando erro; não utiliza fallback editorial obsoleto em produção.
+- A mediana do último Lighthouse mobile concluído nessa revisão é aproximadamente **3,39 s** (LCP simulado), maior que a meta ≤2,5 s; score de performance mediano 87. Otimização adicional de fontes/CSS/JS exige avaliação para não comprometer a tipografia e os blocos aprovados.
+- O SEO publicado no banco tem título e descrição reais, `robots=index,follow`, `locale=pt-BR`. O build `scripts/generate-seo.mjs` gera HTML e sitemap a partir do banco e registra fallback quando não consegue consultá-lo. **Salvar no CMS isoladamente não dispara novo deploy**; portanto, atualização para crawlers permanece dependente do fluxo de publicação/novo build e requer decisão de integração sem divulgar credenciais.
+- Restam testar injeção de falhas parciais, rede real e Core Web Vitals de campo, além da propagação de SEO pós-salvamento.
+
+## Proteção de dados, identidade visual e limites
+
+- Todos os conteúdos manuais, links, fotos, logos, legendas e arquivos Storage foram preservados.
+- Nenhuma política RLS, objeto SQL, usuário, função privilegiada ou configuração de Vercel foi alterada.
+- A CI de código verifica formatação, TypeScript, testes unitários, build e smoke; a auditoria browser e o P5 autenticado são verificações independentes. Nenhuma pontuação automatizada constitui vistoria humana.
+- O relatório foi produzido sem substituir fotos, migrar textos ou reconfigurar o sistema de publicação.
+
+## Evidências
+
+- [CI código P4](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383983117)
+- [P3: layout, RLS, acessibilidade, desempenho](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383597122)
+- [P5: autenticação, CMS read-only e prévia](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383983069)
