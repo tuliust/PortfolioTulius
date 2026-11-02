@@ -43,3 +43,11 @@ A primeira consulta a `sections` antecipa o Perfil para a primeira dobra; a segu
 Não houve mudança de fotografias, textos ou dados publicados. Nenhum link `source_collection` foi criado. A auditoria foi um ensaio controlado do navegador em três tamanhos, não uma alteração visual de produção.
 
 [Checklist Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md).
+
+## Continuação: prévia real do CMS e auditorias repetidas
+
+- **Código:** o editor do site agora oferece um checkbox optativo somente na seção Formação, na aba **Prévia**; a rota `/admin/preview?formationPilot=1#formacao` mantém a guarda de administrador. O comportamento comum da página pública `/` não consulta nem aplica a sobreposição.
+- **Preparação dos dados:** o hook carrega `education` apenas no modo de prévia protegido, usa os IDs e valores das seis escolhas de Formação/A e preserva exatamente as demais seções/placements. Em inconsistência, exibe aviso e mantém o conteúdo salvo.
+- **E2E autenticado:** [P5 Admin Read-Only #41404376390](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390) **SUCCESS 7/7**, incluindo `P5_FORMATION_PROTECTED_PREVIEW` em **mobile e desktop**, 3 registros aprovados e **0 mutações**; login e logout também validados. A prévia não foi publicada como origem estruturada.
+- **P3/P4:** [Audit #41404082087](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404082087) **SUCCESS**: navegador com 0 falhas, 38 capturas editoriais sem violações detectadas, SEO estático 8/8. Lighthouse 13.5.0 mobile, três amostras **3313,643 / 3450,876 / 3290,066 ms**, mediana **3313,643 ms = 3,314 s**. Acessibilidade mobile 100. A mediana anterior era ~3,419 s, mas a diferença laboratorial **não comprova ganho causal** e a meta de 2,5 s continua pendente.
+- **Próximo aceite:** revisão visual humana do modo de prévia no CMS, sem alterar a fonte de dados ou confirmar publicação por antecipação.

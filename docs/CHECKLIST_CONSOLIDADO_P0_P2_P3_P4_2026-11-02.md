@@ -255,3 +255,13 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [ ] Finalizar comparação individual dos valores de todos os 26 blocos, implantação real de staging, otimizações com ganhos medidos e aceite de prévia visual por proprietário. A meta LCP ≤2,5 s permanece pendente.
 
 [Checklist atualizado do Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md) · [evidências P2/P3](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md).
+
+## P1–P3 — Continuação automatizada validada (02/11/2026)
+
+- [x] Auditar dependências textuais dos 53 objetos privados: **53 referenciados no histórico de revisões e 28 no JSONB atual**, sem abrir/remover arquivos; [evidência P1](BLOCO_1_P1_STORAGE_2026-11-02.md).
+- [x] Integrar **prévia opcional não persistente de Formação/A** na área protegida do CMS e validar em desktop/mobile, com **P5 7/7 e zero escritas** ([CI P5](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390)).
+- [x] Rodar auditoria completa de navegador/SEO/Lighthouse: [P3 #41404082087](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404082087) aprovado, 38 capturas, LCP mobile mediano **3,314 s** (meta ≤2,5 s **pendente**).
+- [ ] Revisar visualmente a nova prévia com o proprietário e obter aprovação de publicação antes de vincular `Formação/A`; validar outras integrações editoriais individualmente.
+- [ ] Provar benefícios de desempenho em experimentos antes/depois; evitar mudanças visuais ou editoriais de qualquer natureza sem aceite.
+
+[Checklist operacional P1–P3](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md) · [evidências](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md).

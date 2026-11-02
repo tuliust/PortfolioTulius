@@ -14,8 +14,21 @@
 
 - 41 SVG são recursos gráficos, muitos organizados sob diretórios de geração identificáveis; podem ser fontes/variantes de galerias. A ausência de catálogo não prova inutilização.
 - 11 PNG e 1 JPEG são uploads históricos com nomes derivados de imagens/editoriais; não marcar como lixo ou duplicatas sem comparar bytes e vínculos efetivos.
-- **Não foram comparados os bytes** dos objetos, nem as referências privadas em revisões e rascunhos protegidos. O inventário público deste projeto não lista os nomes internos dos objetos privados.
+- **Os bytes dos objetos não foram comparados**; porém uma nova consulta SELECT por caminho exato, em `content_blocks.content_json`, `content_revisions.snapshot_json` e `site_settings.seo_json`, encontrou os vínculos textuais descritos abaixo. Não foram alterados os objetos ou as revisões.
 - Todos os 75 registros de `media_assets` estavam anteriormente associados a objetos reais; não alterar esses objetos.
 - Arquivar/excluir/realocar arquivos exige avaliação humana de uso, histórico, galeria, privacidade e cópia de segurança.
 
 **Resultado:** triagem por tipo e diretório concluída; determinação de uso real/duplicação e qualquer limpeza continuam pendentes.
+
+## Auditoria complementar de referências — 02/11/2026
+
+Foram verificados **145 registros históricos de revisão** (29 do tipo `content_blocks`) e o JSONB atual dos blocos. A consulta procurou literalmente o caminho `storage.objects.name`, sem abrir os arquivos privados.
+
+| MIME | Total sem catálogo | Caminho encontrado em blocos atuais | Caminho encontrado no histórico | Caminho encontrado no SEO |
+| --- | ---: | ---: | ---: | ---: |
+| SVG | 41 | 19 | 41 | 0 |
+| PNG | 11 | 9 | 11 | 0 |
+| JPEG | 1 | 0 | 1 | 0 |
+| **Total** | **53** | **28** | **53** | **0** |
+
+**Consequência:** nenhum dos 53 objetos está comprovadamente sem referência histórica; **não** recomendar exclusão em lote. Os 28 caminhos encontrados nos blocos atuais exigem ainda mais cuidado. O histórico demonstra a presença de uma string, **não** que o arquivo esteja necessariamente ativo, visualizável, íntegro ou duplicado. Investigar bytes, revisões mais antigas, rascunhos e as ligações de mídia antes de qualquer aprovação de limpeza.
