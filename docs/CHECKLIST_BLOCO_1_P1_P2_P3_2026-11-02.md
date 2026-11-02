@@ -7,9 +7,9 @@
 | Frente | Realizadas | Pendentes técnicas | Estado |
 | --- | ---: | ---: | --- |
 | **P1** — Inventário e comparação editorial | 9 | 2 | Parcial |
-| **P2** — Prévias e testes preparatórios | 7 | 3 | Parcial |
+| **P2** — Prévias e testes preparatórios | 9 | 3 | Parcial |
 | **P3** — Desempenho e confiabilidade | 7 | 5 | Parcial |
-| **Total** | **23** | **10** | **Bloco 1 parcialmente concluído** |
+| **Total** | **25** | **10** | **Bloco 1 parcialmente concluído** |
 
 Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque precisam de autorização, ambiente isolado ou aceite editorial.
 
@@ -36,7 +36,7 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 
 ### P2 — Prévias e testes preparatórios
 
-**Realizado (7)**
+**Realizado (9)**
 
 - [x] Preparar a prévia de Formação/A em memória, mantendo os três períodos (`meta=A`) e acrescentando apenas os três nomes das instituições (`text=B`).
 - [x] Testar os IDs, títulos, tipos, ordem, metadados e bloqueio de divergências na projeção de Formação/A.
@@ -45,12 +45,16 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [x] Adicionar workflow de auditoria somente leitura com verificação do SHA e coleta de capturas e requisições.
 - [x] Integrar opção **desativada por padrão** de Formação/A à prévia protegida do CMS; validar **P5 7/7** em desktop/mobile e zero mutações.
 - [x] Adicionar guarda fail-closed de destino do staging (bloqueio de produção, URLs divergentes e confirmação inválida), aprovada em **5 testes offline**.
+- [x] Ensaiar contratos editoriais sintéticos em memória com cinco testes, sem banco real, e separar a validação transacional futura.
+- [x] Simular quatro cenários de publicação SEO sem rede, credenciais ou integração Vercel.
 
 **Pendente (3)**
 
-- [ ] Preparar e validar cenários sintéticos adicionais de duplicação, reordenação, arquivamento, histórico, restauração e rollback, sem operação na produção.
+- [x] Preparar **cinco ensaios offline com fixtures fictícias** de edição, publicação, arquivamento, duplicação, reordenação, restauração, rollback, acesso não administrador e erro injetado ([contrato em memória](../scripts/p2-cms-offline-contract.check.mjs)). **Não são testes de CRUD no CMS real.**
+- [ ] Validar esses mesmos fluxos **contra Supabase local/Docker**, incluindo histórico real, RLS, limpeza e rollback; adiado até a inicialização local.
 - [ ] Testar falhas de leitura, perda de conexão e recuperação de mídia em ambiente de testes isolado.
-- [ ] Simular publicação de SEO e falhas/retentativas usando servidor de teste, **sem configurar o gatilho de produção**.
+- [x] Preparar **quatro testes offline** para publicação SEO fictícia: rascunho não dispara, perfil não administrador bloqueado, deduplicação por versão e falha seguida de nova tentativa. Sem rede nem credenciais ([simulador](../scripts/p6-seo-publish-simulation.mjs)).
+- [ ] Validar o mesmo contrato em **servidor de teste local**, com JWTs efetivos e acionamento simulado de deployment; não configurar o gatilho de produção.
 
 ### P3 — Desempenho e confiabilidade
 
@@ -106,3 +110,11 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [x] O ensaio atualizado (mediana **3,386 s**, três Lighthouse) satisfaz a nova meta **nesse ensaio**, com gate móvel de 3.500 ms. O resultado anterior de **3,314 s** permanece registrado para comparação histórica; nenhum ganho de desempenho foi inferido.
 - [x] Seleção de **Supabase local** como único ambiente de staging; preparado `supabase/config.toml` com `seed.local.synthetic.sql`, sem segundo projeto cloud.
 - [ ] Rodar Docker/CLI local, testar migrations e o fluxo transacional com contas fictícias; **não executado aqui**.
+
+## Continuidade automática — 02/11/2026 (sem seu computador)
+
+- [x] Criar o [rascunho técnico de Formação/A](../src/lib/formation-pilot-proposal.ts): **três campos `text` apenas**, sem `source_collection`, armazenamento ou chamadas de produção. Testes preservam `meta` e bloqueiam alterações editoriais não revisadas.
+- [x] Preparar ensaios sintéticos de CRUD/editorial, rollback e autorização em memória, sem rede nem dados reais; isso não substitui staging local.
+- [x] Preparar ensaios offline de deduplicação e retentativa SEO. Nenhum gatilho ou webhook foi instalado.
+- [x] Auditar grants e guardas das seis RPCs privilegiadas via `SELECT` em produção, sem alterações; [relatório P6](BLOCO_2_P6_SEGURANCA_LEITURA_2026-11-02.md).
+- [ ] Homologar processos transacionais, recuperação de mídia, RLS por JWTs e publicação SEO com o stack Docker/Supabase local quando disponível.

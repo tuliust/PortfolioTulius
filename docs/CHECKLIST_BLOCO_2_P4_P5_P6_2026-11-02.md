@@ -23,7 +23,8 @@
 - [x] Preparar modo opcional protegido de Formação/A, com três nomes institucionais completos e períodos preservados; teste P5 read-only **7/7** [aqui](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390).
 - [x] Registrar escopo uniforme dos seis grupos adicionais de dados para as seis experiências e confirmação das três fotos de depoimentos.
 - [ ] Revisar visualmente o modo de Formação/A em desktop/mobile e aprovar a composição definitiva; **aprovação de campos não é autorização de publicar**.
-- [ ] Desenhar e validar adaptador para Formação/A que **preserve `meta`**, garantindo comportamento da coleção após novas edições; sem vínculo até aceite.
+- [x] Preparar uma **proposta técnica não persistente** para Formação/A que aplica somente os três `text` aprovados, preserva `meta` e bloqueia divergências; [código de proposta](../src/lib/formation-pilot-proposal.ts). Sem vínculo ou publicação.
+- [ ] Revisar/homologar o **adaptador definitivo de publicação** após o aceite humano da prévia, incluindo comportamento sob futuras edições; nenhuma integração pública foi autorizada.
 - [ ] Revisar individualmente cada diferença dos 25 demais blocos antes de qualquer sincronização; 17 não têm fonte integral adequada.
 - [ ] Aprovar por experiência empresa, cargo, localização, período, projetos e associação de logos/galerias; preservar 19 slides e estados ocultos.
 - [ ] Aprovar inclusão no catálogo e associação por ID dos três retratos, sem substituir imagens existentes.
@@ -34,9 +35,11 @@
 - [x] Manter plano de trigger seguro pós-publicação, com credenciais de deploy exclusivas do servidor; nenhum webhook instalado.
 - [x] Reconsultar Advisors de segurança/performance em 02/11/2026: **6 alertas RPC `SECURITY DEFINER` para authenticated**, proteção contra senhas vazadas desativada, **19 políticas SELECT permissivas sobrepostas** e **9 índices não usados**. São alertas a analisar, não alterações autorizadas.
 - [ ] Aprovar opção de acionamento do deploy SEO (servidor/provedor/segredo) com autenticação admin, rate-limit, deduplicação e auditoria.
-- [ ] Testar publicação de SEO **apenas em staging**: rascunho não dispara, salvar publicado dispara uma vez, falha exibe erro e permite retentativa; comparar oito metatags estáticas.
+- [x] Simular **offline e em memória** quatro contratos de SEO (rascunho, permissão fictícia, idempotência e retentativa) sem servidor, credenciais ou execução real de deploy.
+- [ ] Testar publicação SEO **na instância Supabase local com servidor de teste**, verificando autorização por JWT, falhas, repetição e oito metatags; a simulação offline não substitui esta etapa.
 - [ ] Ativar gatilho de deploy SEO em produção somente após aceite e rollback documentado.
-- [ ] Auditar `SECURITY DEFINER`, `search_path` e grants com testes negativos usando identidades isoladas; não remover permissões usadas pelo CMS sem alternativa.
+- [x] Auditar **por SELECT** grants, `SECURITY DEFINER`, `search_path` e referência textual à guarda de administrador das seis RPCs públicas; [relatório detalhado](BLOCO_2_P6_SEGURANCA_LEITURA_2026-11-02.md).
+- [ ] Executar testes **negativos reais** com JWTs distintos no Supabase local e analisar caminhos internos das RPCs; não alterar grants nem `search_path` sem aprovação.
 - [ ] Avaliar proteção contra senha vazada, RLS e índices com testes, orçamento de risco e rollback; mudanças em Auth/RLS/DDL exigem aprovação **individual**.
 - [ ] Encaminhar testes de teclado, leitores de tela e zoom à vistoria humana.
 
@@ -55,3 +58,11 @@
 ## Nova decisão para qualidade — 02/11/2026
 
 A meta oficial de LCP mobile passou a **≤ 3,5 s**, com mediana de três amostras Lighthouse. Última mediana registrada: **3,386 s**, com [gate de 3.500 ms aprovado](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045). Revalidar após mudanças relevantes. [Decisão vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).
+
+## Continuidade pelo conector, sem homologação local
+
+- [x] Preparar testes fictícios em memória de duplicação, ordenação, status, rollback e falha de transação.
+- [x] Preparar contrato fictício de disparo SEO com deduplicação e retentativa, sem chamar provedor externo.
+- [x] Preparar proposta de alterações de Formação/A com três textos, sem persistir.
+- [x] Conferir grants das funções e presença textual das guardas em produção exclusivamente por SELECT.
+- [ ] Homologar transações, identidades e segurança no **Supabase local** após iniciar Docker/CLI; isso fica para quando o proprietário estiver no computador.
