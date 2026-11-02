@@ -37,6 +37,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "24.16.0"
+      - name: Validate isolation and acknowledgement before installing dependencies
+        run: node scripts/p2-staging-preflight.mjs
+      - name: Test fail-closed staging guard without network
+        run: node --test scripts/p2-stage-destination.check.mjs
       - name: Install pnpm
         run: npm install --global pnpm@10.34.8
       - name: Install dependencies

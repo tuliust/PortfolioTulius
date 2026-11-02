@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import { randomUUID, createHash } from "node:crypto"
 import { createClient } from "@supabase/supabase-js"
+import { assertIsolatedStagingDestination } from "./p2-stage-destination.mjs"
 
 // P2: manual staging ONLY. Fail closed before any write on absent or mismatched config.
 const required = (name) => {
@@ -15,14 +16,11 @@ const adminEmail = required("P2_STAGE_ADMIN_EMAIL")
 const adminPassword = required("P2_STAGE_ADMIN_PASSWORD")
 const otherEmail = required("P2_STAGE_NONADMIN_EMAIL")
 const otherPassword = required("P2_STAGE_NONADMIN_PASSWORD")
-if (required("P2_STAGE_CONFIRM") !== "CONFIRMO-HOMOLOGACAO-ISOLADA")
-  throw new Error("P2_STAGE_ACK_REQUIRED")
-if (ref === "zfnrhzplwpjpdljraypt" || !/^[a-z0-9]{20}$/.test(ref))
-  throw new Error("P2_STAGE_PRODUCTION_OR_INVALID_REF")
-const url = new URL(endpoint)
-if (url.protocol !== "https:" || url.hostname !== ref + ".supabase.co" ||
-    url.pathname !== "/" || url.search || url.hash || url.username || url.password)
-  throw new Error("P2_STAGE_URL_REF_MISMATCH")
+assertIsolatedStagingDestination({
+  ref,
+  endpoint,
+  acknowledgement: required("P2_STAGE_CONFIRM"),
+})
 const auth = { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } }
 const admin = createClient(endpoint, publishable, auth)
 const other = createClient(endpoint, publishable, auth)
