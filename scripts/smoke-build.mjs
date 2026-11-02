@@ -42,11 +42,11 @@ check(
 
 const emittedAssets = await readdir(new URL("assets/", root))
 check(
-  emittedAssets.some((name) => /^AdminLogin-[\\w-]+\\.js$/.test(name)),
+  emittedAssets.some((name) => /^AdminLogin-[\w-]+\.js$/.test(name)),
   "Login administrativo não foi extraído para um bundle independente.",
 )
 check(
-  emittedAssets.some((name) => /^AdminApp-[\\w-]+\\.js$/.test(name)),
+  emittedAssets.some((name) => /^AdminApp-[\w-]+\.js$/.test(name)),
   "Editor administrativo perdeu seu bundle dedicado.",
 )
 
