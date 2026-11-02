@@ -1,4 +1,4 @@
-import { readFile, access } from "node:fs/promises"
+import { readFile, access, readdir } from "node:fs/promises"
 
 const root = new URL("../dist/", import.meta.url)
 const read = (file) => readFile(new URL(file, root), "utf8")
@@ -38,6 +38,16 @@ if (process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_PUBLISHABLE_KEY) 
 check(
   modulePreloads.every(([tag]) => !/supabase-sdk-[^"'\s>]+\.js/.test(tag)),
   "HTML público ainda pré-carrega Auth/Storage/Realtime.",
+)
+
+const emittedAssets = await readdir(new URL("assets/", root))
+check(
+  emittedAssets.some((name) => /^AdminLogin-[\\w-]+\\.js$/.test(name)),
+  "Login administrativo não foi extraído para um bundle independente.",
+)
+check(
+  emittedAssets.some((name) => /^AdminApp-[\\w-]+\\.js$/.test(name)),
+  "Editor administrativo perdeu seu bundle dedicado.",
 )
 
 const assetNames = [

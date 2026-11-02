@@ -9,7 +9,7 @@ const AdminApp = lazy(() =>
   })),
 )
 const AdminLogin = lazy(() =>
-  import("../components/admin/AdminApp").then((module) => ({
+  import("../components/admin/AdminLogin").then((module) => ({
     default: module.AdminLogin,
   })),
 )
