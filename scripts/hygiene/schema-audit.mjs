@@ -50,16 +50,18 @@ export function collectProjectFiles(root) {
 export function makeReport(files) {
   const references = scanReferences(files, TABLES)
   const columnReferences = scanReferences(files, COLUMNS_TO_REVIEW)
-  const runtimeFiles = (paths) => paths.filter((p) => p.startsWith("src/") || p.startsWith("scripts/"))
+  const isTest = (p) => /\.(test|spec)\./.test(p) || p.startsWith("supabase/tests/")
+  const runtimeFiles = (paths) => paths.filter((p) => (p.startsWith("src/") || p.startsWith("scripts/")) && !isTest(p))
+  const testFiles = (paths) => paths.filter((p) => isTest(p))
   return {
     scannedFiles: files.length,
     tables: TABLES.map((name) => ({
-      name, runtimeFiles: runtimeFiles(references[name]),
+      name, runtimeFiles: runtimeFiles(references[name]), testFiles: testFiles(references[name]),
       schemaFiles: references[name].filter((p) => p.startsWith("supabase/")),
       safeToDrop: false,
     })),
     columns: COLUMNS_TO_REVIEW.map((name) => ({
-      name, runtimeFiles: runtimeFiles(columnReferences[name]),
+      name, runtimeFiles: runtimeFiles(columnReferences[name]), testFiles: testFiles(columnReferences[name]),
       schemaFiles: columnReferences[name].filter((p) => p.startsWith("supabase/")),
       safeToDrop: false,
     })),

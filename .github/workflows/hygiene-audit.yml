@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: "24"
       - name: Guard tests
-        run: node --test scripts/hygiene/*.test.mjs
+        run: node --test scripts/hygiene/*.nodecheck.mjs
       - name: Storage dry-run on synthetic fixture
         run: node scripts/hygiene/storage-plan.mjs --manifest scripts/hygiene/fixtures/sample-manifest.json
       - name: Local static schema scan
