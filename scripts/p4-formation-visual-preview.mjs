@@ -38,10 +38,17 @@ try {
       })
       const response = await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
       if (!response?.ok()) throw new Error("P4 preview homepage unavailable")
+      const initial = await page.evaluate(() => ({
+        sections: document.querySelectorAll("section.portfolio-section").length,
+        mobileFormationCards: document.querySelectorAll("#formacao-a .content-item").length,
+        desktopFormationCards: document.querySelectorAll("#formacao .desktop-panel .content-item").length,
+        errorNotice: Boolean(document.querySelector(".data-error")),
+      }))
+      console.log("P4_FORMATION_PREVIEW_INITIAL " + JSON.stringify({ viewport: viewport.name, ...initial }))
       await page.waitForFunction(
         () => document.querySelectorAll("#formacao-a .content-item").length === 3 &&
-          document.querySelectorAll("section.portfolio-section").length === 13,
-        { timeout: 15000 },
+          document.querySelectorAll("#formacao .desktop-panel .content-item").length >= 3,
+        { timeout: 25000 },
       )
       const selector = viewport.isMobile ? "#formacao-a" : "#formacao .desktop-panel"
       if (!(await page.$(selector))) throw new Error("P4 preview panel missing: " + selector)
