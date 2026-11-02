@@ -76,7 +76,7 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [ ] Verificar, campo a campo, formulário → gravação → Supabase → recuperação → prévia → público.
 - [ ] Corrigir divergências remanescentes entre dados estruturados e `content_json`.
 - [ ] Validar criar/editar/duplicar/ordenar/arquivar/publicar/ocultar seções e blocos.
-- [x] Executar testes autenticados de leitura: 8 módulos, 9 coleções, 50 ícones, alterações não salvas, prévia de 14 seções e bloqueio após logout; 5/5, sem escrita.
+- [x] Executar testes autenticados de leitura: 8 módulos, 9 coleções, 50 ícones, alterações não salvas, prévia de 14 seções, cancelamento de mídia e logout; **6/6, sem escrita**.
 - [ ] Homologar prévia de rascunhos e guardas em cenários adicionais com operações salvas no staging.
 - [ ] Homologar histórico e recuperação limitada.
 - [ ] Executar testes de gravação somente em staging isolado com autorização específica.
@@ -86,7 +86,8 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [x] Conferir 75/75 registros de mídia com seus objetos Storage por bucket e caminho, sem alteração de dados.
 - [ ] Investigar 53 objetos privados sem cadastro, **sem exclusão automática**.
 - [ ] Revisar textos alternativos e metadados, inclusive 14 registros sinalizados por alt vazio ou curto na consulta de P2.
-- [ ] Homologar upload privado, publicação deliberada, seleção, substituição e cancelamento sem alterações.
+- [x] Testar cancelamento do seletor de mídia autenticado, preservando imagem salva sem escrita.
+- [ ] Homologar upload privado, publicação deliberada, seleção, substituição e cancelamentos de operações com gravação em staging.
 - [x] Validar por consultas a existência dos seis logos e 19 slides e a presença de título, legenda e texto alternativo em todos.
 - [ ] Homologar visualmente enquadramentos, textos sobre imagens e galeria nos dispositivos finais.
 - [ ] Associar depoimentos aos IDs das fotos aprovadas, sem inferência por nome ou ordem.
@@ -96,7 +97,8 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [x] Corrigir os quatro critérios P3 de alinhamento da seção Contato; verificação de navegador posterior: zero falhas.
 - [ ] Repetir medidas de LCP mobile, decompondo fontes, CSS, JS, rede e consultas; perseguir ≤2,5 s, atualmente sem comprovação.
 - [x] Implementar preservação do conteúdo já carregado e da lista administrativa diante de falha posterior de leitura.
-- [ ] Testar falhas de rede injetadas em navegador e validar recuperação sem regressões.
+- [x] Injetar falhas GET de `section_panels` e `testimonials` em navegador; primeira dobra preservada com aviso, 2/2 cenários aprovados.
+- [ ] Verificar outros cenários de falha parcial, recuperação de mídia e carregamento após reconexão.
 - [x] Fazer `radius.card` publicado alimentar o CSS dos cartões de depoimento, com validação e testes unitários.
 - [ ] Verificar se outros tokens configuráveis permanecem sem efeito público correspondente.
 - [ ] Verificar SEO de CMS versus HTML publicado, inclusive atualização após salvar.
@@ -149,3 +151,8 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 ## Execução automática P4.1–P4.4 em 02/11/2026
 
 Inventário e comparações preliminares, auditoria do Storage, correções de recuperação, raio de cartões e Contato e ensaios P3/P5: consultar [relatório P4](P4_AUDITORIA_AUTOMATICA_2026-11-02.md). **Os testes transacionais, aprovações editoriais individuais, fotos de depoimentos, LCP ≤ 2,5 s e SEO imediatamente atualizado para robôs continuam pendentes.** A conclusão parcial não autoriza migração de dados.
+
+### Evidências adicionais de P4 concluídas
+
+- [P3/P4: Contato sem regressões e injeção de falhas 2/2](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384467574)
+- [P5: CMS autenticado e cancelamento de mídia sem escrita, 6/6](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384753740)

@@ -57,7 +57,7 @@ Os **28 blocos publicados** permanecem: 26 manuais e 2 com `source_collection=te
 
 - Login administrativo com credencial protegida via GitHub Actions; oito módulos navegáveis.
 - Consulta autenticada de leitura confirmou nove abas do acervo, campo `radius.card`, 50 ícones com rótulo, editor mobile a 390×844, proteção de alterações não salvas, prévia com 14 seções incluindo uma oculta e bloqueio após logout.
-- **P5 autenticado:** [run 41383983069](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383983069) — 5/5, zero escrita de conteúdo.
+- **P5 autenticado:** [run 41384753740](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384753740) — 6/6, zero escrita de conteúdo. Inclui cancelamento da biblioteca sem alteração da imagem salva.
 - Código corrigido para reter seções já exibidas se nova leitura falhar, tanto no hook público quanto na lista do painel; leitura de blocos com erro não zera o estado editável. Essas salvaguardas **não** equivalem à injeção de falhas em rede em navegador.
 - Permanecem pendentes: transações CRUD (criar/duplicar/arquivar/publicar/recuperar), testes com usuário não administrador e recuperação histórica num staging isolado com autorização específica.
 
@@ -68,17 +68,17 @@ Os **28 blocos publicados** permanecem: 26 manuais e 2 com `source_collection=te
 - **13 registros** têm `alt_text` vazio; **14** têm `alt_text` com menos de seis caracteres. Precisam de conferência visual individual. O `alt_text` no catálogo não é necessariamente a mesma legenda que o `alt` já fornecido em um bloco editorial.
 - **Seis logotipos de experiências** referenciam objetos existentes no Storage e têm `logoAlt`. Os **19 slides** (Invest RS 4; Prefeitura 3; Vale 3; Globo/SporTV 3; InPress 3; CDI 3) têm título, descrição alternativa e legenda, e cada URL corresponde a um objeto público existente. Isso confirma integridade dos arquivos e metadados, **não o enquadramento visual dos 19 slides**.
 - Os três depoimentos publicados permanecem sem `photo_media_id`. Seus três retratos históricos ficam nos blocos manuais como `/media/` e não foram atribuídos a algum objeto do catálogo pela semelhança de nomes. Exige correspondência e aprovação explícita.
-- Testes de upload, promoção, substituição e cancelamento com gravação aguardam staging isolado.
+- **Cancelamento do seletor de imagens** validado em navegador autenticado, com fotografia anterior preservada e sem requisição de gravação. Testes de upload, promoção, substituição e cancelamento de operações com gravação aguardam staging isolado.
 
 ## P4.4 — Site público, desempenho e SEO
 
 - Os quatro critérios antes pendentes do contato foram corrigidos por ajustes localizados de alinhamento: rodapé do desktop coincide com base da coluna de fotografia e imagem mobile coincide com a borda inferior do painel em 360, 390 e 430 px.
 - [Auditoria P3 após correção](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383597122): **0 falhas** de navegador; **38/38** capturas editoriais sem violações capturadas; RLS anônima **3/3**; Lighthouse acessibilidade **100** mobile e desktop.
 - `radius.card` publicado no banco como `4` agora tem leitura validada 0–32 e aplica-se como CSS variável ao cartão de depoimento. Fotos não mudaram.
-- Em falha da leitura do grafo completo, o conteúdo de primeira dobra carregado anteriormente permanece na tela com aviso de erro. A falha inicial, antes de qualquer conteúdo recuperado, continua mostrando erro; não utiliza fallback editorial obsoleto em produção.
-- A mediana do último Lighthouse mobile concluído nessa revisão é aproximadamente **3,39 s** (LCP simulado), maior que a meta ≤2,5 s; score de performance mediano 87. Otimização adicional de fontes/CSS/JS exige avaliação para não comprometer a tipografia e os blocos aprovados.
+- Falhas injetadas no navegador em chamadas GET de **section_panels** e **testimonials** confirmaram **2/2 cenários aprovados**: Perfil e retrato preservados com aviso de erro. Os requests simulados não escreveram no banco. A falha inicial, antes de qualquer conteúdo recuperado, continua mostrando erro e não utiliza fallback editorial obsoleto em produção. [Auditoria de falhas parciais](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384467574).
+- A mediana do último Lighthouse mobile concluído nessa revisão é aproximadamente **3,34 s** (LCP simulado), maior que a meta ≤2,5 s; score de performance mediano 87. Otimização adicional de fontes/CSS/JS exige avaliação para não comprometer a tipografia e os blocos aprovados.
 - O SEO publicado no banco tem título e descrição reais, `robots=index,follow`, `locale=pt-BR`. O build `scripts/generate-seo.mjs` gera HTML e sitemap a partir do banco e registra fallback quando não consegue consultá-lo. **Salvar no CMS isoladamente não dispara novo deploy**; portanto, atualização para crawlers permanece dependente do fluxo de publicação/novo build e requer decisão de integração sem divulgar credenciais.
-- Restam testar injeção de falhas parciais, rede real e Core Web Vitals de campo, além da propagação de SEO pós-salvamento.
+- Restam testar outras falhas parciais (incluindo recuperação de mídia), rede real e Core Web Vitals de campo, além da propagação de SEO pós-salvamento.
 
 ## Proteção de dados, identidade visual e limites
 
@@ -91,4 +91,5 @@ Os **28 blocos publicados** permanecem: 26 manuais e 2 com `source_collection=te
 
 - [CI código P4](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383983117)
 - [P3: layout, RLS, acessibilidade, desempenho](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383597122)
-- [P5: autenticação, CMS read-only e prévia](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383983069)
+- [P5: autenticação, 9 coleções, prévia e cancelamento de mídia 6/6](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384753740)
+- [P4: cenários de falha de leitura e recuperação 2/2](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384467574)
