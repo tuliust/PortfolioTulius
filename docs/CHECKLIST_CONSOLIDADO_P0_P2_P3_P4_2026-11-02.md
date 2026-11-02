@@ -64,12 +64,15 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 
 - [x] Inventariar os **26 blocos manuais**; comparação automatizada preliminar registrada na auditoria P4.
 - [x] Selecionar **Formação/A** como piloto e comparar por campo os 3 registros de `education`; [6 diferenças documentadas](P4_PILOTO_FORMACAO_A_2026-11-02.md).
-- [ ] Aprovar individualmente os 6 atributos divergentes (`meta` e `text` dos 3 registros) antes de vincular Formação/A. Os títulos e tipos coincidem; o formato público atual prevalece.
+- [x] Receber as **6 decisões individuais** de Formação/A: `meta=A` (preservar os três períodos publicados); `text=B` (adicionar os três nomes completos de instituições).
+- [x] Implementar e testar **prévia isolada somente em memória**, com IDs, ordem e metadados bloqueados contra desvios; [especificação e comparação](P4_PILOTO_FORMACAO_A_2026-11-02.md).
+- [ ] Homologar a **prévia visual** em desktop/mobile, integrar o adaptador específico aprovado ao fluxo de vinculação e autorizar separadamente a publicação; o bloco continua manual.
 - [ ] Confrontar textos, fotos, links, ordem, estado, metadados e estilos por painel.
 - [ ] Solicitar aprovação de **cada divergência** antes de substituir origem.
 - [ ] Vincular gradualmente apenas os blocos aprovados, mantendo originais recuperáveis.
 - [x] Identificar os 6 campos adicionais escolhidos nas experiências: empresa, cargo, localização, período, projetos/realizações e mídias (logos/galerias), além da descrição já ligada.
-- [ ] Definir escopo **comum às seis** versus **campos por experiência** e aprovar por campo cada divergência antes de sincronizar.
+- [x] Definir **o mesmo conjunto de campos adicionais para as seis experiências**.
+- [ ] Comparar os **valores de cada campo em cada experiência**, inclusive projetos e mídia; aprovar individualmente as diferenças, definir referências de mídia e validar a prévia antes de sincronizar.
 - [ ] Homologar propagação de experiências, projetos, métricas, formação, idiomas, ferramentas, depoimentos e contato.
 
 ## P4.2 — CMS, Supabase e editor (P0 anterior)
@@ -199,13 +202,21 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 ## P4 — Decisões recebidas e preparação técnica (02/11/2026)
 
 - [x] Registrar [as 8 decisões editoriais e técnicas do proprietário](P4_DECISOES_2026-11-02.md), sem interpretá-las como autorização para escrever em produção.
-- [x] Preparar [comparação do piloto Formação/A](P4_PILOTO_FORMACAO_A_2026-11-02.md): títulos, tipos e ordem mantidos; **6 diferenças** em `meta`/`text` requerem escolha do proprietário.
+- [x] Preparar [comparação de Formação/A](P4_PILOTO_FORMACAO_A_2026-11-02.md); as seis escolhas foram respondidas (`meta=A`, `text=B` para cada formação), com prévia isolada sem gravações.
 - [x] Incluir teste automatizado de proteção das 6 divergências e do conteúdo manual (`src/lib/collection-link-review.test.ts`); aprovado em [Validate 41394155842](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41394155842).
 - [x] Confirmar 3 arquivos `public/media/matheus-gomes.jpg`, `ana-beatriz-neves.jpg`, `fabio-seixas.jpg` e seus depoimentos estruturados; os caminhos estáticos não estão cadastrados em `media_assets`, e os `photo_media_id` continuam nulos.
 - [x] Preservar os 14 `alt_text` do catálogo conforme opção C do proprietário.
 - [x] Elaborar [planos técnicos](P4_PLANOS_AUTORIZACOES_2026-11-02.md) de staging fictício, disparo seguro de SEO publicado, hardening de segurança e experiências de LCP sem mudança visual.
-- [ ] Formação/A: obter as **6 aprovações por atributo** antes de aplicar origem estruturada; se houver divergência futura, a versão atual do público prevalece.
-- [ ] Experiências: definir escopo comum ou individual; então revisar campos e mídias por empresa.
+- [ ] Formação/A: **aprovadas as seis decisões**; ainda falta prévia visual desktop/mobile, integração do adaptador ao caminho de vinculação e autorização de publicação. A versão pública atual continua prevalecendo.
+- [ ] Experiências: escopo **comum às seis** já definido; revisar os valores, projetos e mídias de **cada empresa** antes de qualquer alteração de exibição.
 - [ ] Fotos: após proposta de ingestão aprovada, criar registros de mídia e associar IDs em fluxo editorial autorizado; sem substituição ou perda das imagens atuais.
 - [ ] Staging, SEO automático e mudanças de segurança exigem autorizações de implantação distintas. **Nada foi provisionado ou reconfigurado** nesta preparação.
 - [ ] Meta de LCP mobile ≤ 2,5 s segue aberta (última mediana simulada **3,419 s**); sem alterações de tipografia, fotos ou layout.
+
+## Decisões complementares aplicadas à prévia — 02/11/2026
+
+- [x] **Experiências:** campo empresa, cargo, localização, período, projetos/realizações e fotos/logos/galerias terão **escopo igual para as seis empresas**. **Valores e fotos não foram sincronizados.**
+- [x] **Formação/A:** período `meta=A` para as três formações; nome completo `text=B` para as três formações. Todas as **seis escolhas respondidas**.
+- [x] Compor prévia puramente em memória com três textos novos; testes impedem mudanças silenciosas de IDs, título, grau, período, fonte e ordem; CI correspondente no GitHub Actions.
+- [ ] Visualizar a proposta no CMS/desktop/mobile e obter autorização específica para vincular `Formação/A`; sem gravação nesta rodada.
+- [ ] Comparar, em cada uma das seis empresas, os valores individuais dos campos globais escolhidos, projetos e referências de mídia; fotografias/logos/galerias preservados até aprovação pontual.

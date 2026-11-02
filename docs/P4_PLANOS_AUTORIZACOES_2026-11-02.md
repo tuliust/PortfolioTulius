@@ -32,6 +32,13 @@ Executar experimentos isolados (ordem de carregamento não visual, JavaScript n�
 
 ## E. Experiências e fotografias
 
+**Escopo confirmado pelo proprietário:** as seis experiências deverão considerar o mesmo conjunto de campos adicionais: empresa, cargo, localização, período, projetos/realizações e fotos/logos/galerias. A descrição já vinculada permanece. Esta aprovação de **escopo** não equivale à aprovação dos valores de cada campo nem à inclusão de novas mídias.
+
 `career_experiences` possui `company`, `role`, `location`, `start_date`, `end_date` e `description`. `portfolio_projects` relaciona projetos por `experience_id`. Fotos/logos/galerias ainda residem em `content_json` da apresentação: não existem colunas equivalentes em `career_experiences`. A descrição já usa vínculo estável aos seis IDs, em `src/lib/career-record-link.ts`. Não sincronizar mídias por coincidência de nome/ordem.
 
 Depoimentos: Matheus Gomes (`ad029e66-9797-48bc-bb72-17b98004afcc`) usa `/media/matheus-gomes.jpg`; Ana Beatriz Neves (`e91e17ac-28f9-46e6-bc0f-4f5465bd3975`) usa `/media/ana-beatriz-neves.jpg`; Fábio Seixas (`03bd38d3-609d-4f99-85c6-b6c3f820960f`) usa `/media/fabio-seixas.jpg`. O proprietário confirmou essas correspondências. Os três arquivos existem em `public/media/` no GitHub; **nenhum caminho equivalente foi encontrado em `media_assets.storage_path`** e `photo_media_id` permanece nulo. Para vincular por ID: propor ingestão dos mesmos bytes para Storage/registro de mídia, verificar fidelidade e depois aprovar cada ID, sem substituir os arquivos usados no site. **Nenhuma ingestão, upload ou vínculo realizado**.
+
+
+## F. Formação/A — contrato de prévia aprovado, sem gravação
+
+Para os três registros, `meta=A` preserva a versão curta publicada do período e `text=B` acrescenta o nome completo da instituição. A função `src/lib/formation-pilot-preview.ts` compõe a prévia usando os IDs editoriais aprovados e falha se a fonte ou o bloco original divergir. **Não está integrada ao fluxo público nem vinculada ao bloco.** Antes de aplicar, revisar [prévia de conteúdo](P4_PILOTO_FORMACAO_A_2026-11-02.md) e homologar a renderização real no CMS/desktop/mobile; aplicar apenas com autorização individual posterior.
