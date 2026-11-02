@@ -1,0 +1,77 @@
+import { readFileSync } from "node:fs"
+import { mkdir, readFile, writeFile } from "node:fs/promises"
+import { createHash } from "node:crypto"
+import { isAbsolute, relative, resolve, sep, join } from "node:path"
+import { loadManifest } from "./storage-plan.mjs"
+
+const sha = (buffer) => createHash("sha256").update(buffer).digest("hex")
+const has = (s) => process.argv.includes(s)
+const arg = (s) => {
+  const i = process.argv.indexOf(s)
+  return i < 0 ? null : process.argv[i + 1]
+}
+const manifestPath = arg("--manifest")
+const verifyDirectory = arg("--verify-backup")
+if (!manifestPath && !verifyDirectory) {
+  throw new Error("Uso: --manifest arquivo.json [--execute-backup] OU --verify-backup diretorio")
+}
+if (verifyDirectory) {
+  const data = JSON.parse(readFileSync(join(resolve(verifyDirectory), "index.json"), "utf8"))
+  if (!Array.isArray(data.items) || !data.complete) throw new Error("HYG_BACKUP_INCOMPLETE")
+  for (const entry of data.items) {
+    if (!/^[a-f0-9]{64}\.bin$/.test(entry.file) || !/^[a-f0-9]{64}$/.test(entry.sha256)) {
+      throw new Error("HYG_INVALID_BACKUP_INDEX")
+    }
+    const bytes = await readFile(join(resolve(verifyDirectory), entry.file))
+    if (bytes.byteLength !== entry.bytes || sha(bytes) !== entry.sha256) {
+      throw new Error("HYG_BACKUP_CORRUPTED")
+    }
+  }
+  console.log(JSON.stringify({ verified: data.items.length, complete: true }))
+} else {
+  const manifest = loadManifest(manifestPath)
+  if (!has("--execute-backup")) {
+    console.log(JSON.stringify({
+      dryRun: true, objects: manifest.items.length, bytesExpected: manifest.items.reduce((n, x) => n + x.size, 0),
+      networkUsed: false, written: 0,
+    }))
+  } else {
+    const rawUrl = process.env.HYG_STORAGE_URL
+    const secret = process.env.HYG_STORAGE_SERVICE_ROLE_KEY
+    const directory = process.env.HYG_BACKUP_DIR
+    if (!rawUrl || !secret || !directory || !isAbsolute(directory)) {
+      throw new Error("HYG_BACKUP_REQUIRE_EXPLICIT_PRIVATE_ENV")
+    }
+    const url = new URL(rawUrl)
+    if (url.href !== "https://zfnrhzplwpjpdljraypt.supabase.co/" ||
+        url.username || url.password) {
+      throw new Error("HYG_BACKUP_WRONG_PROJECT")
+    }
+    const absolute = resolve(directory)
+    const repo = resolve(process.cwd())
+    const child = relative(repo, absolute)
+    if (!child || child === "." || (!child.startsWith(".."+sep) && child !== ".." && !isAbsolute(child))) {
+      throw new Error("HYG_BACKUP_MUST_BE_OUTSIDE_REPOSITORY")
+    }
+    if (absolute === "/" || absolute === "/tmp") throw new Error("HYG_BACKUP_UNSAFE_DIRECTORY")
+    await mkdir(absolute, { mode: 0o700 })
+    const { createClient } = await import("@supabase/supabase-js")
+    const client = createClient(url.href, secret, { auth: { persistSession: false, autoRefreshToken: false } })
+    const recorded = []
+    for (const item of manifest.items) {
+      const result = await client.storage.from(item.bucket).download(item.path)
+      if (result.error || !result.data) throw new Error("HYG_DOWNLOAD_FAILED")
+      const content = Buffer.from(await result.data.arrayBuffer())
+      if (content.byteLength !== item.size) throw new Error("HYG_SIZE_MISMATCH")
+      const digest = sha(content)
+      if (item.sha256 && digest !== item.sha256) throw new Error("HYG_SHA256_MISMATCH")
+      const file = sha(Buffer.from(JSON.stringify([item.bucket, item.path]))) + ".bin"
+      await writeFile(join(absolute, file), content, { flag: "wx", mode: 0o600 })
+      recorded.push({ bucket: item.bucket, path: item.path, file, bytes: content.byteLength, sha256: digest })
+    }
+    await writeFile(join(absolute, "index.json"), JSON.stringify({
+      version: 1, projectRef: manifest.projectRef, complete: true, items: recorded,
+    }, null, 2), { flag: "wx", mode: 0o600 })
+    console.log(JSON.stringify({ complete: true, backedUp: recorded.length, verification: "node scripts/hygiene/storage-backup.mjs --verify-backup " + absolute }))
+  }
+}

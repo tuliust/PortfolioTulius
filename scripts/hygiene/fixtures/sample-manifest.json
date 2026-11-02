@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "projectRef": "zfnrhzplwpjpdljraypt",
+  "items": [
+    {
+      "bucket": "portfolio-public",
+      "path": "synthetic/live.svg",
+      "registered": true,
+      "currentPublished": true,
+      "anyBlock": true,
+      "inRevisions": true,
+      "inSeo": false,
+      "sameMetaPair": false,
+      "size": 123
+    },
+    {
+      "bucket": "portfolio-public",
+      "path": "synthetic/old.svg",
+      "registered": true,
+      "currentPublished": false,
+      "anyBlock": false,
+      "inRevisions": true,
+      "inSeo": false,
+      "sameMetaPair": false,
+      "size": 90
+    },
+    {
+      "bucket": "portfolio-private",
+      "path": "synthetic/old.svg",
+      "registered": false,
+      "currentPublished": false,
+      "anyBlock": false,
+      "inRevisions": true,
+      "inSeo": false,
+      "sameMetaPair": true,
+      "size": 90
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+name: Hygiene audit (no credentials, no writes)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/hygiene/**"
+      - ".github/workflows/hygiene-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node.js 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+      - name: Guard tests
+        run: node --test scripts/hygiene/*.test.mjs
+      - name: Storage dry-run on synthetic fixture
+        run: node scripts/hygiene/storage-plan.mjs --manifest scripts/hygiene/fixtures/sample-manifest.json
+      - name: Local static schema scan
+        run: node scripts/hygiene/schema-audit.mjs --summary-only
+      - name: Backup command must default to offline dry-run
+        run: node scripts/hygiene/storage-backup.mjs --manifest scripts/hygiene/fixtures/sample-manifest.json
