@@ -45,6 +45,7 @@ jobs:
           node --check scripts/p3-browser-smoke.mjs
           node --check scripts/p4-visual-audit.mjs
           node --check scripts/p4-partial-failure.mjs
+          node --check scripts/p4-seo-parity.mjs
           node --check scripts/p5-admin-readonly.mjs
           node --check scripts/p2-transactional-staging.mjs
           node --check scripts/p5-public-rls.mjs

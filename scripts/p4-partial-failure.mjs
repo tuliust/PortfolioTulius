@@ -1,14 +1,20 @@
 import puppeteer from "puppeteer-core"
 
-// Read-only fault injection. Only GET responses are replaced inside Chromium.
-// No production SQL, Auth, Storage or CMS writes are performed.
+// All failures are injected inside Chromium on GET requests, without writes.
+const scenarios = [
+  { endpoint: "section_panels", expectedSections: 1, errorNotice: true },
+  { endpoint: "testimonials", expectedSections: 13, errorNotice: true, preservePortraits: true },
+  { endpoint: "design_tokens", expectedSections: 13, errorNotice: false },
+  { endpoint: "pages", expectedSections: 13, errorNotice: false },
+]
 const browser = await puppeteer.launch({
   channel: "chrome",
   headless: true,
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 })
 try {
-  for (const endpoint of ["section_panels", "testimonials"]) {
+  for (const scenario of scenarios) {
+    const { endpoint, expectedSections, errorNotice, preservePortraits = false } = scenario
     const page = await browser.newPage()
     let failuresInjected = 0
     try {
@@ -33,29 +39,33 @@ try {
         }
       })
       await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
-      await page.waitForFunction((source) => {
-        const count = document.querySelectorAll("section.portfolio-section").length
-        return !!document.querySelector(".public-site .data-error") &&
-          !!document.querySelector("section#perfil") &&
-          !!document.querySelector("#perfil-a .mobile-profile-hero img") &&
-          (source === "testimonials" ? count === 13 : count >= 1)
-      }, { timeout: 20000 }, endpoint)
+      await page.waitForFunction(
+        ({ expectedSections, errorNotice }) =>
+          document.querySelectorAll("section.portfolio-section").length === expectedSections &&
+          Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
+          Boolean(document.querySelector("#perfil-a .mobile-profile-hero img")),
+        { timeout: 22000 },
+        { expectedSections, errorNotice },
+      )
       const result = await page.evaluate(() => ({
         sections: document.querySelectorAll("section.portfolio-section").length,
-        profileVisible: !!document.querySelector("section#perfil"),
-        errorNotice: !!document.querySelector(".public-site .data-error"),
+        profileVisible: Boolean(document.querySelector("section#perfil")),
+        errorNotice: Boolean(document.querySelector(".public-site .data-error")),
         portraitLoaded: (() => {
           const image = document.querySelector("#perfil-a .mobile-profile-hero img")
-          return !!image && image.complete && image.naturalWidth > 0
+          return Boolean(image && image.complete && image.naturalWidth > 0)
         })(),
         testimonials: document.querySelectorAll("#depoimentos .testimonial-card").length,
         savedPortraits: [...document.querySelectorAll("#depoimentos .testimonial-person img")]
-          .filter((img) => img.getAttribute("src")?.startsWith("/media/")).length,
+          .filter((image) => image.getAttribute("src")?.startsWith("/media/")).length,
       }))
-      if (!failuresInjected || !result.profileVisible || !result.errorNotice ||
-          !result.portraitLoaded || (endpoint === "testimonials" &&
-            (result.sections !== 13 || result.testimonials !== 3 || result.savedPortraits !== 3))) {
-        throw new Error("Recovery contract failed: " + JSON.stringify({ endpoint, failuresInjected, result }))
+      if (
+        !failuresInjected || result.sections !== expectedSections ||
+        !result.profileVisible || result.errorNotice !== errorNotice ||
+        !result.portraitLoaded ||
+        (preservePortraits && (result.testimonials !== 3 || result.savedPortraits !== 3))
+      ) {
+        throw new Error("P4 recovery contract failed: " + JSON.stringify({ scenario, failuresInjected, result }))
       }
       console.log("P4_PUBLIC_PARTIAL_FAILURE " + JSON.stringify({
         endpoint, result: "PASS", injected: failuresInjected, ...result, mutations: 0,

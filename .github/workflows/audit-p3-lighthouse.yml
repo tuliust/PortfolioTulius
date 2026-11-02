@@ -10,6 +10,7 @@ on:
       - scripts/p3-lcp-repeats.mjs
       - scripts/p4-visual-audit.mjs
       - scripts/p4-partial-failure.mjs
+      - scripts/p4-seo-parity.mjs
       - scripts/p5-public-rls.mjs
       - scripts/p6-lighthouse-guard.mjs
       - src/index.css
@@ -264,6 +265,13 @@ jobs:
           cd "$RUNNER_TEMP/p3-browser"
           cp "$GITHUB_WORKSPACE/scripts/p4-partial-failure.mjs" p4-partial-failure.mjs
           node p4-partial-failure.mjs
+      - name: P4 SEO parity against published CMS (read-only)
+        if: always()
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/p3-browser"
+          cp "$GITHUB_WORKSPACE/scripts/p4-seo-parity.mjs" p4-seo-parity.mjs
+          node p4-seo-parity.mjs
       - name: Upload editorial screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
