@@ -1,0 +1,7 @@
+# Local-only Supabase development stack. Never link this environment to a remote ref.
+# The original supabase/seed.sql contains real editorial text; DO NOT run it locally.
+project_id = "portfolio-tulius-local-isolated"
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.local.synthetic.sql"]
