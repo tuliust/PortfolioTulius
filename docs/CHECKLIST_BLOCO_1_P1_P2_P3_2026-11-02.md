@@ -50,6 +50,6 @@
 - [x] Projeção de Formação/A e capturas geradas apenas por JS/DOM no navegador de teste; o site e o CMS publicados continuam usando os blocos originais.
 - [x] CI da suíte sintética e do código de auditoria validado no SHA funcional indicado pelo [workflow](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402653744).
 - [ ] Concluir o Bloco 1 **integralmente** somente após concluir as pendências de campo/visual/performance que ainda são técnicas; P4–P8 do novo plano continuam separados para aprovação e vistoria humana.
-- [ ] Reexecutar CI, verificar SHA da Vercel e exportação do checklist **após o último commit de documentação**.
+- [x] Validar CI, exportação de documentação e Vercel `READY` no commit do dossiê `6b651c6` ([CI](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402900908), [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402900905)).
 
 **Dossiês:** [inventário 26 blocos](BLOCO_1_P1_INVENTARIO_2026-11-02.md) · [seis experiências](BLOCO_1_P1_EXPERIENCIAS_2026-11-02.md) · [53 objetos privados](BLOCO_1_P1_STORAGE_2026-11-02.md).
