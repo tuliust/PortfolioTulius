@@ -228,11 +228,9 @@ describe("fontes de coleção editoriais", () => {
     const snapshot = structuredClone([original, second])
     const missing = resolveCollectionBlocks([original, second], new Map())
     expect(missing).toEqual(snapshot)
-    expect(missing.flatMap((block) => block.content_json?.items ?? []).map((item) => item.image)).toEqual([
-      "/media/matheus.jpg",
-      "/media/ana.jpg",
-      "/media/fabio.jpg",
-    ])
+    expect(
+      missing.flatMap((block) => block.content_json?.items ?? []).map((item) => item.image),
+    ).toEqual(["/media/matheus.jpg", "/media/ana.jpg", "/media/fabio.jpg"])
     const loadedEmpty = resolveCollectionBlocks(
       [original, second],
       new Map<CollectionSource, ContentItem[]>([["testimonials", []]]),
