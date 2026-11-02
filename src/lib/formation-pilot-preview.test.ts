@@ -62,12 +62,14 @@ describe("prévia isolada das seis decisões Formação/A", () => {
       block.content_json.items,
     )
     expect(items.map(({ text }) => text)).toEqual(rows.map((row) => row.institution))
-    expect(differences.map(({ position, field, before, after }) => ({
-      position,
-      field,
-      before,
-      after,
-    }))).toEqual(
+    expect(
+      differences.map(({ position, field, before, after }) => ({
+        position,
+        field,
+        before,
+        after,
+      })),
+    ).toEqual(
       rows.map((row, i) => ({
         position: i + 1,
         field: "text",
@@ -84,7 +86,10 @@ describe("prévia isolada das seis decisões Formação/A", () => {
       buildApprovedFormationAPreview(block, [{ ...rows[0], id: "invalid" }, ...rows.slice(1)]),
     ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
     expect(() =>
-      buildApprovedFormationAPreview(block, [{ ...rows[0], institution: "Nome alterado" }, ...rows.slice(1)]),
+      buildApprovedFormationAPreview(block, [
+        { ...rows[0], institution: "Nome alterado" },
+        ...rows.slice(1),
+      ]),
     ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
     expect(() =>
       buildApprovedFormationAPreview(block, [{ ...rows[0], status: "draft" }, ...rows.slice(1)]),
@@ -100,7 +105,10 @@ describe("prévia isolada das seis decisões Formação/A", () => {
         {
           ...block,
           content_json: {
-            items: [{ ...block.content_json.items[0], meta: "Período diferente" }, ...block.content_json.items.slice(1)],
+            items: [
+              { ...block.content_json.items[0], meta: "Período diferente" },
+              ...block.content_json.items.slice(1),
+            ],
           },
         },
         rows,
