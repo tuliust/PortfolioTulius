@@ -27,7 +27,24 @@ if (verifyDirectory) {
       throw new Error("HYG_BACKUP_CORRUPTED")
     }
   }
-  console.log(JSON.stringify({ verified: data.items.length, complete: true }))
+  const paired = new Map()
+  for (const entry of data.items) {
+    const record = paired.get(entry.path) ?? {}
+    record[entry.bucket] = entry.sha256
+    paired.set(entry.path, record)
+  }
+  let matchingPairs = 0
+  let differingPairs = 0
+  for (const record of paired.values()) {
+    if (record["portfolio-public"] && record["portfolio-private"]) {
+      if (record["portfolio-public"] === record["portfolio-private"]) matchingPairs++
+      else differingPairs++
+    }
+  }
+  console.log(JSON.stringify({
+    verified: data.items.length, complete: true, matchingPairs, differingPairs,
+    note: "Comparação SHA-256 apenas dos pares presentes neste backup",
+  }))
 } else {
   const manifest = loadManifest(manifestPath)
   if (!has("--execute-backup")) {
