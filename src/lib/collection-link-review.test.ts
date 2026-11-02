@@ -37,8 +37,16 @@ describe("aprovação individual de divergências antes de vincular uma coleçã
     // para migrar o bloco 1bc36dc9-c301-4873-8c53-21c3e048737b.
     const manual = [
       { title: "Comunicação Social — Jornalismo", label: "Graduação", meta: "UFRN · 2007–2012" },
-      { title: "Comunicação Integrada e Marketing Digital", label: "Pós-graduação", meta: "UnP · 2013" },
-      { title: "Marketing Digital, BI e Estratégia Data Driven", label: "MBA", meta: "PUCRS · 2020–2021" },
+      {
+        title: "Comunicação Integrada e Marketing Digital",
+        label: "Pós-graduação",
+        meta: "UnP · 2013",
+      },
+      {
+        title: "Marketing Digital, BI e Estratégia Data Driven",
+        label: "MBA",
+        meta: "PUCRS · 2020–2021",
+      },
     ]
     const original = structuredClone(manual)
     const proposed = collectionToItems("education", [
@@ -74,7 +82,12 @@ describe("aprovação individual de divergências antes de vincular uma coleçã
     expect(proposed.map((item) => item.title)).toEqual(manual.map((item) => item.title))
     expect(proposed.map((item) => item.label)).toEqual(manual.map((item) => item.label))
     expect(changes.map((change) => [change.position, change.field])).toEqual([
-      [1, "meta"], [1, "text"], [2, "meta"], [2, "text"], [3, "meta"], [3, "text"],
+      [1, "meta"],
+      [1, "text"],
+      [2, "meta"],
+      [2, "text"],
+      [3, "meta"],
+      [3, "text"],
     ])
     expect(manual).toEqual(original)
   })
