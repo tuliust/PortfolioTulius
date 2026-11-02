@@ -10,6 +10,77 @@ describe("fontes de coleção editoriais", () => {
     expect(isCollectionSource("admin_users")).toBe(false)
   })
 
+  it("mapeia os nove contratos de campos do acervo para cards sem escrever nos blocos", () => {
+    const fixtures: {
+      source: CollectionSource
+      row: Record<string, unknown>
+      expected: Partial<ContentItem>
+    }[] = [
+      {
+        source: "career_experiences",
+        row: { company: "Invest RS", role: "Direção", description: "Texto", location: "RS" },
+        expected: { title: "Invest RS", label: "Direção", text: "Texto", meta: "RS" },
+      },
+      {
+        source: "portfolio_projects",
+        row: { title: "Projeto", summary: "Resumo", project_status: "Concluído" },
+        expected: { title: "Projeto", text: "Resumo", meta: "Concluído" },
+      },
+      {
+        source: "metrics",
+        row: { label: "Alcance", value_text: "120", unit: "%", context: "Ano" },
+        expected: { title: "Alcance", value: "120", meta: "%", text: "Ano" },
+      },
+      {
+        source: "skills",
+        row: { name: "Estratégia", category: "Planejamento" },
+        expected: { title: "Estratégia", text: "Planejamento" },
+      },
+      {
+        source: "education",
+        row: {
+          course: "Comunicação",
+          degree_type: "Bacharelado",
+          institution: "Instituição",
+          start_date: "2010",
+          end_date: "2014",
+        },
+        expected: {
+          title: "Comunicação",
+          label: "Bacharelado",
+          text: "Instituição",
+          meta: "2010 — 2014",
+        },
+      },
+      {
+        source: "language_levels",
+        row: { language: "Português", level_label: "Nativo", evidence_note: "Uso diário" },
+        expected: { title: "Português", text: "Nativo", meta: "Uso diário" },
+      },
+      {
+        source: "tool_categories",
+        row: { title: "Dados", tools: [{ name: "Planilhas" }, { name: "Indicadores" }] },
+        expected: { title: "Dados", text: "Planilhas · Indicadores" },
+      },
+      {
+        source: "testimonials",
+        row: { author_name: "Pessoa", author_role: "Cargo", quote_text: "Depoimento" },
+        expected: { title: "Pessoa", meta: "Cargo", text: "Depoimento" },
+      },
+      {
+        source: "contact_channels",
+        row: { label: "Site", value: "Acessar", url: "https://example.com/" },
+        expected: { title: "Site", text: "Acessar", meta: "https://example.com/" },
+      },
+    ]
+
+    for (const { source, row, expected } of fixtures) {
+      const records = [{ ...row, status: "published", sort_order: 1 }]
+      expect(collectionToItems(source, records)[0]).toMatchObject(expected)
+      expect(records[0]).toHaveProperty("status", "published")
+    }
+  })
+
   it("somente registros publicados, ordenados e sem notas privadas", () => {
     const items = collectionToItems("metrics", [
       {

@@ -314,12 +314,14 @@ export function ContentStudio({
   embedded = false,
   onDirtyChange,
   onEditCollection,
+  onSaved,
 }: {
   sections: SectionOption[]
   sectionIdOverride?: string
   embedded?: boolean
   onDirtyChange?: (dirty: boolean) => void
   onEditCollection?: (source: string) => void
+  onSaved?: () => void
 }) {
   const [sectionId, setSectionId] = useState(sectionIdOverride ?? sections[0]?.id ?? "")
   const [blocks, setBlocks] = useState<BlockRow[]>([])
@@ -540,6 +542,7 @@ export function ContentStudio({
     if (error) return setMessage(error.message)
     setMessage("Bloco e placements salvos em uma transação.")
     await load()
+    onSaved?.()
   }
 
   async function archiveBlock() {

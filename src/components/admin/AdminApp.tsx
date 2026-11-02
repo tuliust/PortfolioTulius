@@ -685,6 +685,7 @@ function SiteEditor({
   const [collectionSource, setCollectionSource] = useState("career_experiences")
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop")
   const [linkedSources, setLinkedSources] = useState<string[]>([])
+  const [sourcesRevision, setSourcesRevision] = useState(0)
   const [lastExperienceId, setLastExperienceId] = useState("")
   const selected = sections.find((item) => item.id === selectedId)
   const navigationEntries = buildAdminSectionNavigation(sections)
@@ -708,7 +709,7 @@ function SiteEditor({
     return () => {
       cancelled = true
     }
-  }, [selectedId])
+  }, [selectedId, sourcesRevision])
 
   useEffect(() => {
     if (!selectedId && sections[0]) setSelectedId(sections[0].id)
@@ -901,6 +902,7 @@ function SiteEditor({
                     embedded
                     onDirtyChange={onDirtyChange}
                     onEditCollection={editLinkedCollection}
+                    onSaved={() => setSourcesRevision((revision) => revision + 1)}
                   />
                 )}
                 {pane === "details" && (
