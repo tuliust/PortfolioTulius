@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { prepareFormationAPublicationProposal } from "./formation-pilot-proposal"
 import {
   buildApprovedFormationAPreview,
   FORMATION_A_BLOCK_ID,
@@ -166,5 +167,29 @@ describe("sobreposição protegida e não persistente de Formação/A", () => {
     expect(() =>
       overlayApprovedFormationA({ ...section, desktopPanelA: undefined }, proposed),
     ).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+  })
+})
+
+describe("rascunho editorial não conectado à publicação", () => {
+  it("contém exatamente três novos textos e não define origem vinculada", () => {
+    const saved = structuredClone(block)
+    const proposal = prepareFormationAPublicationProposal(block, rows)
+    expect(proposal.blockId).toBe(FORMATION_A_BLOCK_ID)
+    expect(proposal.changedFields).toEqual([1, 2, 3].map((position) => ({ position, field: "text" })))
+    expect(proposal.currentItems).toEqual(block.content_json.items)
+    expect(proposal.proposedItems.map((item) => item.meta)).toEqual(
+      block.content_json.items.map((item) => item.meta),
+    )
+    expect(proposal.proposedItems.map((item) => item.text)).toEqual(rows.map((item) => item.institution))
+    expect(block).toEqual(saved)
+  })
+  it("rejeita conteúdo editorial divergente antes de preparar proposta", () => {
+    expect(() => prepareFormationAPublicationProposal({
+      ...block,
+      content_json: {
+        ...block.content_json,
+        items: [{ ...block.content_json.items[0], label: "Diferente" }, ...block.content_json.items.slice(1)],
+      },
+    }, rows)).toThrow("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
   })
 })

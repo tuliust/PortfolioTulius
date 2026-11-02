@@ -63,3 +63,8 @@ jobs:
           node --check scripts/p2-synthetic-fixtures.mjs
           node --check scripts/p2-synthetic-fixtures.check.mjs
           node --test scripts/p2-synthetic-fixtures.check.mjs
+          node --check scripts/p2-cms-offline-contract.check.mjs
+          node --test scripts/p2-cms-offline-contract.check.mjs
+          node --check scripts/p6-seo-publish-simulation.mjs
+          node --check scripts/p6-seo-publish-simulation.check.mjs
+          node --test scripts/p6-seo-publish-simulation.check.mjs
