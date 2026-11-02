@@ -225,6 +225,45 @@ try {
     hiddenSectionPresent: previewState.hiddenSectionPresent,
   }))
 
+  // Read-only check of the *real protected* Formation/A preview (not a DOM
+  // injection). Confirm all approved periods and institutions on both layouts.
+  const acceptedFormation = [
+    { title: "Comunicação Social — Jornalismo", meta: "UFRN · 2007–2012", text: "Universidade Federal do Rio Grande do Norte (UFRN)" },
+    { title: "Comunicação Integrada e Marketing Digital", meta: "UnP · 2013", text: "Universidade Potiguar (UnP)" },
+    { title: "Marketing Digital, BI e Estratégia Data Driven", meta: "PUCRS · 2020–2021", text: "Pontifícia Universidade Católica do Rio Grande do Sul (PUCRS)" },
+  ]
+  for (const viewport of [
+    { label: "mobile", width: 390, height: 844 },
+    { label: "desktop", width: 1440, height: 900 },
+  ]) {
+    await page.setViewport({ width: viewport.width, height: viewport.height, deviceScaleFactor: 1 })
+    await page.goto(new URL("/admin/preview?formationPilot=1#formacao", base).href, {
+      waitUntil: "networkidle2", timeout: 30000,
+    })
+    await page.waitForFunction((expected) => {
+      const panel = document.getElementById("formacao")
+      const cards = [...(panel?.querySelectorAll(".content-item") ?? [])]
+      return Boolean(panel && expected.every((item) =>
+        cards.some((card) => card.querySelector("h3")?.textContent?.trim() === item.title &&
+          card.querySelector(".item-meta")?.textContent?.trim() === item.meta &&
+          [...card.querySelectorAll(".item-copy p")].some((p) => p.textContent?.trim() === item.text))),
+      )
+    }, { timeout: 20000 }, acceptedFormation)
+    const result = await page.evaluate(() => ({
+      preview: Boolean(document.querySelector(".preview-banner")),
+      error: Boolean(document.querySelector(".public-site .data-error")),
+      overflow: document.documentElement.scrollWidth > innerWidth + 2,
+      sections: document.querySelectorAll("section.portfolio-section").length,
+    }))
+    if (!result.preview || result.error || result.overflow || result.sections !== 14 || mutations.length) {
+      throw new Error("Prévia protegida de Formação/A inválida: " + JSON.stringify({ viewport: viewport.label, result }))
+    }
+    console.log("P5_FORMATION_PROTECTED_PREVIEW " + JSON.stringify({
+      viewport: viewport.label, result: "PASS", approvedItems: 3, contentMutations: mutations.length,
+    }))
+  }
+  passed++
+
   await page.goto(new URL("/admin", base).href, { waitUntil: "domcontentloaded", timeout: 30000 })
   await page.waitForSelector(".logout-button", { visible: true, timeout: 15000 })
   // Exercise image selection cancellation after all other CMS interactions,
@@ -282,5 +321,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 6, contentMutations: 0 }))
-if (passed !== 6) process.exitCode = 1
+console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 7, contentMutations: 0 }))
+if (passed !== 7) process.exitCode = 1
