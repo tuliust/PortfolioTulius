@@ -23,7 +23,13 @@ const pending = Object.fromEntries(
 page.on("response", (response) => {
   const url = new URL(response.url())
   const table = url.pathname.split("/").at(-1)
-  if (!url.hostname.endsWith(".supabase.co") || !pending[table]) return
+  // CORS OPTIONS preflights have no readable JSON body. Match only the
+  // actual published PostgREST GET response, never the OPTIONS handshake.
+  if (
+    response.request().method() !== "GET" ||
+    !url.hostname.endsWith(".supabase.co") ||
+    !pending[table]
+  ) return
   if (!response.ok()) {
     pending[table].reject(new Error("Read-only CMS query for " + table + " returned HTTP " + response.status()))
     return
