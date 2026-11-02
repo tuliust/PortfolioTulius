@@ -1,5 +1,7 @@
 # Checklist de execução — PortfolioTulius
 
+**[Novo checklist operacional P1–P3, Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md)** · [evidências da execução](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md) · [inventário de 26 blocos](BLOCO_1_P1_INVENTARIO_2026-11-02.md).
+
 **Etapa 2 · P4 em execução parcial, com decisões editoriais registradas**
 
 **Atualizado em:** 02/11/2026. **Último SHA validado antes desta atualização:** `47874e42d32dc3df5257d02f4281275615a2fb35` ([CI aprovado](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41397758622)). O documento preserva o histórico de P0–P3 e a classificação das pendências em P4.1–P4.6.
@@ -241,3 +243,15 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [x] Compor prévia puramente em memória com três textos novos; testes impedem mudanças silenciosas de IDs, título, grau, período, fonte e ordem; CI correspondente no GitHub Actions.
 - [ ] Visualizar a proposta no CMS/desktop/mobile e obter autorização específica para vincular `Formação/A`; sem gravação nesta rodada.
 - [ ] Comparar, em cada uma das seis empresas, os valores individuais dos campos globais escolhidos, projetos e referências de mídia; fotografias/logos/galerias preservados até aprovação pontual.
+
+## Bloco 1 reorganizado — P1/P2/P3 executado parcialmente em 02/11/2026
+
+- [x] Inventário por campo dos 26 blocos manuais e matriz de cobertura dos formulários das nove coleções; [P1](BLOCO_1_P1_INVENTARIO_2026-11-02.md).
+- [x] Comparação dos campos comuns nas seis experiências e quatro projetos estruturados; [relatório](BLOCO_1_P1_EXPERIENCIAS_2026-11-02.md).
+- [x] Classificação por metadados dos 53 objetos privados sem cadastro; nenhum arquivo excluído; [triagem](BLOCO_1_P1_STORAGE_2026-11-02.md).
+- [x] Prévia DOM isolada de Formação/A em 3 viewports, 6 imagens e 0 escritas, com [workflow 3/3 PASS](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402653744); isso **não** é homologação humana nem publicação.
+- [x] Fixtures de staging totalmente sintéticas e teste de guardas de nomes/status/identificadores, sem provisionar ambiente ou executar CRUD.
+- [x] Baseline de rede nos 3 viewports: 10 GETs e 9 endpoints distintos, incluindo 2 consultas de `sections` destinadas a Perfil e grafo completo.
+- [ ] Finalizar comparação individual dos valores de todos os 26 blocos, implantação real de staging, otimizações com ganhos medidos e aceite de prévia visual por proprietário. A meta LCP ≤2,5 s permanece pendente.
+
+[Checklist atualizado do Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md) · [evidências P2/P3](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md).
