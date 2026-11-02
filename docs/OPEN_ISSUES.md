@@ -1,5 +1,7 @@
 # PortfolioTulius — pendências realmente abertas
 
+> **Atualização operacional de 02/11/2026:** a meta de LCP mobile foi alterada expressamente para **≤3,5 s** (mediana de três Lighthouse); [auditoria #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045) registrou **3,386 s** e passou sob esse gate. A homologação transacional passou a depender exclusivamente do **Supabase local + Docker**, sem segundo projeto cloud. A vistoria humana completa de CMS/site e o aceite P7/P8 continuam pendentes. Ver [checklist assistido do Bloco 3](BLOCO_3_P7_P8_VALIDACAO_ASSISTIDA_2026-11-02.md). A tabela abaixo é histórica e **não altera as decisões vigentes**.
+
 **Reconciliado em 01/11/2026** com o último commit funcional auditado `aa71737e`. Este documento é uma **lista de acompanhamento**, não o arquivo cronológico. [Histórico integral até 31/10](historico/OPEN_ISSUES_ATE_2026-10-31.md) · [estado vigente](ESTADO_ATUAL_VIGENTE.md). Revalidar antes de encerrar qualquer item.
 
 | ID / prioridade | Situação | Próximo critério de aceite |

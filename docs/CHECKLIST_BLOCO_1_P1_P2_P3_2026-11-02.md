@@ -116,3 +116,12 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [x] Preparar ensaios offline de deduplicação e retentativa SEO. Nenhum gatilho ou webhook foi instalado.
 - [x] Auditar grants e guardas das seis RPCs privilegiadas via `SELECT` em produção, sem alterações; [relatório P6](BLOCO_2_P6_SEGURANCA_LEITURA_2026-11-02.md).
 - [ ] Homologar processos transacionais, recuperação de mídia, RLS por JWTs e publicação SEO com o stack Docker/Supabase local quando disponível.
+
+## Evidência complementar de navegação e mídia — 02/11/2026
+
+- [x] Verificar, via SELECT, que **14/14** destinos da navegação têm seção cadastrada, sendo **8** links visíveis, nenhum com destino inexistente ou oculto.
+- [x] Confirmar que os **6** destinos `targetSlug` do Perfil apontam para experiências publicadas e visíveis.
+- [x] Conferir **75/75** registros do catálogo contra objetos em Storage, com **0** referências a objeto ausente.
+- [ ] Validar cliques e destinos externos de Contato, conteúdo visual/alt dos objetos, zoom e dispositivos reais; [roteiro Bloco 3](BLOCO_3_P7_P8_VALIDACAO_ASSISTIDA_2026-11-02.md).
+
+*Estas checagens são evidências adicionais do inventário, não foram adicionadas às contagens antigas de 25 realizadas/10 pendentes, para evitar mudar critérios retroativamente.*

@@ -66,3 +66,7 @@ A meta oficial de LCP mobile passou a **≤ 3,5 s**, com mediana de três amostr
 - [x] Preparar proposta de alterações de Formação/A com três textos, sem persistir.
 - [x] Conferir grants das funções e presença textual das guardas em produção exclusivamente por SELECT.
 - [ ] Homologar transações, identidades e segurança no **Supabase local** após iniciar Docker/CLI; isso fica para quando o proprietário estiver no computador.
+
+## Entrada formal do Bloco 3
+
+A inspeção e o aceite humanos permanecem **pendentes**. O roteiro [P7/P8 — validação assistida](BLOCO_3_P7_P8_VALIDACAO_ASSISTIDA_2026-11-02.md) reúne evidências SQL de links e mídia, conferências no CMS e na página pública, testes locais e portões de autorização. Nada nele habilita publicação automática.
