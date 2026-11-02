@@ -96,15 +96,18 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 ## P4.4 — Site, SEO e desempenho (P1 anterior)
 
 - [x] Corrigir os quatro critérios P3 de alinhamento da seção Contato; verificação de navegador posterior: zero falhas.
-- [ ] Repetir medidas de LCP mobile, decompondo fontes, CSS, JS, rede e consultas; perseguir ≤2,5 s, atualmente sem comprovação.
+- [x] Repetir Lighthouse mobile e registrar análise de fonte, CSS, JavaScript e atrasos de renderização; mediana **3,419 s** no SHA funcional `a0dfbeb` (meta ainda não alcançada).
+- [ ] Otimizar LCP mobile para ≤2,5 s com medição comparativa e sem alterações involuntárias de conteúdo/fotografia/design.
 - [x] Implementar preservação do conteúdo já carregado e da lista administrativa diante de falha posterior de leitura.
 - [x] Injetar falhas GET de `section_panels` e `testimonials` em navegador; primeira dobra preservada com aviso, 2/2 cenários aprovados no ensaio anterior.
 - [x] Homologar no navegador a recuperação de depoimentos com GET 503: 13 seções, três retratos e aviso de erro preservados; leitura completa da coleção continua sendo fonte primária quando disponível ([P3/P4 41389455933](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41389455933)).
-- [ ] Verificar outros cenários de falha parcial, recuperação de mídia e carregamento após reconexão.
+- [x] Ampliar falhas simuladas GET 503 para `design_tokens` e `pages`; **4/4 cenários** aprovados, sem perder as 13 seções quando a consulta não é essencial ([auditoria 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658)).
+- [ ] Homologar recuperação de mídia e carregamento após reconexão com diferentes condições reais de rede; estes testes não foram realizados.
 - [x] Fazer `radius.card` publicado alimentar o CSS dos cartões de depoimento, com validação e testes unitários.
 - [x] Revisar os 12 tokens publicados e ligar `font.heading` também ao seletor visual `--font-display`, preservando a tipografia atual por padrão.
 - [ ] Homologar visualmente as futuras alterações de fontes no CMS em desktop/mobile.
-- [ ] Verificar SEO de CMS versus HTML publicado, inclusive atualização após salvar.
+- [x] Verificar em navegador **8 campos de SEO do HTML estático versus as linhas públicas do CMS**, sem escrita ([auditoria 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658)).
+- [ ] Definir mecanismo seguro de atualização do HTML de SEO após um novo salvamento publicado; o teste de paridade atual **não** comprova atualização automática pós-salvamento.
 
 ## P4.5 — Segurança, isolamento e acessibilidade pendentes de P2
 
@@ -178,3 +181,12 @@ Inventário e comparações preliminares, auditoria do Storage, correções de r
 - [ ] Testes CRUD transacionais, mudanças de segurança, migrações editoriais, substituição de imagens e SEO estático sem redeploy **não estão autorizados ou homologados** automaticamente.
 
 A vistoria humana final e novos testes transacionais permanecem explicitamente pendentes.
+
+## Continuação automatizada verificada — SEO estático e falhas (02/11/2026)
+
+- [x] `scripts/p4-seo-parity.mjs`: comparar **8 campos** de HTML entregue aos robôs com valores publicados do Supabase, usando exclusivamente GETs já feitos pelo navegador; [P3/P4 audit 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658).
+- [x] `scripts/p4-partial-failure.mjs`: simular respostas 503 de `section_panels`, `testimonials`, `design_tokens` e `pages`; **4 de 4 passaram**, nenhuma mutação ou foto alterada.
+- [x] CI do código funcional: formatação, TS, testes, build e smoke [Validate 41391579816](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579816).
+- [x] Reexecutar auditoria de navegador: zero falhas; **38 capturas**, RLS anônimo 3/3; Lighthouse acessibilidade 100/100 na medição anterior; [run 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658).
+- [ ] SEO atualizado automaticamente no HTML após novo salvamento, LCP ≤2,5 s e testes transacionais **continuam pendentes**.
+- [ ] Reunir respostas às perguntas da [matriz de decisões pendentes](P4_TESTES_SEO_FALHAS_E_DECISOES_2026-11-02.md) para preparar propostas específicas sem substituir conteúdos.

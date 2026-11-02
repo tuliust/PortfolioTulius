@@ -35,3 +35,11 @@ Lighthouse 13.5.0, mobile simulado na auditoria do SHA funcional: **LCP mediano 
 Nenhuma escrita SQL, alteração de RLS/Auth/Storage, edição de 26 blocos ou associação automática de fotos foi realizada. Nenhuma correção ou validação automatizada foi interpretada como aprovação editorial. O código e a documentação estão versionados na `main`, que publica na Vercel automaticamente. Conferir o deployment final após este documento.
 
 **Checklist vigente:** [P0/P2/P3/P4 consolidado](CHECKLIST_CONSOLIDADO_P0_P2_P3_P4_2026-11-02.md).
+
+## P4 — Validação ampliada concluída em 02/11/2026
+
+- CI aprovado no SHA funcional `a0dfbebe9a166e4a29e6355a4300727725d03a16`, [Validate 41391579816](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579816).
+- [Auditoria P3/P4 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658) aprovada: zero falhas no navegador, 38 capturas visuais, três controles de RLS anônima sem escrita e **4 cenários GET 503** confirmados.
+- **Paridade SEO vigente:** conferidos os oito campos de título, descrição, Open Graph, Twitter, idioma, canonical e robots. **8/8 corresponderam ao conteúdo publicado do CMS**, sem mutações; a auditoria não comprova propagação após edição futura. `scripts/p4-seo-parity.mjs` é executado em cada auditoria P3 acionada por mudanças do código relevante.
+- **Diagnóstico LCP:** na rodada de Lighthouse 13.5.0 mobile (simulado), três amostras de 4.119 ms, 3.419 ms e 3.381 ms, mediana **3.419 ms**, acima da meta ≤2.500 ms. Evitar declarar melhoria pela variação entre laboratórios sem ensaios comparativos.
+- **Decisões remanescentes:** documentadas na [matriz de aprovação](P4_TESTES_SEO_FALHAS_E_DECISOES_2026-11-02.md). Nenhuma delas é autorização implícita para atualizar Supabase ou migrar blocos.
