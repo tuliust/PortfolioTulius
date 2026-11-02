@@ -45,10 +45,14 @@ try {
         errorNotice: Boolean(document.querySelector(".data-error")),
       }))
       console.log("P4_FORMATION_PREVIEW_INITIAL " + JSON.stringify({ viewport: viewport.name, ...initial }))
+      // PublicSite renders a desktop *or* mobile composition, not both.
+      // Requiring both would time out on a correct desktop page.
       await page.waitForFunction(
-        () => document.querySelectorAll("#formacao-a .content-item").length === 3 &&
-          document.querySelectorAll("#formacao .desktop-panel .content-item").length >= 3,
+        (mobile) => mobile
+          ? document.querySelectorAll("#formacao-a .content-item").length === 3
+          : document.querySelectorAll("#formacao .desktop-panel .content-item").length >= 3,
         { timeout: 25000 },
+        viewport.isMobile,
       )
       const selector = viewport.isMobile ? "#formacao-a" : "#formacao .desktop-panel"
       if (!(await page.$(selector))) throw new Error("P4 preview panel missing: " + selector)
