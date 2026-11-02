@@ -131,6 +131,30 @@ try {
   }))
   if (initial.overflow || initial.saveDisabled !== true || !initial.altOptional || initial.editorialNoteVisible)
     throw new Error("CMS mobile inicial inválido: " + JSON.stringify(initial))
+  // A library dialog cancellation must leave the current saved image untouched.
+  const originalImage = await page.$eval(
+    ".block-item-body .published-media-picker .published-media-current img",
+    (image) => image.getAttribute("src"),
+  )
+  if (!originalImage) throw new Error("Retrato atual não disponível no editor.")
+  await page.click(
+    '.block-item-body .published-media-picker .published-media-actions button[aria-label="Escolher da biblioteca"]',
+  )
+  await page.waitForSelector(".published-media-dialog footer button", { timeout: 12000 })
+  await page.click(".published-media-dialog footer button")
+  await page.waitForFunction(() => !document.querySelector(".published-media-dialog"), { timeout: 7000 })
+  const retainedImage = await page.$eval(
+    ".block-item-body .published-media-picker .published-media-current img",
+    (image) => image.getAttribute("src"),
+  )
+  if (retainedImage !== originalImage || mutations.length) {
+    throw new Error("Cancelar seleção de mídia alterou o retrato ou tentou gravar conteúdo.")
+  }
+  passed++
+  console.log("P5_P4_MEDIA_CANCEL " + JSON.stringify({
+    result: "PASS", imagePreserved: true, contentMutations: mutations.length,
+  }))
+
   // Change a text field locally; assert the floating save and custom leave
   // guard, then cancel and explicitly discard the draft without writing data.
   const title = await page.$(".block-item-body input")
@@ -250,5 +274,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 5, contentMutations: 0 }))
-if (passed !== 5) process.exitCode = 1
+console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 6, contentMutations: 0 }))
+if (passed !== 6) process.exitCode = 1
