@@ -50,3 +50,7 @@ jobs:
           node --check scripts/p2-transactional-staging.mjs
           node --check scripts/p5-public-rls.mjs
           node --check scripts/p6-lighthouse-guard.mjs
+          node --check scripts/p4-formation-visual-preview.mjs
+          node --check scripts/p2-synthetic-fixtures.mjs
+          node --check scripts/p2-synthetic-fixtures.test.mjs
+          node --test scripts/p2-synthetic-fixtures.test.mjs

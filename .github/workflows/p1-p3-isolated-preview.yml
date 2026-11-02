@@ -1,0 +1,62 @@
+name: P1-P3 Isolated Editorial Preview and Network Baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/p1-p3-isolated-preview.yml
+      - scripts/p4-formation-visual-preview.mjs
+      - scripts/p2-synthetic-fixtures.mjs
+      - scripts/p2-synthetic-fixtures.test.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node.js 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24.16.0"
+      - name: Check fixture schema and no-real-content guard
+        run: node --test scripts/p2-synthetic-fixtures.test.mjs
+      - name: Verify production serves tested commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 40); do
+            result="$(curl --fail --silent --show-error --location --max-time 15 -H 'Cache-Control: no-cache' "https://tulius.work/p3-deployment.json?sha=$GITHUB_SHA&attempt=$attempt" || true)"
+            if printf '%s' "$result" | node -e 'let b="";process.stdin.on("data",x=>b+=x);process.stdin.on("end",()=>{try{process.exit(JSON.parse(b).sha===process.env.GITHUB_SHA?0:1)}catch{process.exit(1)}})'; then
+              echo "P1_P3_DEPLOYMENT_GATE MATCH sha=$GITHUB_SHA"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Production SHA not yet verified; do not attribute screenshot" >&2
+          exit 1
+      - name: Install browser dependency separately from application
+        run: |
+          mkdir -p "$RUNNER_TEMP/p4-preview-browser"
+          cd "$RUNNER_TEMP/p4-preview-browser"
+          npm install --no-audit --no-fund --no-save puppeteer-core@25.16.0
+      - name: Read-only browser preview on desktop and mobile
+        run: |
+          cd "$RUNNER_TEMP/p4-preview-browser"
+          cp "$GITHUB_WORKSPACE/scripts/p4-formation-visual-preview.mjs" preview.mjs
+          node preview.mjs
+      - name: Upload before-and-after screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: p4-formation-isolated-preview
+          path: ${{ runner.temp }}/p4-formation-preview/*.png
+          if-no-files-found: warn
+          retention-days: 14
