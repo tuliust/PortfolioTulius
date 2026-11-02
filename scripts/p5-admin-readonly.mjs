@@ -102,6 +102,12 @@ try {
     contentMutations: mutations.length,
   }))
 
+  // Return to the content pane: the checks below use the block editor.
+  await page[String.fromCharCode(36, 36) + "eval"](".site-editor-tabs [role=tab]", (nodes) => {
+    nodes.find((node) => node.textContent?.includes("Conteúdo e painéis"))?.click()
+  })
+  await page.waitForSelector(".site-editor-body .block-item-toggle", { timeout: 12000 })
+
   // Verify the newly edited CMS at a narrow viewport, without submitting any
   // request that mutates the database. Input changes are ephemeral drafts.
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
