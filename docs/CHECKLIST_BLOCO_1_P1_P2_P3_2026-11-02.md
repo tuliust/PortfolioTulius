@@ -69,8 +69,8 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [ ] Testar desduplicação ou reuso das consultas a `sections`, sem atrasar o Perfil nem alterar os dados exibidos.
 - [ ] Investigar estratégias de cache e invalidação, bundles administrativos e responsabilidades dos componentes com métricas comparáveis.
 - [ ] Reexecutar testes unitários, TypeScript, build, smoke, SEO, acessibilidade, RLS e capturas desktop/mobile depois de cada alteração técnica.
-- [x] **Meta vigente LCP mobile ≤ 3,5 s:** o último ensaio de três amostras (mediana **3,314 s**) atende ao limite aprovado. Não é medida de campo nem comprovação de melhora causada por código.
-- [ ] Revalidar o limite de 3,5 s no próximo SHA com auditoria Lighthouse de três amostras, preservando a fotografia do Perfil como LCP e demais gates.
+- [x] **Meta vigente LCP mobile ≤ 3,5 s:** último ensaio de três amostras (mediana **3,386 s**, [Lighthouse #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045)) atende ao novo gate. Não é medida de campo nem comprovação de melhora causada por código.
+- [x] Revalidar o limite de **3,5 s** com o **novo gate** após a alteração de código, em três amostras (mediana **3,386 s**; nenhuma regressão visual na auditoria). Repetir após futuras mudanças relevantes.
 
 ## Dependências transferidas ao Bloco 2
 
@@ -103,6 +103,6 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 ## Decisões atualizadas em 02/11/2026
 
 - [x] O limite operacional de **LCP mobile mudou de 2,5 s para 3,5 s**, por decisão do proprietário; o gate Lighthouse mobile foi atualizado para **3.500 ms**. [Registro](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).
-- [x] O último ensaio medido (mediana **3,314 s**, três Lighthouse) satisfaz a nova meta **nesse ensaio**. Revalidar após mudanças futuras; nenhum ganho de desempenho foi inferido.
+- [x] O ensaio atualizado (mediana **3,386 s**, três Lighthouse) satisfaz a nova meta **nesse ensaio**, com gate móvel de 3.500 ms. O resultado anterior de **3,314 s** permanece registrado para comparação histórica; nenhum ganho de desempenho foi inferido.
 - [x] Seleção de **Supabase local** como único ambiente de staging; preparado `supabase/config.toml` com `seed.local.synthetic.sql`, sem segundo projeto cloud.
 - [ ] Rodar Docker/CLI local, testar migrations e o fluxo transacional com contas fictícias; **não executado aqui**.

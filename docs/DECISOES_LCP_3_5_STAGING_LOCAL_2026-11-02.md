@@ -6,7 +6,7 @@
 
 - **Limite de aceite:** LCP mobile ≤ **3,5 segundos** (**3.500 ms**).
 - **Método vigente de laboratório:** mediana de **três execuções Lighthouse mobile comparáveis**. Uma única amostra boa não prova atendimento repetível.
-- **Última mediana registrada na auditoria anterior:** **3,314 s**, inferior ao novo limite. A meta passou no *ensaio registrado*, sem demonstrar melhora causal; o p75 real de campo **não** está comprovado.
+- **Última mediana registrada após a mudança do gate:** **3,386 s** (amostras **4,078 / 3,235 / 3,386 s**); abaixo do novo limite. [Audit P3 #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045) **SUCCESS** com `P6_PERFORMANCE_BUDGET mobile PASS`, zero falhas de navegador e 38 capturas editoriais aprovadas. O ensaio anterior teve mediana **3,314 s**; não é ganho causal nem comprovação do p75 de campo.
 - **Gate automatizado:** `scripts/p6-lighthouse-guard.mjs` passa a usar `mobile.lcpMs = 3500`. A meta mobile não altera o limite desktop, categorias de acessibilidade, SEO, CLS ou a identificação da fotografia do Perfil como LCP.
 - **Proteção:** não mudar tipografia, conteúdo editorial, imagens, enquadramento, layout ou animações apenas para baixar uma pontuação. Se futuras medições comparáveis excederem 3.500 ms, a meta volta a ficar aberta para essa versão.
 

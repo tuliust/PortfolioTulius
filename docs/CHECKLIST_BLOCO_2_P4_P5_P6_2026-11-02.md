@@ -54,4 +54,4 @@
 
 ## Nova decisão para qualidade — 02/11/2026
 
-A meta oficial de LCP mobile passou a **≤ 3,5 s**, com mediana de três amostras Lighthouse. Última mediana registrada: **3,314 s**, atendida naquele ensaio; revalidar por versão. [Decisão vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).
+A meta oficial de LCP mobile passou a **≤ 3,5 s**, com mediana de três amostras Lighthouse. Última mediana registrada: **3,386 s**, com [gate de 3.500 ms aprovado](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045). Revalidar após mudanças relevantes. [Decisão vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).

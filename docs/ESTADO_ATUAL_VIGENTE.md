@@ -45,3 +45,6 @@ A primeira seção é consultada cedo via PostgREST no HTML e reutilizada pelo h
 ## Invariantes
 
 Preservar textos, fotografias, tipografia, metadados SEO, links, ordem e dados aprovados; não inventar exemplos. Não modificar Supabase (schema, RLS, Auth, Storage), infraestrutura, Vercel, conteúdo de produção ou segurança sem autorização explícita. Operar exclusivamente na `main`, sem branch nem PR. Para requisitos de cada painel e limites de viewport, ver [RESPONSIVE_LAYOUT.md](RESPONSIVE_LAYOUT.md) e [EXPERIENCIAS_UNIFICADAS_2026-10-31.md](EXPERIENCIAS_UNIFICADAS_2026-10-31.md).
+
+
+**Atualização de medição posterior à nova meta:** [Audit P3 #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045) passou com LCP mobile mediano **3,386 s**, sob limite vigente **≤3,5 s**, mediana de três execuções; histórico anterior preservado.

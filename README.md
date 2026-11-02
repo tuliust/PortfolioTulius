@@ -39,7 +39,7 @@ Preencha somente as variáveis de ambiente **públicas** documentadas em `.env.e
 - Commit [`aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb): revisão mobile das seções de apresentação, resultados, formação, ferramentas e experiências.
 - [Validate #41246204902](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204902): **success**.
 - [Audit P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897): **failure**, com quatro verificações anteriores relativas à fotografia de Contato; o conjunto P4 capturou 38 painéis com zero falhas automatizadas.
-- LCP mobile simulado **3,492 s** (mediana de três) e diagnóstico aplicado **2,324 s** (uma amostra). A meta vigente ≤3,5 s foi atendida na última mediana de laboratório de 3,314 s; o p75 de campo permanece **não comprovado**.
+- LCP mobile simulado **3,492 s** (mediana de três) e diagnóstico aplicado **2,324 s** (uma amostra). A meta vigente ≤3,5 s foi atendida na última mediana de laboratório de 3,386 s; o p75 de campo permanece **não comprovado**.
 
 Este bloco é um **marco histórico fixo** e não o estado automático de futuros commits. Consulte [Estado vigente](docs/ESTADO_ATUAL_VIGENTE.md) e o SHA atual da `main` sempre que iniciar trabalho. Nenhuma mudança editorial ou transacional deve ser inferida desta documentação.
 

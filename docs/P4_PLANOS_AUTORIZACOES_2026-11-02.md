@@ -26,7 +26,7 @@ Ordem: examinar grants e `search_path`; validar admin, usuário autenticado comu
 
 ## D. LCP — ajustes exclusivamente técnicos e medidos
 
-**Meta revisada pelo proprietário em 02/11/2026: LCP mobile ≤3,5 s (3.500 ms)**, mediana de três execuções Lighthouse. A mediana mais recente registrada **3,314 s** atende ao novo limite **no ensaio histórico**; não equivale a ganho de código nem comprovação p75 de campo. Não alterar fotografia, fonte, recorte, animações/editoria ou layout.
+**Meta revisada pelo proprietário em 02/11/2026: LCP mobile ≤3,5 s (3.500 ms)**, mediana de três execuções Lighthouse. A mediana mais recente registrada **3,386 s** atende ao novo limite no [ensaio de 02/11/2026](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045); não equivale a ganho de código nem comprovação p75 de campo. Não alterar fotografia, fonte, recorte, animações/editoria ou layout.
 
 Executar experimentos isolados (ordem de carregamento não visual, JavaScript não crítico, redução de requisições redundantes e cache com invalidação após publicar) apenas com baseline e candidato comparáveis; validar em CI, navegador, P3/P4/P5 e 38 capturas; rejeitar qualquer regressão. Não declarar meta atendida com uma única medição favorável. **Nenhum ajuste visual aplicado nesta etapa**.
 
