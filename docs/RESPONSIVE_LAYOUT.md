@@ -1,5 +1,27 @@
 # Layout responsivo
 
+## Contrato mobile atual — 01/11/2026
+
+**Breakpoints:** mobile até 767 px, desktop a partir de 768 px. Nada de `zoom` global ou altura fixa que recorte conteúdo. Último código funcional auditado: [`aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb); [P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897) possui **quatro falhas antigas de Contato**, embora a composição de 38 capturas (13 desktop/25 mobile) não apresente falha automatizada.
+
+| Seção | Estrutura mobile verificada |
+|---|---|
+| 01 — Perfil | Painéis `perfil-a`/`perfil-b`: identidade, retrato, selo 360° e experiências/áreas em listas; seta para o segundo painel; largura 320–430 px testada |
+| 02 — Olá! | `sobre-a` com **um** título e retrato ampliado; `sobre-b` com cinco diferenciais, sequência contínua |
+| 03 — Resultados | `resultados-a`: seletor nativo acessível com seis opções e métricas em 2×2; em altura pequena cresce naturalmente |
+| Formação | 3 registros acadêmicos e 2 idiomas, espaçamento compacto e subtítulo menor; painéis sem cortes |
+| Ferramentas | 6 grupos CMS, ícones/textos alternados esquerda/direita, subtítulo redundante oculto, título principal intacto |
+| Experiências | Seis logos sob o menu + identidade e abas sticky **limitadas por empresa**, com acordeão de projetos e imagem correspondente, trajetória integral; cabeçalho editorial não sticky até 620 px de altura; barra libera Ferramentas |
+| Outras seções | Mesmos componentes/âmbitos do estado anterior; verificar especialmente a fotografia de Contato antes de declarar homologação P3 |
+
+**Larguras cobertas pelos testes específicos:** 320×568, 360×740, 375×667, 390×844 e 430×932 px (Perfil também 414 px). Ver [testes](../scripts/p3-browser-smoke.mjs) e artefatos de [P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897).
+
+A paridade visual desktop e a ausência de overflow foram verificadas por testes automatizados; não alegar equivalência pixel a pixel humana. A largura de 320 px pode produzir rolagem natural superior a 100svh. **Não reintroduzir painel interno com `overflow-y: auto` para comprimir conteúdo.**
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 ## Paridade mobile e critérios de aceite — revisão 31/10/2026
 
 Breakpoints mobile nativos ≤767 px, sem `zoom`/`transform:scale()` no contêiner. O renderizador monta só a árvore mobile (25 painéis) ou desktop (13 seções). Em mobile, a seção 01 utiliza nome que quebra de linha conforme a largura, retrato à direita e selo/experiência separados. A seção Olá! deixa de forçar uma tela vazia; os dois painéis preservam todos os itens. Formação e Ferramentas deixam de repetir o `h2` no painel B, recebendo subtítulo semântico `h3` com conteúdo próprio, preservando 3+2 e 3+3 itens respectivamente.

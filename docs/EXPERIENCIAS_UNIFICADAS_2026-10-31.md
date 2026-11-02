@@ -102,3 +102,16 @@ Atuação em agência de comunicação com foco em atendimento, planejamento est
 ## Aplicação no frontend
 
 Os cards resumidos continuam limitados conforme decisões editoriais. Os detalhes integrais ficam disponíveis por expansão acessível, lidos da coleção publicada `career_experiences` (não duplicados em JSON do bloco). Os itens `isHidden=true` não são tornados cards visíveis automaticamente. O CMS continua sendo a fonte de edição das descrições.
+
+## Atualização de apresentação pública mobile — 01/11/2026
+
+Este documento preserva integralmente os seis dossiês e títulos publicados, mas a **composição mobile** foi atualizada no [commit `aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb). A regra a seguir prevalece sobre as observações históricas de interface acima.
+
+- **Ordem de seis empresas e logos:** Invest RS, Prefeitura de São Paulo, Vale, TV Globo/SporTV, Grupo InPress, CDI Comunicação. Faixa sob o cabeçalho principal, seleção automática por rolagem e links de âncora.
+- **Ficha mobile por empresa:** `-a` mantém título, contexto, competências e controles `Projetos e realizações`/`Trajetória`; fica sticky no escopo da empresa quando há espaço útil. Em viewport até 620 px de altura, a ficha volta ao fluxo normal.
+- **Projetos:** `-b` exibe uma lista expansível com um projeto por vez; a imagem/galeria exibida é a vinculada ao projeto ativo por `matchExperienceSlides` e `experienceTitleKey`. Projetos sem imagem publicada ficam sem mídia inventada. Indicadores e descrições vêm dos itens CMS.
+- **Trajetória:** texto **integral** de `career_experiences` publicado no CMS, em rolagem vertical normal, sem ocultar trechos por resumidores de desktop.
+- **Término da seção:** cabeçalho sticky e faixa de logos não invadem Ferramentas. Desktop continua com os componentes e o contrato de layout anteriores.
+- **Auditoria:** [CI #41246204902](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204902) passou; [P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897) falhou em quatro critérios prévios de Contato, enquanto testes específicos de Experiências passaram e as 38 capturas editoriais foram geradas sem falhas.
+
+**Sem migração de dados:** não foram alterados os seis dossiês, textos, fotos, links ou suas revisões. Aceite visual humano continua independente de CI/P3.

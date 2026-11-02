@@ -1,5 +1,15 @@
 # PortfolioTulius — continuidade documental e backlog de UX do CMS
 
+## Aviso: este handoff foi superado pela implementação posterior
+
+**Registro histórico de 31/10/2026, anterior às entregas CMS-UX.** As expressões `PENDENTE`, `NÃO IMPLEMENTADO` e os próximos passos nas seções abaixo descrevem a situação **naquele SHA**. Em commits posteriores, o [estado do CMS](ADMIN_CMS.md) e o [estado vigente](ESTADO_ATUAL_VIGENTE.md) registraram implementação em código de CMS-UX-01 (popover 50 ícones), CMS-UX-02 (alinhamento alt/legenda) e CMS-UX-03 (biblioteca em modal). **Não executar essas tarefas novamente por leitura deste arquivo.**
+
+A inspeção humana e P2 transacional permanecem separadas e suspensas até autorização. Este arquivo foi mantido na rota original para preservar links de handoff e a especificação histórica, não como backlog atual. Consulte [Pendências realmente abertas](OPEN_ISSUES.md).
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 **Data da conferência:** 31/10/2026. **Natureza:** documentação e especificação para o próximo chat; **não é implementação das correções descritas abaixo**.  
 **Repositório:** `tuliustsangaropulos/PortfolioTulius` · branch obrigatória `main`. **Base lida:** [`e611429`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/e611429aa88cadb6e8f1bdda43529f423718fe1f). A próxima sessão deve conferir novamente HEAD, CI, Vercel e Supabase quando necessário: nenhum SHA desta página é perpetuamente vigente.
 

@@ -1,5 +1,17 @@
 # CMS administrativo
 
+## Estado funcional e aceite — revisão 01/11/2026
+
+As solicitações do documento [CONTINUIDADE_CMS de 31/10](CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md) foram descritas **antes de sua implementação**. O CMS vigente registra em código: **CMS-UX-01**, seletor de 50 ícones em popover visual com cinco categorias e limites de seleção; **CMS-UX-02**, campos de alt/legenda alinhados; **CMS-UX-03**, biblioteca padronizada em modal e fluxo de upload com publicação deliberada; **CMS-UX-04**, Salvar/dirty guard e `beforeunload` nativo.
+
+**Limite de comprovação:** implementação e verificações read-only/estáticas **não** constituem aceite humano do diálogo nem homologação transacional autenticada de uploads e CRUD. A decisão P2 de não executar gravações de teste em produção, nem criar staging pago sem autorização, permanece em vigor. Não modificar status de mídia/Storage ou dados editoriais por atualização documental.
+
+O conteúdo das seis experiências (tags, projetos, slides e `career_experiences`) continua separado e editável pelo CMS. O frontend mobile reorganiza somente a visualização: acordeão, galeria vinculada, Trajetória integral e ficha sticky, sem copiar textos para JSX. Ver [estado atual](ESTADO_ATUAL_VIGENTE.md) e [pendências](OPEN_ISSUES.md).
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 ## Revisão de experiências: badges, alternância tipográfica e CDI sem texto — 31/10/2026
 
 - **Dados revisados no Supabase:** seis empresas com cinco tags editoriais cada. A Invest RS mantém as cinco competências já aceitas. Foram adicionados registros do tipo `{title: "Competências aplicadas", tags: [...]}` ao início de `content_blocks.content_json.items` do painel A da Prefeitura de São Paulo, Vale, TV Globo/SporTV, Grupo InPress e CDI Comunicação, preservando todos os demais itens, slides, métricas, status e coleções. Verificação SQL posterior confirmou **6/6 empresas com 5 tags**, sem alteração de schema, RLS, tabelas ou `career_experiences`.

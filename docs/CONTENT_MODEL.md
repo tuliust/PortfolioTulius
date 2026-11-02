@@ -1,5 +1,20 @@
 # Modelo de conteúdo
 
+## Vigência dos dados editoriais — revisão 01/11/2026
+
+A apresentação pública responsiva reutiliza seções, blocos/placements, coleções e mídias publicados; **não existe catálogo estático de empresas, formações, métricas ou ferramentas que substitua os valores CMS em produção**. `ContentItem` preserva `title`, `text`, `tags`, `value`, `themeKey`, `toolIcons` e vínculos disponíveis; as regras de publicação/visibilidade e RLS continuam obrigatórias.
+
+- **Perfil/Olá!/Resultados:** dados dos blocos CMS, com seletor de categoria mobile vinculado ao estado do renderer, sem mudança de schema.
+- **Formação/Ferramentas:** três + dois registros e seis grupos são contagens do último SHA testado, não limites SQL nem motivo para truncar coleções futuras.
+- **Experiências:** seis seções públicas, com projetos e slides vinculados por título/associação já existente; a versão mobile apresenta um projeto expandido de cada vez e apenas suas imagens, sem substituir a galeria desktop. `career_experiences` fornece a Trajetória publicada integral em mobile, sem reconstruir texto em JSX. Imagens ausentes não devem ser preenchidas com mídia fictícia.
+- **Fonte operacional:** [estado atual](ESTADO_ATUAL_VIGENTE.md), [experiências](EXPERIENCIAS_UNIFICADAS_2026-10-31.md) e `src/components/public/ExperienceStack.tsx`.
+
+Esta revisão é somente documental. Nada autoriza alterações nas tabelas, RLS, triggers, Status editorial ou Storage. Relatórios SQL de outubro refletem a data da consulta, não inventário permanente.
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 `pages → sections → section_panels/content_blocks → block_placements` separa conteúdo e apresentação. Coleções normalizadas cobrem experiências, projetos, métricas, competências, formação, idiomas, ferramentas, depoimentos e contatos.
 
 Campos de status usam `draft`, `in_review`, `published` e `archived`. `editorial_issues` preserva divergências; `is_placeholder` e `editorial_note` impedem que X/Y/Z sejam convertidos em fatos.

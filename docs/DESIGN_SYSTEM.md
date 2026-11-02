@@ -1,5 +1,21 @@
 # Design system
 
+## Contrato editorial atual no mobile — 01/11/2026
+
+Preservar cores, tipos, fotografias, pictogramas, alinhamentos e a escala desktop vigente. Os mockups de outubro são referências conceituais, não substituem conteúdo CMS publicado nem determinam alturas rígidas.
+
+- **Perfil:** abertura clara/escura em duas telas editoriais; nome, posicionamento profissional derivado do campo CMS, retrato WebP, selo 360° e seta circular. Segundo painel com áreas e experiências.
+- **Olá!:** laranja, `OLÁ!` uma única vez na abertura, fotografia original ampliada, texto introdutório e cinco diferenciais em fluxo contínuo, sem cartão redundante.
+- **Resultados:** fundo claro, título de grande presença, categorias em `select` mobile e quatro indicadores 2×2 na visão geral; preservar textos, ícones e seleção CMS.
+- **Formação/Ferramentas:** painéis escuros, formação com títulos longos legíveis e espaçamento reduzido; ferramentas em seis linhas com ícones SVG originais alternados, título principal com tamanho original.
+- **Experiências:** faixa de seis logos, identidade da empresa e abas com hierarquia editorial, corpo contínuo de projetos vinculados às mídias; desktop não herda a regra sticky mobile. Abaixo de 621 px de altura, liberar a identidade em vez de esconder conteúdo.
+
+Fontes tipográficas e desenho dos elementos são os já existentes no código. Último estado [`aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb); paridade automatizada não equivale a aprovação estética humana. [Leia a especificação responsiva](RESPONSIVE_LAYOUT.md).
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 ## Mobile — composição revisada em 31/10/2026
 
 Contratos visuais publicados [`494aba3`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/494aba3fa98d061c52fed4897e28349773534920): nome de abertura sem corte horizontal; retrato/selo/anos sem sobreposição prevista; painel Olá! dimensionado pelo conteúdo; tipografia principal mobile com escala comum; Formação e Ferramentas continuam com dois grupos editorialmente diferentes, sem cabeçalho principal duplicado; depoimentos compactos com expansão por toque; Contato com foto em alinhamento inferior. Nenhuma regra altera a composição desktop.

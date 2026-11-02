@@ -1,5 +1,19 @@
 # Deploy
 
+## Critério atual de publicação e validação — 01/11/2026
+
+- Antes de qualquer mudança, consultar `AGENTS.md` e o HEAD da `main`. **Commits apenas documentais** podem disparar build/deploy automático na Vercel: não confundir isso com autorização para alterar configuração, domínio, variáveis ou serviços.
+- A verificação obrigatória separa **commit**, **CI Validate**, **status Vercel para esse SHA**, **P3 Audit** e **aceite humano**. Um resultado `success` no CI não valida LCP ou P3; um `READY` de versão anterior também não valida a revisão atual.
+- Último marco funcional usado nesta revisão: `aa71737e`, [CI #41246204902](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204902) `success`, [P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897) `failure` por quatro critérios de Contato; P4 38 capturas sem falhas. **Não reutilizar esse status para SHA novo.**
+- `P3-PERF-01` segue aberto: LCP mobile mediana simulada 3,492 s e p75 real desconhecido; as gates orçamentárias da P3 não são equivalentes à meta de 2,5 s.
+- Manter confidenciais senhas e tokens; `VITE_*` só para chaves publicáveis. Nenhuma migration, mudança de RLS, Auth, Storage ou conta Vercel pertence a uma limpeza documental.
+
+[Guia de estado operacional](ESTADO_ATUAL_VIGENTE.md) · [Pendências](OPEN_ISSUES.md) · [Índice](README.md).
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 ## Estado operacional conferido em 28/10/2026
 
 **Índice atual:** [`ESTADO_ATUAL_VIGENTE.md`](ESTADO_ATUAL_VIGENTE.md). Antes da presente consolidação, GitHub `main` estava em [`56cce2658731d6db29a2cf60cb326f0fd908ef01`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/56cce2658731d6db29a2cf60cb326f0fd908ef01), CI [`40747847554`](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40747847554) **success**, Vercel [`dpl_GAgdukRpirZ8j3foDFB4E5FKEtNk`](https://vercel.com/tuliustsangaropulos-creates-projects/portfolio-tulius/GAgdukRpirZ8j3foDFB4E5FKEtNk) **READY** no mesmo SHA, aliases `tulius.work` e `www.tulius.work`. Este SHA é o **pré-commit de consolidação**, não o valor que futuros chats devem assumir sem conferir.

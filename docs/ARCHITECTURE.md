@@ -1,5 +1,21 @@
 # Arquitetura
 
+## Contrato de arquitetura vigente — revisão 01/11/2026
+
+**Fonte primária:** [estado atual](ESTADO_ATUAL_VIGENTE.md); código do commit funcional [`aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb). A árvore pública e o CMS autenticado continuam distintos.
+
+- **Primeira dobra pública:** `index.html` inicia, na rota pública, uma consulta PostgREST com chave **publicável** para a seção Perfil publicada e visível. `src/hooks/usePortfolio.ts` reutiliza a promessa `window.__p3ProfileBootstrap`, compõe a primeira seção com blocos/painéis/placements do CMS antes de aguardar o grafo inteiro; eventual falha mantém o caminho de consulta integral.
+- **Carga diferida:** `src/content/defaultTokens.ts` é pequeno; `src/content/fallback.ts` é importado sob demanda somente no cenário de desenvolvimento/offline sem Supabase público. Não salvar fotografias, textos ou dados da homepage como cópias HTML fixas.
+- **Supabase:** dados de seções, blocos, ordens e visibilidade respeitam `published` e RLS. O SDK administrativo/autenticado não é necessário à consulta anônima inicial. Nada autoriza modificar RLS/Storage/Auth ou configurar novas variáveis sem pedido.
+- **Experiências mobile:** `src/components/public/ExperienceStack.tsx` reutiliza as seis empresas, logos e vínculos CMS; cada empresa mantém âncoras `-a` (identificação/abas sticky) e `-b` (conteúdo contínuo: projetos expansíveis, galeria e trajetória). A barra de logos fica sticky sob o menu e se encerra ao sair de Experiências. Em viewport ≤620 px de altura, o cabeçalho editorial deixa de ficar sticky para priorizar a leitura. O renderer desktop permanece separado.
+- **Sem rolagem interna em Experiências:** conteúdos completos percorrem a rolagem vertical natural. O cabeçalho não deve cobrir Ferramentas ao término da sexta empresa.
+
+Ver [responsividade](RESPONSIVE_LAYOUT.md), [proveniência das experiências](EXPERIENCIAS_UNIFICADAS_2026-10-31.md) e [performance](P3_LCP_MOBILE_RESULTADOS_2026-10-31.md).
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 ## Camadas
 
 1. `src/components/public`: shell editorial, navegação, renderer e padrões de card.

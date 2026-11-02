@@ -1,5 +1,21 @@
 # PortfolioTulius — Resultado das intervenções P3 no LCP mobile
 
+## Adendo de continuidade — medição posterior no último SHA funcional (31/10/2026)
+
+**A medição original deste relatório permanece válida para `9f5b6285`, mas NÃO é a medição mais recente.** Após a reformulação mobile de Perfil, Olá!, Resultados, Formação, Ferramentas e Experiências, o código `aa71737e` teve [CI #41246204902](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204902) **success** e [auditoria P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897) **failure** geral por quatro verificações já existentes do layout de Contato.
+
+- **LCP Lighthouse mobile simulado:** 3.285,321 ms; 3.491,881 ms; 3.493,745 ms — **mediana 3.491,881 ms (~3,492 s)**.
+- **DevTools aplicado:** 2.323,998 ms — **amostra única diagnóstica**, não mediana validada.
+- **P6 interno:** critério operacional mobile configurado passou, mas **não** significa que a meta de LCP ≤2.500 ms foi cumprida.
+- **P4:** 38 capturas (13 desktop e 25 mobile), zero falhas na verificação automatizada; **P5 público:** 3/3 read-only sem mutações.
+- **P3-PERF-01:** **ABERTA**; p75 de campo não coletado. Os resultados dos diferentes métodos não são intercambiáveis.
+
+O histórico de experimentos e medições anteriores está mantido abaixo, com seus SHAs originais. [Estado atual](ESTADO_ATUAL_VIGENTE.md) · [Pendências](OPEN_ISSUES.md).
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 **Data:** 31/10/2026  
 **Site:** https://tulius.work/  
 **Repositório:** `tuliustsangaropulos/PortfolioTulius`  

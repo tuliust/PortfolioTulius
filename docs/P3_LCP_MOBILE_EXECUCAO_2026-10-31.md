@@ -1,5 +1,15 @@
 # P3 — Continuidade da otimização do LCP mobile
 
+## Aviso de vigência — 01/11/2026
+
+Este plano de execução documenta etapas e diagnósticos de performance anteriores ao commit funcional `aa71737e`. **Não usar seus números como última medição nem como autorização para modificar arquitetura, CMS ou infraestrutura.** O resultado consolidado e as limitações do último SHA estão em [P3_LCP_MOBILE_RESULTADOS_2026-10-31.md](P3_LCP_MOBILE_RESULTADOS_2026-10-31.md); o acompanhamento vigente é [P3-PERF-01](OPEN_ISSUES.md).
+
+O objetivo real é **LCP ≤2,5 s no mobile**, sem relaxar gates, alterar fotografia, conteúdo ou tipografia sem necessidade e sem confundir três amostras Lighthouse simuladas com uma medição aplicada ou com p75 real.
+
+---
+
+> **Arquivo legado por assunto:** seções datadas abaixo registram decisões e medições de seus próprios SHAs; não as tratar como status operacional atual.
+
 ## Diagnóstico de limitação simulada vs. aplicada e adiamento de SEO (31/10/2026)
 
 **Fase A — instrumento comparável sem alterar o site:** [`f8416fe`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/f8416fe9fc65e4cdea9ef0cb87fbb0c335297f75) acrescentou `P3_LCP_THROTTLING_COMPARISON` à triagem do Lighthouse 13.5.0 e uma captura mobile suplementar com `--throttling-method=devtools`, explicitamente **não bloqueante**. A auditoria [P3 #41207318806](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41207318806) passou: mediana simulada LCP mobile **4,084 s**, mediana LCP observada sem limitação **0,504 s** (amostras 2 e 3 com 0,504 s; amostra 1 teve 2,326 s sob carga elevada), e LCP com limitação real **3,241 s** (uma amostra). A diferença é esperada porque a simulação do Lighthouse usa 4× de CPU e modelo de rede móvel; a decomposição `lcp-breakdown-insight` usa eventos do carregamento observado. **Não somar durações observadas para explicar a métrica simulada.** A captura `devtools` também é laboratório, não dado real de usuários p75.
