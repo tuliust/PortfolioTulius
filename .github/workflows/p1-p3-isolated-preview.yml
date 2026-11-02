@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: "24.16.0"
       - name: Check fixture schema and no-real-content guard
-        run: node --test scripts/p2-synthetic-fixtures.test.mjs
+        run: node --test scripts/p2-synthetic-fixtures.check.mjs
       - name: Verify production serves tested commit
         shell: bash
         run: |

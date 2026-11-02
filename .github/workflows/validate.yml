@@ -53,4 +53,4 @@ jobs:
           node --check scripts/p4-formation-visual-preview.mjs
           node --check scripts/p2-synthetic-fixtures.mjs
           node --check scripts/p2-synthetic-fixtures.check.mjs
-          node --test scripts/p2-synthetic-fixtures.test.mjs
+          node --test scripts/p2-synthetic-fixtures.check.mjs
