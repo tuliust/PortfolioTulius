@@ -36,8 +36,18 @@ try {
           endpointCounts.set(table, (endpointCounts.get(table) ?? 0) + 1)
         }
       })
-      const response = await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
-      if (!response?.ok()) throw new Error("P4 preview homepage unavailable")
+      let response
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        response = await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
+        if (response?.ok()) break
+        console.log("P4_FORMATION_HTTP_RETRY " + JSON.stringify({
+          viewport: viewport.name, attempt, status: response?.status() ?? null,
+        }))
+        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 1500))
+      }
+      if (!response?.ok()) {
+        throw new Error("P4 preview homepage unavailable: HTTP " + (response?.status() ?? "no response"))
+      }
       const initial = await page.evaluate(() => ({
         sections: document.querySelectorAll("section.portfolio-section").length,
         mobileFormationCards: document.querySelectorAll("#formacao-a .content-item").length,
