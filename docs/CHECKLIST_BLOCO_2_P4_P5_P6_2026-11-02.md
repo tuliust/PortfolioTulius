@@ -8,9 +8,10 @@
 - [x] Preparar fixtures com dados fictícios sem copiar `supabase/seed.sql`, que contém material editorial.
 - [x] Criar função única de validação de destino `scripts/p2-stage-destination.mjs` e preflight executado antes de instalar dependências.
 - [x] Executar **5/5 testes offline** da guarda, incluindo ref de produção conhecido, URL sem HTTPS, host divergente e frase de autorização; [CI](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001).
-- [ ] Escolher e **autorizar expressamente** ambiente separado: Supabase local/isolado ou projeto cloud distinto; confirmar limites/custos.
-- [ ] Verificar manualmente que o projeto selecionado é de teste e não contém dados pessoais/editoriais de produção; a guarda apenas bloqueia o ref de produção conhecido.
-- [ ] Provisionar esquema/buckets e criar contas admin/não admin **fictícias** no ambiente aprovado; configurar secrets exclusivos de staging.
+- [x] **Escolha autorizada:** Supabase CLI + Docker **local isolado**, sem criar segundo projeto Supabase na nuvem. [Procedimento seguro](SUPABASE_STAGING_LOCAL_ISOLADO_2026-11-02.md).
+- [x] Preparar `supabase/config.toml` com seed **somente sintético** e script de validação de URL local `127.0.0.1:54321`; nenhuma cópia de produção.
+- [ ] Verificar a execução **real** do stack local e a aplicação das migrations antes de qualquer teste transacional; este ambiente não tem Docker/CLI.
+- [ ] Iniciar stack **local** em Docker, aplicar as migrations/buckets e preparar contas admin/não admin **fictícias**. Usar somente chaves localhost, nunca secrets Vercel/GitHub ou Supabase cloud.
 - [ ] Validar publicação e rollback de páginas, seções, placements, blocos, mídia privada e pública, revisão e restauração, com log e limpeza.
 - [ ] Executar testes negativos com JWT de usuário comum/anônimo, verificar que RPCs privilegiadas não permitem ações proibidas.
 - [ ] Reexecutar limpeza e confirmar ausência de resíduos, deixando evidência transacional real.
@@ -43,10 +44,14 @@
 
 ## Portões de autorização
 
-**Antes de staging com escritas:** confirmar infraestrutura separada, custo, isolamento, contas de teste e acionamento manual.
+**Antes de staging com escritas:** usar **somente Docker/CLI local** (seleção aprovada), confirmar isolamento por loopback, migrations, seed fictício e contas de teste. Nenhuma escrita na produção; o workflow cloud antigo não se aplica.
 
 **Antes de publicação editorial:** aprovar composição/valores de cada bloco e teste responsivo. O proprietário já autorizou o **escopo**, não valores divergentes ou a ligação das mídias.
 
 **Antes de SEO e segurança em produção:** aprovar integração, credenciais, política de publicação e alterações por objeto, com rollback.
 
 **Próximo passo executável sem novo aceite:** continuar auditorias somente de leitura, automação de testes offline e comparação de campos sem alterar conteúdo.
+
+## Nova decisão para qualidade — 02/11/2026
+
+A meta oficial de LCP mobile passou a **≤ 3,5 s**, com mediana de três amostras Lighthouse. Última mediana registrada: **3,314 s**, atendida naquele ensaio; revalidar por versão. [Decisão vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).

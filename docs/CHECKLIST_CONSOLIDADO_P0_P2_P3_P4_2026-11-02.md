@@ -15,7 +15,7 @@
 | **P4.1 — Blocos e editorial** | 26 blocos manuais inventariados; Formação/A: 6 escolhas individuais respondidas (`meta=A`, `text=B`) e prévia **isolada em memória** implementada/testada; campos adicionais comuns às seis experiências definidos | Prévia **visual** em desktop/mobile e aceite de publicação; comparação/aceite dos valores de cada experiência; vínculos individuais |
 | **P4.2 — CMS e staging** | CMS autenticado em modo leitura validado (6/6); plano de staging **isolado com dados fictícios** documentado | Provisionamento autorizado, testes de gravação, revisão, publicação e recuperação em staging |
 | **P4.3 — Fotografia e mídia** | 75 mídias cadastradas verificadas; 53 objetos privados preservados; 19 slides e 6 logos auditados; proprietário confirmou as 3 fotografias atuais dos depoimentos; decisão de **manter** os 14 metadados alt | Vincular fotografias por IDs após ingestão e aprovação; homologação visual de enquadramentos; nenhum arquivo excluído |
-| **P4.4 — Site, SEO e LCP** | 4 falhas de Contato corrigidas; falhas HTTP simuladas 4/4; 8 campos estáticos de SEO conferidos; plano de disparo seguro após publicação documentado | Implantar SEO automático somente após autorização; LCP mobile ≤2,5 s **não atingido** (última mediana simulada 3,419 s) |
+| **P4.4 — Site, SEO e LCP** | 4 falhas de Contato corrigidas; falhas HTTP simuladas 4/4; 8 campos estáticos de SEO conferidos; plano de disparo seguro após publicação documentado | Implantar SEO automático somente após autorização; LCP mobile ≤3,5 s **atendido na última mediana 3,314 s, revalidação pendente** (última mediana simulada 3,419 s) |
 | **P4.5 — Segurança** | Auditoria de leitura realizada; plano de endurecimento preparado | Staging com JWTs reais de teste e autorizações específicas para qualquer mudança em Auth, RLS ou RPCs |
 | **P4.6 — Otimizações** | Login admin separado em chunk próprio; inventário técnico realizado | Otimizações adicionais com benefício mensurável e sem alteração da identidade visual |
 
@@ -124,7 +124,7 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 
 - [x] Corrigir os quatro critérios P3 de alinhamento da seção Contato; verificação de navegador posterior: zero falhas.
 - [x] Repetir Lighthouse mobile e registrar análise de fonte, CSS, JavaScript e atrasos de renderização; mediana **3,419 s** no SHA funcional `a0dfbeb` (meta ainda não alcançada).
-- [ ] Otimizar LCP mobile para ≤2,5 s com medição comparativa e sem alterações involuntárias de conteúdo/fotografia/design.
+- [ ] Otimizar LCP mobile para ≤3,5 s com medição comparativa e sem alterações involuntárias de conteúdo/fotografia/design.
 - [x] Implementar preservação do conteúdo já carregado e da lista administrativa diante de falha posterior de leitura.
 - [x] Injetar falhas GET de `section_panels` e `testimonials` em navegador; primeira dobra preservada com aviso, 2/2 cenários aprovados no ensaio anterior.
 - [x] Homologar no navegador a recuperação de depoimentos com GET 503: 13 seções, três retratos e aviso de erro preservados; leitura completa da coleção continua sendo fonte primária quando disponível ([P3/P4 41389455933](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41389455933)).
@@ -187,7 +187,7 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 
 ## Execução automática P4.1–P4.4 em 02/11/2026
 
-Inventário e comparações preliminares, auditoria do Storage, correções de recuperação, raio de cartões e Contato e ensaios P3/P5: consultar [relatório P4](P4_AUDITORIA_AUTOMATICA_2026-11-02.md). **Os testes transacionais, aprovações editoriais individuais, fotos de depoimentos, LCP ≤ 2,5 s e SEO imediatamente atualizado para robôs continuam pendentes.** A conclusão parcial não autoriza migração de dados.
+Inventário e comparações preliminares, auditoria do Storage, correções de recuperação, raio de cartões e Contato e ensaios P3/P5: consultar [relatório P4](P4_AUDITORIA_AUTOMATICA_2026-11-02.md). **Os testes transacionais, aprovações editoriais individuais, fotos de depoimentos, LCP ≤ 3,5 s e SEO imediatamente atualizado para robôs continuam pendentes.** A conclusão parcial não autoriza migração de dados.
 
 ### Evidências adicionais de P4 concluídas
 
@@ -208,7 +208,7 @@ Inventário e comparações preliminares, auditoria do Storage, correções de r
 - [x] Verificar o efeito do token publicado `font.heading` em `--font-display`, mantendo o valor atual Big Shoulders Display; todos os 12 tokens publicados foram revisados.
 - [x] Fornecer [inventário dos 14 atributos alt para revisão](P4_INVENTARIO_ALT_2026-11-02.md).
 - [x] Atualizar [relatório executivo das ações automáticas e bloqueios restantes](P4_ENCERRAMENTO_AUTOMATICO_2026-11-02.md).
-- [ ] LCP mobile ≤2,5 segundos: **não atingido**; 3,389 s de mediana do Lighthouse simulado no SHA funcional (três execuções).
+- [ ] LCP mobile ≤3,5 segundos: **não atingido**; 3,389 s de mediana do Lighthouse simulado no SHA funcional (três execuções).
 - [ ] Testes CRUD transacionais, mudanças de segurança, migrações editoriais, substituição de imagens e SEO estático sem redeploy **não estão autorizados ou homologados** automaticamente.
 
 A vistoria humana final e novos testes transacionais permanecem explicitamente pendentes.
@@ -219,7 +219,7 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [x] `scripts/p4-partial-failure.mjs`: simular respostas 503 de `section_panels`, `testimonials`, `design_tokens` e `pages`; **4 de 4 passaram**, nenhuma mutação ou foto alterada.
 - [x] CI do código funcional: formatação, TS, testes, build e smoke [Validate 41391579816](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579816).
 - [x] Reexecutar auditoria de navegador: zero falhas; **38 capturas**, RLS anônimo 3/3; Lighthouse acessibilidade 100/100 na medição anterior; [run 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658).
-- [ ] SEO atualizado automaticamente no HTML após novo salvamento, LCP ≤2,5 s e testes transacionais **continuam pendentes**.
+- [ ] SEO atualizado automaticamente no HTML após novo salvamento, LCP ≤3,5 s e testes transacionais **continuam pendentes**.
 - [x] Reunir respostas à [matriz de decisões](P4_TESTES_SEO_FALHAS_E_DECISOES_2026-11-02.md) e registrar as escolhas efetivas em [P4_DECISOES_2026-11-02.md](P4_DECISOES_2026-11-02.md); a autorização de publicação e as homologações restantes **não** foram concedidas.
 
 ## P4 — Decisões recebidas e preparação técnica (02/11/2026)
@@ -234,7 +234,7 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [ ] Experiências: escopo **comum às seis** já definido; revisar os valores, projetos e mídias de **cada empresa** antes de qualquer alteração de exibição.
 - [ ] Fotos: após proposta de ingestão aprovada, criar registros de mídia e associar IDs em fluxo editorial autorizado; sem substituição ou perda das imagens atuais.
 - [ ] Staging, SEO automático e mudanças de segurança exigem autorizações de implantação distintas. **Nada foi provisionado ou reconfigurado** nesta preparação.
-- [ ] Meta de LCP mobile ≤ 2,5 s segue aberta (última mediana simulada **3,419 s**); sem alterações de tipografia, fotos ou layout.
+- [ ] Meta de LCP mobile ≤ 3,5 s segue aberta (última mediana simulada **3,419 s**); sem alterações de tipografia, fotos ou layout.
 
 ## Decisões complementares aplicadas à prévia — 02/11/2026
 
@@ -252,7 +252,7 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [x] Prévia DOM isolada de Formação/A em 3 viewports, 6 imagens e 0 escritas, com [workflow 3/3 PASS](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402653744); isso **não** é homologação humana nem publicação.
 - [x] Fixtures de staging totalmente sintéticas e teste de guardas de nomes/status/identificadores, sem provisionar ambiente ou executar CRUD.
 - [x] Baseline de rede nos 3 viewports: 10 GETs e 9 endpoints distintos, incluindo 2 consultas de `sections` destinadas a Perfil e grafo completo.
-- [ ] Finalizar comparação individual dos valores de todos os 26 blocos, implantação real de staging, otimizações com ganhos medidos e aceite de prévia visual por proprietário. A meta LCP ≤2,5 s permanece pendente.
+- [ ] Finalizar comparação individual dos valores de todos os 26 blocos, implantação real de staging, otimizações com ganhos medidos e aceite de prévia visual por proprietário. A meta LCP ≤3,5 s permanece pendente.
 
 [Checklist atualizado do Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md) · [evidências P2/P3](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md).
 
@@ -260,7 +260,7 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 
 - [x] Auditar dependências textuais dos 53 objetos privados: **53 referenciados no histórico de revisões e 28 no JSONB atual**, sem abrir/remover arquivos; [evidência P1](BLOCO_1_P1_STORAGE_2026-11-02.md).
 - [x] Integrar **prévia opcional não persistente de Formação/A** na área protegida do CMS e validar em desktop/mobile, com **P5 7/7 e zero escritas** ([CI P5](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390)).
-- [x] Rodar auditoria completa de navegador/SEO/Lighthouse: [P3 #41404082087](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404082087) aprovado, 38 capturas, LCP mobile mediano **3,314 s** (meta ≤2,5 s **pendente**).
+- [x] Rodar auditoria completa de navegador/SEO/Lighthouse: [P3 #41404082087](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404082087) aprovado, 38 capturas, LCP mobile mediano **3,314 s** (meta ≤3,5 s **pendente**).
 - [ ] Revisar visualmente a nova prévia com o proprietário e obter aprovação de publicação antes de vincular `Formação/A`; validar outras integrações editoriais individualmente.
 - [ ] Provar benefícios de desempenho em experimentos antes/depois; evitar mudanças visuais ou editoriais de qualquer natureza sem aceite.
 
@@ -271,4 +271,14 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [x] Comparar atributos das nove projeções estruturadas candidatas: **139 divergências** levantadas (mapeamento, não autorização editorial); 17 blocos sem alternativa integral segura; [relatório](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md).
 - [x] Verificar [guarda offline de staging](../scripts/p2-stage-destination.mjs) (5/5 testes) e inserir preflight de destino no workflow de homologação, preservando a execução **somente manual**.
 - [x] Iniciar o [checklist Bloco 2 P4–P6](CHECKLIST_BLOCO_2_P4_P5_P6_2026-11-02.md) com P4 staging, P5 integração editorial e P6 SEO/segurança sem implementar mudanças não autorizadas.
-- [ ] Homologar staging separado, concluir as aprovações visuais, demonstrar LCP ≤2,5 s e obter aceite humano; nenhuma dessas pendências foi encerrada por testes offline.
+- [ ] Homologar staging separado, concluir as aprovações visuais, demonstrar LCP ≤3,5 s e obter aceite humano; nenhuma dessas pendências foi encerrada por testes offline.
+
+## Novas metas e ambiente (decisões vigentes de 02/11/2026)
+
+- [x] Alterar o limite de LCP mobile para **≤ 3,5 s** (mediana de três Lighthouse comparáveis), substituindo a meta operacional antiga de 2,5 s; a mediana **3,314 s** atende ao limite no ensaio já registrado, sem comprovar desempenho de campo.
+- [x] Atualizar o gate mobile automatizado para **3.500 ms**; manter guardas de fotografia, acessibilidade, SEO e CLS.
+- [x] Escolher **Supabase local/Docker + CLI**, exclusivamente fictício, sem criar novo projeto na nuvem.
+- [x] Preparar config local de seed sintético, guardas de loopback, testes offline e instruções; **não executar em produção**.
+- [ ] Iniciar o stack no computador com Docker/CLI e homologar CRUD/Auth/RLS/Storage/rollback local; este ambiente não possui Docker/CLI.
+
+[Decisão vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md) · [procedimento de staging local](SUPABASE_STAGING_LOCAL_ISOLADO_2026-11-02.md).

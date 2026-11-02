@@ -26,7 +26,7 @@ Ordem: examinar grants e `search_path`; validar admin, usuário autenticado comu
 
 ## D. LCP — ajustes exclusivamente técnicos e medidos
 
-Mediana simulada recente **3,419 s**, meta ≤2,5 s pendente. Não alterar fotografia, fonte, recorte, animações/editoria ou layout.
+**Meta revisada pelo proprietário em 02/11/2026: LCP mobile ≤3,5 s (3.500 ms)**, mediana de três execuções Lighthouse. A mediana mais recente registrada **3,314 s** atende ao novo limite **no ensaio histórico**; não equivale a ganho de código nem comprovação p75 de campo. Não alterar fotografia, fonte, recorte, animações/editoria ou layout.
 
 Executar experimentos isolados (ordem de carregamento não visual, JavaScript não crítico, redução de requisições redundantes e cache com invalidação após publicar) apenas com baseline e candidato comparáveis; validar em CI, navegador, P3/P4/P5 e 38 capturas; rejeitar qualquer regressão. Não declarar meta atendida com uma única medição favorável. **Nenhum ajuste visual aplicado nesta etapa**.
 
@@ -46,3 +46,7 @@ Para os três registros, `meta=A` preserva a versão curta publicada do período
 ## G. Preparação segura adicional de staging — verificação do destino
 
 Foi adicionada `scripts/p2-stage-destination.mjs`, reutilizada por `scripts/p2-transactional-staging.mjs`, e uma verificação anterior à instalação de dependências no workflow exclusivamente manual `.github/workflows/p2-transactional-staging.yml`. O teste local `scripts/p2-stage-destination.check.mjs` inclui cinco cenários, entre eles recusa do **projeto de produção conhecido**, HTTPS/hostname estritos e frase de confirmação exata. [CI da guarda](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001). Isso **não prova** que qualquer novo ref seja ambiente isolado: validar a propriedade e a ausência de dados reais manualmente antes de execução. Nenhum projeto foi provisionado e o workflow transacional não foi disparado.
+
+## H. Decisão posterior do proprietário — staging exclusivamente local
+
+A alternativa escolhida é **Supabase local com Docker/CLI**, **sem segundo projeto cloud**. A comparação inicial de alternativas na seção A acima é histórica e foi decidida. `supabase/config.toml` usa somente `seed.local.synthetic.sql` (fictício), mantendo `seed.sql` real fora dos testes; scripts verificam loopback, preflight e RLS anônimo em modo leitura. A execução real da stack **não ocorreu neste ambiente**, por ausência de Docker e CLI. [Guia de execução local](SUPABASE_STAGING_LOCAL_ISOLADO_2026-11-02.md) · [meta LCP vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).

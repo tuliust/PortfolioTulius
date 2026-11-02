@@ -1,3 +1,5 @@
+> **Atualização de decisão em 02/11/2026:** o limite vigente de LCP mobile é **≤3,5 s**, não ≤2,5 s. Foi escolhido **Supabase local isolado**, sem projeto cloud adicional. As métricas e gates abaixo documentam o contexto histórico da época. [Registro vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).
+
 # PortfolioTulius — estado operacional vigente
 
 **Revisão consolidada:** 01/11/2026. **Natureza:** marco documental, não monitoramento em tempo real. A prioridade é conferir a [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commits/main), o SHA publicado e os workflows desse SHA. [Histórico anterior preservado](historico/ESTADO_ATUAL_VIGENTE_ATE_2026-10-31.md).
@@ -12,7 +14,7 @@
 | P5 público | 3/3, **sem mutações** |
 | LCP mobile simulado | **3,492 s**, mediana de 3 execuções |
 | LCP mobile aplicado | **2,324 s**, uma amostra diagnóstica, não aceite |
-| Lighthouse P6 | Gate operacional mais permissivo passou; **não comprova** objetivo de LCP ≤2,5 s |
+| Lighthouse P6 | Registro anterior: gate mais permissivo; **meta vigente desde 02/11/2026 é LCP mobile ≤3,5 s**, com nova validação exigida após mudanças |
 | Aceite humano | Comparação estética e comportamento em dispositivo físico **não substituídos** pelos robôs |
 
 Não há medição válida de **p75 de usuários reais** para concluir a meta. A auditoria P3 geral continua **reprovada**; não atribuir as quatro falhas ao trabalho em Experiências sem evidência. A P3 identificou a versão do site correspondente ao SHA auditado; confirmar Vercel em cada mudança futura.

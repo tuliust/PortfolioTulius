@@ -38,3 +38,8 @@ Use classes utilitárias Tailwind diretamente no JSX. Mantenha regras base globa
 ## Publicação
 
 A Vercel executa o build Vite (`pnpm build`). As variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` devem existir no ambiente local e nos ambientes Vercel apropriados. Não incluir chaves `service_role` no frontend. Antes de publicar, revisar o diff, validar SEO/domínio e seguir `docs/DEPLOYMENT.md`; não executar deploy sem pedido explícito.
+
+
+## Homologação isolada e performance (decisão 02/11/2026)
+
+Para staging, usar **somente Supabase CLI + Docker local**, `supabase/config.toml` com `seed.local.synthetic.sql`, nunca `supabase/seed.sql` ou `supabase link/db push`. O procedimento está em `docs/SUPABASE_STAGING_LOCAL_ISOLADO_2026-11-02.md`. A meta operacional vigente de LCP mobile é **≤3,5 s** (mediana de três Lighthouse), mantendo identidade visual intacta. Este guia não autoriza alterar produção, RLS, Auth ou mídias.

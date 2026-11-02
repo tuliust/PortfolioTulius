@@ -1,6 +1,6 @@
 # Bloco 1 — Trabalho executável automaticamente pelos conectores
 
-**Status vigente:** execução parcial · **Atualizado em:** 02/11/2026 · **Fonte:** evidências técnicas e checklists versionados no PortfolioTulius. Este quadro organiza tarefas concluídas, pendências técnicas e decisões transferidas ao Bloco 2; **não declara encerrado o Bloco 1**.
+**Status vigente:** execução parcial · **Nova meta LCP mobile: ≤ 3,5 s** · **Staging aprovado: local/isolado** · **Atualizado em:** 02/11/2026 · **Fonte:** evidências técnicas e checklists versionados no PortfolioTulius. Este quadro organiza tarefas concluídas, pendências técnicas e decisões transferidas ao Bloco 2; **não declara encerrado o Bloco 1**.
 
 ## Painel de acompanhamento
 
@@ -69,11 +69,13 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [ ] Testar desduplicação ou reuso das consultas a `sections`, sem atrasar o Perfil nem alterar os dados exibidos.
 - [ ] Investigar estratégias de cache e invalidação, bundles administrativos e responsabilidades dos componentes com métricas comparáveis.
 - [ ] Reexecutar testes unitários, TypeScript, build, smoke, SEO, acessibilidade, RLS e capturas desktop/mobile depois de cada alteração técnica.
-- [ ] Atingir e confirmar **LCP mobile ≤ 2,5 s** com amostras comparáveis e sem regressões; ainda não atingido.
+- [x] **Meta vigente LCP mobile ≤ 3,5 s:** o último ensaio de três amostras (mediana **3,314 s**) atende ao limite aprovado. Não é medida de campo nem comprovação de melhora causada por código.
+- [ ] Revalidar o limite de 3,5 s no próximo SHA com auditoria Lighthouse de três amostras, preservando a fotografia do Perfil como LCP e demais gates.
 
 ## Dependências transferidas ao Bloco 2
 
-- [ ] **Bloco 2 / P4 — Staging:** autorizar e provisionar ambiente realmente isolado, criar credenciais sintéticas e homologar o ciclo completo formulário → gravação → Supabase → recuperação → prévia → público, com rollback.
+- [x] **Bloco 2 / P4 — Staging:** proprietário escolheu **Supabase local isolado**, sem novo projeto cloud; config, seed fictício e testes de isolamento offline foram preparados. [Guia](SUPABASE_STAGING_LOCAL_ISOLADO_2026-11-02.md).
+- [ ] **Bloco 2 / P4 — Execução local:** iniciar Docker/CLI no computador de homologação, verificar schema, criar contas fictícias e testar CRUD/RLS/Storage/rollback. Não iniciado neste ambiente sem Docker.
 - [ ] **Bloco 2 / P5 — Editorial:** revisar visualmente a prévia real de Formação/A e as seis capturas; obter autorização individual antes de vincular `education` ou editar outros blocos.
 - [ ] **Bloco 2 / P5 — Mídias:** avaliar e aprovar separadamente associação dos retratos, logos, galerias e outras diferenças editoriais.
 - [ ] **Bloco 2 / P6 — SEO e segurança:** autorizar separadamente o gatilho de deploy SEO e qualquer mudança em Auth, RLS, RPCs, índices ou credenciais.
@@ -97,3 +99,10 @@ Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque 
 - [Checklist do Bloco 2](CHECKLIST_BLOCO_2_P4_P5_P6_2026-11-02.md)
 
 **Regra de continuidade:** mudanças editoriais, vínculos de coleção, migrações de mídia, provisionamento/execução de staging e alterações de segurança só avançam após a autorização específica correspondente. O checklist é um painel de acompanhamento, não uma autorização de publicação.
+
+## Decisões atualizadas em 02/11/2026
+
+- [x] O limite operacional de **LCP mobile mudou de 2,5 s para 3,5 s**, por decisão do proprietário; o gate Lighthouse mobile foi atualizado para **3.500 ms**. [Registro](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).
+- [x] O último ensaio medido (mediana **3,314 s**, três Lighthouse) satisfaz a nova meta **nesse ensaio**. Revalidar após mudanças futuras; nenhum ganho de desempenho foi inferido.
+- [x] Seleção de **Supabase local** como único ambiente de staging; preparado `supabase/config.toml` com `seed.local.synthetic.sql`, sem segundo projeto cloud.
+- [ ] Rodar Docker/CLI local, testar migrations e o fluxo transacional com contas fictícias; **não executado aqui**.
