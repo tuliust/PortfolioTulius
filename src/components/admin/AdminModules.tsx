@@ -21,7 +21,14 @@ import { adminConfirm } from "./AdminConfirmationHost"
 import { mediaFileName } from "../../lib/media-framing"
 import { experienceTitleKey } from "../../lib/experience-text"
 import { withOpenGraphImage } from "../../lib/media-selection"
-import { COLLECTION_SOURCES, isCollectionSource } from "../../lib/collections"
+import {
+  COLLECTION_SOURCES,
+  isCollectionSource,
+  collectionToItems,
+  resolveCollectionBlocks,
+  type CollectionSource,
+} from "../../lib/collections"
+import { compareCollectionItemChanges } from "../../lib/collection-link-review"
 import {
   buildCollectionSavePayload,
   normalizeCollectionRecord,
@@ -330,6 +337,7 @@ export function ContentStudio({
   const [aboutImageTarget, setAboutImageTarget] = useState<"mobile" | "desktop">("mobile")
   const [draft, setDraft] = useState<BlockRow | null>(null)
   const [message, setMessage] = useState("")
+  const [reviewingSource, setReviewingSource] = useState(false)
   const initialPlacement = {
     layout_variant: "default",
     is_visible: true,
@@ -543,6 +551,95 @@ export function ContentStudio({
     setMessage("Bloco e placements salvos em uma transação.")
     await load()
     onSaved?.()
+  }
+
+  async function reviewCollectionSourceChange(next: string) {
+    if (!supabase || !draft || !savedBlock || reviewingSource) return
+    if (next === (draft.content_json.source_collection ?? "")) return
+    if (next && !isCollectionSource(next)) {
+      setMessage("Fonte de coleção não reconhecida.")
+      return
+    }
+    setReviewingSource(true)
+    try {
+      const publishedItems = async (source: CollectionSource): Promise<ContentItem[]> => {
+        const { data, error } = await supabase!
+          .from(source)
+          .select("*")
+          .eq("status", "published")
+          .order("sort_order")
+        if (error) throw error
+        return collectionToItems(source, data ?? [])
+      }
+      const previous = savedBlock.content_json.source_collection
+      const currentItems = isCollectionSource(previous)
+        ? resolveCollectionBlocks(
+            [savedBlock],
+            new Map([[previous, await publishedItems(previous)]]),
+          )[0].content_json?.items ?? []
+        : savedBlock.content_json.items ?? []
+      // Switching collections resets old pagination, which might silently hide
+      // cards belonging to the new collection. Restore manual items when unlinked.
+      const proposedJson = {
+        ...draft.content_json,
+        source_collection: next || null,
+        collection_start: undefined,
+        collection_limit: undefined,
+      }
+      const proposedItems = isCollectionSource(next)
+        ? resolveCollectionBlocks(
+            [{ ...draft, content_json: proposedJson }],
+            new Map([[next, await publishedItems(next)]]),
+          )[0].content_json?.items ?? []
+        : draft.content_json.items ?? []
+      const changes = compareCollectionItemChanges(currentItems, proposedItems)
+      if (changes.length > 80) {
+        setMessage(
+          `A comparação encontrou ${changes.length} divergências. Revise este bloco separadamente antes de trocar sua fonte.`,
+        )
+        return
+      }
+      const proceed = await adminConfirm(
+        `A fonte será alterada somente após ${changes.length} diferenças serem aprovadas individualmente. O site público só mudará depois de salvar o bloco. Os cards originais continuam armazenados. Deseja revisar?`,
+        { title: "Conferência editorial antes da vinculação", confirmLabel: "Revisar diferenças" },
+      )
+      if (!proceed) return
+      for (const [index, change] of changes.entries()) {
+        const approved = await adminConfirm(
+          `Diferença ${index + 1} de ${changes.length} — item ${change.position}, campo "${change.field}". Valor publicado: ${change.before}. Valor proposto: ${change.after}. Aprovar esta diferença?`,
+          { title: "Aprovação editorial individual", confirmLabel: "Aprovar diferença" },
+        )
+        if (!approved) {
+          setMessage("Vinculação cancelada; nenhum campo do bloco foi alterado.")
+          return
+        }
+      }
+      const blockId = draft.id
+      setDraft((current) =>
+        current?.id === blockId
+          ? {
+              ...current,
+              content_json: {
+                ...current.content_json,
+                source_collection: next || null,
+                collection_start: undefined,
+                collection_limit: undefined,
+              },
+            }
+          : current,
+      )
+      setMessage(
+        "Diferenças revisadas. A fonte mudou apenas no formulário; salve o bloco para aplicar.",
+      )
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? `Não foi possível conferir a coleção: ${error.message}`
+          : "Não foi possível comparar as fontes. Nenhuma alteração aplicada.",
+      )
+    } finally {
+      setReviewingSource(false)
+    }
   }
 
   async function archiveBlock() {
@@ -785,26 +882,10 @@ export function ContentStudio({
                     Fonte do conteúdo exibido
                     <select
                       value={draft.content_json.source_collection ?? ""}
-                      onChange={async (event) => {
-                        const next = event.target.value
-                        if (
-                          next &&
-                          !(await adminConfirm(
-                            "Vincular esta coleção fará o site exibir os registros publicados da coleção no lugar dos cards manuais deste bloco. O conteúdo manual será preservado. Continuar?",
-                            { title: "Alterar fonte de conteúdo" },
-                          ))
-                        )
-                          return
-                        setDraft({
-                          ...draft,
-                          content_json: {
-                            ...draft.content_json,
-                            source_collection: next || null,
-                          },
-                        })
-                      }}
+                      disabled={reviewingSource}
+                      onChange={(event) => void reviewCollectionSourceChange(event.target.value)}
                     >
-                      <option value="">Cards manuais (atual)</option>
+                      <option value="">Cards manuais (original)</option>
                       {COLLECTION_SOURCES.map((source) => (
                         <option key={source} value={source}>
                           {collectionConfigs.find((config) => config.table === source)?.label ??
