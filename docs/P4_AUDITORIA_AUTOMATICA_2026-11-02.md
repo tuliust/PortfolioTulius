@@ -65,7 +65,7 @@ Os **28 blocos publicados** permanecem: 26 manuais e 2 com `source_collection=te
 
 - `media_assets`: **75 registros**, cada um com objeto correspondente no Storage por `bucket_id + name`: 72 públicos e 3 privados.
 - `storage.objects`: **128 objetos**, 72 públicos e 56 privados. Os 53 objetos sem cadastro estão **todos no bucket privado**, de 26/10/2026 a 31/10/2026. Não são necessariamente lixo; **não apagar**.
-- **13 registros** têm `alt_text` vazio; **14** têm `alt_text` com menos de seis caracteres. Precisam de conferência visual individual. O `alt_text` no catálogo não é necessariamente a mesma legenda que o `alt` já fornecido em um bloco editorial.
+- **13 registros** têm `alt_text` vazio e **1** contém um texto curto (`Vale`); os 14 estão listados no [inventário de revisão de alt](P4_INVENTARIO_ALT_2026-11-02.md). Comprimento não é critério absoluto de acessibilidade: conferência contextual e eventual aprovação continuam pendentes.
 - **Seis logotipos de experiências** referenciam objetos existentes no Storage e têm `logoAlt`. Os **19 slides** (Invest RS 4; Prefeitura 3; Vale 3; Globo/SporTV 3; InPress 3; CDI 3) têm título, descrição alternativa e legenda, e cada URL corresponde a um objeto público existente. Isso confirma integridade dos arquivos e metadados, **não o enquadramento visual dos 19 slides**.
 - Os três depoimentos publicados permanecem sem `photo_media_id`. Seus três retratos históricos ficam nos blocos manuais como `/media/` e não foram atribuídos a algum objeto do catálogo pela semelhança de nomes. Exige correspondência e aprovação explícita.
 - **Cancelamento do seletor de imagens** validado em navegador autenticado, com fotografia anterior preservada e sem requisição de gravação. Testes de upload, promoção, substituição e cancelamento de operações com gravação aguardam staging isolado.
@@ -93,3 +93,9 @@ Os **28 blocos publicados** permanecem: 26 manuais e 2 com `source_collection=te
 - [P3: layout, RLS, acessibilidade, desempenho](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41383597122)
 - [P5: autenticação, 9 coleções, prévia e cancelamento de mídia 6/6](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384753740)
 - [P4: cenários de falha de leitura e recuperação 2/2](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384467574)
+
+## Continuação automática — fallbacks e tokens
+
+- Se um endpoint de coleção falhar mas o grafo das seções continuar íntegro, a aplicação agora usa a cópia editorial manual **apenas para a coleção indisponível**. O resultado publicado de uma coleção validamente vazia continua vazio. Os blocos reais de depoimentos incluem duas fotos no painel A e uma no B, todos mantidos em `content_json`; o novo teste browser verifica essa preservação.
+- Leitura dos 12 tokens publicados confirma seis cores, duas fontes, contêiner, espaçamento, movimento e raio. Os seletores CSS `--font-display` passaram a derivar de `font.heading`, tal como `--font-heading`; com o token atual (Big Shoulders Display), não há mudança intencional da identidade visual.
+- Falta homologar o resultado do novo workflow de navegador, otimização de LCP, sincronização automática do SEO estático após salvar e gravações transacionais em staging.

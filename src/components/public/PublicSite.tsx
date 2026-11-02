@@ -1258,6 +1258,7 @@ export function PublicSite({ preview = false }: { preview?: boolean }) {
     "--card-radius": `${tokens.cardRadius}px`,
     "--motion-duration": `${tokens.motionDuration}ms`,
     "--font-heading": `"${tokens.headingFont}", "Arial Narrow", sans-serif`,
+    "--font-display": `"${tokens.headingFont}", "Arial Narrow", sans-serif`,
     "--font-body": `"${tokens.bodyFont}", system-ui, sans-serif`,
   } as React.CSSProperties
 

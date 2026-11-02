@@ -85,7 +85,8 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 
 - [x] Conferir 75/75 registros de mídia com seus objetos Storage por bucket e caminho, sem alteração de dados.
 - [ ] Investigar 53 objetos privados sem cadastro, **sem exclusão automática**.
-- [ ] Revisar textos alternativos e metadados, inclusive 14 registros sinalizados por alt vazio ou curto na consulta de P2.
+- [x] Gerar [inventário dos 14 registros de mídia com alt vazio ou curto](P4_INVENTARIO_ALT_2026-11-02.md) por leitura do catálogo; sem gravar descrições inferidas.
+- [ ] Conferir imagens reais e aprovar os textos alternativos adequados ao contexto, individualmente.
 - [x] Testar cancelamento do seletor de mídia autenticado, preservando imagem salva sem escrita.
 - [ ] Homologar upload privado, publicação deliberada, seleção, substituição e cancelamentos de operações com gravação em staging.
 - [x] Validar por consultas a existência dos seis logos e 19 slides e a presença de título, legenda e texto alternativo em todos.
@@ -97,10 +98,12 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [x] Corrigir os quatro critérios P3 de alinhamento da seção Contato; verificação de navegador posterior: zero falhas.
 - [ ] Repetir medidas de LCP mobile, decompondo fontes, CSS, JS, rede e consultas; perseguir ≤2,5 s, atualmente sem comprovação.
 - [x] Implementar preservação do conteúdo já carregado e da lista administrativa diante de falha posterior de leitura.
-- [x] Injetar falhas GET de `section_panels` e `testimonials` em navegador; primeira dobra preservada com aviso, 2/2 cenários aprovados.
+- [x] Injetar falhas GET de `section_panels` e `testimonials` em navegador; primeira dobra preservada com aviso, 2/2 cenários aprovados no ensaio anterior.
+- [ ] Homologar o novo comportamento: em falha da coleção de depoimentos, manter todas as demais seções e restaurar os três cards/fotografias editoriais do JSONB, sem esvaziar o site.
 - [ ] Verificar outros cenários de falha parcial, recuperação de mídia e carregamento após reconexão.
 - [x] Fazer `radius.card` publicado alimentar o CSS dos cartões de depoimento, com validação e testes unitários.
-- [ ] Verificar se outros tokens configuráveis permanecem sem efeito público correspondente.
+- [x] Revisar os 12 tokens publicados e ligar `font.heading` também ao seletor visual `--font-display`, preservando a tipografia atual por padrão.
+- [ ] Homologar visualmente as futuras alterações de fontes no CMS em desktop/mobile.
 - [ ] Verificar SEO de CMS versus HTML publicado, inclusive atualização após salvar.
 
 ## P4.5 — Segurança, isolamento e acessibilidade pendentes de P2
@@ -156,3 +159,10 @@ Inventário e comparações preliminares, auditoria do Storage, correções de r
 
 - [P3/P4: Contato sem regressões e injeção de falhas 2/2](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384467574)
 - [P5: CMS autenticado e cancelamento de mídia sem escrita, 6/6](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41384753740)
+
+### P4 — Continuidade automática (falhas parciais e identidade visual)
+
+- [x] Implementar fallback não destrutivo por fonte de coleção: distinguir requisição indisponível de coleção publicada vazia, mantendo fotos e cópias manuais, com testes de unidade.
+- [x] Adicionar ao workflow P3 a verificação via navegador do fallback de coleção; a homologação é considerada concluída somente quando o workflow correspondente terminar com sucesso.
+- [x] Auditar os 12 tokens publicados e corrigir o vínculo de `font.heading` com os seletores `--font-display`, sem alterar a escolha tipográfica existente.
+- [x] Gerar lista de decisão de 14 arquivos com metadados alt a conferir, sem editar a biblioteca.
