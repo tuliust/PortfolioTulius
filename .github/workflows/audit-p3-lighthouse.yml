@@ -256,6 +256,13 @@ jobs:
           visual_status=$?
           set -e
           test "$browser_status" -eq 0 && test "$visual_status" -eq 0
+      - name: P4 public read-failure injection (read-only)
+        if: always()
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/p3-browser"
+          cp "$GITHUB_WORKSPACE/scripts/p4-partial-failure.mjs" p4-partial-failure.mjs
+          node p4-partial-failure.mjs
       - name: Upload editorial screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
