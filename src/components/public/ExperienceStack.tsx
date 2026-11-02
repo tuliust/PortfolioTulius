@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { imageFramingStyle } from "../../lib/media-framing"
 import {
@@ -557,33 +558,39 @@ function ExperienceCard({
 export function ExperienceStack({
   sections,
   isMobile,
+  preview = false,
 }: {
   sections: PortfolioSection[]
   isMobile: boolean
+  preview?: boolean
 }) {
   const [active, setActive] = useState(sections[0]?.slug ?? "")
   const [careerDetails, setCareerDetails] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    if (!publicReadClient) return
     let cancelled = false
-    void publicReadClient
-      .from("career_experiences")
-      .select("company,description")
-      .eq("status", "published")
-      .then(({ data, error }) => {
-        if (cancelled || error) return
-        const published: Record<string, string> = {}
-        for (const row of data ?? []) {
-          const slug = CAREER_COMPANY_SLUGS[row.company]
-          if (slug && row.description) published[slug] = row.description
-        }
-        setCareerDetails(published)
-      })
+    void (async () => {
+      // Draft career descriptions may be read only inside the protected admin preview.
+      const client = (preview
+        ? (await import("../../lib/supabase")).supabase
+        : publicReadClient) as unknown as PostgrestClient | null
+      if (cancelled || !client) return
+      const query = client.from("career_experiences").select("company,description")
+      const { data, error } = await (preview
+        ? query.neq("status", "archived")
+        : query.eq("status", "published"))
+      if (cancelled || error) return
+      const published: Record<string, string> = {}
+      for (const row of data ?? []) {
+        const slug = CAREER_COMPANY_SLUGS[row.company]
+        if (slug && row.description) published[slug] = row.description
+      }
+      setCareerDetails(published)
+    })()
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [preview])
 
   useEffect(() => {
     const onScroll = () => {

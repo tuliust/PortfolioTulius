@@ -20,6 +20,7 @@ import {
   type SectionPanelRow,
 } from "../lib/placements"
 import type { DesignTokens, PortfolioSection } from "../types/content"
+import { selectSectionExperienceMedia } from "../lib/cms-contract"
 
 type SectionResult = {
   id: string
@@ -65,9 +66,7 @@ function toSection(
     panelB: composition.mobileB,
     desktopPanelA: composition.desktopA,
     desktopPanelB: composition.desktopB,
-    experienceMedia: row.content_blocks?.find(
-      (block) => block.mobile_panel === "a" && block.status === "published",
-    )?.content_json?.experienceMedia,
+    experienceMedia: selectSectionExperienceMedia(row.content_blocks, includeDrafts),
   }
 }
 

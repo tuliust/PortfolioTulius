@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest"
-import { buildCollectionSavePayload, normalizeCollectionRecord } from "./admin-collection-payload"
+import {
+  buildCollectionSavePayload,
+  normalizeCollectionRecord,
+  isUnpublishOnlyCollection,
+} from "./admin-collection-payload"
 
 describe("Campos do acervo ao salvar", () => {
   it("não introduz tools_text em experiências ou outras coleções", () => {
@@ -30,6 +34,14 @@ describe("Campos do acervo ao salvar", () => {
       sort_order: 1,
     })
   })
+  it("não envia o estado archived a tabelas que não o aceitam", () => {
+    expect(isUnpublishOnlyCollection("skills")).toBe(true)
+    expect(isUnpublishOnlyCollection("tool_categories")).toBe(true)
+    expect(isUnpublishOnlyCollection("contact_channels")).toBe(true)
+    expect(isUnpublishOnlyCollection("testimonials")).toBe(false)
+    expect(isUnpublishOnlyCollection("career_experiences")).toBe(false)
+  })
+
   it("não altera o input original e remove campos de interface", () => {
     const draft = { id: "3", updated_at: "today", tools_text: "x", status: "draft" }
     expect(buildCollectionSavePayload(draft, "skills")).toEqual({ status: "draft" })

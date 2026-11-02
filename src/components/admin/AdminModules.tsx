@@ -25,6 +25,7 @@ import { COLLECTION_SOURCES, isCollectionSource } from "../../lib/collections"
 import {
   buildCollectionSavePayload,
   normalizeCollectionRecord,
+  isUnpublishOnlyCollection,
 } from "../../lib/admin-collection-payload"
 import type {
   ContentItem,
@@ -2029,11 +2030,13 @@ const collectionConfigs: CollectionConfig[] = [
 export function CollectionsStudio({
   initialSource,
   sectionId,
+  linkedSources = [],
   embedded = false,
   onDirtyChange,
 }: {
   initialSource?: string
   sectionId?: string
+  linkedSources?: string[]
   embedded?: boolean
   onDirtyChange?: (dirty: boolean) => void
 }) {
@@ -2050,22 +2053,31 @@ export function CollectionsStudio({
   )
   useEffect(() => onDirtyChange?.(recordDirty), [recordDirty, onDirtyChange])
 
-  const load = async () => {
-    if (!supabase) return
+  const load = async (preferredId?: string): Promise<boolean> => {
+    if (!supabase) return false
     const query = supabase.from(config.table).select("*").order("sort_order")
     const { data, error } =
       config.table === "metrics" && sectionId
         ? await query.eq("section_id", sectionId)
         : await query
+    if (error) {
+      setMessage(error.message)
+      return false
+    }
     const normalized = (data ?? []).map((record) => normalizeCollectionRecord(record, config.table))
     setRecords(normalized)
-    setMessage(error?.message ?? "")
-    if (normalized.length && !normalized.some((r) => r.id === selectedId))
-      setSelectedId(normalized[0].id)
+    setMessage("")
+    const nextId = preferredId ?? selectedId
+    setSelectedId(
+      normalized.some((record) => record.id === nextId) ? nextId : (normalized[0]?.id ?? ""),
+    )
+    if (!normalized.length) setDraft(null)
+    return !preferredId || normalized.some((record) => record.id === preferredId)
   }
 
   useEffect(() => {
     setSelectedId("")
+    setDraft(null)
     void load()
   }, [config.table, sectionId])
 
@@ -2088,6 +2100,7 @@ export function CollectionsStudio({
     setSelectedId("")
     setDraft({
       ...base,
+      ...(config.table === "metrics" && sectionId ? { section_id: sectionId } : {}),
       sort_order: records.length + 1,
       status: "draft",
     })
@@ -2098,28 +2111,46 @@ export function CollectionsStudio({
     setMessage("Salvando registro…")
     const payload = buildCollectionSavePayload(draft, config.table)
     const result = draft.id
-      ? await supabase.from(config.table).update(payload).eq("id", draft.id)
-      : await supabase.from(config.table).insert(payload)
-    setMessage(result.error?.message ?? "Registro salvo.")
-    if (!result.error) await load()
+      ? await supabase.from(config.table).update(payload).eq("id", draft.id).select("id").single()
+      : await supabase.from(config.table).insert(payload).select("id").single()
+    if (result.error) return setMessage(result.error.message)
+    const confirmed = await load(result.data.id)
+    setMessage(
+      confirmed
+        ? "Registro salvo e recuperado do Supabase."
+        : "O banco confirmou a gravação, mas a leitura posterior não confirmou o registro. Verifique antes de repetir.",
+    )
   }
 
   async function archive() {
     if (!supabase || !draft?.id) return
+    const unpublishOnly = isUnpublishOnlyCollection(config.table)
     if (
-      !(await adminConfirm("Arquivar este registro?", {
-        title: "Arquivar registro",
-        confirmLabel: "Arquivar",
-        tone: "danger",
-      }))
+      !(await adminConfirm(
+        unpublishOnly ? "Retirar este registro da publicação?" : "Arquivar este registro?",
+        {
+          title: unpublishOnly ? "Despublicar registro" : "Arquivar registro",
+          confirmLabel: unpublishOnly ? "Despublicar" : "Arquivar",
+          tone: "danger",
+        },
+      ))
     )
       return
     const { error } = await supabase
       .from(config.table)
-      .update({ status: "archived" })
+      .update({ status: unpublishOnly ? "draft" : "archived" })
       .eq("id", draft.id)
-    setMessage(error?.message ?? "Registro arquivado.")
-    if (!error) await load()
+      .select("id")
+      .single()
+    if (error) return setMessage(error.message)
+    const confirmed = await load(draft.id)
+    setMessage(
+      confirmed
+        ? unpublishOnly
+          ? "Registro retirado da publicação."
+          : "Registro arquivado e recuperado do Supabase."
+        : "Alteração não confirmada na leitura posterior. Verifique antes de repetir.",
+    )
   }
 
   return (
@@ -2148,6 +2179,13 @@ export function CollectionsStudio({
             Novo registro
           </button>
         </div>
+      )}
+      {embedded && (
+        <p className="site-editor-note" role="status">
+          {linkedSources.includes(config.table)
+            ? "Coleção vinculada nesta seção: os registros publicados alimentam o bloco correspondente."
+            : "Coleção não vinculada a esta seção. Salvar aqui atualiza o acervo, mas não os cards manuais do site. Para vinculá-la, use Fonte do conteúdo exibido nas configurações avançadas do bloco."}
+        </p>
       )}
       <div className="collection-tabs" role="tablist">
         {collectionConfigs.map((item) => (
@@ -2264,8 +2302,15 @@ export function CollectionsStudio({
             </div>
             <StatusMessage>{message}</StatusMessage>
             <div className="form-actions">
-              <button className="danger-button" onClick={archive} disabled={!draft.id}>
-                Arquivar
+              <button
+                className="danger-button"
+                onClick={archive}
+                disabled={
+                  !draft.id ||
+                  (isUnpublishOnlyCollection(config.table) && draft.status !== "published")
+                }
+              >
+                {isUnpublishOnlyCollection(config.table) ? "Despublicar" : "Arquivar"}
               </button>
               <FloatingSaveButton enabled={recordDirty} onClick={save} label="Salvar registro" />
             </div>

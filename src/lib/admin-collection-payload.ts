@@ -30,3 +30,8 @@ export function buildCollectionSavePayload(draft: Record<string, any>, table: st
   }
   return payload
 }
+
+/** Some CMS collections have only draft/published status in the database. */
+export function isUnpublishOnlyCollection(table: string): boolean {
+  return ["skills", "tool_categories", "contact_channels"].includes(table)
+}

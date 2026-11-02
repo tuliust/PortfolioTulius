@@ -388,6 +388,8 @@ function SectionsEditor({
         animation_preset: draft.animation_preset,
       })
       .eq("id", draft.id)
+      .select("id")
+      .single()
     setMessage(error ? error.message : "Alterações salvas.")
     if (!error) reload()
   }
@@ -479,6 +481,8 @@ function SectionsEditor({
       .from("sections")
       .update({ status: "archived", is_visible: false })
       .eq("id", selected.id)
+      .select("id")
+      .single()
     setMessage(error ? error.message : "Seção arquivada.")
     if (!error) reload()
   }
@@ -938,6 +942,7 @@ function SiteEditor({
                       key={collectionSource}
                       initialSource={collectionSource}
                       sectionId={selected.id}
+                      linkedSources={linkedSources}
                       embedded
                       onDirtyChange={onDirtyChange}
                     />

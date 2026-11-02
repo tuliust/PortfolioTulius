@@ -1304,6 +1304,7 @@ export function PublicSite({ preview = false }: { preview?: boolean }) {
                   EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
                 )}
                 isMobile={isMobile}
+                preview={preview}
               />
             )
           }
