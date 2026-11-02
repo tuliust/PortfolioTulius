@@ -69,6 +69,39 @@ try {
   passed++
   console.log("P5_ADMIN_MODULES " + JSON.stringify({ result: "PASS", modules: expectedModules.length }))
 
+  // Read-only P4 checks: confirm the identity token and all nine structured
+  // collections are reachable without submitting any data or media writes.
+  await page.$eval(".admin-sidebar nav button", (nodes) => {
+    nodes.find((node) => node.textContent?.trim() === "Identidade")?.click()
+  })
+  await page.waitForSelector(".license-card .field-grid", { timeout: 12000 })
+  const radiusVisible = await page.$eval(".license-card", (node) =>
+    [...node.querySelectorAll("label")].some((label) =>
+      label.textContent?.includes("radius.card"),
+    ),
+  )
+  if (!radiusVisible) throw new Error("Token radius.card ausente no editor de identidade.")
+  await page.$eval(".admin-sidebar nav button", (nodes) => {
+    nodes.find((node) => node.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-tabs", { timeout: 12000 })
+  await page.$eval(".site-editor-tabs [role=tab]", (nodes) => {
+    nodes.find((node) => node.textContent?.includes("Acervo estruturado"))?.click()
+  })
+  await page.waitForSelector(".collection-tabs [role=tab]", { timeout: 15000 })
+  const collections = await page.$eval(".collection-tabs [role=tab]", (nodes) =>
+    nodes.map((node) => node.textContent?.trim()),
+  )
+  if (collections.length !== 9 || collections.some((label) => !label)) {
+    throw new Error("Acervo estruturado incompleto: " + JSON.stringify(collections))
+  }
+  if (mutations.length) throw new Error("A leitura do acervo tentou alterar dados.")
+  passed++
+  console.log("P5_P4_CMS_READONLY " + JSON.stringify({
+    result: "PASS", radiusField: radiusVisible, collections: collections.length,
+    contentMutations: mutations.length,
+  }))
+
   // Verify the newly edited CMS at a narrow viewport, without submitting any
   // request that mutates the database. Input changes are ephemeral drafts.
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
@@ -211,5 +244,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 4, contentMutations: 0 }))
-if (passed !== 4) process.exitCode = 1
+console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 5, contentMutations: 0 }))
+if (passed !== 5) process.exitCode = 1
