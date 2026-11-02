@@ -63,11 +63,13 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 ## P4.1 — Blocos manuais e integração editorial (P0/P1 anterior)
 
 - [x] Inventariar os **26 blocos manuais**; comparação automatizada preliminar registrada na auditoria P4.
-- [ ] Confirmar candidatos e comparar/aprovar individualmente cada campo, mídia, ordem e efeito visual antes do vínculo.
+- [x] Selecionar **Formação/A** como piloto e comparar por campo os 3 registros de `education`; [6 diferenças documentadas](P4_PILOTO_FORMACAO_A_2026-11-02.md).
+- [ ] Aprovar individualmente os 6 atributos divergentes (`meta` e `text` dos 3 registros) antes de vincular Formação/A. Os títulos e tipos coincidem; o formato público atual prevalece.
 - [ ] Confrontar textos, fotos, links, ordem, estado, metadados e estilos por painel.
 - [ ] Solicitar aprovação de **cada divergência** antes de substituir origem.
 - [ ] Vincular gradualmente apenas os blocos aprovados, mantendo originais recuperáveis.
-- [ ] Escolher individualmente quais campos das experiências serão sincronizados.
+- [x] Identificar os 6 campos adicionais escolhidos nas experiências: empresa, cargo, localização, período, projetos/realizações e mídias (logos/galerias), além da descrição já ligada.
+- [ ] Definir escopo **comum às seis** versus **campos por experiência** e aprovar por campo cada divergência antes de sincronizar.
 - [ ] Homologar propagação de experiências, projetos, métricas, formação, idiomas, ferramentas, depoimentos e contato.
 
 ## P4.2 — CMS, Supabase e editor (P0 anterior)
@@ -79,19 +81,22 @@ A mudança cria um ponto de carregamento independente para o login. **Não demon
 - [x] Executar testes autenticados de leitura: 8 módulos, 9 coleções, 50 ícones, alterações não salvas, prévia de 14 seções, cancelamento de mídia e logout; **6/6, sem escrita**.
 - [ ] Homologar prévia de rascunhos e guardas em cenários adicionais com operações salvas no staging.
 - [ ] Homologar histórico e recuperação limitada.
-- [ ] Executar testes de gravação somente em staging isolado com autorização específica.
+- [x] Preparar [plano de staging com dados fictícios](P4_PLANOS_AUTORIZACOES_2026-11-02.md), revisando o workflow manual já existente.
+- [ ] Provisionar ambiente e executar gravações somente após autorização de infraestrutura/credenciais/testes; **não usar produção nem seed editorial**.
 
 ## P4.3 — Fotografia, biblioteca e galerias (P1 anterior)
 
 - [x] Conferir 75/75 registros de mídia com seus objetos Storage por bucket e caminho, sem alteração de dados.
 - [ ] Investigar 53 objetos privados sem cadastro, **sem exclusão automática**.
 - [x] Gerar [inventário dos 14 registros de mídia com alt vazio ou curto](P4_INVENTARIO_ALT_2026-11-02.md) por leitura do catálogo; sem gravar descrições inferidas.
-- [ ] Conferir imagens reais e aprovar os textos alternativos adequados ao contexto, individualmente.
+- [x] Registrar opção **C: manter os metadados alternativos atuais**, inclusive os 14 registros previamente triados; nenhuma gravação realizada.
+- [ ] Reabrir revisão de alt somente em caso de nova instrução ou falha de acessibilidade comprovada.
 - [x] Testar cancelamento do seletor de mídia autenticado, preservando imagem salva sem escrita.
 - [ ] Homologar upload privado, publicação deliberada, seleção, substituição e cancelamentos de operações com gravação em staging.
 - [x] Validar por consultas a existência dos seis logos e 19 slides e a presença de título, legenda e texto alternativo em todos.
 - [ ] Homologar visualmente enquadramentos, textos sobre imagens e galeria nos dispositivos finais.
-- [ ] Associar depoimentos aos IDs das fotos aprovadas, sem inferência por nome ou ordem.
+- [x] Registrar confirmação explícita das 3 correspondências autor/fotografia; verificar existência dos 3 arquivos estáticos no repositório.
+- [ ] Aprovar ingestão dos arquivos ao catálogo de mídia e posterior associação de `photo_media_id` a cada autor; **nenhum UUID de mídia disponível foi inferido e nenhum vínculo foi gravado**.
 
 ## P4.4 — Site, SEO e desempenho (P1 anterior)
 
@@ -190,3 +195,17 @@ A vistoria humana final e novos testes transacionais permanecem explicitamente p
 - [x] Reexecutar auditoria de navegador: zero falhas; **38 capturas**, RLS anônimo 3/3; Lighthouse acessibilidade 100/100 na medição anterior; [run 41391579658](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41391579658).
 - [ ] SEO atualizado automaticamente no HTML após novo salvamento, LCP ≤2,5 s e testes transacionais **continuam pendentes**.
 - [ ] Reunir respostas às perguntas da [matriz de decisões pendentes](P4_TESTES_SEO_FALHAS_E_DECISOES_2026-11-02.md) para preparar propostas específicas sem substituir conteúdos.
+
+## P4 — Decisões recebidas e preparação técnica (02/11/2026)
+
+- [x] Registrar [as 8 decisões editoriais e técnicas do proprietário](P4_DECISOES_2026-11-02.md), sem interpretá-las como autorização para escrever em produção.
+- [x] Preparar [comparação do piloto Formação/A](P4_PILOTO_FORMACAO_A_2026-11-02.md): títulos, tipos e ordem mantidos; **6 diferenças** em `meta`/`text` requerem escolha do proprietário.
+- [x] Incluir teste automatizado de proteção das 6 divergências e do conteúdo manual (`src/lib/collection-link-review.test.ts`); aprovado em [Validate 41394155842](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41394155842).
+- [x] Confirmar 3 arquivos `public/media/matheus-gomes.jpg`, `ana-beatriz-neves.jpg`, `fabio-seixas.jpg` e seus depoimentos estruturados; os caminhos estáticos não estão cadastrados em `media_assets`, e os `photo_media_id` continuam nulos.
+- [x] Preservar os 14 `alt_text` do catálogo conforme opção C do proprietário.
+- [x] Elaborar [planos técnicos](P4_PLANOS_AUTORIZACOES_2026-11-02.md) de staging fictício, disparo seguro de SEO publicado, hardening de segurança e experiências de LCP sem mudança visual.
+- [ ] Formação/A: obter as **6 aprovações por atributo** antes de aplicar origem estruturada; se houver divergência futura, a versão atual do público prevalece.
+- [ ] Experiências: definir escopo comum ou individual; então revisar campos e mídias por empresa.
+- [ ] Fotos: após proposta de ingestão aprovada, criar registros de mídia e associar IDs em fluxo editorial autorizado; sem substituição ou perda das imagens atuais.
+- [ ] Staging, SEO automático e mudanças de segurança exigem autorizações de implantação distintas. **Nada foi provisionado ou reconfigurado** nesta preparação.
+- [ ] Meta de LCP mobile ≤ 2,5 s segue aberta (última mediana simulada **3,419 s**); sem alterações de tipografia, fotos ou layout.
