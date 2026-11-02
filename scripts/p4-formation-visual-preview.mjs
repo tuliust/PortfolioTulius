@@ -39,13 +39,13 @@ try {
       let response
       for (let attempt = 1; attempt <= 3; attempt++) {
         response = await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
-        if (response?.ok()) break
+        if (response?.ok() || response?.status() === 304) break
         console.log("P4_FORMATION_HTTP_RETRY " + JSON.stringify({
           viewport: viewport.name, attempt, status: response?.status() ?? null,
         }))
         if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 1500))
       }
-      if (!response?.ok()) {
+      if (!response?.ok() && response?.status() !== 304) {
         throw new Error("P4 preview homepage unavailable: HTTP " + (response?.status() ?? "no response"))
       }
       const initial = await page.evaluate(() => ({
