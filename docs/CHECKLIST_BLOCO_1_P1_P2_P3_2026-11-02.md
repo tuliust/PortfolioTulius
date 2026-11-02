@@ -1,69 +1,99 @@
-# Bloco 1 — Checklist operacional P1–P3
+# Bloco 1 — Trabalho executável automaticamente pelos conectores
 
-**Data:** 02/11/2026. **Escopo:** somente trabalho automático por conectores GitHub, Supabase e Vercel sem publicar conteúdo editorial não aprovado. Este checklist complementa o [histórico P0–P4](CHECKLIST_CONSOLIDADO_P0_P2_P3_P4_2026-11-02.md); não substitui o aceite do proprietário.
+**Status vigente:** execução parcial · **Atualizado em:** 02/11/2026 · **Fonte:** evidências técnicas e checklists versionados no PortfolioTulius. Este quadro organiza tarefas concluídas, pendências técnicas e decisões transferidas ao Bloco 2; **não declara encerrado o Bloco 1**.
 
-## P1 — Inventário, comparação e cobertura do CMS
+## Painel de acompanhamento
 
-- [x] Auditar os 28 blocos publicados, identificar **26 manuais** e **2 vinculados** e listar os campos de cada bloco em [inventário integral](BLOCO_1_P1_INVENTARIO_2026-11-02.md).
-- [x] Inventariar as **14 seções** (13 visíveis e Competências oculta), 42 painéis e coleções.
-- [x] Listar candidatos estruturados por títulos iguais, distinguindo coincidência de título de equivalência editorial; não vincular.
-- [x] Comparar empresa, cargo, localização, período, projetos e galeria nas seis experiências, com [relatório por empresa](BLOCO_1_P1_EXPERIENCIAS_2026-11-02.md).
-- [x] Identificar quatro projetos estruturados e as diferenças de texto/visibilidade dos cards associados.
-- [x] Relacionar os nove formulários de coleções aos campos do esquema e identificar atributos sem campo direto (`experience_id`, `photo_media_id`, `skills` etc.).
-- [x] Triar [53 objetos privados sem cadastro por MIME e diretório](BLOCO_1_P1_STORAGE_2026-11-02.md), sem leitura dos bytes privados ou exclusões.
-- [x] Reaproveitar o mapa dos três retratos confirmados dos depoimentos, sem inventar UUIDs e sem ingestão.
-- [x] Medir **139 divergências de atributos** em nove projeções hipotéticas de coleções, com contagens por campo e sem salvar qualquer alteração; [matriz P1 detalhada](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md).
-- [x] Identificar os **17 demais blocos manuais** sem projeção estruturada completa; nenhum recebeu vínculo por inferência.
-- [ ] Revisar **todos os valores editoriais** (fotografias, links, estados ocultos, responsividade, ordem e conteúdo) individualmente, em particular nos 17 blocos heterogêneos; uma comparação automática de atributos **não** equivale a aprovação de substituição.
-- [x] Verificar referências textuais nos 145 registros históricos de revisão: **53/53 objetos privados aparecem no histórico**; **28/53** também aparecem nos blocos atuais, sem leitura de bytes nem exclusões. [Relatório](BLOCO_1_P1_STORAGE_2026-11-02.md).
-- [ ] Confirmar dependências efetivas, comparação de bytes e eventual duplicidade antes de propor limpeza; a simples referência histórica não prova uso corrente.
-- [ ] Homologar ciclo completo formulário → gravação → banco → recuperação → prévia → público em staging; **transferido à P4 do Bloco 2** e condicionado à autorização do ambiente isolado.
+| Frente | Realizadas | Pendentes técnicas | Estado |
+| --- | ---: | ---: | --- |
+| **P1** — Inventário e comparação editorial | 9 | 2 | Parcial |
+| **P2** — Prévias e testes preparatórios | 7 | 3 | Parcial |
+| **P3** — Desempenho e confiabilidade | 5 | 6 | Parcial |
+| **Total** | **21** | **11** | **Bloco 1 parcialmente concluído** |
 
-## P2 — Prévia isolada, dados sintéticos e testes preparatórios
+Há ainda **4 itens transferidos ao Bloco 2**, fora das contagens acima, porque precisam de autorização, ambiente isolado ou aceite editorial.
 
-- [x] Preservar em código a prévia aprovável de Formação/A, mantendo períodos `meta=A` e novos textos de instituição `text=B` **sem alterar o bloco público** (`src/lib/formation-pilot-preview.ts`).
-- [x] Validar a proteção de IDs, títulos, rótulos, ordem e versões do texto em testes unitários existentes.
-- [x] Adicionar [teste de navegador com injeção DOM somente em memória](../scripts/p4-formation-visual-preview.mjs).
-- [x] Executar prévia em **desktop 1440px, mobile 390px e mobile 360px**, comparando antes e depois: **3/3 PASS**, sem overflow horizontal ou escritas; [workflow e seis capturas](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402653744).
-- [x] Gerar [fixtures independentes totalmente sintéticas](../scripts/p2-synthetic-fixtures.mjs), com verificação de nomes proibidos e unicidade, sem copiar `supabase/seed.sql`; testes nativos Node e Validate CI aprovados.
-- [x] Criar workflow específico para auditoria read-only de prévia e rede, com gate de SHA da produção e upload de seis capturas.
-- [x] Integrar na aba **Prévia** do CMS um modo opcional de Formação/A, autenticado, não persistente e desativado por padrão; [teste P5 7/7](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390), aprovado em desktop e mobile, 0 mutações.
-- [ ] Obter **aceite humano** da composição visual da prévia real, em desktop e mobile; a verificação automatizada de elementos não equivale à homologação editorial.
-- [ ] Receber revisão das seis capturas isoladas **e da prévia real do CMS**, com autorização separada antes de qualquer vínculo `Formação/A` com `education`.
-- [x] Implementar [guarda de destino fail-closed](../scripts/p2-stage-destination.mjs), reutilizada no executor de staging e validada por **5 testes offline** (incluindo rejeição do ref de produção); [CI 41514624001](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001).
-- [ ] Preparar/validar mais testes sintéticos para duplicação, ordenação, arquivamento, histórico, rollback e restauração em staging; fixture e guarda prontas **não** significam CRUD transacional testado.
-- [ ] Executar com credenciais distintas os ensaios administrativos e operações privadas **somente depois de staging provisionado e autorizado**.
-- [ ] Testar falhas/reconexão de mídia e publicação estática de SEO com servidor de teste isolado.
-- [ ] Implantar o gatilho real de SEO apenas após autorização específica para infraestrutura e segredos.
+## Atividades realizadas e pendentes por frente
 
-## P3 — Diagnóstico de desempenho e otimizações não visuais
+### P1 — Inventário e comparação editorial
 
-- [x] Coletar **baseline de GETs por endpoint** no navegador em desktop/mobile, no mesmo workflow de P2, sem dados sensíveis nas URLs e sem escritas.
-- [x] Medir **dez GETs para nove endpoints** em cada viewport de teste; `sections` aparece **duas vezes** (Perfil antecipado + grafo completo).
-- [x] Registrar como **candidato técnico, não erro**, a dupla leitura de `sections`; ela dá prioridade à primeira dobra. Não remover sem comparação de LCP e regressão visual.
-- [x] Preservar as medições Lighthouse anteriores como baseline (~3,419 s de LCP mobile mediano simulado); não alegar melhoria por mudanças restritas aos testes.
-- [x] Reexecutar três medidas Lighthouse mobile na rodada de auditoria da nova prévia protegida: mediana **3,314 s** no [run 41404082087](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404082087), sem regressão editorial detectada; **não é melhoria atribuível à prévia admin**.
-- [ ] Medir três ou mais Lighthouse mobile **antes e depois de uma otimização específica**, com triagem de CSS/JS/fontes, PostgREST e atraso de renderização; a comparação causal ainda não foi realizada.
-- [ ] Implementar somente ajustes técnicos com benefício medido, mantendo **fonte, retratos, cortes, conteúdo, animações editoriais e layout idênticos**.
-- [ ] Testar alternativas de reuso/desduplicação das duas leituras `sections`, preservando o primeiro Perfil; rejeitar atrasos ou conteúdo alterado.
-- [ ] Comparar snapshots, P3/P4/P5, responsividade, SEO e RLS de qualquer alteração técnica antes/depois.
-- [ ] Reduzir LCP mobile para ≤2,5 s com amostras comparáveis; **não atingido**.
-- [ ] Revisar outras oportunidades técnicas de cache, bundle admin e responsabilidades de componentes mediante métricas; nenhuma exclusão/refatoração especulativa.
+**Realizado (9)**
 
-## Integridade e critérios de aceite
+- [x] Auditar 28 blocos publicados: **26 manuais e 2 vinculados**; mapear 14 seções (13 visíveis) e 42 painéis.
+- [x] Identificar coleções candidatas por título, sem presumir equivalência editorial nem criar vínculos.
+- [x] Comparar os seis registros de experiências, seus campos comuns e os quatro projetos publicados, inclusive visibilidade dos cards.
+- [x] Mapear campos disponíveis e lacunas dos formulários das nove coleções do CMS (`experience_id`, `photo_media_id`, `skills` etc.).
+- [x] Verificar os três arquivos de retratos de depoimentos confirmados, sem associar UUIDs nem enviar arquivos.
+- [x] Classificar os 53 objetos privados sem catálogo por MIME/diretório, preservando todos os arquivos.
+- [x] Localizar referências textuais dos 53 objetos em 145 revisões históricas; 28 também aparecem nos blocos atuais.
+- [x] Medir **139 divergências de atributos** em nove projeções estruturadas hipotéticas, sem modificar conteúdo.
+- [x] Identificar **17 blocos manuais** que não possuem uma projeção estruturada integral segura.
 
-- [x] Nenhum `UPDATE`, `INSERT`, `DELETE`, DDL, upload, alteração Auth/RLS ou vínculo editorial executado nesta rodada.
-- [x] Projeção original preservada, simulação DOM de teste e **novo modo opcional no CMS protegido**, ambos apenas em memória; o site público e os blocos publicados continuam inalterados.
-- [x] CI da suíte sintética e do código de auditoria validado no SHA funcional indicado pelo [workflow](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402653744).
-- [ ] Concluir o Bloco 1 **integralmente** somente após concluir as pendências de campo/visual/performance que ainda são técnicas; P4–P8 do novo plano continuam separados para aprovação e vistoria humana.
-- [x] Validar CI, exportação de documentação e Vercel `READY` no commit do dossiê `6b651c6` ([CI](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402900908), [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41402900905)).
+**Pendente (2)**
 
-**Dossiês:** [inventário 26 blocos](BLOCO_1_P1_INVENTARIO_2026-11-02.md) · [seis experiências](BLOCO_1_P1_EXPERIENCIAS_2026-11-02.md) · [53 objetos privados](BLOCO_1_P1_STORAGE_2026-11-02.md).
+- [ ] Revisar **valor por valor** dos 26 blocos, sobretudo os 17 heterogêneos: textos, fotos, links, estados ocultos, ordem, estilos e responsividade; preparar diferenças para aceite individual.
+- [ ] Determinar uso efetivo, dependências em rascunhos e eventual duplicidade por comparação de bytes dos 53 objetos privados; a referência histórica não comprova que sejam descartáveis.
 
-## Fechamento da parcela automática e passagem para o Bloco 2
+### P2 — Prévias e testes preparatórios
 
-- [x] Consolidar a matriz de **9 painéis candidatos** e **17 sem candidato completo**, com alerta contra sincronização indevida e [139 diferenças de atributos](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md).
-- [x] Proteger o workflow de staging com preflight antes de instalar dependências, sem disparar testes de escrita; cinco verificações negativas/positivas executadas no CI.
-- [x] Atualizar [o checklist de início do Bloco 2 (P4–P6)](CHECKLIST_BLOCO_2_P4_P5_P6_2026-11-02.md), diferenciando planejamento, testes offline e tarefas que exigem autorização.
-- [ ] **Bloco 1 — fechamento total:** requer aceites editoriais por bloco e desempenho LCP ≤ 2,5 s (última mediana registrada: **3,314 s**); não marcar como integralmente encerrado.
-- [ ] **Bloco 2 — homologação real:** só criar staging/credenciais, executar testes com escrita, vincular Formação/A, alterar RLS/Auth ou implantar gatilho SEO após aprovações específicas.
+**Realizado (7)**
+
+- [x] Preparar a prévia de Formação/A em memória, mantendo os três períodos (`meta=A`) e acrescentando apenas os três nomes das instituições (`text=B`).
+- [x] Testar os IDs, títulos, tipos, ordem, metadados e bloqueio de divergências na projeção de Formação/A.
+- [x] Validar a simulação em navegador em 1440 px, 390 px e 360 px, com seis capturas antes/depois, **3/3 PASS** e zero escritas.
+- [x] Preparar fixtures inteiramente fictícias para staging, sem utilizar `supabase/seed.sql`, e validar unicidade/status.
+- [x] Adicionar workflow de auditoria somente leitura com verificação do SHA e coleta de capturas e requisições.
+- [x] Integrar opção **desativada por padrão** de Formação/A à prévia protegida do CMS; validar **P5 7/7** em desktop/mobile e zero mutações.
+- [x] Adicionar guarda fail-closed de destino do staging (bloqueio de produção, URLs divergentes e confirmação inválida), aprovada em **5 testes offline**.
+
+**Pendente (3)**
+
+- [ ] Preparar e validar cenários sintéticos adicionais de duplicação, reordenação, arquivamento, histórico, restauração e rollback, sem operação na produção.
+- [ ] Testar falhas de leitura, perda de conexão e recuperação de mídia em ambiente de testes isolado.
+- [ ] Simular publicação de SEO e falhas/retentativas usando servidor de teste, **sem configurar o gatilho de produção**.
+
+### P3 — Desempenho e confiabilidade
+
+**Realizado (5)**
+
+- [x] Medir a rede pública nos três viewports: **10 GETs a nove endpoints** por viewport, sem gravações.
+- [x] Identificar as duas consultas a `sections` (Perfil antecipado + grafo completo) como oportunidade de investigação, não erro comprovado.
+- [x] Registrar baseline anterior de LCP mobile mediano **3,419 s** em laboratório.
+- [x] Repetir três medições Lighthouse mobile: nova mediana **3,314 s**, sem atribuir a diferença a uma otimização.
+- [x] Reexecutar verificações de navegador, SEO estático e capturas editoriais, sem regressões detectadas no ciclo registrado.
+
+**Pendente (6)**
+
+- [ ] Medir Lighthouse mobile em **três ou mais execuções antes e depois** de cada otimização candidata, incluindo rede, CSS, fontes, JavaScript e tempo de renderização.
+- [ ] Implementar somente otimizações técnicas não visuais com benefício demonstrado e plano de reversão.
+- [ ] Testar desduplicação ou reuso das consultas a `sections`, sem atrasar o Perfil nem alterar os dados exibidos.
+- [ ] Investigar estratégias de cache e invalidação, bundles administrativos e responsabilidades dos componentes com métricas comparáveis.
+- [ ] Reexecutar testes unitários, TypeScript, build, smoke, SEO, acessibilidade, RLS e capturas desktop/mobile depois de cada alteração técnica.
+- [ ] Atingir e confirmar **LCP mobile ≤ 2,5 s** com amostras comparáveis e sem regressões; ainda não atingido.
+
+## Dependências transferidas ao Bloco 2
+
+- [ ] **Bloco 2 / P4 — Staging:** autorizar e provisionar ambiente realmente isolado, criar credenciais sintéticas e homologar o ciclo completo formulário → gravação → Supabase → recuperação → prévia → público, com rollback.
+- [ ] **Bloco 2 / P5 — Editorial:** revisar visualmente a prévia real de Formação/A e as seis capturas; obter autorização individual antes de vincular `education` ou editar outros blocos.
+- [ ] **Bloco 2 / P5 — Mídias:** avaliar e aprovar separadamente associação dos retratos, logos, galerias e outras diferenças editoriais.
+- [ ] **Bloco 2 / P6 — SEO e segurança:** autorizar separadamente o gatilho de deploy SEO e qualquer mudança em Auth, RLS, RPCs, índices ou credenciais.
+
+## Integridade e evidências de validação
+
+- [x] As auditorias SQL desta fase foram apenas **SELECT**. Nenhum bloco foi vinculado, publicado ou substituído; não houve upload, exclusão, DDL ou alteração Auth/RLS no Supabase.
+- [x] Formação/A permanece manual, com a opção de prévia no CMS protegida por login e desativada por padrão.
+- [x] Os testes autenticados do CMS passaram **7/7**, com zero mutações ([P5 read-only #41404376390](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41404376390)).
+- [x] Os cinco testes offline de isolamento de staging passaram no [CI #41514624001](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41514624001).
+- [x] O commit de referência `51825abf` passou na [validação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41515245255), teve [exportação de documentação aprovada](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41515245364) e deployment Vercel **READY**.
+- [ ] Validar o CI e o deployment do **novo commit deste checklist**, sem confundir atualização documental com encerramento técnico.
+
+## Arquivos de evidência
+
+- [Inventário dos 26 blocos](BLOCO_1_P1_INVENTARIO_2026-11-02.md)
+- [Comparação das seis experiências](BLOCO_1_P1_EXPERIENCIAS_2026-11-02.md)
+- [Matriz de 139 diferenças](BLOCO_1_P1_COMPARACAO_ATRIBUTOS_2026-11-02.md)
+- [Auditoria dos 53 arquivos](BLOCO_1_P1_STORAGE_2026-11-02.md)
+- [Prévias, rede e Lighthouse](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md)
+- [Checklist do Bloco 2](CHECKLIST_BLOCO_2_P4_P5_P6_2026-11-02.md)
+
+**Regra de continuidade:** mudanças editoriais, vínculos de coleção, migrações de mídia, provisionamento/execução de staging e alterações de segurança só avançam após a autorização específica correspondente. O checklist é um painel de acompanhamento, não uma autorização de publicação.
