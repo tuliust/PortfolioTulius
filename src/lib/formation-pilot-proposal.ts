@@ -1,6 +1,9 @@
 import type { ContentItem } from "../types/content"
 import type { ContentBlockRow } from "./placements"
-import { buildApprovedFormationAPreview, type FormationPilotEducationRow } from "./formation-pilot-preview"
+import {
+  buildApprovedFormationAPreview,
+  type FormationPilotEducationRow,
+} from "./formation-pilot-preview"
 
 /**
  * Unconnected, read-only draft for a FUTURE individually approved publishing flow.
@@ -18,10 +21,11 @@ export function prepareFormationAPublicationProposal(
   const preview = buildApprovedFormationAPreview(block, rows)
   if (
     preview.differences.length !== 3 ||
-    preview.differences.some((change, index) =>
-      change.field !== "text" || change.position !== index + 1
+    preview.differences.some(
+      (change, index) => change.field !== "text" || change.position !== index + 1,
     )
-  ) throw new Error("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
+  )
+    throw new Error("P4_FORMATION_PREVIEW_REQUIRES_NEW_REVIEW")
   return {
     blockId: block.id,
     currentItems: structuredClone(block.content_json?.items ?? []),
