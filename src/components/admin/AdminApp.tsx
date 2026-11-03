@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router"
 import { defaultTokens } from "../../content/defaultTokens"
 import { isCollectionSource } from "../../lib/collections"
+import { hydrateDesignTokens } from "../../lib/design-tokens"
 import { isAdmin, supabase } from "../../lib/supabase"
 import { PublicSite } from "../public/PublicSite"
 import {
@@ -966,24 +967,17 @@ function DesignEditor({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => v
     supabase
       ?.from("design_tokens")
       .select("token_key,token_value")
-      .then(({ data }) => {
-        if (!data?.length) return
-        const next = { ...tokens }
-        data.forEach((item) => {
-          const key = item.token_key.replace("color.", "") as keyof typeof next
-          if (key in next) next[key] = item.token_value
-        })
-        setTokens(next)
-        const nextExtra = {
-          ...extraTokens,
-          ...Object.fromEntries(
-            data
-              .filter((item) => !item.token_key.startsWith("color."))
-              .map((item) => [item.token_key, item.token_value]),
-          ),
+      .then(({ data, error }) => {
+        if (error) {
+          setMessage("Não foi possível carregar os tokens: " + error.message)
+          return
         }
-        setExtraTokens(nextExtra)
-        setSavedDesign(JSON.stringify({ tokens: next, extraTokens: nextExtra }))
+        // An empty design_tokens table is valid: the default palette is the
+        // saved baseline, so editing it must enable Save and discard warnings.
+        const initial = hydrateDesignTokens(tokens, extraTokens, data ?? [])
+        setTokens(initial.tokens)
+        setExtraTokens(initial.extraTokens)
+        setSavedDesign(initial.savedDesign)
       })
   }, [])
   async function save() {
