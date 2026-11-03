@@ -940,7 +940,13 @@ function SiteEditor({
   )
 }
 
-function DesignEditor({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => void }) {
+function DesignEditor({
+  onDirtyChange,
+  entrySession,
+}: {
+  onDirtyChange?: (dirty: boolean) => void
+  entrySession: number
+}) {
   const [tokens, setTokens] = useState({
     orange: defaultTokens.orange,
     ink: defaultTokens.ink,
@@ -1038,6 +1044,8 @@ function DesignEditor({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => v
                 onChange={(e) => setTokens({ ...tokens, [key]: e.target.value })}
               />
               <input
+                autoComplete="off"
+                name={`identity-color-${entrySession}-${key}`}
                 value={value}
                 onChange={(e) => setTokens({ ...tokens, [key]: e.target.value })}
               />
@@ -1108,6 +1116,7 @@ export function AdminApp() {
   const guard = useAdminGuard()
   const [active, setActive] = useState("dashboard")
   const [editorDirty, setEditorDirty] = useState(false)
+  const [designEntrySession, setDesignEntrySession] = useState(0)
   // Reloading or closing the tab cannot display a custom CMS dialog.
   // Browsers provide only their own generic, user-initiated confirmation.
   useEffect(() => {
@@ -1129,6 +1138,9 @@ export function AdminApp() {
     )
       return
     setEditorDirty(false)
+    // Explicitly give each Identity visit a fresh React and browser form
+    // identity. Discarded colors must not reappear via form restoration.
+    if (next === "design") setDesignEntrySession((session) => session + 1)
     setActive(next)
   }
   const [sections, setSections] = useState<SectionRow[]>([])
@@ -1161,7 +1173,13 @@ export function AdminApp() {
         onDirtyChange={setEditorDirty}
       />
     ),
-    design: <DesignEditor onDirtyChange={setEditorDirty} />,
+    design: (
+      <DesignEditor
+        key={designEntrySession}
+        entrySession={designEntrySession}
+        onDirtyChange={setEditorDirty}
+      />
+    ),
     media: <EnhancedMediaLibrary />,
     navigation: <NavigationStudio onDirtyChange={setEditorDirty} />,
     seo: <SeoStudio onDirtyChange={setEditorDirty} />,

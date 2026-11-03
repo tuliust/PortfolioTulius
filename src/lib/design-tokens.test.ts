@@ -54,3 +54,26 @@ describe("identidade administrativa com design_tokens vazio", () => {
     expect(source).not.toContain("if (!data?.length) return")
   })
 })
+
+describe("identidade ao descartar e voltar de outro módulo", () => {
+  it("prepara novamente a paleta salva e não mantém a edição temporária", () => {
+    const defaults = { orange: "#FF5414", ink: "#171617" }
+    const extra = { "font.body": "Inter" }
+    const firstVisit = hydrateDesignTokens(defaults, extra, [])
+    const temporary = { ...firstVisit.tokens, orange: "#714738" }
+    expect(JSON.stringify({ tokens: temporary, extraTokens: extra })).not.toBe(firstVisit.savedDesign)
+    // The next Identity visit starts from a newly loaded, empty local catalog.
+    const secondVisit = hydrateDesignTokens(defaults, extra, [])
+    expect(secondVisit.tokens.orange).toBe("#FF5414")
+    expect(secondVisit.savedDesign).toBe(firstVisit.savedDesign)
+  })
+
+  it("exige remount em cada entrada e impede restauração automática dos inputs", () => {
+    const app = readFileSync(new URL("../components/admin/AdminApp.tsx", import.meta.url), "utf8")
+    expect(app).toContain('if (next === "design") setDesignEntrySession((session) => session + 1)')
+    expect(app).toContain("key={designEntrySession}")
+    expect(app).toContain("entrySession={designEntrySession}")
+    expect(app).toContain("autoComplete=\"off\"")
+    expect(app).toContain("name={`identity-color-${entrySession}-${key}`}")
+  })
+})
