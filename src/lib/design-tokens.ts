@@ -20,7 +20,7 @@ export function hydrateDesignTokens<T extends Record<string, string>>(
     if (token_key.startsWith("color.")) {
       const key = token_key.slice("color.".length)
       if (Object.prototype.hasOwnProperty.call(tokens, key)) {
-        (tokens as Record<string, string>)[key] = token_value
+        Object.assign(tokens, { [key]: token_value })
       }
     } else {
       extraTokens[token_key] = token_value
