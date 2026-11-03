@@ -61,7 +61,9 @@ describe("identidade ao descartar e voltar de outro módulo", () => {
     const extra = { "font.body": "Inter" }
     const firstVisit = hydrateDesignTokens(defaults, extra, [])
     const temporary = { ...firstVisit.tokens, orange: "#714738" }
-    expect(JSON.stringify({ tokens: temporary, extraTokens: extra })).not.toBe(firstVisit.savedDesign)
+    expect(JSON.stringify({ tokens: temporary, extraTokens: extra })).not.toBe(
+      firstVisit.savedDesign,
+    )
     // The next Identity visit starts from a newly loaded, empty local catalog.
     const secondVisit = hydrateDesignTokens(defaults, extra, [])
     expect(secondVisit.tokens.orange).toBe("#FF5414")
@@ -73,7 +75,7 @@ describe("identidade ao descartar e voltar de outro módulo", () => {
     expect(app).toContain('if (next === "design") setDesignEntrySession((session) => session + 1)')
     expect(app).toContain("key={designEntrySession}")
     expect(app).toContain("entrySession={designEntrySession}")
-    expect(app).toContain("autoComplete=\"off\"")
+    expect(app).toContain('autoComplete="off"')
     expect(app).toContain("name={`identity-color-${entrySession}-${key}`}")
   })
 })
