@@ -5,22 +5,54 @@ export type AdminConfirmOptions = {
   confirmLabel?: string
   tone?: "warning" | "danger"
 }
+
 type Confirmation = {
   message: string
   options: AdminConfirmOptions
+  mode: "confirm" | "unsaved"
   resolve: (answer: boolean) => void
 }
-let requestConfirmation: ((request: Confirmation) => void) | null = null
 
-/** Fail closed when the administrative dialog is not mounted. */
+let requestConfirmation: ((request: Confirmation) => void) | null = null
+let activeSaveAction: (() => Promise<boolean>) | null = null
+
+/** Each mounted editor registers its real persistence routine; true means confirmed success. */
+export function registerAdminSaveAction(action: () => Promise<boolean>): () => void {
+  activeSaveAction = action
+  return () => {
+    if (activeSaveAction === action) activeSaveAction = null
+  }
+}
+
+/** Fail closed if the shared dialog is not mounted. */
 export function adminConfirm(message: string, options: AdminConfirmOptions = {}): Promise<boolean> {
   if (!requestConfirmation) return Promise.resolve(false)
-  return new Promise<boolean>((resolve) => requestConfirmation?.({ message, options, resolve }))
+  return new Promise<boolean>((resolve) =>
+    requestConfirmation?.({ message, options, mode: "confirm", resolve }),
+  )
+}
+
+export function adminConfirmUnsaved(
+  message: string,
+  options: AdminConfirmOptions = {},
+): Promise<boolean> {
+  if (!requestConfirmation) return Promise.resolve(false)
+  return new Promise<boolean>((resolve) =>
+    requestConfirmation?.({
+      message,
+      options: { title: "Alterações não salvas", ...options },
+      mode: "unsaved",
+      resolve,
+    }),
+  )
 }
 
 export function AdminConfirmationHost() {
   const [current, setCurrent] = useState<Confirmation | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
   const pending = useRef<Confirmation | null>(null)
+  const busy = useRef(false)
   const cancelRef = useRef<HTMLButtonElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
 
@@ -31,6 +63,7 @@ export function AdminConfirmationHost() {
         return
       }
       pending.current = request
+      setSaveError("")
       setCurrent(request)
     }
     return () => {
@@ -41,10 +74,37 @@ export function AdminConfirmationHost() {
   }, [])
 
   function finish(accept: boolean) {
+    if (busy.current) return
     const active = pending.current
     pending.current = null
     setCurrent(null)
+    setSaveError("")
     active?.resolve(accept)
+  }
+
+  async function saveAndExit() {
+    if (!current || current.mode !== "unsaved" || busy.current) return
+    const action = activeSaveAction
+    if (!action) {
+      setSaveError("O salvamento desta área não está disponível. Você permanece na página.")
+      return
+    }
+    busy.current = true
+    setSaving(true)
+    setSaveError("")
+    let confirmed = false
+    try {
+      confirmed = await action()
+    } catch {
+      confirmed = false
+    }
+    busy.current = false
+    setSaving(false)
+    if (confirmed) finish(true)
+    else
+      setSaveError(
+        "Não foi possível confirmar o salvamento. Verifique o erro no editor. As alterações foram preservadas.",
+      )
   }
 
   useEffect(() => {
@@ -53,6 +113,7 @@ export function AdminConfirmationHost() {
     cancelRef.current?.focus()
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        if (busy.current) return
         event.preventDefault()
         finish(false)
         return
@@ -80,11 +141,12 @@ export function AdminConfirmationHost() {
   }, [current])
 
   if (!current) return null
+  const unsaved = current.mode === "unsaved"
   return (
     <div className="admin-confirm-overlay">
       <div
         ref={dialogRef}
-        className="admin-confirm-dialog"
+        className={`admin-confirm-dialog${unsaved ? " is-unsaved" : ""}`}
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="admin-confirm-title"
@@ -93,22 +155,59 @@ export function AdminConfirmationHost() {
         <span className="admin-confirm-eyebrow">PORTFÓLIO EDITORIAL</span>
         <h2 id="admin-confirm-title">{current.options.title ?? "Confirmar alteração"}</h2>
         <p id="admin-confirm-description">{current.message}</p>
+        {saveError && (
+          <p className="admin-confirm-error" role="alert">
+            {saveError}
+          </p>
+        )}
         <div className="admin-confirm-actions">
-          <button
-            type="button"
-            ref={cancelRef}
-            className="secondary-button"
-            onClick={() => finish(false)}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            className={current.options.tone === "danger" ? "danger-button" : "primary-button"}
-            onClick={() => finish(true)}
-          >
-            {current.options.confirmLabel ?? "Continuar"}
-          </button>
+          {unsaved ? (
+            <>
+              <button
+                type="button"
+                ref={cancelRef}
+                disabled={saving}
+                className="secondary-button"
+                onClick={() => finish(false)}
+              >
+                Não sair
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                className="secondary-button"
+                onClick={() => finish(true)}
+              >
+                Sair sem salvar
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                className="primary-button"
+                onClick={() => void saveAndExit()}
+              >
+                {saving ? "Salvando…" : "Salvar e sair"}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                ref={cancelRef}
+                className="secondary-button"
+                onClick={() => finish(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={current.options.tone === "danger" ? "danger-button" : "primary-button"}
+                onClick={() => finish(true)}
+              >
+                {current.options.confirmLabel ?? "Continuar"}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

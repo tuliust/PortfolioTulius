@@ -17,7 +17,7 @@ import {
   expandedAfterRemoval,
 } from "../../lib/admin-item-expansion"
 import { AdminNotice, statusPt } from "./AdminNotice"
-import { adminConfirm } from "./AdminConfirmationHost"
+import { adminConfirm, adminConfirmUnsaved, registerAdminSaveAction } from "./AdminConfirmationHost"
 import { mediaFileName } from "../../lib/media-framing"
 import {
   buildMediaMetadataPayload,
@@ -477,9 +477,9 @@ export function ContentStudio({
     if (!supabase || !sectionId) return
     if (
       blockDirty &&
-      !(await adminConfirm(
-        "Alterações deste bloco ainda não foram salvas. Descartar e criar outro?",
-        { title: "Descartar alterações?" },
+      !(await adminConfirmUnsaved(
+        "Alterações deste bloco ainda não foram salvas. Como deseja continuar antes de criar outro?",
+        { title: "Alterações não salvas" },
       ))
     )
       return
@@ -501,22 +501,34 @@ export function ContentStudio({
     setSelectedId(data.id)
   }
 
-  async function saveBlock() {
-    if (!supabase || !draft) return
-    if (placementsLoading || placementsReadError)
-      return setMessage("Carregue os placements antes de salvar.")
+  async function saveBlock(): Promise<boolean> {
+    if (!supabase || !draft) return false
+    if (placementsLoading || placementsReadError) {
+      setMessage("Carregue os placements antes de salvar.")
+      return false
+    }
     const validationErrors = isCollectionSource(draft.content_json.source_collection)
       ? []
       : validateContentItems(draft.content_json.items ?? [])
-    if (validationErrors.length) return setMessage(validationErrors.join(" "))
+    if (validationErrors.length) {
+      setMessage(validationErrors.join(" "))
+      return false
+    }
     const media = draft.content_json.experienceMedia
     if (media) {
-      if (media.logo && !isSafeEditorialImage(media.logo))
-        return setMessage("Logo exige uma URL segura.")
+      if (media.logo && !isSafeEditorialImage(media.logo)) {
+        setMessage("Logo exige uma URL segura.")
+        return false
+      }
       for (const [index, slide] of (media.slides ?? []).entries()) {
-        if (!slide.title.trim()) return setMessage(`Slide ${index + 1}: título obrigatório.`)
-        if (slide.image && !isSafeEditorialImage(slide.image))
-          return setMessage(`Slide ${index + 1}: imagem exige uma URL segura.`)
+        if (!slide.title.trim()) {
+          setMessage(`Slide ${index + 1}: título obrigatório.`)
+          return false
+        }
+        if (slide.image && !isSafeEditorialImage(slide.image)) {
+          setMessage(`Slide ${index + 1}: imagem exige uma URL segura.`)
+          return false
+        }
       }
     }
 
@@ -561,17 +573,22 @@ export function ContentStudio({
       p_editorial_note: draft.editorial_note,
       p_placements: placementUpdates,
     })
-    if (error) return setMessage(error.message)
+    if (error) {
+      setMessage(error.message)
+      return false
+    }
     const reloaded = await load()
     if (!reloaded) {
       setMessage(
         "O banco confirmou a transação, mas a recuperação do bloco falhou. Verifique antes de salvar novamente.",
       )
-      return
+      return false
     }
     setMessage("Bloco e placements salvos em uma transação.")
     onSaved?.()
+    return true
   }
+  useEffect(() => registerAdminSaveAction(saveBlock), [saveBlock])
 
   async function reviewCollectionSourceChange(next: string) {
     if (!supabase || !draft || !savedBlock || reviewingSource) return
@@ -794,9 +811,9 @@ export function ContentStudio({
                 if (block.id === selectedId) return
                 if (
                   blockDirty &&
-                  !(await adminConfirm(
-                    "Alterações não salvas neste bloco serão descartadas. Continuar?",
-                    { title: "Descartar alterações?" },
+                  !(await adminConfirmUnsaved(
+                    "Existem alterações não salvas neste bloco. Como deseja continuar?",
+                    { title: "Alterações não salvas" },
                   ))
                 )
                   return
@@ -2197,8 +2214,8 @@ export function CollectionsStudio({
   async function newRecord() {
     if (
       recordDirty &&
-      !(await adminConfirm("Descartar alterações não salvas deste registro?", {
-        title: "Descartar alterações?",
+      !(await adminConfirmUnsaved("Existem alterações não salvas neste registro. Como deseja continuar?", {
+        title: "Alterações não salvas",
       }))
     )
       return
@@ -2212,23 +2229,31 @@ export function CollectionsStudio({
     })
   }
 
-  async function save() {
-    if (!supabase || !draft) return
+  async function save(): Promise<boolean> {
+    if (!supabase || !draft) return false
     const validationErrors = validateCollectionSaveDraft(draft, config.table)
-    if (validationErrors.length) return setMessage(validationErrors.join(" "))
+    if (validationErrors.length) {
+      setMessage(validationErrors.join(" "))
+      return false
+    }
     setMessage("Salvando registro…")
     const payload = buildCollectionSavePayload(draft, config.table)
     const result = draft.id
       ? await supabase.from(config.table).update(payload).eq("id", draft.id).select("id").single()
       : await supabase.from(config.table).insert(payload).select("id").single()
-    if (result.error) return setMessage(result.error.message)
+    if (result.error) {
+      setMessage(result.error.message)
+      return false
+    }
     const confirmed = await load(result.data.id)
     setMessage(
       confirmed
         ? "Registro salvo e recuperado do Supabase."
         : "O banco confirmou a gravação, mas a leitura posterior não confirmou o registro. Verifique antes de repetir.",
     )
+    return confirmed
   }
+  useEffect(() => registerAdminSaveAction(save), [save])
 
   async function archive() {
     if (!supabase || !draft?.id) return
@@ -2306,8 +2331,8 @@ export function CollectionsStudio({
               if (item.table === config.table) return
               if (
                 recordDirty &&
-                !(await adminConfirm("Descartar alterações não salvas deste registro?", {
-                  title: "Descartar alterações?",
+                !(await adminConfirmUnsaved("Existem alterações não salvas neste registro. Como deseja continuar?", {
+                  title: "Alterações não salvas",
                 }))
               )
                 return
@@ -2330,8 +2355,8 @@ export function CollectionsStudio({
                 if (record.id === selectedId) return
                 if (
                   recordDirty &&
-                  !(await adminConfirm("Descartar alterações não salvas deste registro?", {
-                    title: "Descartar alterações?",
+                  !(await adminConfirmUnsaved("Existem alterações não salvas neste registro. Como deseja continuar?", {
+                    title: "Alterações não salvas",
                   }))
                 )
                   return
@@ -2447,14 +2472,17 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
   const navigationDirty = JSON.stringify(items) !== savedItems
   useEffect(() => onDirtyChange?.(navigationDirty), [navigationDirty, onDirtyChange])
   const [message, setMessage] = useState("")
-  const load = async () => {
-    const { data, error } = (await supabase
-      ?.from("navigation_items")
-      .select("*")
-      .order("sort_order")) ?? { data: [], error: null }
+  const load = async (): Promise<boolean> => {
+    if (!supabase) return false
+    const { data, error } = await supabase.from("navigation_items").select("*").order("sort_order")
+    if (error) {
+      setMessage(error.message)
+      return false
+    }
     setItems(data ?? [])
     setSavedItems(JSON.stringify(data ?? []))
-    setMessage(error?.message ?? "")
+    setMessage("")
+    return true
   }
   useEffect(() => {
     void load()
@@ -2478,8 +2506,8 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
       },
     ])
   }
-  async function save() {
-    if (!supabase) return
+  async function save(): Promise<boolean> {
+    if (!supabase) return false
     setMessage("Salvando navegação…")
     const rows = items.map(({ id, label, target_slug, sort_order, is_visible, status }) => ({
       id,
@@ -2491,9 +2519,15 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
       status,
     }))
     const { error } = await supabase.from("navigation_items").upsert(rows, { onConflict: "id" })
-    setMessage(error?.message ?? "Navegação salva.")
-    if (!error) await load()
+    if (error) {
+      setMessage(error.message)
+      return false
+    }
+    const confirmed = await load()
+    setMessage(confirmed ? "Navegação salva." : "Gravação realizada, mas leitura de confirmação falhou.")
+    return confirmed
   }
+  useEffect(() => registerAdminSaveAction(save), [save])
   function move(index: number, direction: -1 | 1) {
     const target = index + direction
     if (target < 0 || target >= items.length) return
@@ -2596,10 +2630,12 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
       setSavedSeo(JSON.stringify({ page: loadedPage, settings: loadedSettings }))
     })
   }, [])
-  async function save() {
-    if (!supabase || !page || !settings) return
-    if (!page.id || !settings.id)
-      return setMessage("Página ou configurações de SEO ausentes. Nada foi alterado.")
+  async function save(): Promise<boolean> {
+    if (!supabase || !page || !settings) return false
+    if (!page.id || !settings.id) {
+      setMessage("Página ou configurações de SEO ausentes. Nada foi alterado.")
+      return false
+    }
     setMessage("Salvando SEO…")
     const { error } = await supabase.rpc("save_home_seo_atomic", {
       p_page_id: page.id,
@@ -2617,7 +2653,9 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
         "SEO salvo atomicamente. Metadados para robôs serão regenerados no próximo deploy.",
     )
     if (!error) setSavedSeo(JSON.stringify({ page, settings }))
+    return !error
   }
+  useEffect(() => registerAdminSaveAction(save), [save])
 
   return (
     <>
@@ -3011,13 +3049,18 @@ function IssueRow({
 
 type MediaLibraryAsset = StoredMediaMetadata & Record<string, any>
 
-export function EnhancedMediaLibrary() {
+export function EnhancedMediaLibrary({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => void }) {
   const [assets, setAssets] = useState<MediaLibraryAsset[]>([])
   const [previews, setPreviews] = useState<Record<string, MediaPreview>>({})
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
   const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
   const [mediaDraft, setMediaDraft] = useState<MediaMetadataDraft | null>(null)
   const [message, setMessage] = useState("")
+  const selectedAsset = assets.find((asset) => asset.id === selectedMediaId)
+  const mediaDirty = Boolean(
+    selectedAsset && mediaDraft && hasMediaMetadataChanges(selectedAsset, mediaDraft),
+  )
+  useEffect(() => onDirtyChange?.(mediaDirty), [mediaDirty, onDirtyChange])
   const load = async () => {
     const client = supabase
     if (!client) return
@@ -3047,10 +3090,13 @@ export function EnhancedMediaLibrary() {
   useEffect(() => {
     void load()
   }, [])
-  async function save(asset: MediaLibraryAsset) {
-    if (!supabase || !mediaDraft) return
+  async function save(asset: MediaLibraryAsset): Promise<boolean> {
+    if (!supabase || !mediaDraft) return false
     const result = buildMediaMetadataPayload(mediaDraft)
-    if (!result.ok) return setMessage(result.error)
+    if (!result.ok) {
+      setMessage(result.error)
+      return false
+    }
     setMessage("Salvando metadados…")
     // Prevent stale edits from silently overwriting another admin's changes.
     const { data, error } = await supabase
@@ -3064,13 +3110,18 @@ export function EnhancedMediaLibrary() {
       setMessage(
         error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.",
       )
-      return
+      return false
     }
     setMessage("Metadados salvos.")
     setMediaDraft(null)
     setSelectedMediaId(null)
     await load()
+    return true
   }
+  useEffect(
+    () => registerAdminSaveAction(async () => (selectedAsset ? save(selectedAsset) : false)),
+    [selectedAsset, mediaDraft],
+  )
   async function upload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     if (!file) return
@@ -3179,7 +3230,15 @@ export function EnhancedMediaLibrary() {
                   className="icon-button media-detail-close"
                   aria-label="Fechar detalhes da mídia"
                   title="Fechar detalhes"
-                  onClick={() => {
+                  onClick={async () => {
+                    if (
+                      mediaDirty &&
+                      !(await adminConfirmUnsaved(
+                        "Existem alterações não salvas nesta mídia. Como deseja continuar?",
+                        { title: "Alterações não salvas" },
+                      ))
+                    )
+                      return
                     setSelectedMediaId(null)
                     setMediaDraft(null)
                   }}
@@ -3284,7 +3343,15 @@ export function EnhancedMediaLibrary() {
               type="button"
               className="media-library-card"
               aria-expanded={false}
-              onClick={() => {
+              onClick={async () => {
+                if (
+                  mediaDirty &&
+                  !(await adminConfirmUnsaved(
+                    "Existem alterações não salvas nesta mídia. Como deseja continuar?",
+                    { title: "Alterações não salvas" },
+                  ))
+                )
+                  return
                 setSelectedMediaId(asset.id)
                 setMediaDraft(createMediaMetadataDraft(asset))
               }}

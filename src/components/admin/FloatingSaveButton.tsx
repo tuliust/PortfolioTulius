@@ -4,7 +4,7 @@ export function FloatingSaveButton({
   label = "Salvar alterações",
 }: {
   enabled: boolean
-  onClick: () => void | Promise<void>
+  onClick: () => void | Promise<unknown>
   label?: string
 }) {
   return (

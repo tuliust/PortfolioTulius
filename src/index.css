@@ -1137,6 +1137,10 @@
 .admin-confirm-actions { margin-top: 1.5rem; display: flex; gap: .65rem; justify-content: flex-end; flex-wrap: wrap; }
 .admin-confirm-actions button { min-width: 7.5rem; min-height: 44px; }
 .admin-confirm-dialog button:focus-visible { outline: 3px solid #ff5414; outline-offset: 3px; }
+.admin-confirm-dialog.is-unsaved { width: min(39rem, 100%); }
+.admin-confirm-dialog.is-unsaved .admin-confirm-actions { flex-wrap: nowrap; }
+.admin-confirm-dialog.is-unsaved .admin-confirm-actions button { min-width: 0; flex: 1; }
+.admin-confirm-error { color: #9e2a12 !important; font-weight: 700; }
 
 /* Contextual editorial preview and reusable CMS feedback. */
 .site-editor-preview-controls { display: flex; gap: .4rem; margin-bottom: .8rem; }
@@ -1239,6 +1243,7 @@
   .admin-confirm-overlay { padding: .75rem; }
   .admin-confirm-dialog { padding: 1.15rem; max-height: calc(100dvh - 1.5rem); }
   .admin-confirm-actions { flex-direction: column-reverse; }
+  .admin-confirm-dialog.is-unsaved .admin-confirm-actions { flex-direction: column; }
   .admin-confirm-actions button { width: 100%; min-height: 44px; }
   .admin-toast { left: .75rem; right: .75rem; bottom: calc(.75rem + env(safe-area-inset-bottom, 0px)); max-width: none; }
   .site-editor-preview-frame.mobile { width: 100%; }

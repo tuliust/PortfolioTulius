@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { Link, Navigate, useNavigate } from "react-router"
+import { useEffect, useRef, useState } from "react"
+import { Link, Navigate, useBlocker, useNavigate } from "react-router"
 import { defaultTokens } from "../../content/defaultTokens"
 import { isCollectionSource } from "../../lib/collections"
 import { hydrateDesignTokens } from "../../lib/design-tokens"
@@ -11,7 +11,12 @@ import {
 } from "../../lib/admin-experience-navigation"
 import { Icon } from "../ui/Icons"
 import { AdminNotice, statusPt } from "./AdminNotice"
-import { adminConfirm, AdminConfirmationHost } from "./AdminConfirmationHost"
+import {
+  adminConfirm,
+  adminConfirmUnsaved,
+  registerAdminSaveAction,
+  AdminConfirmationHost,
+} from "./AdminConfirmationHost"
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import {
   CollectionsStudio,
@@ -52,11 +57,13 @@ function AdminShell({
   active,
   setActive,
   editorDirty,
+  permitRouteExit,
 }: {
   children: React.ReactNode
   active: string
   setActive: (value: string) => void
   editorDirty: boolean
+  permitRouteExit: () => void
 }) {
   const navigate = useNavigate()
   const items = [
@@ -73,8 +80,13 @@ function AdminShell({
     const question = editorDirty
       ? "Existem alterações não salvas. Deseja descartá-las e encerrar a sessão?"
       : "Deseja encerrar a sessão administrativa?"
-    if (!(await adminConfirm(question, { title: "Sair do painel", confirmLabel: "Sair" }))) return
-    await supabase?.auth.signOut()
+    const approved = editorDirty
+      ? await adminConfirmUnsaved(question, { title: "Sair do painel?" })
+      : await adminConfirm(question, { title: "Sair do painel", confirmLabel: "Sair" })
+    if (!approved) return
+    const { error } = (await supabase?.auth.signOut()) ?? { error: new Error("Sessão indisponível") }
+    if (error) return
+    permitRouteExit()
     navigate("/admin/login")
   }
   return (
@@ -87,12 +99,13 @@ function AdminShell({
             event.preventDefault()
             if (
               editorDirty &&
-              !(await adminConfirm(
-                "Existem alterações não salvas. Deseja descartá-las e voltar ao site?",
-                { title: "Descartar alterações?" },
+              !(await adminConfirmUnsaved(
+                "Existem alterações não salvas. Como deseja voltar ao site?",
+                { title: "Alterações não salvas" },
               ))
             )
               return
+            permitRouteExit()
             navigate("/")
           }}
         >
@@ -291,15 +304,15 @@ function SectionsEditor({
     if (!selectedId && sections[0]) setSelectedId(sections[0].id)
   }, [sections, selectedId])
 
-  async function save() {
-    if (!draft || !supabase) return
+  async function save(): Promise<boolean> {
+    if (!draft || !supabase) return false
     if (draft.status === "archived" && selected?.status !== "archived") {
       setMessage("Para arquivar uma seção use o botão Arquivar.")
-      return
+      return false
     }
     if (draft.status === "published" && selected?.status !== "published") {
       setMessage("Para publicar uma seção use o botão Publicar seção.")
-      return
+      return false
     }
     setMessage("Salvando…")
     const { error } = await supabase
@@ -319,7 +332,9 @@ function SectionsEditor({
       .single()
     setMessage(error ? error.message : "Alterações salvas.")
     if (!error) reload()
+    return !error
   }
+  useEffect(() => registerAdminSaveAction(save), [save])
   async function move(direction: -1 | 1) {
     if (!selected || !supabase) return
     const target = sections.find((s) => s.sort_order === selected.sort_order + direction)
@@ -337,8 +352,8 @@ function SectionsEditor({
     if (
       draft &&
       JSON.stringify(draft) !== JSON.stringify(selected) &&
-      !(await adminConfirm("Alterações desta seção ainda não foram salvas. Descartar e duplicar?", {
-        title: "Descartar alterações?",
+      !(await adminConfirmUnsaved("Alterações desta seção ainda não foram salvas. Como deseja continuar antes de duplicar?", {
+        title: "Alterações não salvas",
       }))
     )
       return
@@ -358,9 +373,9 @@ function SectionsEditor({
       draft &&
       selected &&
       JSON.stringify(draft) !== JSON.stringify(selected) &&
-      !(await adminConfirm(
-        "Alterações desta seção ainda não foram salvas. Descartar e criar outra?",
-        { title: "Descartar alterações?" },
+      !(await adminConfirmUnsaved(
+        "Alterações desta seção ainda não foram salvas. Como deseja continuar antes de criar outra?",
+        { title: "Alterações não salvas" },
       ))
     )
       return
@@ -646,8 +661,8 @@ function SiteEditor({
   async function canLeave() {
     return (
       !dirty ||
-      (await adminConfirm("Existem alterações não salvas. Deseja descartá-las e continuar?", {
-        title: "Descartar alterações?",
+      (await adminConfirmUnsaved("Existem alterações não salvas. Como deseja continuar?", {
+        title: "Alterações não salvas",
       }))
     )
   }
@@ -986,8 +1001,8 @@ function DesignEditor({
         setSavedDesign(initial.savedDesign)
       })
   }, [])
-  async function save() {
-    if (!supabase) return
+  async function save(): Promise<boolean> {
+    if (!supabase) return false
     setMessage("Salvando…")
     const rows = Object.entries(tokens).map(([key, value]) => ({
       token_key: `color.${key}`,
@@ -1016,7 +1031,9 @@ function DesignEditor({
     const { error } = await supabase.from("design_tokens").upsert(rows, { onConflict: "token_key" })
     setMessage(error ? error.message : "Tokens publicados.")
     if (!error) setSavedDesign(JSON.stringify({ tokens, extraTokens }))
+    return !error
   }
+  useEffect(() => registerAdminSaveAction(save), [save])
   return (
     <>
       <AdminHeader
@@ -1117,6 +1134,34 @@ export function AdminApp() {
   const [active, setActive] = useState("dashboard")
   const [editorDirty, setEditorDirty] = useState(false)
   const [designEntrySession, setDesignEntrySession] = useState(0)
+  const bypassRouteGuard = useRef(false)
+  // SPA history transitions can use the CMS dialog; closing/reloading a tab
+  // is handled only by the browser's non-customizable beforeunload prompt.
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      editorDirty &&
+      !bypassRouteGuard.current &&
+      currentLocation.pathname !== nextLocation.pathname,
+  )
+  useEffect(() => {
+    if (blocker.state !== "blocked") return
+    let active = true
+    void adminConfirmUnsaved("Existem alterações não salvas. Como deseja sair?", {
+      title: "Alterações não salvas",
+    }).then((approved) => {
+      if (!active || blocker.state !== "blocked") return
+      if (approved) {
+        bypassRouteGuard.current = true
+        setEditorDirty(false)
+        blocker.proceed()
+      } else {
+        blocker.reset()
+      }
+    })
+    return () => {
+      active = false
+    }
+  }, [blocker.state])
   // Reloading or closing the tab cannot display a custom CMS dialog.
   // Browsers provide only their own generic, user-initiated confirmation.
   useEffect(() => {
@@ -1132,8 +1177,8 @@ export function AdminApp() {
     if (next === active) return
     if (
       editorDirty &&
-      !(await adminConfirm("Existem alterações não salvas. Deseja descartá-las e sair?", {
-        title: "Descartar alterações?",
+      !(await adminConfirmUnsaved("Existem alterações não salvas. Como deseja sair?", {
+        title: "Alterações não salvas",
       }))
     )
       return
@@ -1180,7 +1225,7 @@ export function AdminApp() {
         onDirtyChange={setEditorDirty}
       />
     ),
-    media: <EnhancedMediaLibrary />,
+    media: <EnhancedMediaLibrary onDirtyChange={setEditorDirty} />,
     navigation: <NavigationStudio onDirtyChange={setEditorDirty} />,
     seo: <SeoStudio onDirtyChange={setEditorDirty} />,
     editorial: <EditorialStudio />,
@@ -1195,7 +1240,14 @@ export function AdminApp() {
     ),
   }
   return (
-    <AdminShell active={active} setActive={selectModule} editorDirty={editorDirty}>
+    <AdminShell
+      active={active}
+      setActive={selectModule}
+      editorDirty={editorDirty}
+      permitRouteExit={() => {
+        bypassRouteGuard.current = true
+      }}
+    >
       {loadError && (
         <div className="admin-warning">
           <strong>Não foi possível carregar as seções.</strong> {loadError}. Confira a conexão e as
