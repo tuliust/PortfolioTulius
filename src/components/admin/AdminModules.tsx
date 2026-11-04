@@ -2214,9 +2214,12 @@ export function CollectionsStudio({
   async function newRecord() {
     if (
       recordDirty &&
-      !(await adminConfirmUnsaved("Existem alterações não salvas neste registro. Como deseja continuar?", {
-        title: "Alterações não salvas",
-      }))
+      !(await adminConfirmUnsaved(
+        "Existem alterações não salvas neste registro. Como deseja continuar?",
+        {
+          title: "Alterações não salvas",
+        },
+      ))
     )
       return
     const base = Object.fromEntries(config.fields.map((field) => [field.key, ""]))
@@ -2331,9 +2334,12 @@ export function CollectionsStudio({
               if (item.table === config.table) return
               if (
                 recordDirty &&
-                !(await adminConfirmUnsaved("Existem alterações não salvas neste registro. Como deseja continuar?", {
-                  title: "Alterações não salvas",
-                }))
+                !(await adminConfirmUnsaved(
+                  "Existem alterações não salvas neste registro. Como deseja continuar?",
+                  {
+                    title: "Alterações não salvas",
+                  },
+                ))
               )
                 return
               setDraft(null)
@@ -2355,9 +2361,12 @@ export function CollectionsStudio({
                 if (record.id === selectedId) return
                 if (
                   recordDirty &&
-                  !(await adminConfirmUnsaved("Existem alterações não salvas neste registro. Como deseja continuar?", {
-                    title: "Alterações não salvas",
-                  }))
+                  !(await adminConfirmUnsaved(
+                    "Existem alterações não salvas neste registro. Como deseja continuar?",
+                    {
+                      title: "Alterações não salvas",
+                    },
+                  ))
                 )
                   return
                 setSelectedId(record.id)
@@ -2524,7 +2533,9 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
       return false
     }
     const confirmed = await load()
-    setMessage(confirmed ? "Navegação salva." : "Gravação realizada, mas leitura de confirmação falhou.")
+    setMessage(
+      confirmed ? "Navegação salva." : "Gravação realizada, mas leitura de confirmação falhou.",
+    )
     return confirmed
   }
   useEffect(() => registerAdminSaveAction(save), [save])
@@ -3049,7 +3060,11 @@ function IssueRow({
 
 type MediaLibraryAsset = StoredMediaMetadata & Record<string, any>
 
-export function EnhancedMediaLibrary({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) => void }) {
+export function EnhancedMediaLibrary({
+  onDirtyChange,
+}: {
+  onDirtyChange?: (dirty: boolean) => void
+}) {
   const [assets, setAssets] = useState<MediaLibraryAsset[]>([])
   const [previews, setPreviews] = useState<Record<string, MediaPreview>>({})
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})

@@ -84,7 +84,9 @@ function AdminShell({
       ? await adminConfirmUnsaved(question, { title: "Sair do painel?" })
       : await adminConfirm(question, { title: "Sair do painel", confirmLabel: "Sair" })
     if (!approved) return
-    const { error } = (await supabase?.auth.signOut()) ?? { error: new Error("Sessão indisponível") }
+    const { error } = (await supabase?.auth.signOut()) ?? {
+      error: new Error("Sessão indisponível"),
+    }
     if (error) return
     permitRouteExit()
     navigate("/admin/login")
@@ -352,9 +354,12 @@ function SectionsEditor({
     if (
       draft &&
       JSON.stringify(draft) !== JSON.stringify(selected) &&
-      !(await adminConfirmUnsaved("Alterações desta seção ainda não foram salvas. Como deseja continuar antes de duplicar?", {
-        title: "Alterações não salvas",
-      }))
+      !(await adminConfirmUnsaved(
+        "Alterações desta seção ainda não foram salvas. Como deseja continuar antes de duplicar?",
+        {
+          title: "Alterações não salvas",
+        },
+      ))
     )
       return
     const { data, error } = await supabase.rpc("duplicate_section", {
