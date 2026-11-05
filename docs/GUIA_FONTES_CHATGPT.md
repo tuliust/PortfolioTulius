@@ -1,35 +1,25 @@
-> **ATUALIZAÇÃO DOCUMENTAL DE 05/11/2026:** referência funcional [`31943c12`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/31943c12b8214aa1d4aad957d159ddcea010835e), [Validate #42016989021](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42016989021) **success**, Vercel READY. **P3 geral não aprovado** no run [#42016688466](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42016688466) de `04cf1240`: 7 falhas de navegador, apesar de P6 LCP mobile mediano de 3,484 s passar isoladamente. [Auditoria integral dos pedidos](AUDITORIA_PEDIDOS_CHAT_2026-11-05.md).
-Na próxima tarefa, começar pela [auditoria dos pedidos](AUDITORIA_PEDIDOS_CHAT_2026-11-05.md), reler `AGENTS.md`, `main`, CI e produção. **Não publicar anexos privados** de continuidade nem considerar o snapshot funcional `31943c12` automaticamente atualizado.
+# Guia de fontes GitHub / ChatGPT — PortfolioTulius
 
-> **FONTES E PRECEDÊNCIA — 05/11/2026:** usar [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/5ed489af5879589565cb0101e420065bfbf50552) (SHA conferido no início desta revisão), [Validate #42014122089](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42014122089), deployment do mesmo SHA e [reconciliação dos novos pedidos](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md). O encerramento administrativo de 05/11 permanece histórico. **As quatro Fontes privadas não foram publicadas ou substituídas** pela atualização do GitHub.
+**Revisado em 05/11/2026.** O objetivo é impedir que snapshots anteriores passem a ser tratados como estado atual. A versão detalhada anterior está [preservada](historico/GUIA_FONTES_CHATGPT_ANTES_REORGANIZACAO_2026-11-05.md). **Nenhuma fonte privada do ChatGPT foi enviada ou substituída no GitHub.**
 
-> **PRIORIDADE MÁXIMA ATUALIZADA — 05/11/2026:** antes de ler checklists datados, consultar [Encerramento operacional e aceites](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Estado: **sem backlog ativo**, todos os itens concluídos por decisão, reabertura futura somente mediante necessidade. Os arquivos antigos preservam a história, não descrevem tarefas ativas.
+## Ordem de precedência para decisões
 
-# Guia de Fontes ChatGPT — PortfolioTulius
+1. **Requisitos expressos no pedido mais recente** do proprietário, inclusive o de **não modificar a aparência atual do site**.
+2. **Código funcional efetivo** da branch [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commits/main), comparado ao SHA realmente servido no domínio e aos registros do Supabase quando a tarefa envolver dados.
+3. **Testes que rodaram naquele SHA**: [CI Validate](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/workflows/validate.yml), [P3 Lighthouse](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/workflows/audit-p3-lighthouse.yml), documentação de aceites manuais e inspeções físicas quando realizadas.
+4. **Contratos operacionais curtos**: [Estado](ESTADO_ATUAL_VIGENTE.md), [CMS](ADMIN_CMS.md), [responsividade](RESPONSIVE_LAYOUT.md), [deploy](DEPLOYMENT.md) e [pendências técnicas](OPEN_ISSUES.md).
+5. **Registros cronológicos**: [auditoria dos pedidos de 05/11](AUDITORIA_PEDIDOS_CHAT_2026-11-05.md), [reconciliação acumulada](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) e [arquivo histórico](historico/README.md), válidos somente nas datas/SHAs documentados.
+6. **Especificações originais**: [`guidelines.md`](../guidelines.md) (22/10) e [plano inicial](../plans/auditoria-portfolio-tulius.md) (23/10), úteis para contexto, **não** descrições do CMS atual.
 
-**Revisão:** 01/11/2026. Consulte antes de iniciar uma nova tarefa. O guia é um **índice de prioridades**, não um substituto para código e testes. [Documento de orientação anterior preservado](historico/GUIA_FONTES_CHATGPT_ATE_2026-10-31.md).
+## Snapshot funcional antes desta revisão
 
-## Precedência
+- [Commit `79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2), [CI #42020574434 success](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42020574434); Vercel Production READY e domínio servindo o mesmo SHA na consulta.
+- [P3 #42020342275](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42020342275) em **`0873eeff`**, **failure global**. Não há P3 própria localizada em `79aa3c07`.
+- A reorganização documental cria commits posteriores, **sem alterar o baseline funcional**. Sempre consultar a branch antes de afirmar “último commit”.
 
-1. Conferir a [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commits/main), [AGENTS.md](../AGENTS.md), [CI](https://github.com/tuliustsangaropulos/PortfolioTulius/actions), deployment do mesmo SHA e, quando necessário, Supabase **somente leitura**.
-2. Consultar [Estado atual](ESTADO_ATUAL_VIGENTE.md), [Pendências](OPEN_ISSUES.md) e [Índice técnico](README.md). Se o código divergir de snapshots, o código e evidências recentes prevalecem.
-3. Abrir a documentação específica: [Arquitetura](ARCHITECTURE.md), [Design](DESIGN_SYSTEM.md), [Responsividade](RESPONSIVE_LAYOUT.md), [Experiências](EXPERIENCIAS_UNIFICADAS_2026-10-31.md), [CMS](ADMIN_CMS.md), [Modelo](CONTENT_MODEL.md), [Performance](P3_LCP_MOBILE_RESULTADOS_2026-10-31.md), [Segurança](SECURITY_RLS.md), [Deploy](DEPLOYMENT.md).
-4. Tratar documentos datados de continuidade, auditorias antigas e mocks como **histórico com contexto**, jamais como pendência atual automática.
+## Preservação e sigilo
 
-## Fontes persistentes recomendadas neste projeto ChatGPT
+Os anexos de continuidade, backups privados e outras Fontes do **projeto ChatGPT** não são publicáveis no GitHub. As Fontes de produto/design e de memória operacional somente podem ser atualizadas dentro do ambiente privado apropriado, mediante autorização. Não copiar dados pessoais, credenciais, tokens, chaves nem versões de arquivos privados para Markdown público.
 
-| Anexo | Papel |
-|---|---|
-| `ESTADO_ATUAL_VIGENTE_PORTFOLIOTULIUS_2026-11-05.md` | Instantâneo do último estado verificado, atualizado manualmente |
-| `GUIA_FONTES_VIGENTES_PORTFOLIOTULIUS_2026-11-05.md` | Guia único de precedência e links |
-| `CONTEXTO_PRODUTO_DESIGN_PORTFOLIOTULIUS.md` | Identidade e decisões de produto históricas, imutável |
-| `BACKUP_CONTINUIDADE_SECAO_01_VERSAO_80_LINHAS_2026-10-28.md` | **Backup histórico privado exclusivo**, 80 linhas, SHA-256 `67db85f1cc497e6f51625f19472f76a753707cb0c7b34407af73d7f23b4ff288`; **nunca publicar no GitHub** |
+Ao reestruturar documentos, arquivar a íntegra e corrigir links relativos; manter decisões, contagens, aceites humanos e resultados de CI **com seus SHAs e datas**. CI verde não comprova gravações administrativas nem performance em campo.
 
-Remover dos anexos ativos cópias concorrentes de 28 e 31/10 **após** confirmar inclusão das versões novas; isso deve ser feito no ChatGPT, não via GitHub.
-
-## Atenção a interpretações incorretas
-
-- `CMS-UX-01/02/03` foram implementados em código posteriormente à [continuidade CMS de 31/10](CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md). A homologação transacional P2 e o aceite visual permanecem separados.
-- [CI #41246204902](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204902) passou e [P3 #41246204897](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41246204897) falhou por quatro critérios de Contato. Não dizer que P3 geral está verde.
-- **Marco histórico de 31/10:** a mediana mobile simulada foi **3,492 s**; a meta vigente foi posteriormente fixada em **≤3,5 s**, e medições dos SHAs anteriores não comprovam P3 nem p75 do HEAD atual.
-- Não alterar dados, mídias, RLS, Auth, Storage, infra, contratos financeiros, segredos ou conteúdo autoral sem pedido expresso. Não criar conteúdo fictício para atender a mockup.
