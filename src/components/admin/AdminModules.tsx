@@ -3592,7 +3592,9 @@ export function EnhancedMediaLibrary({
                       alt={asset.alt_text?.trim() || mediaDisplayTitle(asset)}
                       loading="lazy"
                       decoding="async"
-                      onError={() => setFailedImages((current) => ({ ...current, [asset.id]: true }))}
+                      onError={() =>
+                        setFailedImages((current) => ({ ...current, [asset.id]: true }))
+                      }
                     />
                   ) : (
                     <div className="media-preview-fallback">
