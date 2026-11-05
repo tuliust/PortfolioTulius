@@ -286,14 +286,12 @@ function SectionsEditor({
   reload,
   selectedSectionId,
   embedded = false,
-  onSelectSection,
   onDirtyChange,
 }: {
   sections: SectionRow[]
   reload: () => void
   selectedSectionId?: string
   embedded?: boolean
-  onSelectSection?: (id: string) => void
   onDirtyChange?: (dirty: boolean) => void
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -333,7 +331,7 @@ function SectionsEditor({
       return false
     }
     if (draft.status === "published" && selected?.status !== "published") {
-      setMessage("Para publicar uma seção use o botão Publicar seção.")
+      setMessage("Uma seção arquivada não pode ser reativada pelo salvamento simples.")
       return false
     }
     setMessage("Salvando…")
@@ -369,71 +367,6 @@ function SectionsEditor({
     setMessage(error?.message ?? "Ordem atualizada.")
     if (!error) reload()
   }
-  async function duplicate() {
-    if (!selected || !supabase) return
-    if (
-      draft &&
-      JSON.stringify(draft) !== JSON.stringify(selected) &&
-      !(await adminConfirmUnsaved(
-        "Alterações desta seção ainda não foram salvas. Como deseja continuar antes de duplicar?",
-        {
-          title: "Alterações não salvas",
-        },
-      ))
-    )
-      return
-    const { data, error } = await supabase.rpc("duplicate_section", {
-      source_section: selected.id,
-    })
-    setMessage(error ? error.message : "Seção duplicada como rascunho.")
-    if (data) {
-      reload()
-      setSelectedId(data)
-      onSelectSection?.(data)
-    }
-  }
-  async function create() {
-    if (!supabase || !sections[0]) return
-    if (
-      draft &&
-      selected &&
-      JSON.stringify(draft) !== JSON.stringify(selected) &&
-      !(await adminConfirmUnsaved(
-        "Alterações desta seção ainda não foram salvas. Como deseja continuar antes de criar outra?",
-        { title: "Alterações não salvas" },
-      ))
-    )
-      return
-    setMessage("Criando seção e painéis…")
-    const { data, error } = await supabase.rpc("create_section_with_panels", {
-      p_page_id: sections[0].page_id,
-    })
-    setMessage(error?.message ?? "Seção e painéis criados como rascunho.")
-    if (!error && data) {
-      reload()
-      setSelectedId(data)
-      onSelectSection?.(data)
-    }
-  }
-
-  async function publish() {
-    if (!selected || !supabase) return
-    if (
-      !(await adminConfirm(`Publicar “${selected.title}” e seus blocos?`, {
-        title: "Publicar seção",
-        confirmLabel: "Publicar",
-      }))
-    )
-      return
-    // Publication validates editorial placeholders; Save must never bypass this RPC.
-    setMessage("Publicando seção…")
-    const { error } = await supabase.rpc("publish_section", {
-      section_to_publish: selected.id,
-      allow_placeholders: false,
-    })
-    setMessage(error?.message ?? "Seção e blocos publicados.")
-    if (!error) reload()
-  }
   async function remove() {
     if (!selected || !supabase) return
     if (
@@ -455,42 +388,7 @@ function SectionsEditor({
   }
   return (
     <>
-      {!embedded && (
-        <AdminHeader
-          title="Seções"
-          subtitle="Ordem, visibilidade, conteúdo e apresentação"
-          action={
-            <div className="header-actions">
-              <button
-                className="secondary-button"
-                onClick={create}
-                disabled
-                title="Criação de seções desativada"
-              >
-                Nova seção
-              </button>
-              <button className="primary-button" onClick={duplicate}>
-                Duplicar seção
-              </button>
-            </div>
-          }
-        />
-      )}
-      {embedded && (
-        <div className="site-editor-actions">
-          <button
-            className="secondary-button"
-            onClick={create}
-            disabled
-            title="Criação de seções desativada"
-          >
-            Nova seção
-          </button>
-          <button className="secondary-button" onClick={duplicate}>
-            Duplicar seção
-          </button>
-        </div>
-      )}
+      {!embedded && <AdminHeader title="Seções" subtitle="Ordem, visibilidade, conteúdo e apresentação" />}
       <div className={embedded ? "site-editor-section" : "section-editor-layout"}>
         {!embedded && (
           <div className="section-list" aria-label="Seções do site">
@@ -552,10 +450,6 @@ function SectionsEditor({
                   onChange={(e) => setDraft({ ...draft, intro: e.target.value })}
                 />
               </label>
-              <div className="editor-readonly-status" role="status" aria-label="Situação da seção">
-                <strong>{sectionPublicationLabel(draft)}</strong>
-                <span>A visibilidade é ajustada em “Exibir no site” ou em “Arquivar”.</span>
-              </div>
               <label>
                 <span className="admin-field-label">
                   Tema
@@ -637,8 +531,12 @@ function SectionsEditor({
               <button className="danger-button" onClick={remove}>
                 Arquivar
               </button>
-              <button className="secondary-button" onClick={publish}>
-                Publicar seção
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={embedded ? saveRegisteredAdminChanges : save}
+              >
+                Salvar
               </button>
               {!embedded && <FloatingSaveButton enabled={sectionDirty} onClick={save} />}
             </div>
@@ -750,18 +648,6 @@ function SiteEditor({
     setCollectionSource(source)
   }
 
-  // Creation/duplication already confirms unsaved edits before the RPC.
-  function selectCreatedSection(id: string) {
-    onDirtyChange(false)
-    setSectionInfoDirty(false)
-    setContentDirty(false)
-    setSelectedId(id)
-    if (sections.some((section) => section.id === id && isExperienceSection(section.slug))) {
-      setLastExperienceId(id)
-    }
-    setPane("edit")
-  }
-
   const panes: { id: SiteEditorPane; title: string }[] = [
     { id: "edit", title: "Editar seção" },
     { id: "records", title: "Acervo estruturado" },
@@ -791,7 +677,7 @@ function SiteEditor({
                 <span>{String(entry.sections[0].sort_order).padStart(2, "0")}</span>
                 <div>
                   <strong>Experiências Profissionais</strong>
-                  <small>{entry.sections.length} trabalhos para editar</small>
+                  <small>{entry.sections.length} itens</small>
                 </div>
               </button>
             ) : (
@@ -807,7 +693,6 @@ function SiteEditor({
                   <strong>{entry.section.title}</strong>
                   <small>
                     {sectionPublicationLabel(entry.section)}
-                    {!entry.section.is_visible ? " · Oculta no site" : ""}
                   </small>
                 </div>
               </button>
@@ -818,7 +703,8 @@ function SiteEditor({
           {selected ? (
             <>
               <div className="site-editor-heading">
-                <p>
+                <div className="site-editor-heading-copy">
+                  <p>
                   {selectedIsExperience
                     ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
                     : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug}`}
@@ -829,6 +715,21 @@ function SiteEditor({
                     ? "Escolha abaixo o trabalho que deseja editar."
                     : sectionPublicationLabel(selected)}
                 </span>
+              </div>
+                <div className="site-editor-tabs" role="tablist" aria-label="Edição da seção">
+                {panes.map((item) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    key={item.id}
+                    aria-selected={pane === item.id}
+                    className={pane === item.id ? "active" : ""}
+                    onClick={() => selectPane(item.id)}
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
               </div>
               {selectedIsExperience && (
                 <section
@@ -853,7 +754,6 @@ function SiteEditor({
                         <small>
                           Seção {String(experience.sort_order).padStart(2, "0")} ·{" "}
                           {sectionPublicationLabel(experience)}
-                          {!experience.is_visible ? " · Oculta no site" : ""}
                         </small>
                       </button>
                     ))}
@@ -864,20 +764,7 @@ function SiteEditor({
                   </p>
                 </section>
               )}
-              <div className="site-editor-tabs" role="tablist" aria-label="Edição da seção">
-                {panes.map((item) => (
-                  <button
-                    type="button"
-                    role="tab"
-                    key={item.id}
-                    aria-selected={pane === item.id}
-                    className={pane === item.id ? "active" : ""}
-                    onClick={() => selectPane(item.id)}
-                  >
-                    {item.title}
-                  </button>
-                ))}
-              </div>
+              
               <div className="site-editor-body">
                 {dirty && (
                   <p className="site-editor-unsaved" role="status">
@@ -896,7 +783,6 @@ function SiteEditor({
                       reload={reload}
                       selectedSectionId={selected.id}
                       embedded
-                      onSelectSection={selectCreatedSection}
                       onDirtyChange={setSectionInfoDirty}
                     />
                     <div className="site-editor-consolidated-heading">
@@ -1294,7 +1180,7 @@ function PortfolioPreviewPane() {
         <iframe key={device} title={`Prévia ${device} do portfólio`} src="/admin/preview" />
       </div>
       <small>
-        A simulação ajusta a largura da prévia; não substitui testes em dispositivos reais.
+        A prévia mobile utiliza proporção de 390 × 844 px; não substitui testes em dispositivos reais.
       </small>
     </div>
   )
