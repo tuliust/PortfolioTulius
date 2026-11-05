@@ -396,7 +396,6 @@ function ProfileMobileDetails({
   onSelectTheme: (themeKey: string) => void
 }) {
   const areas = items.slice(0, 5)
-  const careers = items.slice(5)
   return (
     <div className="profile-mobile-details">
       <header className="profile-mobile-block-heading">
@@ -438,31 +437,7 @@ function ProfileMobileDetails({
           )
         })}
       </ol>
-      <header className="profile-mobile-block-heading profile-mobile-career-heading">
-        <h2>Experiência em destaque</h2>
-      </header>
-      <ul className="profile-mobile-career-list">
-        {careers.map((item, index) => {
-          const destination = publishedSlugs.includes(item.targetSlug ?? "")
-            ? item.targetSlug
-            : undefined
-          const content = (
-            <>
-              <strong>{item.title}</strong>
-              {item.meta && <span>{item.meta}</span>}
-            </>
-          )
-          return (
-            <li
-              key={`${item.title}-${index}`}
-              className={item.mobile?.visible === false ? "item-hidden-mobile" : undefined}
-              style={itemStyle(item)}
-            >
-              {destination ? <a href={`#${destination}`}>{content}</a> : <div>{content}</div>}
-            </li>
-          )
-        })}
-      </ul>
+      {/* Área inferior reservada para conteúdo futuro; experiências mantidas no CMS. */}
     </div>
   )
 }

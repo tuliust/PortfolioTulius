@@ -599,6 +599,8 @@ export function ExperienceStack({
 }) {
   const [active, setActive] = useState(sections[0]?.slug ?? "")
   const [careerDetails, setCareerDetails] = useState<Record<string, string>>({})
+  const [isIndexStuck, setIsIndexStuck] = useState(false)
+  const indexRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -647,6 +649,33 @@ export function ExperienceStack({
     return () => window.removeEventListener("scroll", onScroll)
   }, [sections, isMobile])
 
+  // The company navigation changes color only when it has actually reached
+  // its sticky position below the fixed site header.
+  useEffect(() => {
+    if (!isMobile) return
+    const index = indexRef.current
+    const stack = index?.parentElement
+    if (!index || !stack) return
+    const updateStuck = () => {
+      const header = document.querySelector<HTMLElement>(".site-header")
+      const headerBottom = header?.getBoundingClientRect().bottom ?? 0
+      const indexRect = index.getBoundingClientRect()
+      const stackRect = stack.getBoundingClientRect()
+      setIsIndexStuck(
+        stackRect.top < headerBottom - 1 &&
+          indexRect.top <= headerBottom + 1 &&
+          stackRect.bottom > headerBottom + indexRect.height,
+      )
+    }
+    window.addEventListener("scroll", updateStuck, { passive: true })
+    window.addEventListener("resize", updateStuck)
+    updateStuck()
+    return () => {
+      window.removeEventListener("scroll", updateStuck)
+      window.removeEventListener("resize", updateStuck)
+    }
+  }, [isMobile])
+
   const displayedSections = isMobile
     ? sections.filter((section) => section.slug === active)
     : sections
@@ -668,7 +697,11 @@ export function ExperienceStack({
 
   return (
     <div className="experience-stack" aria-label="Experiências profissionais">
-      <nav className="experience-index" aria-label="Selecionar empresa">
+      <nav
+        ref={indexRef}
+        className={isMobile && isIndexStuck ? "experience-index is-stuck" : "experience-index"}
+        aria-label="Selecionar empresa"
+      >
         {sections.map((section) => (
           <a
             href={`#${section.slug}`}
