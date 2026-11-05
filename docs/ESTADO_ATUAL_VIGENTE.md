@@ -1,3 +1,5 @@
+> **MARCO DE AUDITORIA — 05/11/2026:** [Auditoria autônoma por conectores](AUDITORIA_AUTONOMA_CONECTORES_2026-11-05.md) revalidou 22 tabelas com RLS, 26 blocos manuais + 2 vinculados, 53 pares privados, 44 públicos de uso corrente não comprovado e os alertas de segurança. O baseline de código publicado antes do commit documental era `2a121f05be601f18b0521c7ce2a939fe86084d4a` (Validate e Vercel READY); **os commits locais posteriores, a UI-01 e o SEO sintético não foram publicados por esta atualização documental**. Etapas 4–7 encerradas por aceite manual de 05/11. Abaixo, preservar o histórico anterior como snapshot, não estado em tempo real.
+
 > **Atualização de decisão em 02/11/2026:** o limite vigente de LCP mobile é **≤3,5 s**, não ≤2,5 s. Foi escolhido **Supabase local isolado**, sem projeto cloud adicional. As métricas e gates abaixo documentam o contexto histórico da época. [Registro vigente](DECISOES_LCP_3_5_STAGING_LOCAL_2026-11-02.md).
 
 # PortfolioTulius — estado operacional vigente
