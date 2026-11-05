@@ -65,6 +65,21 @@ describe("editorial UX and public section transitions", () => {
     expect(css).toContain("aspect-ratio: 390 / 844")
   })
 
+  it("shows the slides explanation through an info button and embeds trajectory fields", () => {
+    expect(modules).toContain('label="Slides relacionados aos projetos"')
+    expect(modules).toContain("Cada título de slide é um projeto clicável na página pública.")
+    expect(modules).not.toContain("experience-admin-relationship-note")
+    expect(modules).not.toContain("Editar trajetória completa (Coleções)")
+    expect(modules).not.toContain("O site evita exibir trechos já resumidos")
+    expect(modules).toContain("<InlineCareerTrajectoryEditor")
+    expect(modules).toContain("resolveCareerSectionSlug(row) === sectionSlug")
+    expect(modules).toContain('from("career_experiences")')
+    expect(modules).toContain('.eq("updated_at", saved.updated_at)')
+    expect(modules).toContain("blockDirty || trajectoryDirty")
+    expect(modules).toContain("Trajetória completa")
+    expect(css).toContain(".experience-admin-slide-heading")
+  })
+
   it("preserves published navigation and clarifies the verified canonical domain", () => {
     expect(modules).toContain('status: "published"')
     expect(modules).toContain('title="Criação de itens desativada"')

@@ -1429,10 +1429,11 @@
 .experience-admin-competencies { display: grid; gap: .4rem; margin: .75rem 0 1.15rem; }
 .experience-admin-competencies textarea { width: 100%; min-height: 7.5rem; }
 .experience-admin-competencies small,
-.experience-admin-career-link small,
-.experience-admin-relationship-note { color: #625b55; font-size: .78rem; line-height: 1.5; }
-.experience-admin-career-link { display: flex; align-items: start; flex-wrap: wrap; gap: .55rem; margin: .7rem 0 1rem; }
-.experience-admin-career-link small { flex: 1 1 15rem; }
+.experience-admin-slide-heading { display: flex; align-items: center; gap: .45rem; margin: .7rem 0; }
+.experience-admin-slide-heading h3 { margin: 0; }
+.experience-inline-trajectory { min-width: 0; }
+.experience-inline-trajectory h3 { margin-bottom: .4rem; }
+.experience-inline-trajectory-note { margin: 0 0 1rem; font-size: .8rem; color: #625b55; line-height: 1.5; }
 
 
 /* 31 October mobile parity: all changes are scoped to narrow viewports. */
