@@ -2787,33 +2787,60 @@ type RevisionPreview = {
   changedFields: string[]
 }
 
+// Apenas a listagem corrente é reiniciada; os registros anteriores permanecem no Supabase.
+const EDITORIAL_ACTIVITY_START = "2026-11-05T08:36:27.000Z"
+const EDITORIAL_PAGE_SIZE = 10
+
 export function EditorialStudio() {
   const [issues, setIssues] = useState<Record<string, any>[]>([])
   const [revisions, setRevisions] = useState<Record<string, any>[]>([])
+  const [issueLimit, setIssueLimit] = useState(EDITORIAL_PAGE_SIZE)
+  const [revisionLimit, setRevisionLimit] = useState(EDITORIAL_PAGE_SIZE)
+  const [issueTotal, setIssueTotal] = useState(0)
+  const [revisionTotal, setRevisionTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState("")
   const [preview, setPreview] = useState<RevisionPreview | null>(null)
   const [busy, setBusy] = useState(false)
 
   const load = async () => {
+    if (!supabase) {
+      setLoading(false)
+      setMessage("Não foi possível acessar o Supabase.")
+      return
+    }
+    setLoading(true)
     const [issueResult, revisionResult] = await Promise.all([
-      supabase?.from("editorial_issues").select("*, sections(title)").order("created_at"),
       supabase
-        ?.from("content_revisions")
-        .select("*")
+        .from("editorial_issues")
+        .select("*, sections(title)", { count: "exact" })
+        .eq("status", "open")
+        .gte("created_at", EDITORIAL_ACTIVITY_START)
         .order("created_at", { ascending: false })
-        .limit(50),
+        .range(0, issueLimit - 1),
+      supabase
+        .from("content_revisions")
+        .select("*", { count: "exact" })
+        .gte("created_at", EDITORIAL_ACTIVITY_START)
+        .order("created_at", { ascending: false })
+        .range(0, revisionLimit - 1),
     ])
-    setIssues(issueResult?.data ?? [])
-    setRevisions(revisionResult?.data ?? [])
-    if (issueResult?.error || revisionResult?.error) {
-      setMessage(
-        issueResult?.error?.message ?? revisionResult?.error?.message ?? "Falha na leitura.",
-      )
+    setLoading(false)
+    if (!issueResult.error) {
+      setIssues(issueResult.data ?? [])
+      setIssueTotal(issueResult.count ?? 0)
+    }
+    if (!revisionResult.error) {
+      setRevisions(revisionResult.data ?? [])
+      setRevisionTotal(revisionResult.count ?? 0)
+    }
+    if (issueResult.error || revisionResult.error) {
+      setMessage(issueResult.error?.message ?? revisionResult.error?.message ?? "Falha na leitura.")
     }
   }
   useEffect(() => {
     void load()
-  }, [])
+  }, [issueLimit, revisionLimit])
 
   async function resolve(id: string, resolution: string) {
     if (!supabase || !resolution.trim()) return setMessage("Informe a resolução editorial.")
@@ -2927,29 +2954,42 @@ export function EditorialStudio() {
         <div>
           <p>Governança editorial</p>
           <h1>Revisões e pendências</h1>
-          <span>Conflitos de fonte, decisões e histórico automático</span>
+          <span>Novos registros desde 05/11/2026 · histórico anterior preservado no Supabase</span>
         </div>
       </header>
       <div className="editorial-columns">
         <section className="admin-card">
           <div className="card-heading">
             <div>
-              <p>Em aberto</p>
+              <p>Novas em aberto</p>
               <h2>Pendências editoriais</h2>
             </div>
             <span className="status-chip">
-              {issues.filter((issue) => issue.status === "open").length}
+              {issueTotal}
             </span>
           </div>
           {issues.map((issue) => (
             <IssueRow key={issue.id} issue={issue} onResolve={resolve} />
           ))}
+          {!loading && issues.length === 0 && (
+            <p className="admin-note">Nenhuma nova pendência editorial aberta.</p>
+          )}
+          {issues.length < issueTotal && (
+            <button
+              type="button"
+              className="secondary-button editorial-load-more"
+              disabled={loading}
+              onClick={() => setIssueLimit((limit) => limit + EDITORIAL_PAGE_SIZE)}
+            >
+              Ver mais
+            </button>
+          )}
           <StatusMessage>{message}</StatusMessage>
         </section>
         <section className="admin-card">
           <div className="card-heading">
             <div>
-              <p>Últimas 50</p>
+              <p>Novas revisões</p>
               <h2>Revisões</h2>
             </div>
           </div>
@@ -3016,6 +3056,19 @@ export function EditorialStudio() {
               </div>
             ))}
           </div>
+          {!loading && revisions.length === 0 && (
+            <p className="admin-note">Nenhuma nova revisão registrada.</p>
+          )}
+          {revisions.length < revisionTotal && (
+            <button
+              type="button"
+              className="secondary-button editorial-load-more"
+              disabled={loading}
+              onClick={() => setRevisionLimit((limit) => limit + EDITORIAL_PAGE_SIZE)}
+            >
+              Ver mais
+            </button>
+          )}
         </section>
       </div>
     </>

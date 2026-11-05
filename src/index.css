@@ -358,6 +358,7 @@
 .revision-preview pre { max-width: 100%; max-height: 22rem; margin: .75rem 0; padding: .75rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: white; border: 1px solid #e3dfdc; font-size: .72rem; }
 .revision-preview .header-actions { flex-wrap: wrap; }
 .revision-list .secondary-button { justify-self: start; margin-top: .4rem; }
+.editorial-load-more { margin-top: 1rem; }
 .media-editor-grid article { align-content: start; }
 .media-editor-grid textarea { min-height: 5rem; resize: vertical; }
 .media-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
@@ -599,6 +600,7 @@
   margin: 1rem 0 .65rem; overflow-wrap: anywhere; }
 .experience-heading p { font-size: clamp(.79rem, .95vw, 1rem); line-height: 1.55; }
 .experience-heading .experience-eyebrow { font-weight: 750; color: var(--orange-dark); }
+.experience-heading .experience-period { display: block; font-size: clamp(.72rem, .8vw, .88rem); font-weight: 600; line-height: 1.4; }
 .experience-competencies {
   display: flex; flex-wrap: wrap; gap: .35rem; padding: 0; margin: .8rem 0 0;
   list-style: none;
@@ -622,6 +624,8 @@
   text-transform: uppercase; padding: .2rem 0; text-align: left;
   transition: color .2s ease, font-size .2s ease;
 }
+.experience-view-switch button.experience-view-trajectory { display: inline-flex; align-items: center; gap: .4rem; font-size: clamp(.9rem, 1.05vw, 1.16rem); }
+.experience-view-switch button.experience-view-trajectory svg { flex: none; }
 .experience-view-switch button:hover { color: var(--orange-dark); }
 .experience-view-switch button:disabled { opacity: .4; cursor: not-allowed; }
 .experience-view-switch button.is-active {
@@ -919,21 +923,22 @@
   column-gap: clamp(1.25rem, 2.2vw, 3rem);
   row-gap: 0;
   align-items: center;
-  padding: calc(var(--header) + 1.5rem) var(--gutter) clamp(1.25rem, 3dvh, 2.5rem);
+  --contact-bottom-space: clamp(1.25rem, 3dvh, 2.5rem);
+  padding: calc(var(--header) + 1.5rem) var(--gutter) var(--contact-bottom-space);
   position: relative;
   overflow: clip;
 }
 .contact-heading { grid-column: 1; grid-row: 1; min-width: 0; }
 .contact-heading h2 { max-width: none; }
-/* Span the footer row and bottom padding without moving the footer rule.
- * Keep the CMS portrait above the rule and clip only at the section edge. */
+/* Extend the portrait through the footer row into the section's bottom padding.
+ * The footer's own grid placement stays unchanged. */
 .contact-portrait {
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 1 / 3;
   align-self: stretch;
   min-width: 0;
   min-height: 18rem;
-  margin-bottom: 0;
+  margin-bottom: calc(-1 * var(--contact-bottom-space));
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -942,15 +947,13 @@
   overflow: visible;
   pointer-events: none;
 }
-/* The published CMS PNG has transparent pixels below the silhouette.
- * Preserve its framing and vertical offset while extending past the rule. */
+/* Anchor the photograph to the actual bottom edge, not the footer divider. */
 .contact-portrait img {
   display: block;
   height: 100%;
   width: 100%;
   object-fit: cover;
-  object-position: center;
-  translate: 0 clamp(2rem, 5.3svh, 4rem);
+  object-position: center bottom;
 }
 .contact-links { grid-column: 3; grid-row: 1; min-width: 0; display: grid; gap: .5rem; }
 .contact-links .contact-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem; min-width: 0; }
@@ -958,6 +961,7 @@
 .contact-links .contact-link .item-arrow { grid-column: 2; justify-self: end; align-self: center; }
 .contact-links .contact-link .item-value { display: block; max-width: 100%; overflow-wrap: anywhere; word-break: break-word; font-size: clamp(1.7rem, 2.8vw, 3rem); }
 .contact-footer { grid-column: 1 / -1; grid-row: 2; align-self: end; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem; border-top: 1px solid color-mix(in srgb, currentColor 40%, transparent); padding-top: .85rem; font-size: clamp(.75rem, .8vw, .95rem); }
+.contact-desktop > .contact-footer { position: relative; z-index: 3; }
 .contact-mobile-photo { width: 100%; min-height: 65svh; display: flex; overflow: hidden; }
 .contact-mobile-photo img { width: 100%; height: 100%; min-height: 65svh; object-fit: cover; }
 .layout-contact .panel-b .contact-footer { margin-top: 2.5rem; }
@@ -2137,6 +2141,10 @@
     font-size: clamp(.78rem, 3.15vw, .9rem);
     line-height: 1.3;
   }
+  .public-site .experience-card .experience-mobile-copy .experience-heading .experience-period {
+    font-size: clamp(.68rem, 2.75vw, .79rem);
+    font-weight: 600;
+  }
   .public-site .experience-card .experience-mobile-copy .experience-competencies {
     margin: .35rem 0 .4rem;
     gap: .2rem;
@@ -2169,7 +2177,9 @@
     white-space: normal;
   }
   .public-site .experience-card .experience-mobile-copy .experience-view-switch button:last-child {
+    justify-content: flex-end;
     text-align: right;
+    font-size: clamp(1.05rem, 4.4vw, 1.45rem);
   }
   .public-site .experience-card .experience-mobile-copy .experience-view-switch button.is-active {
     border-bottom-color: var(--orange);

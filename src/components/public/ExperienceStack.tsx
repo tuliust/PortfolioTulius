@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { imageFramingStyle } from "../../lib/media-framing"
+import { Icon } from "../ui/Icons"
 import {
   complementaryCareerLines,
   matchExperienceSlides,
@@ -241,7 +242,8 @@ function ExperienceContent({
           disabled={!trajectoryAvailable}
           onClick={() => chooseView("trajectory")}
         >
-          Trajetória
+          <span>Trajetória</span>
+          <Icon name="arrow" size={16} />
         </button>
       </div>
       <div id={`${section.slug}-experience-content`} className="experience-view-body">
@@ -423,6 +425,19 @@ function ExperienceMobileBody({
   )
 }
 
+function ExperienceIntro({ section }: { section: PortfolioSection }) {
+  if (!section.intro) return null
+  if (section.slug !== "invest-rs") return <p>{section.intro}</p>
+  const [role, ...period] = section.intro.split(" · ")
+  if (!period.length) return <p>{section.intro}</p>
+  return (
+    <p className="experience-intro">
+      {role}
+      <span className="experience-period">{period.join(" · ")}</span>
+    </p>
+  )
+}
+
 function ExperienceCard({
   section,
   order,
@@ -471,7 +486,7 @@ function ExperienceCard({
             <CompanyMark section={section} />
             <h2>{section.title}</h2>
             {section.eyebrow && <p className="experience-eyebrow">{section.eyebrow}</p>}
-            {section.intro && <p>{section.intro}</p>}
+            <ExperienceIntro section={section} />
             <ExperienceCompetencies tags={competencies} />
           </header>
           <ExperienceContent
@@ -494,7 +509,7 @@ function ExperienceCard({
             <header className="experience-heading">
               <h2>{section.title}</h2>
               {section.eyebrow && <p className="experience-eyebrow">{section.eyebrow}</p>}
-              {section.intro && <p>{section.intro}</p>}
+              <ExperienceIntro section={section} />
               <ExperienceCompetencies tags={competencies} />
             </header>
             <div
@@ -527,7 +542,8 @@ function ExperienceCard({
                 disabled={!detail?.trim()}
                 onClick={() => changeMobileView("trajectory")}
               >
-                Trajetória
+                <span>Trajetória</span>
+                <Icon name="arrow" size={16} />
               </button>
             </div>
           </div>

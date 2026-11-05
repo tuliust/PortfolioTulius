@@ -196,7 +196,9 @@ function Dashboard({
           <strong>
             {published}/{sections.length}
           </strong>
-          <small>{sections.length - published} aguardando publicação</small>
+          <small>
+            {visible} exibidas no site · {sections.length - published} aguardando publicação
+          </small>
         </article>
         <article>
           <span>Pendências editoriais</span>
@@ -215,7 +217,6 @@ function Dashboard({
             <p>Checklist de publicação</p>
             <h2>Qualidade antes de publicar</h2>
           </div>
-          <span className="status-chip">Rascunho seguro</span>
         </div>
         <ul className="check-list">
           <li>
@@ -231,8 +232,13 @@ function Dashboard({
           <li>
             <span className="check done">✓</span>
             <div>
-              <strong>Conteúdo do PDF</strong>
-              <p>Textos, métricas e depoimentos sem duplicações gráficas.</p>
+              <strong>Publicação das seções</strong>
+              <p>
+                {published} seções publicadas de {sections.length} cadastradas.
+                {sections.length === published
+                  ? " Nenhuma seção aguardando publicação."
+                  : " Confira as seções restantes antes de publicar."}
+              </p>
             </div>
           </li>
           <li>
@@ -249,10 +255,18 @@ function Dashboard({
             </div>
           </li>
           <li>
-            <span className="check">!</span>
+            <span className={issueCount === 0 ? "check done" : "check"}>
+              {issueCount === 0 ? "✓" : "!"}
+            </span>
             <div>
               <strong>Revisão editorial</strong>
-              <p>Cargos, idiomas e indicadores divergentes aguardam decisão.</p>
+              <p>
+                {issueCount === null
+                  ? "Não foi possível conferir as pendências editoriais no Supabase."
+                  : issueCount === 0
+                    ? "Nenhuma pendência editorial aberta."
+                    : `${issueCount} pendência(s) editorial(is) aguardando resolução.`}
+              </p>
             </div>
           </li>
         </ul>
@@ -614,7 +628,7 @@ function SectionsEditor({
   )
 }
 
-type SiteEditorPane = "content" | "details" | "records" | "preview"
+type SiteEditorPane = "content" | "details" | "records"
 
 function SiteEditor({
   sections,
@@ -630,8 +644,6 @@ function SiteEditor({
   const [selectedId, setSelectedId] = useState(sections[0]?.id ?? "")
   const [pane, setPane] = useState<SiteEditorPane>("content")
   const [collectionSource, setCollectionSource] = useState("career_experiences")
-  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop")
-  const [formationPilot, setFormationPilot] = useState(false)
   const [linkedSources, setLinkedSources] = useState<string[]>([])
   const [sourcesRevision, setSourcesRevision] = useState(0)
   const [lastExperienceId, setLastExperienceId] = useState("")
@@ -722,7 +734,6 @@ function SiteEditor({
     { id: "content", title: "Conteúdo e painéis" },
     { id: "details", title: "Informações da seção" },
     { id: "records", title: "Acervo estruturado" },
-    { id: "preview", title: "Prévia" },
   ]
 
   return (
@@ -897,57 +908,6 @@ function SiteEditor({
                       onDirtyChange={onDirtyChange}
                     />
                   </>
-                )}
-                {pane === "preview" && (
-                  <div className="embedded-preview site-editor-responsive-preview">
-                    <p className="site-editor-note">
-                      Prévia protegida dos dados já salvos. Alterações abertas nos formulários
-                      aparecem somente depois de gravadas.
-                    </p>
-                    {selected.slug === "formacao" && (
-                      <label className="site-editor-note">
-                        <input
-                          type="checkbox"
-                          checked={formationPilot}
-                          onChange={(event) => setFormationPilot(event.target.checked)}
-                        />{" "}
-                        Simular os três nomes completos aprovados (somente nesta prévia, sem salvar)
-                      </label>
-                    )}
-                    <div
-                      className="site-editor-preview-controls"
-                      role="group"
-                      aria-label="Visualizar em dispositivo"
-                    >
-                      <button
-                        type="button"
-                        className={previewDevice === "desktop" ? "active" : ""}
-                        aria-pressed={previewDevice === "desktop"}
-                        onClick={() => setPreviewDevice("desktop")}
-                      >
-                        Desktop
-                      </button>
-                      <button
-                        type="button"
-                        className={previewDevice === "mobile" ? "active" : ""}
-                        aria-pressed={previewDevice === "mobile"}
-                        onClick={() => setPreviewDevice("mobile")}
-                      >
-                        Mobile
-                      </button>
-                    </div>
-                    <div className={`site-editor-preview-frame ${previewDevice}`}>
-                      <iframe
-                        key={`${selected.slug}-${selected.slug === "formacao" && formationPilot}`}
-                        title={`Prévia ${previewDevice} da seção ${selected.title}`}
-                        src={`/admin/preview${selected.slug === "formacao" && formationPilot ? "?formationPilot=1" : ""}#${selected.slug}`}
-                      />
-                    </div>
-                    <small>
-                      A simulação varia a largura da prévia; não substitui testes em dispositivos
-                      reais.
-                    </small>
-                  </div>
                 )}
               </div>
             </>
@@ -1234,15 +1194,7 @@ export function AdminApp() {
     navigation: <NavigationStudio onDirtyChange={setEditorDirty} />,
     seo: <SeoStudio onDirtyChange={setEditorDirty} />,
     editorial: <EditorialStudio />,
-    preview: (
-      <div className="embedded-preview">
-        <AdminHeader
-          title="Pré-visualização"
-          subtitle="Rascunhos visíveis somente em sessão administrativa"
-        />
-        <iframe title="Prévia do portfólio" src="/admin/preview" />
-      </div>
-    ),
+    preview: <PortfolioPreviewPane />,
   }
   return (
     <AdminShell
@@ -1262,6 +1214,46 @@ export function AdminApp() {
       {screens[active]}
       <AdminConfirmationHost />
     </AdminShell>
+  )
+}
+
+function PortfolioPreviewPane() {
+  const [device, setDevice] = useState<"desktop" | "mobile">("desktop")
+  return (
+    <div className="embedded-preview site-editor-responsive-preview">
+      <AdminHeader
+        title="Pré-visualização"
+        subtitle="Rascunhos visíveis somente em sessão administrativa"
+      />
+      <div className="site-editor-preview-controls" role="group" aria-label="Visualizar em dispositivo">
+        <button
+          type="button"
+          className={device === "desktop" ? "active" : ""}
+          aria-pressed={device === "desktop"}
+          onClick={() => setDevice("desktop")}
+        >
+          Desktop
+        </button>
+        <button
+          type="button"
+          className={device === "mobile" ? "active" : ""}
+          aria-pressed={device === "mobile"}
+          onClick={() => setDevice("mobile")}
+        >
+          Mobile
+        </button>
+      </div>
+      <div className={`site-editor-preview-frame ${device}`}>
+        <iframe
+          key={device}
+          title={`Prévia ${device} do portfólio`}
+          src="/admin/preview"
+        />
+      </div>
+      <small>
+        A simulação ajusta a largura da prévia; não substitui testes em dispositivos reais.
+      </small>
+    </div>
   )
 }
 
