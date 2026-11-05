@@ -28,11 +28,22 @@ try {
         { name: "prefers-reduced-motion", value: "reduce" },
       ])
       await page.goto(base, { waitUntil: "networkidle2", timeout: 40000 })
-      await page.waitForFunction(() => document.querySelectorAll("section.portfolio-section").length === 13, { timeout: 15000 })
+      const expectedVisible = variant.name === "mobile" ? 8 : 13
+      await page.waitForFunction((total) =>
+        document.querySelectorAll("section.portfolio-section").length === total,
+        { timeout: 15000 }, expectedVisible)
       await page.evaluate(async () => document.fonts.ready)
-      const slugs = await page.$$eval("section.portfolio-section", nodes => nodes.map(node => node.id))
+      const renderedSlugs = await page.$$eval("section.portfolio-section", nodes => nodes.map(node => node.id))
+      const companySlugs = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"]
+      const slugs = variant.name === "mobile"
+        ? renderedSlugs.flatMap(slug => slug === "invest-rs" ? companySlugs : [slug])
+        : renderedSlugs
       if (slugs.length !== 13 || new Set(slugs).size !== 13) throw new Error("Seções ausentes ou duplicadas")
       for (const [index, slug] of slugs.entries()) {
+        if (variant.name === "mobile" && companySlugs.includes(slug) && slug !== "invest-rs") {
+          await page.click(`.experience-index a[href="#${slug}"]`)
+          await page.waitForSelector(`#${slug}-a`, { timeout: 15000 })
+        }
         const panelKeys = variant.name === "desktop" ? ["desktop"] : slug === "resultados" ? ["a"] : ["a", "b"]
         for (const panel of panelKeys) {
           const selector = variant.name === "desktop"

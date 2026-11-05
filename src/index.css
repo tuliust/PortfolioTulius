@@ -965,7 +965,7 @@
   object-fit: cover;
   object-position: center bottom;
   /* O PNG tem pixels transparentes na base; deslocar a silhueta até a borda real. */
-  translate: 0 clamp(1.75rem, 4svh, 2.25rem);
+  translate: 0 clamp(2.25rem, 5svh, 3rem);
 }
 .contact-links { grid-column: 3; grid-row: 1; min-width: 0; display: grid; gap: .5rem; }
 .contact-links .contact-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem; min-width: 0; }

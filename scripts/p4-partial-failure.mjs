@@ -3,9 +3,9 @@ import puppeteer from "puppeteer-core"
 // All failures are injected inside Chromium on GET requests, without writes.
 const scenarios = [
   { endpoint: "section_panels", expectedSections: 1, errorNotice: true },
-  { endpoint: "testimonials", expectedSections: 13, errorNotice: true, preservePortraits: true },
-  { endpoint: "design_tokens", expectedSections: 13, errorNotice: false },
-  { endpoint: "pages", expectedSections: 13, errorNotice: false },
+  { endpoint: "testimonials", expectedSections: 8, errorNotice: true, preservePortraits: true },
+  { endpoint: "design_tokens", expectedSections: 8, errorNotice: false },
+  { endpoint: "pages", expectedSections: 8, errorNotice: false },
 ]
 const browser = await puppeteer.launch({
   channel: "chrome",
