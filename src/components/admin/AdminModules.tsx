@@ -2679,7 +2679,12 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
           </span>
         </div>
         <div className="header-actions">
-          <button className="secondary-button" onClick={create} disabled title="Criação de itens desativada">
+          <button
+            className="secondary-button"
+            onClick={create}
+            disabled
+            title="Criação de itens desativada"
+          >
             Novo item
           </button>
           <FloatingSaveButton enabled={navigationDirty} onClick={save} label="Salvar menu" />
@@ -2872,9 +2877,9 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
                 placeholder="https://tulius.work/"
               />
               <small>
-                Domínio verificado na Vercel: https://tulius.work/. O domínio tuliust.work não
-                está associado a este projeto. Metadados estáticos, sitemap e robots.txt são
-                atualizados no próximo deploy.
+                Domínio verificado na Vercel: https://tulius.work/. O domínio tuliust.work não está
+                associado a este projeto. Metadados estáticos, sitemap e robots.txt são atualizados
+                no próximo deploy.
               </small>
             </label>
             <label>
@@ -3306,7 +3311,8 @@ export function EnhancedMediaLibrary({
           : result.payload.title,
     }
     const publishTargetPath = asset.storage_path.includes("/")
-      ? asset.storage_path.slice(0, asset.storage_path.lastIndexOf("/") + 1) + validatedName.fileName
+      ? asset.storage_path.slice(0, asset.storage_path.lastIndexOf("/") + 1) +
+        validatedName.fileName
       : validatedName.fileName
     setMessage(renameRequested ? "Renomeando arquivo privado…" : "Salvando metadados…")
     if (renameRequested) {
@@ -3364,9 +3370,7 @@ export function EnhancedMediaLibrary({
         mime_type: asset.mime_type,
       })
       if (!publication.ok) {
-        setMessage(
-          "Metadados salvos, mas a publicação automática falhou: " + publication.message,
-        )
+        setMessage("Metadados salvos, mas a publicação automática falhou: " + publication.message)
         await load()
         return false
       }
@@ -3563,45 +3567,45 @@ export function EnhancedMediaLibrary({
           ) : (
             <div key={asset.id} className="media-library-card-wrap">
               <button
-              type="button"
-              className="media-library-card"
-              aria-expanded={false}
-              disabled={mediaBusy}
-              onClick={async () => {
-                if (
-                  mediaDirty &&
-                  !(await adminConfirmUnsaved(
-                    "Existem alterações não salvas nesta mídia. Como deseja continuar?",
-                    { title: "Alterações não salvas" },
-                  ))
-                )
-                  return
-                setFramingOpen(false)
-                setSelectedMediaId(asset.id)
-                setMediaDraft(createMediaMetadataDraft(asset))
-              }}
-            >
-              <div className="media-placeholder media-preview">
-                {previews[asset.id]?.url && !failedImages[asset.id] ? (
-                  <img
-                    src={previews[asset.id].url}
-                    alt={asset.alt_text?.trim() || mediaDisplayTitle(asset)}
-                    loading="lazy"
-                    decoding="async"
-                    onError={() => setFailedImages((current) => ({ ...current, [asset.id]: true }))}
-                  />
-                ) : (
-                  <div className="media-preview-fallback">
-                    <Icon name="image" size={32} />
-                    <small>
-                      {failedImages[asset.id]
-                        ? "Imagem indisponível"
-                        : (previews[asset.id]?.error ?? "Carregando prévia…")}
-                    </small>
-                  </div>
-                )}
-              </div>
-              <strong>{mediaDisplayTitle(asset)}</strong>
+                type="button"
+                className="media-library-card"
+                aria-expanded={false}
+                disabled={mediaBusy}
+                onClick={async () => {
+                  if (
+                    mediaDirty &&
+                    !(await adminConfirmUnsaved(
+                      "Existem alterações não salvas nesta mídia. Como deseja continuar?",
+                      { title: "Alterações não salvas" },
+                    ))
+                  )
+                    return
+                  setFramingOpen(false)
+                  setSelectedMediaId(asset.id)
+                  setMediaDraft(createMediaMetadataDraft(asset))
+                }}
+              >
+                <div className="media-placeholder media-preview">
+                  {previews[asset.id]?.url && !failedImages[asset.id] ? (
+                    <img
+                      src={previews[asset.id].url}
+                      alt={asset.alt_text?.trim() || mediaDisplayTitle(asset)}
+                      loading="lazy"
+                      decoding="async"
+                      onError={() => setFailedImages((current) => ({ ...current, [asset.id]: true }))}
+                    />
+                  ) : (
+                    <div className="media-preview-fallback">
+                      <Icon name="image" size={32} />
+                      <small>
+                        {failedImages[asset.id]
+                          ? "Imagem indisponível"
+                          : (previews[asset.id]?.error ?? "Carregando prévia…")}
+                      </small>
+                    </div>
+                  )}
+                </div>
+                <strong>{mediaDisplayTitle(asset)}</strong>
               </button>
               <button
                 type="button"

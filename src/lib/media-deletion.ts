@@ -49,8 +49,7 @@ export async function runMediaDeletion(
     return {
       ok: false,
       databaseDeleted: true,
-      message:
-        "Registro removido, mas a exclusão física não foi confirmada: " + String(error),
+      message: "Registro removido, mas a exclusão física não foi confirmada: " + String(error),
     }
   }
 }
@@ -76,12 +75,15 @@ export async function deleteMediaAssetEverywhere(asset: DeletableMediaAsset) {
     "b171afda-2708-44eb-b3e5-ab2b7ff13236-tulius_site.png",
     "a46a4091-bce1-4345-a17f-7d7947a8e903-tulius_tablet.png",
   ]
-  if (asset.storage_bucket === "portfolio-public" &&
-      staticPortraits.some((name) => asset.storage_path.endsWith(name))) {
+  if (
+    asset.storage_bucket === "portfolio-public" &&
+    staticPortraits.some((name) => asset.storage_path.endsWith(name))
+  ) {
     return {
       ok: false,
       databaseDeleted: false,
-      message: "Esta imagem integra arquivos estáticos e componentes do site. Substitua primeiro as referências fixas no código antes de excluí-la.",
+      message:
+        "Esta imagem integra arquivos estáticos e componentes do site. Substitua primeiro as referências fixas no código antes de excluí-la.",
     }
   }
   const client = supabase

@@ -15,10 +15,10 @@ describe("editorial UX and public section transitions", () => {
     expect(app).toContain("admin-field-label")
     expect(app).toContain('label="Tema"')
     expect(app).toContain('label="Transições"')
-    expect(app).not.toContain('value={draft.status}')
+    expect(app).not.toContain("value={draft.status}")
     expect(modules).not.toContain("Contém conteúdo provisório")
     expect(modules).toContain('label="Painel a editar"')
-    expect(modules).toContain('p_is_placeholder: false')
+    expect(modules).toContain("p_is_placeholder: false")
     expect(modules).toContain('p_status: draft.status === "archived" ? "archived" : "published"')
   })
 
@@ -28,7 +28,7 @@ describe("editorial UX and public section transitions", () => {
     expect(publicSite).toContain("cms-entrance-${section.animation")
     expect(experience).toContain("cms-entrance-${section.animation")
     expect(publicSite).toContain('section.classList.add("cms-section-entered")')
-    for (const name of ["fade-in","fade-up","slide-left","slide-right","zoom-in"]) {
+    for (const name of ["fade-in", "fade-up", "slide-left", "slide-right", "zoom-in"]) {
       expect(css).toContain(".cms-entrance-" + name)
     }
     expect(css).toContain("prefers-reduced-motion: reduce")
@@ -38,7 +38,7 @@ describe("editorial UX and public section transitions", () => {
     expect(actions).toContain("export async function uploadPublishedMedia")
     expect(actions).toContain('storage.from("portfolio-public").upload')
     expect(picker).not.toContain("Disponibilizar no site")
-    expect(modules).toContain('aria-label={`Remover imagem ${mediaDisplayTitle(asset)}`}')
+    expect(modules).toContain("aria-label={`Remover imagem ${mediaDisplayTitle(asset)}`}")
     expect(modules).toContain("Deseja remover a imagem?")
     expect(modules).toContain("deleteMediaAssetEverywhere")
   })

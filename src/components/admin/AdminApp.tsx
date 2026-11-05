@@ -549,7 +549,9 @@ function SectionsEditor({
                 />
               </label>
               <div className="editor-readonly-status" role="status" aria-label="Situação da seção">
-                <strong>{draft.status === "archived" || !draft.is_visible ? "Oculto" : "Publicado"}</strong>
+                <strong>
+                  {draft.status === "archived" || !draft.is_visible ? "Oculto" : "Publicado"}
+                </strong>
                 <span>A visibilidade é ajustada em “Exibir no site” ou em “Arquivar”.</span>
               </div>
               <label>
@@ -609,8 +611,12 @@ function SectionsEditor({
                   <option value="slide-left">Vir da esquerda</option>
                   <option value="slide-right">Vir da direita</option>
                   <option value="zoom-in">Zoom suave</option>
-                  {!["none","fade-in","fade-up","slide-left","slide-right","zoom-in"].includes(draft.animation_preset) && (
-                    <option value={draft.animation_preset}>Preset anterior: {draft.animation_preset}</option>
+                  {!["none", "fade-in", "fade-up", "slide-left", "slide-right", "zoom-in"].includes(
+                    draft.animation_preset,
+                  ) && (
+                    <option value={draft.animation_preset}>
+                      Preset anterior: {draft.animation_preset}
+                    </option>
                   )}
                 </select>
               </label>
