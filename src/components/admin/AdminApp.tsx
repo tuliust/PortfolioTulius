@@ -19,6 +19,7 @@ import {
   AdminConfirmationHost,
 } from "./AdminConfirmationHost"
 import { FloatingSaveButton } from "./FloatingSaveButton"
+import { AdminInfoTip } from "./InfoTip"
 import {
   CollectionsStudio,
   ContentStudio,
@@ -338,8 +339,8 @@ function SectionsEditor({
         title: draft.title,
         intro: draft.intro,
         eyebrow: draft.eyebrow,
-        status: draft.status,
-        is_visible: draft.is_visible,
+        status: draft.status === "archived" ? "archived" : "published",
+        is_visible: draft.status === "archived" ? false : draft.is_visible,
         theme: draft.theme,
         layout_variant: draft.layout_variant,
         animation_preset: draft.animation_preset,
@@ -547,20 +548,18 @@ function SectionsEditor({
                   onChange={(e) => setDraft({ ...draft, intro: e.target.value })}
                 />
               </label>
+              <div className="editor-readonly-status" role="status" aria-label="Situação da seção">
+                <strong>{draft.status === "archived" || !draft.is_visible ? "Oculto" : "Publicado"}</strong>
+                <span>A visibilidade é ajustada em “Exibir no site” ou em “Arquivar”.</span>
+              </div>
               <label>
-                Status
-                <select
-                  value={draft.status}
-                  onChange={(e) => setDraft({ ...draft, status: e.target.value })}
-                >
-                  <option value="draft">Rascunho</option>
-                  <option value="in_review">Em revisão</option>
-                  <option value="published">Publicado</option>
-                  <option value="archived">Arquivado</option>
-                </select>
-              </label>
-              <label>
-                Tema
+                <span className="admin-field-label">
+                  Tema
+                  <AdminInfoTip
+                    label="Tema"
+                    description="Controla cores de fundo e texto da seção publicada. Papel: fundo claro neutro; Creme: fundo claro quente; Grafite: fundo escuro; Laranja: fundo da marca. Algumas composições especiais preservam detalhes visuais próprios."
+                  />
+                </span>
                 <select
                   value={draft.theme}
                   onChange={(e) => setDraft({ ...draft, theme: e.target.value })}
@@ -572,7 +571,13 @@ function SectionsEditor({
                 </select>
               </label>
               <label>
-                Layout
+                <span className="admin-field-label">
+                  Layout
+                  <AdminInfoTip
+                    label="Layout"
+                    description="Composição exclusiva desta seção. O layout é fixo para preservar o design aprovado."
+                  />
+                </span>
                 <select
                   value={draft.layout_variant}
                   disabled={Boolean(fixedLayouts[draft.slug])}
@@ -585,38 +590,35 @@ function SectionsEditor({
                   <option value="quotes">Depoimentos</option>
                   <option value="contact">Contato</option>
                 </select>
-                {fixedLayouts[draft.slug] && (
-                  <small>
-                    Composição exclusiva desta seção. O layout é fixo para preservar o design
-                    aprovado.
-                  </small>
-                )}
               </label>
               <label>
-                Animação
+                <span className="admin-field-label">
+                  Transições
+                  <AdminInfoTip
+                    label="Transições"
+                    description="Define a entrada inicial da seção quando ela aparece na página pública. Nenhuma: sem efeito; Suavizar: revelar opacidade; Subir: entrar de baixo; Vir da esquerda/direita: deslizamento horizontal; Zoom suave: ampliação discreta. Movimentos internos de composições especiais continuam definidos pelo design editorial."
+                  />
+                </span>
                 <select
-                  disabled={Boolean(fixedLayouts[draft.slug])}
                   value={draft.animation_preset}
                   onChange={(e) => setDraft({ ...draft, animation_preset: e.target.value })}
                 >
-                  <option value="none">Sem animação</option>
-                  <option value="fade-in">Fade</option>
-                  <option value="fade-up">Fade vertical</option>
-                  <option value="stagger">Cards em sequência</option>
-                  <option value="image-reveal">Reveal de imagem</option>
-                  <option value="metric-count">Métricas</option>
+                  <option value="none">Nenhuma</option>
+                  <option value="fade-in">Suavizar (fade)</option>
+                  <option value="fade-up">Subir suavemente</option>
+                  <option value="slide-left">Vir da esquerda</option>
+                  <option value="slide-right">Vir da direita</option>
+                  <option value="zoom-in">Zoom suave</option>
+                  {!["none","fade-in","fade-up","slide-left","slide-right","zoom-in"].includes(draft.animation_preset) && (
+                    <option value={draft.animation_preset}>Preset anterior: {draft.animation_preset}</option>
+                  )}
                 </select>
-                {fixedLayouts[draft.slug] && (
-                  <small>
-                    Movimentos desta composição são definidos pelo design editorial; esta opção não
-                    altera seus componentes especiais.
-                  </small>
-                )}
               </label>
               <label className="toggle-field">
                 <input
                   type="checkbox"
-                  checked={draft.is_visible}
+                  checked={draft.is_visible && draft.status !== "archived"}
+                  disabled={draft.status === "archived"}
                   onChange={(e) => setDraft({ ...draft, is_visible: e.target.checked })}
                 />{" "}
                 Exibir no site

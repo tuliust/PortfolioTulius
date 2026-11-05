@@ -498,7 +498,7 @@ function ExperienceCard({
     <section
       id={section.slug}
       data-section={section.slug}
-      className={`portfolio-section experience-card theme-${section.theme} motion-${section.animation ?? "fade-up"}`}
+      className={`portfolio-section experience-card theme-${section.theme} motion-${section.animation ?? "fade-up"} cms-entrance-${section.animation ?? "fade-up"}`}
       style={{ zIndex: order + 1 }}
     >
       {!isMobile && (

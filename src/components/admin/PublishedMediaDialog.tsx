@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
-import { mediaFileName } from "../../lib/media-framing"
-import { uploadPrivateMedia, publishPrivateMedia } from "../../lib/media-library-actions"
+import { uploadPublishedMedia } from "../../lib/media-library-actions"
 import {
   getPublishedImageChoices,
   type MediaLibraryRow,
   type PublishedImageChoice,
 } from "../../lib/media-selection"
-import { adminConfirm } from "./AdminConfirmationHost"
 
 export function PublishedMediaDialog({
   label,
@@ -21,7 +19,6 @@ export function PublishedMediaDialog({
   onClose: () => void
 }) {
   const [assets, setAssets] = useState<PublishedImageChoice[]>([])
-  const [privateAssets, setPrivateAssets] = useState<MediaLibraryRow[]>([])
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
@@ -48,18 +45,12 @@ export function PublishedMediaDialog({
     if (loadError) {
       setError(loadError.message)
       setAssets([])
-      setPrivateAssets([])
     } else {
       const rows = data as MediaLibraryRow[]
       setAssets(
         getPublishedImageChoices(
           rows,
           (path) => supabase!.storage.from("portfolio-public").getPublicUrl(path).data.publicUrl,
-        ),
-      )
-      setPrivateAssets(
-        rows.filter(
-          (asset) => asset.storage_bucket === "portfolio-private" && Boolean(asset.storage_path),
         ),
       )
     }
@@ -110,34 +101,11 @@ export function PublishedMediaDialog({
     event.target.value = ""
     setBusy(true)
     try {
-      const result = await uploadPrivateMedia(file)
+      const result = await uploadPublishedMedia(file)
       setMessage(result.message)
       if (result.ok) await load()
     } catch {
-      setMessage("Não foi possível enviar a mídia ao acervo privado.")
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  async function promote(asset: MediaLibraryRow) {
-    if (
-      !(await adminConfirm(
-        `Disponibilizar “${mediaFileName(asset.storage_path)}” no site público?`,
-        {
-          title: "Publicar mídia",
-          confirmLabel: "Disponibilizar no site",
-        },
-      ))
-    )
-      return
-    setBusy(true)
-    try {
-      const result = await publishPrivateMedia(asset)
-      setMessage(result.message)
-      if (result.ok) await load()
-    } catch {
-      setMessage("Não foi possível publicar a mídia.")
+      setMessage("Não foi possível publicar a mídia enviada.")
     } finally {
       setBusy(false)
     }
@@ -166,7 +134,7 @@ export function PublishedMediaDialog({
         <header>
           <div>
             <h3>Biblioteca de imagens</h3>
-            <p>Escolha uma imagem publicada ou envie um arquivo para revisão.</p>
+            <p>Escolha uma imagem existente ou envie uma nova, publicada automaticamente.</p>
           </div>
           <button type="button" onClick={onClose} disabled={busy} aria-label="Fechar biblioteca">
             ×
@@ -228,28 +196,6 @@ export function PublishedMediaDialog({
               ? "Nenhuma imagem corresponde à busca."
               : "Ainda não há imagens públicas."}
           </p>
-        )}
-        {privateAssets.length > 0 && (
-          <section
-            className="published-media-private"
-            aria-label="Mídias privadas aguardando publicação"
-          >
-            <h4>Arquivos privados — não selecionáveis</h4>
-            <p>Disponibilize explicitamente no site antes de escolher a imagem para um bloco.</p>
-            {privateAssets.map((asset) => (
-              <div key={asset.id}>
-                <span>{mediaFileName(asset.storage_path)}</span>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  disabled={busy}
-                  onClick={() => void promote(asset)}
-                >
-                  Disponibilizar no site
-                </button>
-              </div>
-            ))}
-          </section>
         )}
         <footer>
           <button type="button" className="secondary-button" disabled={busy} onClick={onClose}>

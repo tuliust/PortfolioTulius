@@ -1053,7 +1053,7 @@ function Section({
     <section
       id={section.slug}
       data-section={section.slug}
-      className={`portfolio-section theme-${section.theme} layout-${section.layout} motion-${section.animation ?? "fade-up"}`}
+      className={`portfolio-section theme-${section.theme} layout-${section.layout} motion-${section.animation ?? "fade-up"} cms-entrance-${section.animation ?? "fade-up"}`}
     >
       {!isMobile && (
         <div className="desktop-panel">
@@ -1220,7 +1220,10 @@ export function PublicSite({
         const section = (entry.target as HTMLElement).closest(
           "[data-section]",
         ) as HTMLElement | null
-        if (section) setCurrent(section.dataset.section ?? "perfil")
+        if (section) {
+          setCurrent(section.dataset.section ?? "perfil")
+          section.classList.add("cms-section-entered")
+        }
         entry.target
           .querySelectorAll(".reveal")
           .forEach((element) => element.classList.add("is-visible"))

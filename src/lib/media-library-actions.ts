@@ -11,7 +11,7 @@ export type PrivateMediaAsset = {
 
 type MediaAction = { ok: boolean; message: string }
 
-export async function uploadPrivateMedia(file: File): Promise<MediaAction> {
+export async function uploadPublishedMedia(file: File): Promise<MediaAction> {
   const client = supabase
   if (!client) return { ok: false, message: "Supabase não está configurado." }
   if (
@@ -21,10 +21,15 @@ export async function uploadPrivateMedia(file: File): Promise<MediaAction> {
     return { ok: false, message: "Use JPG, PNG, WebP ou SVG de até 8 MB." }
   const path = `${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`
   const result = await stagePrivateMediaChange({
-    stage: () => client.storage.from("portfolio-private").upload(path, file),
+    stage: () =>
+      client.storage.from("portfolio-public").upload(path, file, {
+        contentType: file.type,
+        cacheControl: "3600",
+        upsert: false,
+      }),
     persist: async () =>
       client.from("media_assets").insert({
-        storage_bucket: "portfolio-private",
+        storage_bucket: "portfolio-public",
         storage_path: path,
         mime_type: file.type,
         file_size: file.size,
@@ -32,12 +37,12 @@ export async function uploadPrivateMedia(file: File): Promise<MediaAction> {
         title: file.name.trim() || mediaFileName(path),
         status: "published",
       }),
-    undoStage: () => client.storage.from("portfolio-private").remove([path]),
+    undoStage: () => client.storage.from("portfolio-public").remove([path]),
   })
   return {
     ok: result.ok,
     message: result.ok
-      ? "Arquivo enviado ao acervo privado. Revise e use Disponibilizar no site para publicá-lo."
+      ? "Mídia enviada e publicada automaticamente na biblioteca pública."
       : result.message,
   }
 }

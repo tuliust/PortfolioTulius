@@ -7,7 +7,8 @@ import {
   type RestorableEntity,
 } from "../../lib/revision-restore"
 import { stagePrivateMediaChange } from "../../lib/media-operations"
-import { uploadPrivateMedia, publishPrivateMedia } from "../../lib/media-library-actions"
+import { uploadPublishedMedia, publishPrivateMedia } from "../../lib/media-library-actions"
+import { deleteMediaAssetEverywhere } from "../../lib/media-deletion"
 import { resolveMediaPreview, type MediaPreview } from "../../lib/media-preview"
 import { PublishedMediaPicker } from "./PublishedMediaPicker"
 import { MediaFramingDialog } from "./MediaFramingDialog"
@@ -574,8 +575,8 @@ export function ContentStudio({
       p_content_json: draft.content_json,
       p_mobile_panel: draft.mobile_panel,
       p_sort_order: draft.sort_order,
-      p_status: draft.status,
-      p_is_placeholder: draft.is_placeholder,
+      p_status: draft.status === "archived" ? "archived" : "published",
+      p_is_placeholder: false,
       p_editorial_note: draft.editorial_note,
       p_placements: placementUpdates,
     })
@@ -993,36 +994,21 @@ export function ContentStudio({
                     )}
                   </label>
                 )}
-                <label>
-                  Status
-                  <select
-                    value={draft.status}
-                    onChange={(event) => setDraft({ ...draft, status: event.target.value })}
-                  >
-                    <option value="draft">Rascunho</option>
-                    <option value="in_review">Em revisão</option>
-                    <option value="published">Publicado</option>
-                    <option value="archived">Arquivado</option>
-                  </select>
-                </label>
-                <label className="toggle-field field-wide">
-                  <input
-                    type="checkbox"
-                    checked={draft.is_placeholder}
-                    onChange={(event) =>
-                      setDraft({
-                        ...draft,
-                        is_placeholder: event.target.checked,
-                      })
-                    }
-                  />
-                  Contém conteúdo provisório
-                </label>
+                <div className="editor-readonly-status" role="status">
+                  <strong>{draft.status === "archived" ? "Oculto" : "Publicado"}</strong>
+                  <span>Blocos publicados aparecem quando a seção e o painel estão visíveis.</span>
+                </div>
               </div>
               <fieldset className="motion-editor">
                 <legend>Placement e animação</legend>
                 <label>
-                  Painel a editar (demais painéis são preservados)
+                  <span className="admin-field-label">
+                    Painel a editar
+                    <AdminInfoTip
+                      label="Painel a editar"
+                      description="A alteração é aplicada somente ao painel selecionado. Os demais painéis são preservados."
+                    />
+                  </span>
                   <select
                     value={placementPanel}
                     onChange={(event) => setPlacementPanel(event.target.value as PanelKey)}
@@ -2647,21 +2633,21 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
         group_name: "Menu",
         sort_order: items.length + 1,
         is_visible: false,
-        status: "draft",
+        status: "published",
       },
     ])
   }
   async function save(): Promise<boolean> {
     if (!supabase) return false
     setMessage("Salvando navegação…")
-    const rows = items.map(({ id, label, target_slug, sort_order, is_visible, status }) => ({
+    const rows = items.map(({ id, label, target_slug, sort_order, is_visible }) => ({
       id,
       label,
       target_slug,
       group_name: "Menu",
       sort_order,
       is_visible,
-      status,
+      status: "published",
     }))
     const { error } = await supabase.from("navigation_items").upsert(rows, { onConflict: "id" })
     if (error) {
@@ -2693,7 +2679,7 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
           </span>
         </div>
         <div className="header-actions">
-          <button className="secondary-button" onClick={create}>
+          <button className="secondary-button" onClick={create} disabled title="Criação de itens desativada">
             Novo item
           </button>
           <FloatingSaveButton enabled={navigationDirty} onClick={save} label="Salvar menu" />
@@ -2731,16 +2717,6 @@ export function NavigationStudio({ onDirtyChange }: { onDirtyChange?: (dirty: bo
                 onChange={(event) => patch(index, { is_visible: event.target.checked })}
               />
               Visível
-            </label>
-            <label>
-              Status
-              <select
-                value={item.status}
-                onChange={(event) => patch(index, { status: event.target.value })}
-              >
-                <option value="draft">Rascunho</option>
-                <option value="published">Publicado</option>
-              </select>
             </label>
           </div>
         ))}
@@ -2893,8 +2869,13 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
                     },
                   })
                 }
-                placeholder="Definir após o domínio final"
+                placeholder="https://tulius.work/"
               />
+              <small>
+                Domínio verificado na Vercel: https://tulius.work/. O domínio tuliust.work não
+                está associado a este projeto. Metadados estáticos, sitemap e robots.txt são
+                atualizados no próximo deploy.
+              </small>
             </label>
             <label>
               Status
@@ -3258,6 +3239,7 @@ export function EnhancedMediaLibrary({
   const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
   const [mediaDraft, setMediaDraft] = useState<MediaMetadataDraft | null>(null)
   const [framingOpen, setFramingOpen] = useState(false)
+  const [mediaBusy, setMediaBusy] = useState(false)
   const [message, setMessage] = useState("")
   const selectedAsset = assets.find((asset) => asset.id === selectedMediaId)
   const mediaDirty = Boolean(
@@ -3323,6 +3305,9 @@ export function EnhancedMediaLibrary({
           ? validatedName.fileName
           : result.payload.title,
     }
+    const publishTargetPath = asset.storage_path.includes("/")
+      ? asset.storage_path.slice(0, asset.storage_path.lastIndexOf("/") + 1) + validatedName.fileName
+      : validatedName.fileName
     setMessage(renameRequested ? "Renomeando arquivo privado…" : "Salvando metadados…")
     if (renameRequested) {
       const folder = asset.storage_path.includes("/")
@@ -3370,6 +3355,23 @@ export function EnhancedMediaLibrary({
       }
       setMessage("Metadados salvos.")
     }
+    if (asset.storage_bucket === "portfolio-private") {
+      const finalPath = renameRequested ? publishTargetPath : asset.storage_path
+      const publication = await publishPrivateMedia({
+        id: asset.id,
+        storage_bucket: asset.storage_bucket,
+        storage_path: finalPath,
+        mime_type: asset.mime_type,
+      })
+      if (!publication.ok) {
+        setMessage(
+          "Metadados salvos, mas a publicação automática falhou: " + publication.message,
+        )
+        await load()
+        return false
+      }
+      setMessage("Metadados salvos e mídia publicada.")
+    }
     setFramingOpen(false)
     setMediaDraft(null)
     setSelectedMediaId(null)
@@ -3384,73 +3386,43 @@ export function EnhancedMediaLibrary({
     const file = event.target.files?.[0]
     if (!file) return
     event.target.value = ""
-    const result = await uploadPrivateMedia(file)
-    setMessage(result.message)
-    if (result.ok) await load()
+    if (mediaBusy) return
+    setMediaBusy(true)
+    try {
+      const result = await uploadPublishedMedia(file)
+      setMessage(result.message)
+      if (result.ok) await load()
+    } finally {
+      setMediaBusy(false)
+    }
   }
-  async function promote(asset: MediaLibraryAsset) {
-    if (!supabase) return
-    if (asset.storage_bucket === "portfolio-public") return save(asset)
-    if (
-      !(await adminConfirm(`Publicar mídia “${mediaDisplayTitle(asset)}” no site público?`, {
-        title: "Publicar mídia",
-        confirmLabel: "Publicar",
-      }))
-    )
-      return
-    setMessage("Publicando mídia…")
-    const result = await publishPrivateMedia({
-      id: asset.id,
-      storage_bucket: asset.storage_bucket,
-      storage_path: asset.storage_path,
-      mime_type: asset.mime_type,
+  async function removeAsset(asset: MediaLibraryAsset) {
+    if (mediaBusy) return
+    const confirmed = await adminConfirm("Deseja remover a imagem?", {
+      title: "Excluir mídia definitivamente",
+      confirmLabel: "Sim",
+      tone: "danger",
     })
-    setMessage(result.message)
-    if (result.ok) await load()
-  }
-  async function replace(event: React.ChangeEvent<HTMLInputElement>, asset: MediaLibraryAsset) {
-    const file = event.target.files?.[0]
-    if (!file || !supabase) return
-    if (
-      !["image/jpeg", "image/png", "image/webp", "image/svg+xml"].includes(file.type) ||
-      file.size > 8_000_000
-    )
-      return setMessage("Use JPG, PNG, WebP ou SVG de até 8 MB.")
-    if (asset.storage_bucket !== "portfolio-private")
-      return setMessage(
-        "Substituição direta de mídia pública bloqueada para evitar expor um rascunho. Envie um novo arquivo privado e publique após revisar.",
-      )
-    // Never overwrite existing bytes before the metadata pointer is committed.
-    const client = supabase
-    const newPath = `${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`
-    const result = await stagePrivateMediaChange({
-      stage: () =>
-        client.storage.from("portfolio-private").upload(newPath, file, {
-          contentType: file.type,
-          upsert: false,
-        }),
-      persist: async () =>
-        client
-          .from("media_assets")
-          .update({
-            storage_path: newPath,
-            title: asset.title?.trim() || file.name,
-            mime_type: file.type,
-            file_size: file.size,
-            status: "published",
-          })
-          .eq("id", asset.id)
-          .select("id")
-          .single(),
-      undoStage: () => client.storage.from("portfolio-private").remove([newPath]),
-      cleanupOld: () => client.storage.from("portfolio-private").remove([asset.storage_path]),
-    })
-    setMessage(
-      result.ok
-        ? `Arquivo substituído; use Disponibilizar no site para atualizar a versão pública.${result.warning ? ` ${result.warning}` : ""}`
-        : result.message,
-    )
-    if (result.ok) await load()
+    if (!confirmed) return
+    setMediaBusy(true)
+    setMessage("Removendo mídia e referências do Supabase…")
+    try {
+      const result = await deleteMediaAssetEverywhere({
+        id: asset.id,
+        updated_at: asset.updated_at,
+        storage_bucket: asset.storage_bucket,
+        storage_path: asset.storage_path,
+      })
+      setMessage(result.message)
+      if (result.databaseDeleted) {
+        setSelectedMediaId(null)
+        setMediaDraft(null)
+        setFramingOpen(false)
+        await load()
+      }
+    } finally {
+      setMediaBusy(false)
+    }
   }
   return (
     <>
@@ -3465,6 +3437,7 @@ export function EnhancedMediaLibrary({
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp,image/svg+xml"
+            disabled={mediaBusy}
             onChange={upload}
           />
         </label>
@@ -3571,54 +3544,29 @@ export function EnhancedMediaLibrary({
                     setMediaDraft({ ...mediaDraft, fileName: event.target.value })
                   }
                 />
-                <small>
-                  {asset.storage_bucket === "portfolio-private"
-                    ? "Renomeação segura: copia o arquivo privado e atualiza o caminho no Supabase ao salvar."
-                    : "Arquivo público: nome físico bloqueado para preservar referências. Use o título editorial."}
-                </small>
               </label>
-              <div className="media-library-publication">
-                <span>Status</span>
-                <strong>
-                  {asset.storage_bucket === "portfolio-public" ? "Publicado" : "Privado"}
-                </strong>
-                {asset.storage_bucket === "portfolio-private" && (
-                  <small>
-                    Arquivo privado protegido. Use “Disponibilizar no site” para torná-lo acessível
-                    nas páginas públicas.
-                  </small>
-                )}
-              </div>
               <div className="media-actions">
                 <button
                   type="button"
                   className="primary-button"
-                  disabled={!hasMediaMetadataChanges(asset, mediaDraft)}
+                  disabled={
+                    mediaBusy ||
+                    (asset.storage_bucket !== "portfolio-private" &&
+                      !hasMediaMetadataChanges(asset, mediaDraft))
+                  }
                   onClick={() => save(asset)}
                 >
-                  Salvar metadados
+                  Salvar
                 </button>
-                <label className="secondary-button replace-button">
-                  Substituir arquivo
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/svg+xml"
-                    onChange={(event) => replace(event, asset)}
-                  />
-                </label>
-                {asset.storage_bucket === "portfolio-private" && (
-                  <button type="button" className="primary-button" onClick={() => promote(asset)}>
-                    Disponibilizar no site
-                  </button>
-                )}
               </div>
             </section>
           ) : (
-            <button
-              key={asset.id}
+            <div key={asset.id} className="media-library-card-wrap">
+              <button
               type="button"
               className="media-library-card"
               aria-expanded={false}
+              disabled={mediaBusy}
               onClick={async () => {
                 if (
                   mediaDirty &&
@@ -3654,7 +3602,18 @@ export function EnhancedMediaLibrary({
                 )}
               </div>
               <strong>{mediaDisplayTitle(asset)}</strong>
-            </button>
+              </button>
+              <button
+                type="button"
+                className="media-library-remove"
+                aria-label={`Remover imagem ${mediaDisplayTitle(asset)}`}
+                title="Remover imagem"
+                disabled={mediaBusy}
+                onClick={() => void removeAsset(asset)}
+              >
+                <Icon name="close" size={18} />
+              </button>
+            </div>
           ),
         )}
       </div>
