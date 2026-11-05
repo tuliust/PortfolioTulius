@@ -47,7 +47,7 @@ describe("Responsividade administrativa sem alterar o site público", () => {
     expect(css).toContain(".admin-stats, .field-grid, .responsive-style-grid")
     expect(css).toContain(".block-item-head .order-buttons button { min-width: 44px")
     expect(css).toContain(".admin-confirm-actions { flex-direction: column-reverse")
-    expect(css).toContain(".site-editor-preview-frame.mobile { width: 100%")
+    expect(css).toContain(".site-editor-preview-frame.mobile { width: min(390px, 100%)")
     expect(css).toContain("@media (max-width: 380px)")
   })
 })
