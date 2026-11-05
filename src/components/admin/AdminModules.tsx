@@ -2053,7 +2053,6 @@ function TrajectoryTextEditor({
   )
 }
 
-
 type CareerTrajectoryRecord = {
   id: string
   company: string
