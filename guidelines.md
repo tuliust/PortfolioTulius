@@ -1,5 +1,7 @@
 # GUIDELINES — SITE / CURRÍCULO / PORTFÓLIO DE TULIUS TSANGAROPULOS
 
+> **CLASSIFICAÇÃO EM 05/11/2026:** especificação **original de 22/10/2026**, preservada para contexto e rastreabilidade — **não** representa o estado do site ou do CMS atual. O produto publicado e sua aparência vigente não devem ser revertidos para corresponder a números, mockups, formas de criação ou fluxos projetados originalmente. Consultar [Estado atual](docs/ESTADO_ATUAL_VIGENTE.md), [CMS](docs/ADMIN_CMS.md), [responsividade](docs/RESPONSIVE_LAYOUT.md) e [índice](docs/README.md). Nenhuma alteração de código ou dados foi realizada por esta classificação.
+
 > **Versão:** 1.1 (com análise visual do PDF mobile recebido) · **Data:** 22/10/2026 · **Status:** especificação de implementação, com conteúdo e ativos sujeitos a revisão editorial.
 >
 > **Instrução operacional:** este documento acompanha o prompt principal do Figma Make e os PDFs desktop/mobile. É referência para implementação do projeto COMPLETO, não apenas de um protótipo. Execute o máximo possível em uma única rodada, valide e identifique as limitações reais sem declarar recursos incompletos como funcionais.

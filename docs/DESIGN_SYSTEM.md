@@ -1,6 +1,8 @@
 # Design system
 
-## Contrato editorial atual no mobile — 01/11/2026
+## Contrato editorial registrado no mobile em 01/11/2026 (referência datada)
+
+**Precedência desde 05/11:** a aparência pública vigente está correta e deve ser preservada. Na versão mobile atual, a lista duplicada de “Experiência em destaque” foi omitida do segundo painel do Perfil; o fundo de Olá muda para grafite abaixo da foto; Ferramentas foram elevadas; a faixa das logos das Experiências recebe laranja apenas no estado sticky. Ver [Layout atual](RESPONSIVE_LAYOUT.md), não interpretar as descrições de 01/11 abaixo como comando para restaurar elementos removidos.
 
 Preservar cores, tipos, fotografias, pictogramas, alinhamentos e a escala desktop vigente. Os mockups de outubro são referências conceituais, não substituem conteúdo CMS publicado nem determinam alturas rígidas.
 

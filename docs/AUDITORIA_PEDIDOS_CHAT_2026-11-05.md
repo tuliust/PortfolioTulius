@@ -1,5 +1,7 @@
 # Auditoria dos pedidos deste chat — 05/11/2026
 
+> **Classificação após consolidação:** relatório **datado** que auditou especificamente o baseline `31943c12`. Não é o estado vigente de `main`; o código funcional anterior à reorganização é [`79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2), com [Validate #42020574434](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42020574434) aprovado. Para o estado operacional e P3 posterior, consulte [Estado atual](ESTADO_ATUAL_VIGENTE.md). O corpo desta auditoria permanece intacto.
+
 > **Natureza:** verificação de implementação de pedidos posteriores ao encerramento histórico do projeto. Esta auditoria consultou código GitHub, CI, Vercel e Supabase **somente leitura**. Não executou gravações de CMS, Auth, RLS, Storage ou infraestrutura. Não converte CI verde em aceite visual ou transacional.
 > **Baseline funcional auditado:** commit [`31943c12`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/31943c12b8214aa1d4aad957d159ddcea010835e), [Validate #42016989021](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42016989021) **success** (formatação, TypeScript, 173 testes, build, smoke e sintaxe de scripts). Vercel **READY** e o alias `https://tulius.work/p3-deployment.json` retornaram o mesmo SHA. O novo commit apenas documental não equivale a novo teste funcional.
 

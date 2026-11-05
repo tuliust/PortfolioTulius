@@ -1,5 +1,7 @@
 # Auditoria do portfólio de Tulius e plano de conclusão
 
+> **CLASSIFICAÇÃO EM 05/11/2026:** plano e diagnóstico **históricos de 23/10/2026** (ex.: `07ba853`, seis testes, estrutura original). **Não usar o bloco “O que impede considerar o projeto completo” como backlog vigente**, nem interpretar os critérios da época como instrução para mudar a interface atualmente aprovada. Ver [Estado vigente](../docs/ESTADO_ATUAL_VIGENTE.md), [Verificações técnicas](../docs/OPEN_ISSUES.md), [CMS](../docs/ADMIN_CMS.md) e [Índice](../docs/README.md). Esta anotação não modifica a análise original.
+
 ## 1. Objetivo desta auditoria
 
 Verificar o repositório atual contra o prompt original, `guidelines.md`, os PDFs desktop/mobile e os critérios de aceite, distinguindo:

@@ -1,6 +1,8 @@
 # Modelo de conteúdo
 
-## Vigência dos dados editoriais — revisão 01/11/2026
+## Modelo editorial da revisão de 01/11/2026 (referência datada)
+
+**Complemento verificado em 05/11 — SHA [`79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2):** as seis experiências permitem editar na mesma página os campos da coleção original `career_experiences`, com `updated_at` como guarda de concorrência. O CMS não copia a descrição da Trajetória para `content_blocks`. Edição de alt permanece concentrada na Biblioteca de Mídia; a atualização retroativa de cópias de alt em JSON não foi comprovada. Este complemento não altera registros.
 
 A apresentação pública responsiva reutiliza seções, blocos/placements, coleções e mídias publicados; **não existe catálogo estático de empresas, formações, métricas ou ferramentas que substitua os valores CMS em produção**. `ContentItem` preserva `title`, `text`, `tags`, `value`, `themeKey`, `toolIcons` e vínculos disponíveis; as regras de publicação/visibilidade e RLS continuam obrigatórias.
 

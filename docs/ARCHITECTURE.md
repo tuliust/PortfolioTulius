@@ -1,8 +1,8 @@
 # Arquitetura
 
-## Contrato de arquitetura vigente — revisão 01/11/2026
+## Registro de arquitetura da revisão de 01/11/2026 (referência datada)
 
-**Fonte primária:** [estado atual](ESTADO_ATUAL_VIGENTE.md); código do commit funcional [`aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb). A árvore pública e o CMS autenticado continuam distintos.
+**Referência histórica de 01/11:** código [`aa71737e`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/aa71737e48834bb987c4a7cb6a3353ae1cf221fb). **Não é o SHA funcional mais recente**. O [Estado atual](ESTADO_ATUAL_VIGENTE.md) e o código de [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commits/main) têm precedência. O baseline de 05/11 anterior à reorganização é [`79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2). A árvore pública e o CMS autenticado continuam distintos.
 
 - **Primeira dobra pública:** `index.html` inicia, na rota pública, uma consulta PostgREST com chave **publicável** para a seção Perfil publicada e visível. `src/hooks/usePortfolio.ts` reutiliza a promessa `window.__p3ProfileBootstrap`, compõe a primeira seção com blocos/painéis/placements do CMS antes de aguardar o grafo inteiro; eventual falha mantém o caminho de consulta integral.
 - **Carga diferida:** `src/content/defaultTokens.ts` é pequeno; `src/content/fallback.ts` é importado sob demanda somente no cenário de desenvolvimento/offline sem Supabase público. Não salvar fotografias, textos ou dados da homepage como cópias HTML fixas.
