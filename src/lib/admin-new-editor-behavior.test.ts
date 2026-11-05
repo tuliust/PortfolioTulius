@@ -18,7 +18,7 @@ describe("editorial UX and public section transitions", () => {
     expect(app).not.toContain("value={draft.status}")
     expect(modules).not.toContain("Contém conteúdo provisório")
     expect(modules).toContain('label="Painel a editar"')
-    expect(modules).toContain("p_is_placeholder: false")
+    expect(modules).toContain("p_is_placeholder: draft.is_placeholder")
     expect(modules).toContain('p_status: draft.status === "archived" ? "archived" : "published"')
   })
 

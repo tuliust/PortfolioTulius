@@ -576,7 +576,7 @@ export function ContentStudio({
       p_mobile_panel: draft.mobile_panel,
       p_sort_order: draft.sort_order,
       p_status: draft.status === "archived" ? "archived" : "published",
-      p_is_placeholder: false,
+      p_is_placeholder: draft.is_placeholder,
       p_editorial_note: draft.editorial_note,
       p_placements: placementUpdates,
     })
@@ -849,7 +849,7 @@ export function ContentStudio({
               <div>
                 <strong>{block.content_json.items?.[0]?.title ?? block.block_type}</strong>
                 <small>
-                  {statusPt(block.status)} · {block.content_json.items?.length ?? 0} itens
+                  {block.status === "published" ? "Publicado" : "Oculto"} · {block.content_json.items?.length ?? 0} itens
                 </small>
               </div>
             </button>
@@ -995,7 +995,7 @@ export function ContentStudio({
                   </label>
                 )}
                 <div className="editor-readonly-status" role="status">
-                  <strong>{draft.status === "archived" ? "Oculto" : "Publicado"}</strong>
+                  <strong>{draft.status === "published" ? "Publicado" : "Oculto"}</strong>
                   <span>Blocos publicados aparecem quando a seção e o painel estão visíveis.</span>
                 </div>
               </div>

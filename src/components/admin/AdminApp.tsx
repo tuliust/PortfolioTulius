@@ -10,7 +10,7 @@ import {
   isExperienceSection,
 } from "../../lib/admin-experience-navigation"
 import { Icon } from "../ui/Icons"
-import { AdminNotice, statusPt } from "./AdminNotice"
+import { AdminNotice } from "./AdminNotice"
 import {
   adminConfirm,
   adminConfirmUnsaved,
@@ -42,6 +42,10 @@ type SectionRow = {
   theme: string
   layout_variant: string
   animation_preset: string
+}
+
+function sectionPublicationLabel(section: SectionRow): string {
+  return section.status === "published" && section.is_visible ? "Publicado" : "Oculto"
 }
 
 function useAdminGuard() {
@@ -499,7 +503,7 @@ function SectionsEditor({
                 <span>{String(section.sort_order).padStart(2, "0")}</span>
                 <div>
                   <strong>{section.title}</strong>
-                  <small>{statusPt(section.status)}</small>
+                  <small>{sectionPublicationLabel(section)}</small>
                 </div>
               </button>
             ))}
@@ -550,7 +554,7 @@ function SectionsEditor({
               </label>
               <div className="editor-readonly-status" role="status" aria-label="Situação da seção">
                 <strong>
-                  {draft.status === "archived" || !draft.is_visible ? "Oculto" : "Publicado"}
+                  {sectionPublicationLabel(draft)}
                 </strong>
                 <span>A visibilidade é ajustada em “Exibir no site” ou em “Arquivar”.</span>
               </div>
@@ -804,7 +808,7 @@ function SiteEditor({
                 <div>
                   <strong>{entry.section.title}</strong>
                   <small>
-                    {statusPt(entry.section.status)}
+                    {sectionPublicationLabel(entry.section)}
                     {!entry.section.is_visible ? " · Oculta no site" : ""}
                   </small>
                 </div>
@@ -825,7 +829,7 @@ function SiteEditor({
                 <span>
                   {selectedIsExperience
                     ? "Escolha abaixo o trabalho que deseja editar."
-                    : `${selected.is_visible ? "Exibida no site" : "Não exibida no site"} · ${statusPt(selected.status)}`}
+                    : sectionPublicationLabel(selected)}
                 </span>
               </div>
               {selectedIsExperience && (
@@ -850,7 +854,7 @@ function SiteEditor({
                         <strong>{experience.title}</strong>
                         <small>
                           Seção {String(experience.sort_order).padStart(2, "0")} ·{" "}
-                          {statusPt(experience.status)}
+                          {sectionPublicationLabel(experience)}
                           {!experience.is_visible ? " · Oculta no site" : ""}
                         </small>
                       </button>
