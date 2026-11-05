@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
 import {
@@ -27,7 +27,11 @@ import {
   type MediaMetadataDraft,
   type StoredMediaMetadata,
 } from "../../lib/media-metadata"
-import { experienceTitleKey } from "../../lib/experience-text"
+import {
+  experienceTitleKey,
+  TRAJECTORY_RECOMMENDED_CHARS,
+  trajectoryVisibleLength,
+} from "../../lib/experience-text"
 import { withOpenGraphImage } from "../../lib/media-selection"
 import {
   COLLECTION_SOURCES,
@@ -2034,6 +2038,87 @@ export function ContentStudio({
   )
 }
 
+function TrajectoryTextEditor({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (value: string) => void
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const visibleLength = trajectoryVisibleLength(value)
+  const aboveLimit = visibleLength > TRAJECTORY_RECOMMENDED_CHARS
+
+  function formatSelection(style: "bold" | "italic" | "underline" | "bullet") {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    if (style === "bullet") {
+      const lineStart = value.lastIndexOf("\n", start - 1) + 1
+      const nextLine = value.indexOf("\n", end)
+      const lineEnd = nextLine === -1 ? value.length : nextLine
+      const block = value.slice(lineStart, lineEnd)
+      const formatted = block
+        .split("\n")
+        .map((line) => (line.trim() && !/^[•-]\s/u.test(line) ? `• ${line}` : line))
+        .join("\n")
+      onChange(value.slice(0, lineStart) + formatted + value.slice(lineEnd))
+      requestAnimationFrame(() => {
+        textarea.focus()
+        textarea.setSelectionRange(lineStart, lineStart + formatted.length)
+      })
+      return
+    }
+    const marker = style === "bold" ? "**" : style === "italic" ? "*" : "__"
+    const selected = value.slice(start, end)
+    onChange(value.slice(0, start) + marker + selected + marker + value.slice(end))
+    requestAnimationFrame(() => {
+      textarea.focus()
+      textarea.setSelectionRange(start + marker.length, start + marker.length + selected.length)
+    })
+  }
+
+  return (
+    <div className="trajectory-editor">
+      <div className="trajectory-format-controls" role="toolbar" aria-label="Formatação da trajetória">
+        <button type="button" title="Bullets" aria-label="Inserir bullets" onClick={() => formatSelection("bullet")}>
+          • Lista
+        </button>
+        <button type="button" title="Negrito" aria-label="Negrito" onClick={() => formatSelection("bold")}>
+          <strong>N</strong>
+        </button>
+        <button type="button" title="Itálico" aria-label="Itálico" onClick={() => formatSelection("italic")}>
+          <em>I</em>
+        </button>
+        <button type="button" title="Sublinhado" aria-label="Sublinhado" onClick={() => formatSelection("underline")}>
+          <u>S</u>
+        </button>
+      </div>
+      <textarea
+        ref={textareaRef}
+        rows={10}
+        value={value}
+        aria-describedby="trajectory-length-guidance"
+        onChange={(event) => onChange(event.target.value)}
+      />
+      <p
+        id="trajectory-length-guidance"
+        className={aboveLimit ? "trajectory-format-note is-warning" : "trajectory-format-note"}
+        role="status"
+      >
+        {visibleLength} / {TRAJECTORY_RECOMMENDED_CHARS} caracteres visíveis recomendados para
+        caber no desktop sem rolagem interna. O espaço depende da resolução; ultrapassar
+        este valor não corta nem apaga o texto existente.
+      </p>
+      <small className="trajectory-format-hint">
+        Selecione o trecho para aplicar a formatação. A marcação é salva como texto e renderizada
+        com segurança na Trajetória pública (bullets, **negrito**, *itálico*, __sublinhado__).
+      </small>
+    </div>
+  )
+}
+
 type FieldConfig = {
   key: string
   label: string
@@ -2398,6 +2483,11 @@ export function CollectionsStudio({
                         </option>
                       ))}
                     </select>
+                  ) : config.table === "career_experiences" && field.key === "description" ? (
+                    <TrajectoryTextEditor
+                      value={draft.description ?? ""}
+                      onChange={(description) => setDraft({ ...draft, description })}
+                    />
                   ) : field.multiline ? (
                     <textarea
                       rows={4}

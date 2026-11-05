@@ -6,6 +6,10 @@ const component = readFileSync(
   "utf8",
 )
 const css = readFileSync(new URL("../index.css", import.meta.url), "utf8")
+const experiences = readFileSync(
+  new URL("../components/public/ExperienceStack.tsx", import.meta.url),
+  "utf8",
+)
 
 describe("mobile editorial parity: content preserved, responsive presentation", () => {
   it("has one title for each of Formação and Ferramentas, with different secondary groups", () => {
@@ -14,6 +18,13 @@ describe("mobile editorial parity: content preserved, responsive presentation", 
     expect(component).toContain('"Outras ferramentas"')
     expect(component).toContain('"Canais de contato"')
     expect(component).toContain("<h2>{section.title}</h2>")
+  })
+  it("shows only the selected company on mobile and keeps the heading opaque", () => {
+    expect(experiences).toContain("const displayedSections = isMobile")
+    expect(experiences).toContain("displayedSections.map((section, index)")
+    expect(experiences).toContain("event.preventDefault()")
+    expect(css).toContain("background: var(--paper);")
+    expect(css).toContain(".experience-card .experience-mobile-copy")
   })
   it("keeps the contact image in the first mobile panel without changing its source", () => {
     expect(component).toContain('className="contact-mobile-photo"')

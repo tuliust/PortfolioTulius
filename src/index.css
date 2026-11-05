@@ -359,6 +359,14 @@
 .revision-preview .header-actions { flex-wrap: wrap; }
 .revision-list .secondary-button { justify-self: start; margin-top: .4rem; }
 .editorial-load-more { margin-top: 1rem; }
+.trajectory-editor { display: grid; gap: .5rem; min-width: 0; }
+.trajectory-editor textarea { width: 100%; }
+.trajectory-format-controls { display: flex; flex-wrap: wrap; gap: .4rem; }
+.trajectory-format-controls button { min-width: 2.75rem; min-height: 2.75rem; padding: .4rem .7rem; background: white; border: 1px solid #d7d2ce; }
+.trajectory-format-controls button:hover, .trajectory-format-controls button:focus-visible { border-color: var(--orange-dark); }
+.trajectory-format-note { margin: 0; font-size: .78rem; color: #514742; }
+.trajectory-format-note.is-warning { font-weight: 700; color: #a13f1c; }
+.trajectory-format-hint { line-height: 1.45; color: #716b67; }
 .media-editor-grid article { align-content: start; }
 .media-editor-grid textarea { min-height: 5rem; resize: vertical; }
 .media-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
@@ -641,6 +649,8 @@
 .experience-full-body p { margin: .6rem 0 0; font-size: clamp(.76rem, .86vw, .94rem); line-height: 1.55; }
 .experience-full-body .experience-full-point { padding-left: .1rem; }
 .experience-full-point strong { font-weight: 800; }
+.experience-full-body em { font-style: italic; }
+.experience-full-body u { text-decoration: underline; text-underline-offset: .14em; }
 .experience-card.theme-ink .experience-view-switch {
   background: var(--ink); border-color: #ffffff44;
 }
@@ -954,6 +964,8 @@
   width: 100%;
   object-fit: cover;
   object-position: center bottom;
+  /* O PNG tem pixels transparentes na base; deslocar a silhueta até a borda real. */
+  translate: 0 clamp(1.75rem, 4svh, 2.25rem);
 }
 .contact-links { grid-column: 3; grid-row: 1; min-width: 0; display: grid; gap: .5rem; }
 .contact-links .contact-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem; min-width: 0; }
@@ -2120,10 +2132,19 @@
     margin: 0;
     padding: clamp(.45rem, 1.2svh, .7rem) var(--gutter) .15rem;
     border-bottom: 1px solid var(--line);
-    background: inherit;
+    background: var(--paper);
     color: inherit;
     scroll-snap-align: none;
     scroll-margin-top: calc(var(--header) + var(--experience-index-height));
+  }
+  .public-site .experience-card.theme-ink .experience-mobile-copy {
+    background: var(--ink);
+  }
+  .public-site .experience-card.theme-orange .experience-mobile-copy {
+    background: var(--orange);
+  }
+  .public-site .experience-card.theme-cream .experience-mobile-copy {
+    background: var(--cream);
   }
   .public-site .experience-card .experience-mobile-copy .experience-heading h2 {
     margin: 0 0 .15rem;

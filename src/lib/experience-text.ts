@@ -6,6 +6,37 @@ export function splitExperienceBullet(line: string): { heading: string; body: st
 }
 
 /** Map the published slide titles to visible editorial cards without exposing hidden CMS items. */
+/** Formatação editorial restrita; tokens são renderizados como elementos React, nunca como HTML. */
+export type TrajectoryInlinePart = {
+  text: string
+  style?: "bold" | "italic" | "underline"
+}
+export const TRAJECTORY_RECOMMENDED_CHARS = 650
+
+export function parseTrajectoryInline(text: string): TrajectoryInlinePart[] {
+  const parts: TrajectoryInlinePart[] = []
+  const marks = /\*\*([^*\n]+)\*\*|__([^_\n]+)__|\*([^*\n]+)\*/g
+  let cursor = 0
+  for (const match of text.matchAll(marks)) {
+    const offset = match.index ?? cursor
+    if (offset > cursor) parts.push({ text: text.slice(cursor, offset) })
+    parts.push({
+      text: match[1] ?? match[2] ?? match[3],
+      style: match[1] ? "bold" : match[2] ? "underline" : "italic",
+    })
+    cursor = offset + match[0].length
+  }
+  if (cursor < text.length) parts.push({ text: text.slice(cursor) })
+  return parts
+}
+
+export function trajectoryVisibleLength(text: string): number {
+  return text
+    .split("\n")
+    .map((line) => parseTrajectoryInline(line).map((part) => part.text).join("").replace(/^[•-]\s+/u, ""))
+    .join("\n").length
+}
+
 export function experienceTitleKey(title: string): string {
   return title
     .normalize("NFD")

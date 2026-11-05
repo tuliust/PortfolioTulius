@@ -8,6 +8,7 @@ import {
   matchExperienceSlides,
   experienceTitleKey,
   splitExperienceBullet,
+  parseTrajectoryInline,
 } from "../../lib/experience-text"
 import { publicReadClient } from "../../lib/public-read"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
@@ -149,6 +150,24 @@ function ExperienceCompetencies({ tags }: { tags: string[] }) {
   )
 }
 
+function TrajectoryInline({ text }: { text: string }) {
+  return (
+    <>
+      {parseTrajectoryInline(text).map((part, index) =>
+        part.style === "bold" ? (
+          <strong key={index}>{part.text}</strong>
+        ) : part.style === "italic" ? (
+          <em key={index}>{part.text}</em>
+        ) : part.style === "underline" ? (
+          <u key={index}>{part.text}</u>
+        ) : (
+          <span key={index}>{part.text}</span>
+        ),
+      )}
+    </>
+  )
+}
+
 function ExperienceDetails({
   description,
   slug,
@@ -169,14 +188,19 @@ function ExperienceDetails({
       {lines.map((line, index) => {
         const bullet = splitExperienceBullet(line)
         return (
-          <p key={index} className={bullet ? "experience-full-point" : undefined}>
+          <p
+            key={index}
+            className={/^[•-]\s+/u.test(line) ? "experience-full-point" : undefined}
+          >
             {bullet ? (
               <>
-                <strong>{bullet.heading}</strong>
-                {bullet.body}
+                <strong>
+                  <TrajectoryInline text={bullet.heading} />
+                </strong>
+                <TrajectoryInline text={bullet.body} />
               </>
             ) : (
-              line
+              <TrajectoryInline text={line} />
             )}
           </p>
         )
@@ -605,6 +629,14 @@ export function ExperienceStack({
   }, [preview])
 
   useEffect(() => {
+    if (isMobile) {
+      setActive((current) =>
+        sections.some((section) => section.slug === current)
+          ? current
+          : (sections[0]?.slug ?? ""),
+      )
+      return
+    }
     const onScroll = () => {
       let selected = sections[0]?.slug ?? ""
       for (const section of sections) {
@@ -618,7 +650,26 @@ export function ExperienceStack({
     window.addEventListener("scroll", onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener("scroll", onScroll)
-  }, [sections])
+  }, [sections, isMobile])
+
+  const displayedSections = isMobile
+    ? sections.filter((section) => section.slug === active)
+    : sections
+
+  function chooseCompany(event: React.MouseEvent<HTMLAnchorElement>, slug: string) {
+    if (!isMobile) {
+      setActive(slug)
+      return
+    }
+    event.preventDefault()
+    setActive(slug)
+    requestAnimationFrame(() => {
+      document.getElementById(slug)?.scrollIntoView({
+        block: "start",
+        behavior: "instant",
+      })
+    })
+  }
 
   return (
     <div className="experience-stack" aria-label="Experiências profissionais">
@@ -630,14 +681,14 @@ export function ExperienceStack({
             className={active === section.slug ? "is-active" : ""}
             aria-label={section.title}
             aria-current={active === section.slug ? "location" : undefined}
-            onClick={() => setActive(section.slug)}
+            onClick={(event) => chooseCompany(event, section.slug)}
           >
             <CompanyMark section={section} small />
             <span className="experience-index-name">{section.title}</span>
           </a>
         ))}
       </nav>
-      {sections.map((section, index) => (
+      {displayedSections.map((section, index) => (
         <ExperienceCard
           key={section.id}
           section={section}

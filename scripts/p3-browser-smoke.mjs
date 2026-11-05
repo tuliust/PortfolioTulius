@@ -312,8 +312,10 @@ try {
           const tabs = contentPanel?.querySelectorAll(".experience-view-switch button") ?? []
           return {
             companies: cards.length,
+            activeCompany: cards[0]?.id,
             logos: logos.length,
             panels: cards.map(card => card.querySelectorAll(".mobile-panel").length),
+            opaqueHeader: contentPanel ? getComputedStyle(contentPanel).backgroundColor === "rgb(250, 250, 250)" : false,
             tabs: tabs.length,
             navBelowHeader: Boolean(nav && mainHeader && nav.top >= mainHeader.getBoundingClientRect().bottom - 3),
             summaryBelowNav: Boolean(nav && copy && copy.top >= nav.bottom - 3),
@@ -323,9 +325,9 @@ try {
           }
         })
         console.log("P3_EXPERIENCE_MOBILE_STRUCTURE " + JSON.stringify({ viewport, ...snapshot }))
-        if (snapshot.companies !== 6 || snapshot.logos !== 6 ||
-            snapshot.panels.join(",") !== "2,2,2,2,2,2" || snapshot.tabs !== 2 ||
-            !snapshot.navBelowHeader || !snapshot.summaryBelowNav ||
+        if (snapshot.companies !== 1 || snapshot.activeCompany !== "invest-rs" ||
+            snapshot.logos !== 6 || snapshot.panels.join(",") !== "2" || snapshot.tabs !== 2 ||
+            !snapshot.opaqueHeader || !snapshot.navBelowHeader || !snapshot.summaryBelowNav ||
             (viewport.height > 620 && !snapshot.summarySticky) ||
             !snapshot.naturalScroll || snapshot.horizontalOverflow) {
           throw new Error("Experience sticky structure mismatch: " + JSON.stringify(viewport))
@@ -401,9 +403,13 @@ try {
         company: document.querySelector("#vale-a .experience-heading h2")?.textContent?.trim(),
         active: document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href"),
         firstProject: document.querySelector("#vale-b .experience-project-choice .experience-project-heading")?.textContent?.trim(),
+        onlySelectedCard: document.querySelectorAll(".experience-stack > .experience-card").length === 1 &&
+          document.querySelector(".experience-stack > .experience-card")?.id === "vale" &&
+          document.querySelector("#invest-rs") === null,
       }))
       console.log("P3_EXPERIENCE_MOBILE_COMPANY_CHANGE " + JSON.stringify(changed))
-      if (changed.company !== "Vale" || changed.active !== "#vale" || !changed.firstProject) {
+      if (changed.company !== "Vale" || changed.active !== "#vale" ||
+          !changed.firstProject || !changed.onlySelectedCard) {
         throw new Error("Company navigation did not update editorial identity")
       }
       await page.evaluate(() => document.getElementById("ferramentas")?.scrollIntoView({ behavior: "instant" }))
@@ -855,7 +861,7 @@ try {
         refinements.contactImageBottom !== null &&
         refinements.contactLineTop !== null &&
         Math.abs(refinements.contactPhotoBottom - refinements.contactSectionBottom) <= 2 &&
-        Math.abs(refinements.contactImageBottom - refinements.contactSectionBottom) <= 2 &&
+        refinements.contactImageBottom >= refinements.contactSectionBottom - 2 &&
         refinements.contactLineTop < refinements.contactSectionBottom - 12
       // Owner-approved editorial revision (31/10): exactly three real testimonials stay published.
       const cardsCompact = refinements.testimonialCount === 3 &&

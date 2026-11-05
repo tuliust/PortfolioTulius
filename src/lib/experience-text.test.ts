@@ -3,6 +3,9 @@ import {
   complementaryCareerLines,
   matchExperienceSlides,
   splitExperienceBullet,
+  parseTrajectoryInline,
+  trajectoryVisibleLength,
+  TRAJECTORY_RECOMMENDED_CHARS,
 } from "./experience-text"
 
 describe("Experience trajectory bullets", () => {
@@ -17,6 +20,28 @@ describe("Experience trajectory bullets", () => {
   it("preserves introductory paragraphs and bullets without a heading", () => {
     expect(splitExperienceBullet("Atuação em comunicação institucional.")).toBeNull()
     expect(splitExperienceBullet("• Apoio em projetos digitais")).toBeNull()
+  })
+})
+
+describe("Trajetória formatada de maneira segura", () => {
+  it("interpreta apenas bullets e marcas explícitas, sem aceitar HTML arbitrário", () => {
+    expect(parseTrajectoryInline("**Forte** *ênfase* __sublinhado__")).toEqual([
+      { text: "Forte", style: "bold" },
+      { text: " " },
+      { text: "ênfase", style: "italic" },
+      { text: " " },
+      { text: "sublinhado", style: "underline" },
+    ])
+    expect(parseTrajectoryInline("<script>alert(1)</script>")).toEqual([
+      { text: "<script>alert(1)</script>" },
+    ])
+  })
+
+  it("conta caracteres visíveis sem penalizar a marcação editorial", () => {
+    expect(trajectoryVisibleLength("• **Objetivo:** *Texto* __destacado__")).toBe(
+      "Objetivo: Texto destacado".length,
+    )
+    expect(TRAJECTORY_RECOMMENDED_CHARS).toBe(650)
   })
 })
 
