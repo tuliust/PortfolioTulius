@@ -553,9 +553,7 @@ function SectionsEditor({
                 />
               </label>
               <div className="editor-readonly-status" role="status" aria-label="Situação da seção">
-                <strong>
-                  {sectionPublicationLabel(draft)}
-                </strong>
+                <strong>{sectionPublicationLabel(draft)}</strong>
                 <span>A visibilidade é ajustada em “Exibir no site” ou em “Arquivar”.</span>
               </div>
               <label>

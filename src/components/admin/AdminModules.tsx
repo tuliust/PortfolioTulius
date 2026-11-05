@@ -849,7 +849,8 @@ export function ContentStudio({
               <div>
                 <strong>{block.content_json.items?.[0]?.title ?? block.block_type}</strong>
                 <small>
-                  {block.status === "published" ? "Publicado" : "Oculto"} · {block.content_json.items?.length ?? 0} itens
+                  {block.status === "published" ? "Publicado" : "Oculto"} ·{" "}
+                  {block.content_json.items?.length ?? 0} itens
                 </small>
               </div>
             </button>
