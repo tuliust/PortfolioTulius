@@ -897,7 +897,7 @@ function SiteEditor({
                       onClick={saveRegisteredAdminChanges}
                     />
                   </div>
-                )
+                )}
                 {pane === "records" && (
                   <>
                     <p className="site-editor-note">
