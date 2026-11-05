@@ -2053,6 +2053,218 @@ function TrajectoryTextEditor({
   )
 }
 
+
+type CareerTrajectoryRecord = {
+  id: string
+  company: string
+  role: string
+  location: string | null
+  start_date: string | null
+  end_date: string | null
+  description: string | null
+  sort_order: number
+  status: string
+  updated_at: string
+}
+
+const careerTrajectoryColumns =
+  "id,company,role,location,start_date,end_date,description,sort_order,status,updated_at"
+
+/**
+ * Edit the career record for the selected experience without navigating to Collections.
+ * Resolve the same stable company ID as the public experience stack; never copy
+ * the trajectory into the content_blocks JSON.
+ */
+function InlineCareerTrajectoryEditor({
+  sectionSlug,
+  onDirtyChange,
+}: {
+  sectionSlug: string
+  onDirtyChange: (dirty: boolean) => void
+}) {
+  const [saved, setSaved] = useState<CareerTrajectoryRecord | null>(null)
+  const [draft, setDraft] = useState<CareerTrajectoryRecord | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [readError, setReadError] = useState("")
+  const [message, setMessage] = useState("")
+  const dirty = Boolean(saved && draft && JSON.stringify(saved) !== JSON.stringify(draft))
+
+  useEffect(() => onDirtyChange(dirty), [dirty, onDirtyChange])
+
+  useEffect(() => {
+    let cancelled = false
+    const client = supabase
+    if (!client) {
+      setReadError("O Supabase não está disponível para carregar a trajetória.")
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    setReadError("")
+    void (async () => {
+      const { data, error } = await client
+        .from("career_experiences")
+        .select(careerTrajectoryColumns)
+        .order("sort_order")
+      if (cancelled) return
+      if (error) {
+        setReadError(error.message)
+        setLoading(false)
+        return
+      }
+      const matches = ((data ?? []) as CareerTrajectoryRecord[]).filter(
+        (row) => resolveCareerSectionSlug(row) === sectionSlug,
+      )
+      if (matches.length !== 1) {
+        setReadError(
+          matches.length === 0
+            ? "Não foi encontrado um registro de trajetória vinculado a esta experiência."
+            : "Mais de um registro corresponde a esta experiência. Confira o vínculo no acervo.",
+        )
+        setLoading(false)
+        return
+      }
+      setSaved(matches[0])
+      setDraft(structuredClone(matches[0]))
+      setLoading(false)
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [sectionSlug])
+
+  async function saveTrajectory(): Promise<boolean> {
+    if (!supabase || !saved || !draft || loading || readError || !dirty) return false
+    const errors = validateCollectionSaveDraft(draft, "career_experiences")
+    if (errors.length) {
+      setMessage(errors.join(" "))
+      return false
+    }
+    setMessage("Salvando trajetória…")
+    const payload = {
+      company: draft.company,
+      role: draft.role,
+      location: draft.location,
+      start_date: draft.start_date,
+      end_date: draft.end_date,
+      description: draft.description,
+      sort_order: draft.sort_order,
+      status: draft.status,
+    }
+    // Version check prevents silently replacing edits made in another session.
+    const { data, error } = await supabase
+      .from("career_experiences")
+      .update(payload)
+      .eq("id", saved.id)
+      .eq("updated_at", saved.updated_at)
+      .select(careerTrajectoryColumns)
+      .maybeSingle()
+    if (error || !data) {
+      setMessage(
+        error?.message ??
+          "A trajetória foi modificada em outra sessão. Recarregue a seção antes de salvar.",
+      )
+      return false
+    }
+    const current = data as CareerTrajectoryRecord
+    setSaved(current)
+    setDraft(structuredClone(current))
+    setMessage("Trajetória salva e confirmada no Supabase.")
+    return true
+  }
+
+  useEffect(
+    () =>
+      registerAdminSaveAction(
+        saveTrajectory,
+        () => dirty && !loading && !readError,
+      ),
+    [saveTrajectory, dirty, loading, readError],
+  )
+
+  const update = (patch: Partial<CareerTrajectoryRecord>) =>
+    setDraft((current) => (current ? { ...current, ...patch } : current))
+
+  return (
+    <section className="admin-card editor-form experience-inline-trajectory">
+      <h3>Trajetória completa</h3>
+      <p className="experience-inline-trajectory-note">
+        Informações profissionais desta empresa. Os campos permanecem na coleção original e são
+        salvos pelo botão Salvar do Editor do Site.
+      </p>
+      {loading ? (
+        <p role="status">Carregando trajetória…</p>
+      ) : readError ? (
+        <AdminNotice message={readError} />
+      ) : draft ? (
+        <div className="field-grid">
+          <label>
+            Empresa
+            <input
+              value={draft.company}
+              onChange={(event) => update({ company: event.target.value })}
+            />
+          </label>
+          <label>
+            Cargo
+            <input value={draft.role} onChange={(event) => update({ role: event.target.value })} />
+          </label>
+          <label>
+            Local
+            <input
+              value={draft.location ?? ""}
+              onChange={(event) => update({ location: event.target.value })}
+            />
+          </label>
+          <label>
+            Início
+            <input
+              value={draft.start_date ?? ""}
+              onChange={(event) => update({ start_date: event.target.value })}
+            />
+          </label>
+          <label>
+            Fim
+            <input
+              value={draft.end_date ?? ""}
+              onChange={(event) => update({ end_date: event.target.value })}
+            />
+          </label>
+          <label>
+            Ordem
+            <input
+              type="number"
+              min="1"
+              value={draft.sort_order}
+              onChange={(event) => update({ sort_order: Number(event.target.value) })}
+            />
+          </label>
+          <label>
+            Status
+            <select
+              value={draft.status}
+              onChange={(event) => update({ status: event.target.value })}
+            >
+              <option value="draft">Rascunho</option>
+              <option value="in_review">Em revisão</option>
+              <option value="published">Publicado</option>
+              <option value="archived">Arquivado</option>
+            </select>
+          </label>
+          <label className="field-wide">
+            Descrição — Trajetória
+            <TrajectoryTextEditor
+              value={draft.description ?? ""}
+              onChange={(description) => update({ description })}
+            />
+          </label>
+        </div>
+      ) : null}
+      <StatusMessage>{message}</StatusMessage>
+    </section>
+  )
+}
+
 type FieldConfig = {
   key: string
   label: string
