@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { resolveCareerSectionSlug } from "../../lib/career-record-link"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
 import {
   isRestorableEntity,
@@ -351,6 +352,16 @@ export function ContentStudio({
   const [draft, setDraft] = useState<BlockRow | null>(null)
   const [message, setMessage] = useState("")
   const [reviewingSource, setReviewingSource] = useState(false)
+  const [trajectoryDirty, setTrajectoryDirty] = useState(false)
+  const experienceSlug = sections.find((entry) => entry.id === sectionId)?.slug
+  const hasCareerTrajectory = [
+    "invest-rs",
+    "prefeitura-sp",
+    "vale",
+    "globo-sportv",
+    "inpress",
+    "cdi",
+  ].includes(experienceSlug ?? "")
   const initialPlacement = {
     layout_variant: "default",
     is_visible: true,
@@ -375,7 +386,11 @@ export function ContentStudio({
   const blockDirty =
     Boolean(draft && savedBlock && JSON.stringify(draft) !== JSON.stringify(savedBlock)) ||
     editedPanelKeys.length > 0
-  useEffect(() => onDirtyChange?.(blockDirty), [blockDirty, onDirtyChange])
+  useEffect(() => onDirtyChange?.(blockDirty || trajectoryDirty), [
+    blockDirty,
+    trajectoryDirty,
+    onDirtyChange,
+  ])
   const setPlacement = (next: PlacementForm) => {
     setPlacementsByPanel((current) => ({ ...current, [placementPanel]: next }))
     setEditedPanelKeys((current) =>
@@ -1157,28 +1172,13 @@ export function ContentStudio({
                       }
                     />
                   </div>
-                  <h3>Slides relacionados aos projetos</h3>
-                  <p className="experience-admin-relationship-note">
-                    Cada título de slide é um projeto clicável na página pública. Se existir um item
-                    visível com o mesmo título nos blocos A ou B, seu texto será exibido junto ao
-                    projeto; caso contrário, aparece apenas o título do slide. Alterar a ordem dos
-                    slides também altera a ordem dos projetos. Indicadores permanecem independentes.
-                  </p>
-                  {onEditCollection && (
-                    <div className="experience-admin-career-link">
-                      <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={() => onEditCollection("career_experiences")}
-                      >
-                        Editar trajetória completa (Coleções)
-                      </button>
-                      <small>
-                        O site evita exibir trechos já resumidos em Projetos e realizações; o texto
-                        integral continua preservado na coleção.
-                      </small>
-                    </div>
-                  )}
+                  <div className="experience-admin-slide-heading">
+                    <h3>Slides relacionados aos projetos</h3>
+                    <AdminInfoTip
+                      label="Slides relacionados aos projetos"
+                      description="Cada título de slide é um projeto clicável na página pública. Se existir um item visível com o mesmo título nos blocos A ou B, seu texto será exibido junto ao projeto; caso contrário, aparece apenas o título do slide. Alterar a ordem dos slides também altera a ordem dos projetos. Indicadores permanecem independentes."
+                    />
+                  </div>
                   {(draft.content_json.experienceMedia?.slides ?? []).map((slide, slideIndex) => (
                     <div className="block-item-editor" key={slideIndex}>
                       <div className="block-item-head">
@@ -1936,6 +1936,12 @@ export function ContentStudio({
           <div className="admin-card empty-state">
             <h2>Selecione ou crie um bloco</h2>
           </div>
+        )}
+        {embedded && hasCareerTrajectory && experienceSlug && (
+          <InlineCareerTrajectoryEditor
+            sectionSlug={experienceSlug}
+            onDirtyChange={setTrajectoryDirty}
+          />
         )}
       </div>
     </>
