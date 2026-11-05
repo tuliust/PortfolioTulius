@@ -1,3 +1,5 @@
+> **ATUALIZAÇÃO POSTERIOR AO ENCERRAMENTO (05/11/2026):** houve uma nova rodada expressa de mudanças de Experiências, Contato e CMS. Código funcional em [`5599b2f0e0`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/5599b2f0e030565b224b9ab0c8046c371e14749c), [Validate #42004690688](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42004690688) aprovado e Vercel Production **READY** nesse SHA. A verificação **não concluiu** aceite visual do pixel inferior de Contato, ensaio autenticado de gravação do CMS nem P3 do último SHA. [Reconciliação dos pedidos e evidências](docs/RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md). O encerramento histórico abaixo permanece válido para o período em que foi declarado.
+
 > **PROJETO ENCERRADO ADMINISTRATIVAMENTE — 05/11/2026.** O proprietário inspecionou toda a página e não observou erros. Todos os itens restantes dos checklists foram encerrados **por decisão**, com possibilidade de reabertura futura. Evidência técnica não executada (backup binário, P3 do último SHA funcional, integração de commits locais, gatilho SEO real) permanece documentada sem ser apresentada como sucesso. [Registro vigente](docs/ENCERRAMENTO_OPERACIONAL_2026-11-05.md).
 
 # PortfolioTulius — portfólio editorial e CMS
@@ -16,7 +18,7 @@ Site de comunicação, relações públicas e estratégia de Tulius Tsangaropulo
 - `scripts/`: auditorias, smoke tests e captura editorial.
 - `docs/`: contrato técnico vigente e históricos datados.
 
-**Fonte de conteúdo:** Supabase publicado, protegido por RLS, sem hardcode de dados substituindo o CMS. O site conserva 13 seções desktop e 25 painéis mobile auditados, com 38 capturas automatizadas no último estado funcional verificado.
+**Fonte de conteúdo:** Supabase publicado, protegido por RLS, sem hardcode de dados substituindo o CMS. **Contrato atual:** 13 seções no DOM desktop; no mobile, uma das seis experiências por vez (Invest RS inicialmente), com 8 seções e 15 painéis mobile simultaneamente montados. Os antigos 13 desktop + 25 mobile / 38 capturas são **marcos de testes históricos**, não contrato atual.
 
 ## Desenvolvimento
 

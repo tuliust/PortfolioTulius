@@ -1,3 +1,5 @@
+> **05/11/2026 — depois do encerramento, houve nova solicitação expressa do proprietário.** O backlog antigo segue encerrado por decisão. A rodada de Experiências/Contato/CMS foi implementada em código até `5599b2f0e0`; sua verificação encontrou **limites de aceite**, não reabertura automática dos itens arquivados. Consulte a [matriz de verificação da nova rodada](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md), especialmente fotografia inferior de Contato, testes autenticados de salvamento, P3 do SHA final e decisão sobre remoção do objeto antigo de Storage durante renomeação privada.
+
 # PortfolioTulius — pendências encerradas por decisão do proprietário
 
 **05/11/2026: backlog ativo vazio.** Todas as ações remanescentes foram marcadas **[x] ENCERRADAS ADMINISTRATIVAMENTE**, com possibilidade de reabrir apenas por novo pedido ou erro concreto. Este fechamento **não converte** testes não executados, backups ausentes ou commits locais não enviados em resultados comprovados. Fonte vigente: [encerramento operacional](ENCERRAMENTO_OPERACIONAL_2026-11-05.md).

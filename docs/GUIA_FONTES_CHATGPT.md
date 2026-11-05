@@ -1,3 +1,5 @@
+> **05/11/2026 — nova rodada solicitada após encerramento:** o [relatório GitHub de reconciliação dos pedidos do chat](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) complementa o snapshot anterior. As **quatro Fontes privadas recomendadas permanecem as mesmas**; não adicionar backups privados ao repositório nem substituir automaticamente anexos da conversa. Para estado funcional, usar SHA `5599b2f0e0`, CI e Vercel vinculados; para histórico, preservar o encerramento e sua data.
+
 > **PRIORIDADE MÁXIMA ATUALIZADA — 05/11/2026:** antes de ler checklists datados, consultar [Encerramento operacional e aceites](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Estado: **sem backlog ativo**, todos os itens concluídos por decisão, reabertura futura somente mediante necessidade. Os arquivos antigos preservam a história, não descrevem tarefas ativas.
 
 # Guia de Fontes ChatGPT — PortfolioTulius

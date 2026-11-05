@@ -1,3 +1,5 @@
+> **RODADA POSTERIOR (05/11/2026):** [Reconciliação de implementação dos pedidos deste chat](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) — baseline funcional `5599b2f0e0`, CI aprovado, publicação Vercel READY e limites de homologação explicitados. A decisão administrativa de encerramento abaixo é **histórica**, não prova de que novos pedidos foram ensaiados.
+
 > **FONTE OPERACIONAL VIGENTE — ENCERRADO em 05/11/2026:** [Encerramento operacional por decisão do proprietário — 05/11/2026](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Checklists anteriores passam a ser **histórico de execução**; todos os IDs remanescentes foram baixados por decisão do proprietário, reabríveis apenas com nova necessidade. Sem erros visuais observados pelo proprietário. Não apagar evidências nem presumir backups/testes sem execução.
 
 # Documentação técnica — PortfolioTulius
@@ -8,8 +10,9 @@
 
 - [README principal](../README.md) — aplicação, instalação, scripts, publicação e último marco auditado.
 - [AGENTS.md](../AGENTS.md) — regras obrigatórias e restrições de alteração.
-- [Estado operacional vigente](ESTADO_ATUAL_VIGENTE.md) — o que foi implementado e verificado.
-- [Pendências em aberto](OPEN_ISSUES.md) — problemas que ainda dependem de ação/aceite.
+- [Estado operacional vigente](ESTADO_ATUAL_VIGENTE.md) — snapshots históricos e referência para o estado comprovado.
+- [Reconciliação posterior dos pedidos do chat](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) — matriz de implementação, CI, Vercel, Supabase, lacunas de aceite e cautelas de preservação.
+- [Pendências e limitações](OPEN_ISSUES.md) — encerramento histórico e limites de validação da nova rodada.
 - [Guia das Fontes do ChatGPT](GUIA_FONTES_CHATGPT.md) — hierarquia e quatro anexos persistentes.
 
 ## Referências por assunto
@@ -30,7 +33,7 @@
 
 ## Critérios de aceitação
 
-**Implementado** não significa **CI aprovado**; CI não significa **P3 aprovado**; P3/Lighthouse não substitui **p75 de visitantes reais** ou **inspeção estética humana**. Documente cada estado separadamente, sempre com links de SHA e execução. Em 31/10, o último CI funcional era success e a P3 global failure devido a quatro critérios de Contato; LCP mobile ≤2,5 s permaneceu aberto.
+**Implementado** não significa **CI aprovado**; CI não significa **P3 aprovado**; P3/Lighthouse não substitui **p75 de visitantes reais** ou **inspeção estética humana**. Documente cada estado separadamente, sempre com links de SHA e execução. **O limite vigente de LCP mobile desde 02/11 é ≤3,5 s (mediana de três), não 2,5 s.** A P3 de 31/10 e os 38 screenshots são históricos; ver [rodada de 05/11](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md).
 
 ## Arquivamento
 

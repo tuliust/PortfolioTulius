@@ -1,3 +1,5 @@
+> **Contrato mobile posterior ao encerramento (05/11/2026):** somente **uma experiência profissional ativa** é montada por vez no mobile (inicial: Invest RS; troca pelos seis logos), com cabeçalho opaco. O DOM passa a conter **8 seções e 15 painéis mobile por vez**; desktop mantém **13 seções**. O inventário anterior de 25 painéis mobile / 38 capturas é **histórico**, não deve guiar os testes novos. A fotografia de Contato recebe deslocamento CSS para o limite inferior, mas ainda exige **conferência dos pixels opacos** em viewport real. [Fonte de verificação](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) · [código `5599b2f0e0`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/5599b2f0e030565b224b9ab0c8046c371e14749c).
+
 # Layout responsivo
 
 ## Contrato mobile atual — 01/11/2026
