@@ -1,3 +1,5 @@
+> **Atualização posterior — 05/11/2026 (mídia, navegação e edição):** [commit funcional `2328d45873`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/2328d458736aaa5145d1d4f9de04c12483c8d4fc), [Validate #42011006675](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42011006675) **success**, deployment Vercel `dpl_9hSkcmjvSc7BsgCpjRkz4Rqx32rw` **READY**. O código e a migration foram publicados, mas **não** foi executado ensaio de upload/exclusão de arquivos reais sob sessão administrativa nesta auditoria. A documentação anterior segue como marco histórico; esta nota é posterior.
+
 > **05/11/2026 — depois do encerramento, houve nova solicitação expressa do proprietário.** O backlog antigo segue encerrado por decisão. A rodada de Experiências/Contato/CMS foi implementada em código até `5599b2f0e0`; sua verificação encontrou **limites de aceite**, não reabertura automática dos itens arquivados. Consulte a [matriz de verificação da nova rodada](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md), especialmente fotografia inferior de Contato, testes autenticados de salvamento, P3 do SHA final e decisão sobre remoção do objeto antigo de Storage durante renomeação privada.
 
 # PortfolioTulius — pendências encerradas por decisão do proprietário
@@ -36,3 +38,11 @@
 ## Política de evidências
 
 Cada encerramento deve registrar **SHA + CI + resultado P3 + alteração de conteúdo (se houver) + aceite humano (se exigido)**. Lighthouse simulado, DevTools aplicado e percentil 75 real são critérios diferentes. Versões datadas e testes anteriores pertencem a [docs/historico/](historico/) ou aos relatórios específicos; não copiar resultados antigos como se fossem o último status.
+
+
+### Verificações da nova rodada (05/11/2026 — não são reaberturas históricas)
+
+1. **Homologação autenticada de mídia (nova funcionalidade):** testar publicação automática de arquivo de teste, confirmação “Sim”/cancelamento, limpeza das referências e do Storage; não tocar na biblioteca real para ensaios sem backup e autorização explícita.
+2. **Referências estáticas fora do CMS:** os dois retratos aprovados referidos diretamente em `PublicSite.tsx` são protegidos; remoção integral exige migrar código e derivados antes de liberar exclusão.
+3. **SEO / canonical:** domínio confirmado é `tulius.work`. Não apontar para `tuliust.work` sem verificar posse, domínio Vercel e redirecionamentos. HTML e sitemap são reconstruídos no deployment, não em cada clique de salvar.
+4. **Validação de transições:** testar opções, `prefers-reduced-motion`, layouts especiais e passagem desktop/mobile em dispositivo real. CI green não equivale a aceite visual humano.
