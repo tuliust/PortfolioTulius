@@ -1,4 +1,4 @@
-> **RODADA POSTERIOR (05/11/2026):** [Reconciliação de implementação dos pedidos deste chat](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) — baseline funcional `5599b2f0e0`, CI aprovado, publicação Vercel READY e limites de homologação explicitados. A decisão administrativa de encerramento abaixo é **histórica**, não prova de que novos pedidos foram ensaiados.
+> **ESTADO FUNCIONAL CONFERIDO — 05/11/2026:** [`5ed489af`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/5ed489af5879589565cb0101e420065bfbf50552) é o último código identificado na `main`, com [Validate #42014122089](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42014122089) **success** e deployment de produção Vercel `dpl_8ZMJhUViSeVzx6gP12jtuPHaruuX` **READY** no mesmo SHA. O [ajuste administrativo `94466303`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/94466303617b18e343dddeb64d2ca7e39f131475) integra esse histórico, com [CI #42011905996](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42011905996) **success**. O encerramento de 05/11 é anterior aos novos pedidos; **não** há aceite comprovado de operações reais autenticadas de upload/exclusão/salvamento, nem de pixels finais de Contato e transições em aparelho. [Matriz de requisitos, limites e evidências](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md). Os marcos de 31/10 e os commits anteriores abaixo são históricos.
 
 > **FONTE OPERACIONAL VIGENTE — ENCERRADO em 05/11/2026:** [Encerramento operacional por decisão do proprietário — 05/11/2026](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Checklists anteriores passam a ser **histórico de execução**; todos os IDs remanescentes foram baixados por decisão do proprietário, reabríveis apenas com nova necessidade. Sem erros visuais observados pelo proprietário. Não apagar evidências nem presumir backups/testes sem execução.
 
@@ -11,7 +11,7 @@
 - [README principal](../README.md) — aplicação, instalação, scripts, publicação e último marco auditado.
 - [AGENTS.md](../AGENTS.md) — regras obrigatórias e restrições de alteração.
 - [Estado operacional vigente](ESTADO_ATUAL_VIGENTE.md) — snapshots históricos e referência para o estado comprovado.
-- [Reconciliação posterior dos pedidos do chat](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) — matriz de implementação, CI, Vercel, Supabase, lacunas de aceite e cautelas de preservação.
+- [Reconciliação dos pedidos do chat até 05/11](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) — **fonte central para as novas alterações**, evidências dos SHAs e limites de aceite; o encerramento administrativo anterior é histórico.
 - [Pendências e limitações](OPEN_ISSUES.md) — encerramento histórico e limites de validação da nova rodada.
 - [Guia das Fontes do ChatGPT](GUIA_FONTES_CHATGPT.md) — hierarquia e quatro anexos persistentes.
 
@@ -30,6 +30,8 @@
 | Segurança, políticas e limites RLS | [Segurança/RLS](SECURITY_RLS.md) |
 | Vercel e publicação | [Deploy](DEPLOYMENT.md) |
 | P1/P2/P3/P4/P5/P6 históricos | [Índice histórico](historico/README.md) |
+
+**P3 do SHA funcional `5ed489af`:** [Audit P3 #42014121880](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42014121880) **failure global** em `Browser routes and responsive viewports` (7 falhas automatizadas; Perfil mobile a 320 px entre elas). Em subgates separados, `P6_PERFORMANCE_BUDGET PASS`: LCP mediano de 3 simulações mobile **3,372 s** sob a meta **≤3,5 s**; desktop **0,905 s**. P5 read-only **3/3**, P4 **38 capturas sem falha automática**. Esses resultados parciais não equivalem a P3 aprovado, p75 real ou aceite visual humano.
 
 ## Critérios de aceitação
 
