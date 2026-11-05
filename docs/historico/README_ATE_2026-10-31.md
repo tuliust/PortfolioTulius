@@ -18,32 +18,32 @@
 
 **Limites:** o proprietário autorizou as gravações pontuais de conteúdo desta rodada. Isso **não** reabre a homologação transacional P2, não autoriza staging pago, alteração de RLS, testes destrutivos, exclusão permanente, nem altera a pendência P3 de LCP mobile. Os depoimentos de Marcelo Ventura poderão ser acrescentados futuramente **somente** mediante texto real e autorização. Os registros anteriores deste documento são históricos e devem ser interpretados à luz desta atualização.
 
-> **CMS UX implementado no código em 31/10/2026:** alinhamento de logo/legenda, catálogo de 50 ícones recolhível e seletor de mídia em modal com upload inicialmente privado e publicação explícita. [CI #41173453310](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41173453310) aprovado; Vercel READY no mesmo SHA. **Ainda pendentes:** inspeção visual dos controles novos, P2 transacional suspenso e meta LCP mobile. Consulte [estado vigente](docs/ESTADO_ATUAL_VIGENTE.md).
+> **CMS UX implementado no código em 31/10/2026:** alinhamento de logo/legenda, catálogo de 50 ícones recolhível e seletor de mídia em modal com upload inicialmente privado e publicação explícita. [CI #41173453310](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41173453310) aprovado; Vercel READY no mesmo SHA. **Ainda pendentes:** inspeção visual dos controles novos, P2 transacional suspenso e meta LCP mobile. Consulte [estado vigente](../ESTADO_ATUAL_VIGENTE.md).
 
 
 
 Site público e CMS editorial em **React 19, TypeScript, Vite, Tailwind CSS v4 e Supabase**, publicado em [tulius.work](https://tulius.work/) pela Vercel a partir de `main`.
 
-> **Etapa 5 — aceite automatizado aprovado:** [reexecução #40757162085 (tentativa 2)](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40757162085), 13 seções, 25 painéis mobile, 38 capturas, 8 viewports e zero falhas. [Relatório de aceite](docs/P3_ACEITE_AUTOMATIZADO_FINAL_2026-10-28.md). **Aceite manual concluído pelo proprietário em 30/10/2026; LCP mobile ainda aberto.**
+> **Etapa 5 — aceite automatizado aprovado:** [reexecução #40757162085 (tentativa 2)](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40757162085), 13 seções, 25 painéis mobile, 38 capturas, 8 viewports e zero falhas. [Relatório de aceite](../P3_ACEITE_AUTOMATIZADO_FINAL_2026-10-28.md). **Aceite manual concluído pelo proprietário em 30/10/2026; LCP mobile ainda aberto.**
 
-> **Fonte operacional única:** [docs/ESTADO_ATUAL_VIGENTE.md](docs/ESTADO_ATUAL_VIGENTE.md). Contém o snapshot de dados mais recente, evidências P0–P3, o estado real de homologação e as pendências atuais. **Confirme GitHub, Supabase e Vercel ao vivo antes de cada alteração:** este arquivo não atualiza automaticamente contagens/SHAs.
+> **Fonte operacional única:** [docs/ESTADO_ATUAL_VIGENTE.md](../ESTADO_ATUAL_VIGENTE.md). Contém o snapshot de dados mais recente, evidências P0–P3, o estado real de homologação e as pendências atuais. **Confirme GitHub, Supabase e Vercel ao vivo antes de cada alteração:** este arquivo não atualiza automaticamente contagens/SHAs.
 
-> **P2 transacional suspenso por decisão do proprietário (28/10/2026):** não foram aprovados custos para criar uma branch Supabase de homologação (cotação **US$ 0,01344/h**, mais possível consumo). Não provisionar ambiente pago, não disparar a suíte manual de escrita e não testar em produção. O P5 read-only permanece aprovado; as pendências transacionais ficam abertas, sem prazo, até nova autorização expressa. [Detalhes](docs/P2_TRANSACIONAL_STAGING_2026-10-28.md).
+> **P2 transacional suspenso por decisão do proprietário (28/10/2026):** não foram aprovados custos para criar uma branch Supabase de homologação (cotação **US$ 0,01344/h**, mais possível consumo). Não provisionar ambiente pago, não disparar a suíte manual de escrita e não testar em produção. O P5 read-only permanece aprovado; as pendências transacionais ficam abertas, sem prazo, até nova autorização expressa. [Detalhes](../P2_TRANSACIONAL_STAGING_2026-10-28.md).
 
 ## Leitura obrigatória antes de qualquer ajuste
 
-1. [`AGENTS.md`](AGENTS.md) — regras de preservação, segurança, branches e escopo.
-2. [Índice vigente](docs/ESTADO_ATUAL_VIGENTE.md) e [pendências abertas](docs/OPEN_ISSUES.md).
-3. **Layout e conteúdo:** [Design system](docs/DESIGN_SYSTEM.md), [Responsividade](docs/RESPONSIVE_LAYOUT.md), [Modelo de conteúdo](docs/CONTENT_MODEL.md) e [CMS](docs/ADMIN_CMS.md).
-4. **Infra/segurança:** [Deploy](docs/DEPLOYMENT.md), [RLS](docs/SECURITY_RLS.md), [arquitetura](docs/ARCHITECTURE.md).
-5. **Históricos:** [README acumulado anterior](docs/historico/README_ACUMULADO_ATE_2026-10-28.md), [pendências cumulativas](docs/historico/OPEN_ISSUES_ACUMULADO_ATE_2026-10-28.md), [auditoria de fases](docs/AUDITORIA_ETAPAS_1_A_3_ESTADO_ATUAL_2026-10-26.md). Não usá-los como estado corrente.
+1. [`AGENTS.md`](../../AGENTS.md) — regras de preservação, segurança, branches e escopo.
+2. [Índice vigente](../ESTADO_ATUAL_VIGENTE.md) e [pendências abertas](../OPEN_ISSUES.md).
+3. **Layout e conteúdo:** [Design system](../DESIGN_SYSTEM.md), [Responsividade](../RESPONSIVE_LAYOUT.md), [Modelo de conteúdo](../CONTENT_MODEL.md) e [CMS](../ADMIN_CMS.md).
+4. **Infra/segurança:** [Deploy](../DEPLOYMENT.md), [RLS](../SECURITY_RLS.md), [arquitetura](../ARCHITECTURE.md).
+5. **Históricos:** [README acumulado anterior](README_ACUMULADO_ATE_2026-10-28.md), [pendências cumulativas](OPEN_ISSUES_ACUMULADO_ATE_2026-10-28.md), [auditoria de fases](../AUDITORIA_ETAPAS_1_A_3_ESTADO_ATUAL_2026-10-26.md). Não usá-los como estado corrente.
 
-Para novos chats do projeto, consultar o [guia de Fontes](docs/GUIA_FONTES_CHATGPT.md) e a Fonte exclusiva de produto/design. **Código e dados vivos têm precedência sobre snapshots históricos.**
+Para novos chats do projeto, consultar o [guia de Fontes](../GUIA_FONTES_CHATGPT.md) e a Fonte exclusiva de produto/design. **Código e dados vivos têm precedência sobre snapshots históricos.**
 
 ## Situação de entrega (28/10/2026)
 
 - **P0:** consolidação documental versionada; sincronização das Fontes do projeto ChatGPT continua manual.
-- **P1:** investigação de mídias/Storage/importador/branches concluída; nenhuma exclusão aprovada. [Evidências](docs/P1_INVESTIGACAO_HIGIENE_2026-10-28.md).
+- **P1:** investigação de mídias/Storage/importador/branches concluída; nenhuma exclusão aprovada. [Evidências](../P1_INVESTIGACAO_HIGIENE_2026-10-28.md).
 - **P2:** [P5 autenticado de leitura 4/4 PASS](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40745631770), `contentMutations=0`; CRUD/publicação/restauração e Storage binário com fixture ainda não homologados.
 - **P3:** [auditoria automatizada válida](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40747019980), 13 seções/25 painéis mobile/38 capturas, a11y/SEO 100; **LCP mobile 4,38 s**, meta ≤2,5 s pendente; aceite visual humano pendente.
 
@@ -79,7 +79,7 @@ A integração **GitHub `main` → Vercel Production** cria deployment automatic
 
 ## Atualização operacional — P2 staging e medição P3 (28/10/2026)
 
-O [P2 transacional](docs/P2_TRANSACIONAL_STAGING_2026-10-28.md) tem workflow manual e fixture seguros preparados, porém **ainda não foi executado** porque não existe staging Supabase aprovado e a criação de branch exige confirmação de custo. O [P3 #40757162085](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40757162085) confirmou no deployment correspondente **Performance mobile 82/LCP mediano 4,32 s**, desktop 98/1,16 s (3 amostras por dispositivo), 13 seções/25 painéis/38 capturas e a11y/SEO 100. **A meta de LCP mobile continua aberta**. O índice [vigente](docs/ESTADO_ATUAL_VIGENTE.md) indica os próximos passos e não deve ser interpretado como SHA futuro fixo.
+O [P2 transacional](../P2_TRANSACIONAL_STAGING_2026-10-28.md) tem workflow manual e fixture seguros preparados, porém **ainda não foi executado** porque não existe staging Supabase aprovado e a criação de branch exige confirmação de custo. O [P3 #40757162085](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40757162085) confirmou no deployment correspondente **Performance mobile 82/LCP mediano 4,32 s**, desktop 98/1,16 s (3 amostras por dispositivo), 13 seções/25 painéis/38 capturas e a11y/SEO 100. **A meta de LCP mobile continua aberta**. O índice [vigente](../ESTADO_ATUAL_VIGENTE.md) indica os próximos passos e não deve ser interpretado como SHA futuro fixo.
 
 ## Correções da verificação manual — 28/10/2026
 
@@ -102,7 +102,7 @@ Dados alterados em produção somente sob pedido expresso do proprietário, sem 
 
 ### Auditoria dos módulos administrativos
 
-Ver [auditoria das dez abas](docs/AUDITORIA_ADMIN_MANUAL_2026-10-28.md), incluindo limites de homologação P2, registros SQL preservados e evidências de CI/P3.
+Ver [auditoria das dez abas](../AUDITORIA_ADMIN_MANUAL_2026-10-28.md), incluindo limites de homologação P2, registros SQL preservados e evidências de CI/P3.
 
 ## Ajustes técnicos de baixo risco após o aceite manual — 28/10/2026
 
@@ -114,19 +114,19 @@ Ver [auditoria das dez abas](docs/AUDITORIA_ADMIN_MANUAL_2026-10-28.md), incluin
 
 ### Prevenção de regressão de escala desktop (28/10/2026)
 
-O site público utiliza **escala natural de navegador**, sem redução CSS global para simular 75% do zoom. A nova referência de composição é a captura fornecida a 125% do navegador, desejada a 100%. Mudanças futuras devem ajustar tipografia/colunas/margens por componente e breakpoint, **nunca** `zoom` na raiz `.public-site` nem um `transform:scale()` global. `src/lib/layout-zoom.test.ts` e `scripts/p3-browser-smoke.mjs` impedem a reintrodução do padrão anterior; consultar [responsividade](docs/RESPONSIVE_LAYOUT.md). Nenhuma alteração de CMS, dados ou Storage foi necessária.
+O site público utiliza **escala natural de navegador**, sem redução CSS global para simular 75% do zoom. A nova referência de composição é a captura fornecida a 125% do navegador, desejada a 100%. Mudanças futuras devem ajustar tipografia/colunas/margens por componente e breakpoint, **nunca** `zoom` na raiz `.public-site` nem um `transform:scale()` global. `src/lib/layout-zoom.test.ts` e `scripts/p3-browser-smoke.mjs` impedem a reintrodução do padrão anterior; consultar [responsividade](../RESPONSIVE_LAYOUT.md). Nenhuma alteração de CMS, dados ou Storage foi necessária.
 
 ### Continuidade da frente manual e Fontes do ChatGPT — 28/10/2026
 
-A documentação da rodada de verificação manual, das duas referências de zoom e da reconciliação dos **quatro arquivos atualmente anexados ao projeto ChatGPT** está em [`docs/CONTINUIDADE_CHAT_MANUAL_ZOOM_E_FONTES_2026-10-28.md`](docs/CONTINUIDADE_CHAT_MANUAL_ZOOM_E_FONTES_2026-10-28.md). O estado atual sempre é o SHA da `main`, não as cópias de Fontes datadas; não reabrir a revisão manual anterior sem novo achado.
+A documentação da rodada de verificação manual, das duas referências de zoom e da reconciliação dos **quatro arquivos atualmente anexados ao projeto ChatGPT** está em [`docs/CONTINUIDADE_CHAT_MANUAL_ZOOM_E_FONTES_2026-10-28.md`](../CONTINUIDADE_CHAT_MANUAL_ZOOM_E_FONTES_2026-10-28.md). O estado atual sempre é o SHA da `main`, não as cópias de Fontes datadas; não reabrir a revisão manual anterior sem novo achado.
 
 ### LCP mobile — otimização medida, meta ainda aberta
 
-A rodada de 29/10 eliminou a montagem duplicada de DOM desktop/mobile no site público, com P3 13/25/38 e CI aprovados. LCP mobile mediano do SHA final `4ab9ce5`: **4,30 s** (baseline 4,36 s); o objetivo **≤2,5 s continua NÃO ATENDIDO**. Experimentos de `content-visibility` e carregamento não bloqueante de fontes foram revertidos por ausência de ganho. Evidências e próximo diagnóstico arquitetural em [qualidade P3](docs/P3_QUALIDADE_ACEITE_2026-10-28.md).
+A rodada de 29/10 eliminou a montagem duplicada de DOM desktop/mobile no site público, com P3 13/25/38 e CI aprovados. LCP mobile mediano do SHA final `4ab9ce5`: **4,30 s** (baseline 4,36 s); o objetivo **≤2,5 s continua NÃO ATENDIDO**. Experimentos de `content-visibility` e carregamento não bloqueante de fontes foram revertidos por ausência de ganho. Evidências e próximo diagnóstico arquitetural em [qualidade P3](../P3_QUALIDADE_ACEITE_2026-10-28.md).
 
 ### Prevenção de score Lighthouse falso após divisão de chunks
 
-O P3 de 29/10 isolou os chunks do Supabase sem mudar o cliente ou as consultas públicas. Uma tentativa anterior de REST customizado foi revertida quando deixou o site vazio: LCP baixo sem conteúdo **não é melhoria**. Novo gate `P6_LCP_CONTENT_GATE` exige o retrato publicado como LCP nas três amostras mobile/desktop. O objetivo ≤2,5 s continua aberto. [P3 completo](docs/P3_QUALIDADE_ACEITE_2026-10-28.md).
+O P3 de 29/10 isolou os chunks do Supabase sem mudar o cliente ou as consultas públicas. Uma tentativa anterior de REST customizado foi revertida quando deixou o site vazio: LCP baixo sem conteúdo **não é melhoria**. Novo gate `P6_LCP_CONTENT_GATE` exige o retrato publicado como LCP nas três amostras mobile/desktop. O objetivo ≤2,5 s continua aberto. [P3 completo](../P3_QUALIDADE_ACEITE_2026-10-28.md).
 
 ### Auditoria final da proteção P6 e divisão dos chunks — 29/10/2026 UTC
 
@@ -138,15 +138,15 @@ A nova solicitação do proprietário **substituiu** a captura anterior que busc
 
 ### Primeira dobra desktop — refinamento de legibilidade (29/10/2026)
 
-Com a geometria original mantida e sem `zoom` global, foram refinados apenas os textos secundários, as numerações 01–05 e os microespaçamentos da coluna esquerda. [CI #40807420317](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40807420317) e [P3 #40807420323](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40807420323) `success`, com 13 seções, 25 painéis e 38 capturas. O último destaque permanece dentro de 1512×691 e sem sobreposição com o selo. [Detalhamento no design system](docs/DESIGN_SYSTEM.md). O LCP mobile continua aberto (~4,45 s nesta amostra).
+Com a geometria original mantida e sem `zoom` global, foram refinados apenas os textos secundários, as numerações 01–05 e os microespaçamentos da coluna esquerda. [CI #40807420317](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40807420317) e [P3 #40807420323](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40807420323) `success`, com 13 seções, 25 painéis e 38 capturas. O último destaque permanece dentro de 1512×691 e sem sobreposição com o selo. [Detalhamento no design system](../DESIGN_SYSTEM.md). O LCP mobile continua aberto (~4,45 s nesta amostra).
 
 ### Menu público compacto — 29/10/2026
 
-Removidos subtítulos Perfil/Experiência/Referências e assinatura da gaveta; as oito opções mantêm ordem, destinos e altura mínima de toque 44 px. Admin sem edição de grupos; Supabase `navigation_items` preserva 14 registros (8 visíveis, 6 ocultos), todos com `group_name='Menu'` por compatibilidade. [CI #40810591049](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40810591049) e [P3 #40810488285](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40810488285) passaram; sem scroll em 390×844 nem 1512×691. Detalhes em [CMS](docs/ADMIN_CMS.md) e [responsividade](docs/RESPONSIVE_LAYOUT.md). LCP mobile segue aberto.
+Removidos subtítulos Perfil/Experiência/Referências e assinatura da gaveta; as oito opções mantêm ordem, destinos e altura mínima de toque 44 px. Admin sem edição de grupos; Supabase `navigation_items` preserva 14 registros (8 visíveis, 6 ocultos), todos com `group_name='Menu'` por compatibilidade. [CI #40810591049](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40810591049) e [P3 #40810488285](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40810488285) passaram; sem scroll em 390×844 nem 1512×691. Detalhes em [CMS](../ADMIN_CMS.md) e [responsividade](../RESPONSIVE_LAYOUT.md). LCP mobile segue aberto.
 
 ### Ajuste da Biblioteca de Mídia — 29/10/2026
 
-A edição de cada mídia é aberta **no espaço do item clicado** na grade; botão X substitui “Fechar detalhes”; removido o campo de entrada de texto alternativo, sem apagar os metadados existentes. **Status editorial único “Publicado”** no admin e no banco: 27 registros publicados, 24 em bucket público, 3 ainda no bucket privado, com RLS e seletor de mídia mantendo as três privadas inacessíveis nas páginas públicas. Upload/substituição continuam em Storage privado até o comando explícito “Disponibilizar no site”. [Código `c9cb3de`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/c9cb3dee73fadd11fc1a7bae86a78e8a89e039fb), [CI #40812587748](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40812587748) aprovado. P3 público: 13/25/38 e RLS 3/3 passaram; teste LCP falhou e está em repetição. Detalhes no [CMS](docs/ADMIN_CMS.md).
+A edição de cada mídia é aberta **no espaço do item clicado** na grade; botão X substitui “Fechar detalhes”; removido o campo de entrada de texto alternativo, sem apagar os metadados existentes. **Status editorial único “Publicado”** no admin e no banco: 27 registros publicados, 24 em bucket público, 3 ainda no bucket privado, com RLS e seletor de mídia mantendo as três privadas inacessíveis nas páginas públicas. Upload/substituição continuam em Storage privado até o comando explícito “Disponibilizar no site”. [Código `c9cb3de`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/c9cb3dee73fadd11fc1a7bae86a78e8a89e039fb), [CI #40812587748](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/40812587748) aprovado. P3 público: 13/25/38 e RLS 3/3 passaram; teste LCP falhou e está em repetição. Detalhes no [CMS](../ADMIN_CMS.md).
 
 ### Última verificação manual de composição — 29/10/2026
 
@@ -156,12 +156,12 @@ A fotografia central de “Olá!” foi ajustada localmente para encostar visual
 
 ### Editor administrativo unificado — 30/10/2026
 
-A navegação do CMS apresenta **Editor do site** no lugar de Seções, Blocos e Coleções como entradas separadas. O proprietário escolhe a seção uma vez e acessa conteúdo, informações, acervo estruturado e prévia contextual. O editor identifica blocos com fonte manual ou coleção explicitamente vinculada; ajustes técnicos de placements permanecem no modo avançado. Contratos de dados, ações de salvamento, status e guardas de publicação existentes foram preservados, sem mudanças no site público ou no Supabase. [Detalhes e limites](docs/ADMIN_CMS.md).
+A navegação do CMS apresenta **Editor do site** no lugar de Seções, Blocos e Coleções como entradas separadas. O proprietário escolhe a seção uma vez e acessa conteúdo, informações, acervo estruturado e prévia contextual. O editor identifica blocos com fonte manual ou coleção explicitamente vinculada; ajustes técnicos de placements permanecem no modo avançado. Contratos de dados, ações de salvamento, status e guardas de publicação existentes foram preservados, sem mudanças no site público ou no Supabase. [Detalhes e limites](../ADMIN_CMS.md).
 
 ### CMS mobile, conclusão manual e performance (30/10/2026)
 
-O proprietário declarou encerrada a verificação manual anterior. A interface `/admin` foi adaptada para celulares/tablets com menu superior rolável, formulários de uma coluna, diálogos acessíveis e grade de mídia flexível; [CI #41140863031](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41140863031) aprovado. A auditoria pública [P3 #41140863050](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41140863050) passou 13 seções/25 painéis/38 capturas e P5 sem mutações, mas **não passou no orçamento de LCP mobile (~7,66 s)**. O novo preload aponta para a foto original publicada, sem ganho conclusivo. Para resolver P3-PERF-01 é necessária derivada otimizada fiel, sem mudança de dados/Storage nem serviço pago não autorizado. P2 transacional permanece suspenso. [Estado detalhado](docs/ESTADO_ATUAL_VIGENTE.md).
+O proprietário declarou encerrada a verificação manual anterior. A interface `/admin` foi adaptada para celulares/tablets com menu superior rolável, formulários de uma coluna, diálogos acessíveis e grade de mídia flexível; [CI #41140863031](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41140863031) aprovado. A auditoria pública [P3 #41140863050](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41140863050) passou 13 seções/25 painéis/38 capturas e P5 sem mutações, mas **não passou no orçamento de LCP mobile (~7,66 s)**. O novo preload aponta para a foto original publicada, sem ganho conclusivo. Para resolver P3-PERF-01 é necessária derivada otimizada fiel, sem mudança de dados/Storage nem serviço pago não autorizado. P2 transacional permanece suspenso. [Estado detalhado](../ESTADO_ATUAL_VIGENTE.md).
 
 ### Verificação de fechamento técnico — 31/10/2026
 
-No [commit funcional `e3c85c2`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/e3c85c275bc727c9c658b5cdaa5528f41dfb72fa), CI e Vercel estão aprovados; o [P5 autenticado read-only #41172037326](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41172037326) validou 8 módulos, 50 ícones, editor mobile, proteção de rascunhos e logout, com zero mutações. A [P3 #41171332333](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41171332333) após reversão do experimento não regressou na integridade 13/25/38, mas manteve **LCP mobile ~7,76s FAIL**; a meta ≤2,5s ainda exige nova frente arquitetural comprovada. P2 transacional continua suspenso; aceite visual humano da última rodada e 8 pendências editoriais aguardam confirmação/decisão. [Estado e evidências](docs/ESTADO_ATUAL_VIGENTE.md).
+No [commit funcional `e3c85c2`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/e3c85c275bc727c9c658b5cdaa5528f41dfb72fa), CI e Vercel estão aprovados; o [P5 autenticado read-only #41172037326](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41172037326) validou 8 módulos, 50 ícones, editor mobile, proteção de rascunhos e logout, com zero mutações. A [P3 #41171332333](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41171332333) após reversão do experimento não regressou na integridade 13/25/38, mas manteve **LCP mobile ~7,76s FAIL**; a meta ≤2,5s ainda exige nova frente arquitetural comprovada. P2 transacional continua suspenso; aceite visual humano da última rodada e 8 pendências editoriais aguardam confirmação/decisão. [Estado e evidências](../ESTADO_ATUAL_VIGENTE.md).

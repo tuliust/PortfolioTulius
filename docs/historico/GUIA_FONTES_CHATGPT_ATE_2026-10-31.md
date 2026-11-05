@@ -18,14 +18,14 @@
 
 **Limites:** o proprietário autorizou as gravações pontuais de conteúdo desta rodada. Isso **não** reabre a homologação transacional P2, não autoriza staging pago, alteração de RLS, testes destrutivos, exclusão permanente, nem altera a pendência P3 de LCP mobile. Os depoimentos de Marcelo Ventura poderão ser acrescentados futuramente **somente** mediante texto real e autorização. Os registros anteriores deste documento são históricos e devem ser interpretados à luz desta atualização.
 
-**Revisão do índice GitHub:** 31/10/2026. **Fonte operacional:** [estado vigente](ESTADO_ATUAL_VIGENTE.md) e [pendências](OPEN_ISSUES.md). **Correções CMS implementadas no código** em [`6913d91`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/6913d91c71041457d3425836ee2e96f93677bc59), CI aprovado e Vercel READY; [handoff de 31/10](CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md) preservado como especificação histórica. P2 transacional e aceite visual dos controles novos permanecem pendentes. Esta documentação **não sincroniza automaticamente** os anexos do ChatGPT.
+**Revisão do índice GitHub:** 31/10/2026. **Fonte operacional:** [estado vigente](../ESTADO_ATUAL_VIGENTE.md) e [pendências](../OPEN_ISSUES.md). **Correções CMS implementadas no código** em [`6913d91`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/6913d91c71041457d3425836ee2e96f93677bc59), CI aprovado e Vercel READY; [handoff de 31/10](../CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md) preservado como especificação histórica. P2 transacional e aceite visual dos controles novos permanecem pendentes. Esta documentação **não sincroniza automaticamente** os anexos do ChatGPT.
 
 ## Consulta prioritária para cada próximo chat
 
 1. Confirmar [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commits/main), [CI](https://github.com/tuliustsangaropulos/PortfolioTulius/actions), [Vercel](https://vercel.com/tuliustsangaropulos-creates-projects/portfolio-tulius) no mesmo SHA; quando há dados envolvidos, consultar Supabase somente leitura antes de decidir.
-2. Ler [`AGENTS.md`](../AGENTS.md), [`README.md`](../README.md), [`ESTADO_ATUAL_VIGENTE.md`](ESTADO_ATUAL_VIGENTE.md), [`OPEN_ISSUES.md`](OPEN_ISSUES.md) e [`CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md`](CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md).
-3. Consultar por tema: [CMS](ADMIN_CMS.md), [design system](DESIGN_SYSTEM.md), [modelo de conteúdo](CONTENT_MODEL.md), [responsividade](RESPONSIVE_LAYOUT.md), [segurança](SECURITY_RLS.md), [deploy](DEPLOYMENT.md), [P1](P1_INVESTIGACAO_HIGIENE_2026-10-28.md), [P2](P2_HOMOLOGACAO_ADMINISTRATIVA_2026-10-28.md) e [P3](P3_QUALIDADE_ACEITE_2026-10-28.md).
-4. Preservar os documentos datados como registros históricos com evidências no SHA da época. A [aprovação automatizada de 28/10](P3_ACEITE_AUTOMATIZADO_FINAL_2026-10-28.md) não declara o LCP mobile atual aprovado.
+2. Ler [`AGENTS.md`](../../AGENTS.md), [`README.md`](../README.md), [`ESTADO_ATUAL_VIGENTE.md`](../ESTADO_ATUAL_VIGENTE.md), [`OPEN_ISSUES.md`](../OPEN_ISSUES.md) e [`CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md`](../CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md).
+3. Consultar por tema: [CMS](../ADMIN_CMS.md), [design system](../DESIGN_SYSTEM.md), [modelo de conteúdo](../CONTENT_MODEL.md), [responsividade](../RESPONSIVE_LAYOUT.md), [segurança](../SECURITY_RLS.md), [deploy](../DEPLOYMENT.md), [P1](../P1_INVESTIGACAO_HIGIENE_2026-10-28.md), [P2](../P2_HOMOLOGACAO_ADMINISTRATIVA_2026-10-28.md) e [P3](../P3_QUALIDADE_ACEITE_2026-10-28.md).
+4. Preservar os documentos datados como registros históricos com evidências no SHA da época. A [aprovação automatizada de 28/10](../P3_ACEITE_AUTOMATIZADO_FINAL_2026-10-28.md) não declara o LCP mobile atual aprovado.
 
 ## Arquivos Markdown do projeto ChatGPT conferidos em 31/10/2026
 
@@ -44,4 +44,4 @@
 
 ## Invariantes e aceite
 
-Não alterar conteúdo aprovado, fotografia, design, escala CSS raiz, dados ou segurança sem escopo autorizado. Não executar testes de CRUD com JWT em produção nem contratar staging. Dropdown de ícones, posicionamento de labels e popup de mídia com upload são **solicitações registradas para correção futura**, não funcionalidades já publicadas. Fechamento/reload de aba deve manter aviso nativo `beforeunload`; navegação interna usa modal personalizado. [Reconciliação histórica de Fontes](RECONCILIACAO_FONTES_CHATGPT_2026-10-28.md).
+Não alterar conteúdo aprovado, fotografia, design, escala CSS raiz, dados ou segurança sem escopo autorizado. Não executar testes de CRUD com JWT em produção nem contratar staging. Dropdown de ícones, posicionamento de labels e popup de mídia com upload são **solicitações registradas para correção futura**, não funcionalidades já publicadas. Fechamento/reload de aba deve manter aviso nativo `beforeunload`; navegação interna usa modal personalizado. [Reconciliação histórica de Fontes](../RECONCILIACAO_FONTES_CHATGPT_2026-10-28.md).
