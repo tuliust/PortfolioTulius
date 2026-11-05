@@ -693,9 +693,7 @@ function SiteEditor({
                 <span>{String(entry.section.sort_order).padStart(2, "0")}</span>
                 <div>
                   <strong>{entry.section.title}</strong>
-                  <small>
-                    {sectionPublicationLabel(entry.section)}
-                  </small>
+                  <small>{sectionPublicationLabel(entry.section)}</small>
                 </div>
               </button>
             ),
@@ -766,7 +764,7 @@ function SiteEditor({
                   </p>
                 </section>
               )}
-              
+
               <div className="site-editor-body">
                 {dirty && (
                   <p className="site-editor-unsaved" role="status">
@@ -1182,7 +1180,8 @@ function PortfolioPreviewPane() {
         <iframe key={device} title={`Prévia ${device} do portfólio`} src="/admin/preview" />
       </div>
       <small>
-        A prévia mobile utiliza proporção de 390 × 844 px; não substitui testes em dispositivos reais.
+        A prévia mobile utiliza proporção de 390 × 844 px; não substitui testes em dispositivos
+        reais.
       </small>
     </div>
   )
