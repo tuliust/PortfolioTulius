@@ -412,7 +412,13 @@ try {
           !changed.firstProject || !changed.onlySelectedCard) {
         throw new Error("Company navigation did not update editorial identity")
       }
+      // Let the scheduled logo-triggered scroll settle before testing natural navigation onward.
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
       await page.evaluate(() => document.getElementById("ferramentas")?.scrollIntoView({ behavior: "instant" }))
+      await page.waitForFunction(() =>
+        document.getElementById("ferramentas")?.getBoundingClientRect().top <= innerHeight * .5,
+        { timeout: 10000 },
+      )
       const after = await page.evaluate(() => {
         const tools = document.getElementById("ferramentas")?.getBoundingClientRect()
         const index = document.querySelector(".experience-index")?.getBoundingClientRect()
@@ -732,9 +738,9 @@ try {
       const fits = composition.aboutBottom !== null &&
         composition.portraitBottom !== null &&
         composition.portraitBottom >= composition.aboutBottom + 16 &&
-        // The former fourth item (Competências aplicadas) is now five header badges.
+        // The current published Invest RS has six competencies approved in CMS.
         composition.count === 4 &&
-        composition.competenceBadges === 5 &&
+        composition.competenceBadges === 6 &&
         composition.trajectoryButton &&
         // The four published projects may scroll inside their existing bounded column.
         composition.listHeight > 0 && composition.listScrollHeight >= composition.listHeight &&
@@ -765,7 +771,9 @@ try {
         }
       })
       if (
-        Object.values(competenciesAndCdi.badges).some((count) => count !== 5) ||
+        Object.entries(competenciesAndCdi.badges).some(
+          ([slug, count]) => count !== (slug === "invest-rs" ? 6 : 5),
+        ) ||
         !competenciesAndCdi.cdiTextFree ||
         !competenciesAndCdi.sameFont ||
         !competenciesAndCdi.uppercase ||
