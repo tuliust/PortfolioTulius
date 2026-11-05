@@ -386,11 +386,10 @@ export function ContentStudio({
   const blockDirty =
     Boolean(draft && savedBlock && JSON.stringify(draft) !== JSON.stringify(savedBlock)) ||
     editedPanelKeys.length > 0
-  useEffect(() => onDirtyChange?.(blockDirty || trajectoryDirty), [
-    blockDirty,
-    trajectoryDirty,
-    onDirtyChange,
-  ])
+  useEffect(
+    () => onDirtyChange?.(blockDirty || trajectoryDirty),
+    [blockDirty, trajectoryDirty, onDirtyChange],
+  )
   const setPlacement = (next: PlacementForm) => {
     setPlacementsByPanel((current) => ({ ...current, [placementPanel]: next }))
     setEditedPanelKeys((current) =>
@@ -2173,11 +2172,7 @@ function InlineCareerTrajectoryEditor({
   }
 
   useEffect(
-    () =>
-      registerAdminSaveAction(
-        saveTrajectory,
-        () => dirty && !loading && !readError,
-      ),
+    () => registerAdminSaveAction(saveTrajectory, () => dirty && !loading && !readError),
     [saveTrajectory, dirty, loading, readError],
   )
 
