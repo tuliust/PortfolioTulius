@@ -86,7 +86,6 @@ type BlockRow = {
   editorial_note: string | null
 }
 
-const emptyItem: ContentItem = { title: "Novo item", text: "" }
 
 function StatusMessage({ children }: { children: string }) {
   return <AdminNotice message={children} />
@@ -480,34 +479,6 @@ export function ContentStudio({
     }
   }, [blocks, selectedId])
 
-  async function createBlock() {
-    if (!supabase || !sectionId) return
-    if (
-      blockDirty &&
-      !(await adminConfirmUnsaved(
-        "Alterações deste bloco ainda não foram salvas. Como deseja continuar antes de criar outro?",
-        { title: "Alterações não salvas" },
-      ))
-    )
-      return
-    const { data, error } = await supabase
-      .from("content_blocks")
-      .insert({
-        section_id: sectionId,
-        block_type: "cards",
-        content_json: { items: [emptyItem] },
-        mobile_panel: "a",
-        sort_order: blocks.length + 1,
-        status: "draft",
-      })
-      .select("*")
-      .single()
-    if (error) return setMessage(error.message)
-    setMessage("Bloco criado como rascunho.")
-    await load()
-    setSelectedId(data.id)
-  }
-
   async function saveBlock(): Promise<boolean> {
     if (!supabase || !draft) return false
     if (placementsLoading || placementsReadError) {
@@ -785,14 +756,6 @@ export function ContentStudio({
             <h1>Blocos e painéis</h1>
             <span>Uma fonte de conteúdo, composições desktop e mobile A/B</span>
           </div>
-          <button
-            className="primary-button"
-            onClick={createBlock}
-            disabled
-            title="Criação de blocos desativada"
-          >
-            Novo bloco
-          </button>
         </header>
       )}
       {embedded && (
@@ -801,15 +764,6 @@ export function ContentStudio({
             <strong>Elementos desta seção</strong>
             <small>Escolha um painel para editar os textos, imagens e itens exibidos.</small>
           </div>
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={createBlock}
-            disabled
-            title="Criação de blocos desativada"
-          >
-            Novo bloco
-          </button>
         </div>
       )}
       {!embedded && (
@@ -1174,6 +1128,7 @@ export function ContentStudio({
                       label="Logotipo da empresa"
                       guidance="Logo quadrado 1:1; referência 400 × 400 px ou SVG."
                       ratio="1 / 1"
+                      allowFraming={false}
                       framing={draft.content_json.experienceMedia?.logoFraming}
                       onFramingChange={(logoFraming) =>
                         setDraft({
@@ -1202,24 +1157,6 @@ export function ContentStudio({
                         })
                       }
                     />
-                    <label className="experience-logo-alt">
-                      Descrição alternativa do logo (opcional)
-                      <input
-                        value={draft.content_json.experienceMedia?.logoAlt ?? ""}
-                        onChange={(event) =>
-                          setDraft({
-                            ...draft,
-                            content_json: {
-                              ...draft.content_json,
-                              experienceMedia: {
-                                ...draft.content_json.experienceMedia,
-                                logoAlt: event.target.value,
-                              },
-                            },
-                          })
-                        }
-                      />
-                    </label>
                   </div>
                   <h3>Slides relacionados aos projetos</h3>
                   <p className="experience-admin-relationship-note">
@@ -1331,7 +1268,6 @@ export function ContentStudio({
                         {(
                           [
                             ["title", "Título do projeto"],
-                            ["alt", "Descrição alternativa da foto"],
                             ["caption", "Legenda da imagem"],
                           ] as const
                         ).map(([key, label]) => (
@@ -1362,6 +1298,7 @@ export function ContentStudio({
                           label="Fotografia do slide"
                           guidance="Galeria vertical 9:10; referência 900 × 1000 px."
                           ratio="9 / 10"
+                          allowFraming={false}
                           framing={slide.framing}
                           onFramingChange={(framing) => {
                             const slides = [...(draft.content_json.experienceMedia?.slides ?? [])]
@@ -1420,7 +1357,7 @@ export function ContentStudio({
                   <div className="block-item-help">
                     <AdminInfoTip
                       label="Textos da seção 02 — coluna direita"
-                      description="Cada item corresponde a um título e texto. Use Adicionar item, as setas de ordenação e Remover item para gerenciar a lista completa. O primeiro item também aparece junto à foto no painel A mobile. Clique em Salvar alterações para publicar suas edições no bloco."
+                      description="Cada item corresponde a um título e texto. Use as setas de ordenação e Remover item para organizar os itens existentes. O primeiro item também aparece junto à foto no painel A mobile. Clique em Salvar alterações para publicar suas edições no bloco."
                     />
                   </div>
                 )}
@@ -1779,6 +1716,7 @@ export function ContentStudio({
                           label="Imagem do item"
                           guidanceAsInfo
                           iconOnlyActions
+                          allowFraming={false}
                           guidance={
                             ["perfil", "contato", "sobre"].includes(
                               sections.find((entry) => entry.id === draft.section_id)?.slug ?? "",
@@ -1834,31 +1772,6 @@ export function ContentStudio({
                             } else updateItem(index, { image, alt })
                           }}
                         />
-                        <label className="item-alt-field">
-                          Texto alternativo (opcional)
-                          <input
-                            value={
-                              aboutImageTarget === "desktop" &&
-                              sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "sobre" &&
-                              draft.mobile_panel === "a" &&
-                              index === 0
-                                ? (item.aboutDesktopAlt ?? "")
-                                : (item.alt ?? "")
-                            }
-                            onChange={(event) => {
-                              if (
-                                aboutImageTarget === "desktop" &&
-                                sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                  "sobre" &&
-                                draft.mobile_panel === "a" &&
-                                index === 0
-                              ) {
-                                updateItem(index, { aboutDesktopAlt: event.target.value })
-                              } else updateItem(index, { alt: event.target.value })
-                            }}
-                          />
-                        </label>
                         {sections.find((entry) => entry.id === draft.section_id)?.slug ===
                           "sobre" &&
                           draft.mobile_panel === "a" &&
@@ -2005,23 +1918,6 @@ export function ContentStudio({
                   )}
                 </article>
               ))}
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => {
-                  const nextIndex = draft.content_json.items?.length ?? 0
-                  setDraft({
-                    ...draft,
-                    content_json: {
-                      ...draft.content_json,
-                      items: [...(draft.content_json.items ?? []), { ...emptyItem }],
-                    },
-                  })
-                  setExpandedItemIndex(nextIndex)
-                }}
-              >
-                Adicionar item
-              </button>
             </div>
             <StatusMessage>{message}</StatusMessage>
             <div className="form-actions">
