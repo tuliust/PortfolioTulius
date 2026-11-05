@@ -1,3 +1,5 @@
+> **CHECKLIST HISTÓRICO — ENCERRADO ADMINISTRATIVAMENTE EM 05/11/2026.** Todos os itens pendentes abaixo foram marcados **[x] por decisão do proprietário**, com possibilidade de retomada futura. Contagens e caixas [ ] no texto original reproduzem o **snapshot de 02/11**, não tarefas atuais. Fonte vigente: [Fechamento operacional](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Não confundir aceite com CI, backup ou implantação realmente executados.
+
 # Bloco 2 — Checklist vigente P4, P5 e P6
 
 **Data de início:** 02/11/2026. **Situação:** planejamento e proteção preparatória iniciados. **Nenhuma aprovação de infraestrutura ou de escrita foi presumida.** O [Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md) permanece **parcial** (pendentes homologações editoriais e meta LCP).

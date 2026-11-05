@@ -1,3 +1,5 @@
+> **STATUS DE ENTREGA — 05/11/2026:** página integralmente inspecionada pelo proprietário, sem erros observados; etapa encerrada por decisão. [Registro operacional](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). O SHA `418f1b81d3a99ff6a5d20ac6a1f44d1395b98f5f` é o baseline remoto anterior a esta atualização documental, não incorporação dos commits locais. Uma futura mudança funcional exigirá CI e Vercel do novo SHA, sem force-push.
+
 # Deploy
 
 ## Critério atual de publicação e validação — 01/11/2026

@@ -1,3 +1,5 @@
+> **CHECKLIST HISTÓRICO — ENCERRADO ADMINISTRATIVAMENTE EM 05/11/2026.** Todos os itens pendentes abaixo foram marcados **[x] por decisão do proprietário**, com possibilidade de retomada futura. Contagens e caixas [ ] no texto original reproduzem o **snapshot de 02/11**, não tarefas atuais. Fonte vigente: [Fechamento operacional](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Não confundir aceite com CI, backup ou implantação realmente executados.
+
 # Checklist de execução — PortfolioTulius
 
 **[Novo checklist operacional P1–P3, Bloco 1](CHECKLIST_BLOCO_1_P1_P2_P3_2026-11-02.md)** · [evidências da execução](BLOCO_1_P2_P3_EVIDENCIAS_2026-11-02.md) · [inventário de 26 blocos](BLOCO_1_P1_INVENTARIO_2026-11-02.md).

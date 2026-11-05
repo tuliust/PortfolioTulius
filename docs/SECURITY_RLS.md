@@ -1,3 +1,5 @@
+> **STATUS DO ESCOPO — 05/11/2026:** auditoria e checklist encerrados por decisão do proprietário, sem alteração de políticas, privilégios, Auth ou Storage. O encerramento administrativo não revoga controles de segurança nem prova backup binário; eventuais incidentes podem reabrir o tema. [Registro vigente](ENCERRAMENTO_OPERACIONAL_2026-11-05.md).
+
 # Segurança e RLS
 
 Todas as tabelas expostas têm RLS. Anon e usuário autenticado comum leem somente registros publicados/visíveis. Políticas administrativas chamam `private.is_portfolio_admin(auth.uid())`, uma função `security definer` com `search_path` fixado e acesso mínimo.

@@ -1,3 +1,5 @@
+> **ACEITE HUMANO — 05/11/2026:** CMS e site do escopo atual foram encerrados por decisão expressa do proprietário; os testes manuais das Etapas 4–7 permanecem concluídos. [Registro vigente](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). As seções cronológicas abaixo preservam o estado que tinham na data de emissão.
+
 # CMS administrativo
 
 ## Estado funcional e aceite — revisão 01/11/2026

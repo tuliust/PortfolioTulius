@@ -1,6 +1,12 @@
+# PortfolioTulius — pendências encerradas por decisão do proprietário
+
+**05/11/2026: backlog ativo vazio.** Todas as ações remanescentes foram marcadas **[x] ENCERRADAS ADMINISTRATIVAMENTE**, com possibilidade de reabrir apenas por novo pedido ou erro concreto. Este fechamento **não converte** testes não executados, backups ausentes ou commits locais não enviados em resultados comprovados. Fonte vigente: [encerramento operacional](ENCERRAMENTO_OPERACIONAL_2026-11-05.md).
+
+## Registro histórico (não é backlog vigente)
+
 > **ATUALIZAÇÃO DE STATUS — 05/11/2026:** as **Etapas 4–7** foram declaradas concluídas pelo proprietário e não integram mais o backlog ativo; este arquivo conserva o quadro antigo como registro histórico. A situação corrente dos 53 pares privados, 44 públicos, um `alt_text` vazio novo, 139 diferenças hipotéticas, alertas RLS/SECURITY DEFINER, fluxos de mídia, CI/Vercel e limites da versão local consta da [auditoria autônoma de 05/11](AUDITORIA_AUTONOMA_CONECTORES_2026-11-05.md). **Backlog técnico remanescente:** backup recuperável/LOC-10, integração dos commits locais + SEO/CSS sem perda, preservação do upload privado, testes e CI/Lighthouse no SHA do código realmente publicado, aceite final. Nenhuma edição de produção ou exclusão está autorizada por este registro.
 
-# PortfolioTulius — pendências realmente abertas
+### Quadro datado de 02/11 — referência histórica
 
 > **Atualização operacional de 02/11/2026:** a meta de LCP mobile foi alterada expressamente para **≤3,5 s** (mediana de três Lighthouse); [auditoria #41518032045](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/41518032045) registrou **3,386 s** e passou sob esse gate. A homologação transacional passou a depender exclusivamente do **Supabase local + Docker**, sem segundo projeto cloud. A vistoria humana completa de CMS/site e o aceite P7/P8 continuam pendentes. Ver [checklist assistido do Bloco 3](BLOCO_3_P7_P8_VALIDACAO_ASSISTIDA_2026-11-02.md). A tabela abaixo é histórica e **não altera as decisões vigentes**.
 

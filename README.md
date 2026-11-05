@@ -1,3 +1,5 @@
+> **PROJETO ENCERRADO ADMINISTRATIVAMENTE — 05/11/2026.** O proprietário inspecionou toda a página e não observou erros. Todos os itens restantes dos checklists foram encerrados **por decisão**, com possibilidade de reabertura futura. Evidência técnica não executada (backup binário, P3 do último SHA funcional, integração de commits locais, gatilho SEO real) permanece documentada sem ser apresentada como sucesso. [Registro vigente](docs/ENCERRAMENTO_OPERACIONAL_2026-11-05.md).
+
 # PortfolioTulius — portfólio editorial e CMS
 
 Site de comunicação, relações públicas e estratégia de Tulius Tsangaropulos, publicado em [tulius.work](https://tulius.work/). Aplicação React 19 + TypeScript + Vite + Supabase, com frontend editorial responsivo, CMS autenticado e publicação automática via Vercel após alterações na `main`.

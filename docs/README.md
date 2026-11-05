@@ -1,3 +1,5 @@
+> **FONTE OPERACIONAL VIGENTE — ENCERRADO em 05/11/2026:** [Encerramento operacional por decisão do proprietário — 05/11/2026](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Checklists anteriores passam a ser **histórico de execução**; todos os IDs remanescentes foram baixados por decisão do proprietário, reabríveis apenas com nova necessidade. Sem erros visuais observados pelo proprietário. Não apagar evidências nem presumir backups/testes sem execução.
+
 # Documentação técnica — PortfolioTulius
 
 **Fonte operacional:** branch [`main`](https://github.com/tuliustsangaropulos/PortfolioTulius/commits/main), acompanhada de CI, deploy e, quando pertinente, consulta CMS. Documentos datados registram um SHA e **não** se atualizam automaticamente.

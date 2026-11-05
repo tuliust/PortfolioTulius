@@ -1,3 +1,5 @@
+> **PRIORIDADE MÁXIMA ATUALIZADA — 05/11/2026:** antes de ler checklists datados, consultar [Encerramento operacional e aceites](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Estado: **sem backlog ativo**, todos os itens concluídos por decisão, reabertura futura somente mediante necessidade. Os arquivos antigos preservam a história, não descrevem tarefas ativas.
+
 # Guia de Fontes ChatGPT — PortfolioTulius
 
 **Revisão:** 01/11/2026. Consulte antes de iniciar uma nova tarefa. O guia é um **índice de prioridades**, não um substituto para código e testes. [Documento de orientação anterior preservado](historico/GUIA_FONTES_CHATGPT_ATE_2026-10-31.md).

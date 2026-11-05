@@ -1,3 +1,5 @@
+> **CHECKLIST HISTÓRICO — ENCERRADO ADMINISTRATIVAMENTE EM 05/11/2026.** Todos os itens pendentes abaixo foram marcados **[x] por decisão do proprietário**, com possibilidade de retomada futura. Contagens e caixas [ ] no texto original reproduzem o **snapshot de 02/11**, não tarefas atuais. Fonte vigente: [Fechamento operacional](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Não confundir aceite com CI, backup ou implantação realmente executados.
+
 # Bloco 1 — Trabalho executável automaticamente pelos conectores
 
 **Status vigente:** execução parcial · **Nova meta LCP mobile: ≤ 3,5 s** · **Staging aprovado: local/isolado** · **Atualizado em:** 02/11/2026 · **Fonte:** evidências técnicas e checklists versionados no PortfolioTulius. Este quadro organiza tarefas concluídas, pendências técnicas e decisões transferidas ao Bloco 2; **não declara encerrado o Bloco 1**.
