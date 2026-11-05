@@ -14,14 +14,25 @@ type Confirmation = {
 }
 
 let requestConfirmation: ((request: Confirmation) => void) | null = null
-let activeSaveAction: (() => Promise<boolean>) | null = null
+type RegisteredSave = { action: () => Promise<boolean>; dirty: () => boolean }
+const registeredSaves = new Map<() => Promise<boolean>, RegisteredSave>()
 
-/** Each mounted editor registers its real persistence routine; true means confirmed success. */
-export function registerAdminSaveAction(action: () => Promise<boolean>): () => void {
-  activeSaveAction = action
-  return () => {
-    if (activeSaveAction === action) activeSaveAction = null
+/** Multiple independent editors can save together without overriding one another. */
+export function registerAdminSaveAction(
+  action: () => Promise<boolean>,
+  dirty: () => boolean = () => true,
+): () => void {
+  registeredSaves.set(action, { action, dirty })
+  return () => { registeredSaves.delete(action) }
+}
+
+export async function saveRegisteredAdminChanges(): Promise<boolean> {
+  const pending = [...registeredSaves.values()].filter((entry) => entry.dirty())
+  if (!pending.length) return false
+  for (const entry of pending) {
+    if (!(await entry.action())) return false
   }
+  return true
 }
 
 /** Fail closed if the shared dialog is not mounted. */
@@ -84,8 +95,7 @@ export function AdminConfirmationHost() {
 
   async function saveAndExit() {
     if (!current || current.mode !== "unsaved" || busy.current) return
-    const action = activeSaveAction
-    if (!action) {
+    if (![...registeredSaves.values()].some((entry) => entry.dirty())) {
       setSaveError("O salvamento desta área não está disponível. Você permanece na página.")
       return
     }
@@ -94,7 +104,7 @@ export function AdminConfirmationHost() {
     setSaveError("")
     let confirmed = false
     try {
-      confirmed = await action()
+      confirmed = await saveRegisteredAdminChanges()
     } catch {
       confirmed = false
     }

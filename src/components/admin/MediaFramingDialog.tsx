@@ -13,6 +13,7 @@ export function MediaFramingDialog({
   value,
   onChange,
   onClose,
+  saveHint = "O enquadramento será publicado ao salvar o bloco. O arquivo original não é modificado.",
 }: {
   src: string
   label: string
@@ -21,6 +22,7 @@ export function MediaFramingDialog({
   value?: MediaFraming
   onChange: (value: MediaFraming) => void
   onClose: () => void
+  saveHint?: string
 }) {
   const [current, setCurrent] = useState(() => normalizeMediaFraming(value))
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -157,9 +159,7 @@ export function MediaFramingDialog({
             Aplicar ao formulário
           </button>
         </footer>
-        <small>
-          O enquadramento será publicado ao salvar o bloco. O arquivo original não é modificado.
-        </small>
+        <small>{saveHint}</small>
       </div>
     </div>
   )

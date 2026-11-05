@@ -965,7 +965,7 @@
   object-fit: cover;
   object-position: center bottom;
   /* O PNG tem pixels transparentes na base; deslocar a silhueta até a borda real. */
-  translate: 0 clamp(2.25rem, 5svh, 3rem);
+  translate: 0 calc(clamp(2.25rem, 5svh, 3rem) + 1.5rem);
 }
 .contact-links { grid-column: 3; grid-row: 1; min-width: 0; display: grid; gap: .5rem; }
 .contact-links .contact-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem; min-width: 0; }
@@ -1009,6 +1009,7 @@
 
 /* CMS media selection and notices, no changes to global public typography. */
 .admin-toast { position: fixed; z-index: 250; bottom: 1rem; right: 1rem; max-width: min(30rem, calc(100vw - 2rem)); display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; border-left: 4px solid var(--orange); background: #171617; color: white; box-shadow: 0 12px 38px #0005; font-size: .85rem; }
+.admin-shell:has(.admin-floating-save) .admin-toast { bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px)); }
 .admin-toast button { flex: none; width: 2rem; height: 2rem; border: 1px solid #ffffff55; background: transparent; color: white; font-size: 1.4rem; }
 .published-media-guidance { margin: 0; font-size: .75rem; color: #746e6a; }
 .media-frame-overlay { position: fixed; z-index: 300; inset: 0; background: #171617cc; display: grid; place-items: center; padding: 1rem; }
@@ -1262,6 +1263,7 @@
   .admin-confirm-dialog.is-unsaved .admin-confirm-actions { flex-direction: column; }
   .admin-confirm-actions button { width: 100%; min-height: 44px; }
   .admin-toast { left: .75rem; right: .75rem; bottom: calc(.75rem + env(safe-area-inset-bottom, 0px)); max-width: none; }
+  .admin-shell:has(.admin-floating-save) .admin-toast { bottom: calc(6.25rem + env(safe-area-inset-bottom, 0px)); }
   .site-editor-preview-frame.mobile { width: 100%; }
   .site-editor-preview-frame iframe { min-height: 65dvh; }
 }
@@ -1308,6 +1310,12 @@
 .admin-floating-save > span { font-size: .76rem; color: #e3dfda; }
 .admin-floating-save button { min-height: 44px; white-space: nowrap; }
 .admin-floating-save button:disabled { opacity: .48; background: #626060; cursor: not-allowed; }
+.site-editor-consolidated { display: grid; gap: 1.1rem; }
+.site-editor-consolidated-heading { padding-top: 1rem; border-top: 2px solid #e3dfdc; }
+.site-editor-consolidated-heading h3 { margin: 0; font: 800 1.55rem var(--font-display); text-transform: uppercase; }
+.site-editor-consolidated-heading p { color: #716b67; font-size: .82rem; margin: .4rem 0 0; }
+.media-library-frame-control { display: flex; flex-wrap: wrap; gap: .55rem; align-items: center; }
+.media-library-frame-control small { color: #716b67; }
 .admin-main { padding-bottom: 6rem; }
 @media (max-width: 767px) {
   .admin-floating-save { left: .75rem; right: .75rem; bottom: calc(.75rem + env(safe-area-inset-bottom, 0px)); justify-content: space-between; }

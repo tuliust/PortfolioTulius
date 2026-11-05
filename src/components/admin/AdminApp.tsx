@@ -15,6 +15,7 @@ import {
   adminConfirm,
   adminConfirmUnsaved,
   registerAdminSaveAction,
+  saveRegisteredAdminChanges,
   AdminConfirmationHost,
 } from "./AdminConfirmationHost"
 import { FloatingSaveButton } from "./FloatingSaveButton"
@@ -350,7 +351,7 @@ function SectionsEditor({
     if (!error) reload()
     return !error
   }
-  useEffect(() => registerAdminSaveAction(save), [save])
+  useEffect(() => registerAdminSaveAction(save, () => sectionDirty), [save, sectionDirty])
   async function move(direction: -1 | 1) {
     if (!selected || !supabase) return
     const target = sections.find((s) => s.sort_order === selected.sort_order + direction)
@@ -455,7 +456,7 @@ function SectionsEditor({
           subtitle="Ordem, visibilidade, conteúdo e apresentação"
           action={
             <div className="header-actions">
-              <button className="secondary-button" onClick={create}>
+              <button className="secondary-button" onClick={create} disabled title="Criação de seções desativada">
                 Nova seção
               </button>
               <button className="primary-button" onClick={duplicate}>
@@ -467,7 +468,7 @@ function SectionsEditor({
       )}
       {embedded && (
         <div className="site-editor-actions">
-          <button className="secondary-button" onClick={create}>
+          <button className="secondary-button" onClick={create} disabled title="Criação de seções desativada">
             Nova seção
           </button>
           <button className="secondary-button" onClick={duplicate}>
@@ -619,7 +620,7 @@ function SectionsEditor({
               <button className="secondary-button" onClick={publish}>
                 Publicar seção
               </button>
-              <FloatingSaveButton enabled={sectionDirty} onClick={save} />
+              {!embedded && <FloatingSaveButton enabled={sectionDirty} onClick={save} />}
             </div>
           </section>
         )}
@@ -628,7 +629,7 @@ function SectionsEditor({
   )
 }
 
-type SiteEditorPane = "content" | "details" | "records"
+type SiteEditorPane = "edit" | "records"
 
 function SiteEditor({
   sections,
@@ -642,7 +643,12 @@ function SiteEditor({
   onDirtyChange: (dirty: boolean) => void
 }) {
   const [selectedId, setSelectedId] = useState(sections[0]?.id ?? "")
-  const [pane, setPane] = useState<SiteEditorPane>("content")
+  const [pane, setPane] = useState<SiteEditorPane>("edit")
+  const [sectionInfoDirty, setSectionInfoDirty] = useState(false)
+  const [contentDirty, setContentDirty] = useState(false)
+  useEffect(() => {
+    if (pane === "edit") onDirtyChange(sectionInfoDirty || contentDirty)
+  }, [sectionInfoDirty, contentDirty, pane, onDirtyChange])
   const [collectionSource, setCollectionSource] = useState("career_experiences")
   const [linkedSources, setLinkedSources] = useState<string[]>([])
   const [sourcesRevision, setSourcesRevision] = useState(0)
@@ -687,11 +693,13 @@ function SiteEditor({
   async function selectSection(id: string) {
     if (id === selectedId || !(await canLeave())) return
     onDirtyChange(false)
+    setSectionInfoDirty(false)
+    setContentDirty(false)
     setSelectedId(id)
     if (sections.some((section) => section.id === id && isExperienceSection(section.slug))) {
       setLastExperienceId(id)
     }
-    setPane("content")
+    setPane("edit")
   }
 
   function selectExperienceGroup() {
@@ -704,6 +712,8 @@ function SiteEditor({
   async function selectPane(next: SiteEditorPane) {
     if (next === pane || !(await canLeave())) return
     onDirtyChange(false)
+    setSectionInfoDirty(false)
+    setContentDirty(false)
     setPane(next)
   }
 
@@ -723,16 +733,17 @@ function SiteEditor({
   // Creation/duplication already confirms unsaved edits before the RPC.
   function selectCreatedSection(id: string) {
     onDirtyChange(false)
+    setSectionInfoDirty(false)
+    setContentDirty(false)
     setSelectedId(id)
     if (sections.some((section) => section.id === id && isExperienceSection(section.slug))) {
       setLastExperienceId(id)
     }
-    setPane("content")
+    setPane("edit")
   }
 
   const panes: { id: SiteEditorPane; title: string }[] = [
-    { id: "content", title: "Conteúdo e painéis" },
-    { id: "details", title: "Informações da seção" },
+    { id: "edit", title: "Editar seção" },
     { id: "records", title: "Acervo estruturado" },
   ]
 
@@ -853,28 +864,40 @@ function SiteEditor({
                     Alterações não salvas nesta área.
                   </p>
                 )}
-                {pane === "content" && (
-                  <ContentStudio
-                    key={selected.id}
-                    sections={sections}
-                    sectionIdOverride={selected.id}
-                    embedded
-                    onDirtyChange={onDirtyChange}
-                    onEditCollection={editLinkedCollection}
-                    onSaved={() => setSourcesRevision((revision) => revision + 1)}
-                  />
-                )}
-                {pane === "details" && (
-                  <SectionsEditor
-                    key={selected.id}
-                    sections={sections}
-                    reload={reload}
-                    selectedSectionId={selected.id}
-                    embedded
-                    onSelectSection={selectCreatedSection}
-                    onDirtyChange={onDirtyChange}
-                  />
-                )}
+                {pane === "edit" && (
+                  <div className="site-editor-consolidated">
+                    <div className="site-editor-consolidated-heading">
+                      <h3>Informações da seção</h3>
+                      <p>Título, linha editorial, publicação e apresentação.</p>
+                    </div>
+                    <SectionsEditor
+                      key={selected.id + "-details"}
+                      sections={sections}
+                      reload={reload}
+                      selectedSectionId={selected.id}
+                      embedded
+                      onSelectSection={selectCreatedSection}
+                      onDirtyChange={setSectionInfoDirty}
+                    />
+                    <div className="site-editor-consolidated-heading">
+                      <h3>Conteúdo e painéis</h3>
+                      <p>Textos, imagens e itens da seção.</p>
+                    </div>
+                    <ContentStudio
+                      key={selected.id + "-content"}
+                      sections={sections}
+                      sectionIdOverride={selected.id}
+                      embedded
+                      onDirtyChange={setContentDirty}
+                      onEditCollection={editLinkedCollection}
+                      onSaved={() => setSourcesRevision((revision) => revision + 1)}
+                    />
+                    <FloatingSaveButton
+                      enabled={sectionInfoDirty || contentDirty}
+                      onClick={saveRegisteredAdminChanges}
+                    />
+                  </div>
+                )
                 {pane === "records" && (
                   <>
                     <p className="site-editor-note">

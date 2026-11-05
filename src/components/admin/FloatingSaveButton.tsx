@@ -7,9 +7,10 @@ export function FloatingSaveButton({
   onClick: () => void | Promise<unknown>
   label?: string
 }) {
+  if (!enabled) return null
   return (
     <div className="admin-floating-save" role="region" aria-label="Salvar edições">
-      <span role="status">{enabled ? "Alterações não salvas" : "Nenhuma alteração pendente"}</span>
+      <span role="status">Alterações não salvas</span>
       <button
         type="button"
         className="primary-button"

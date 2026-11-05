@@ -4,6 +4,7 @@ import {
   createMediaMetadataDraft,
   hasMediaMetadataChanges,
   mediaDisplayTitle,
+  validatePrivateMediaFileName,
 } from "./media-metadata"
 
 const asset = {
@@ -14,7 +15,7 @@ const asset = {
   focal_point: { x: 45, y: 60 },
 }
 
-describe("metadata editor without changing physical media references", () => {
+describe("media metadata and guarded private filename editing", () => {
   it("uses the editorial title and keeps the filename as a fallback", () => {
     expect(mediaDisplayTitle(asset)).toBe("Retrato editorial do Perfil")
     expect(mediaDisplayTitle({ storage_path: "folder/photo.png", title: "" })).toBe("photo.png")
@@ -29,10 +30,13 @@ describe("metadata editor without changing physical media references", () => {
         title: asset.title,
         alt_text: asset.alt_text,
         credit: asset.credit,
-        focal_point: { x: 45, y: 60 },
+        focal_point: { x: 45, y: 60, zoom: 1 },
       },
     })
     expect(hasMediaMetadataChanges(asset, { ...draft, title: "Outro título" })).toBe(true)
+    expect(draft.fileName).toBe("uuid-portrait.png")
+    expect(draft.focalZoom).toBe("1")
+    expect(hasMediaMetadataChanges(asset, { ...draft, fileName: "foto.png" })).toBe(true)
   })
 
   it("does not write paths, status or bucket in the metadata payload", () => {
@@ -51,5 +55,15 @@ describe("metadata editor without changing physical media references", () => {
     expect(buildMediaMetadataPayload({ ...draft, focalX: "" }).ok).toBe(false)
     expect(buildMediaMetadataPayload({ ...draft, focalY: "101" }).ok).toBe(false)
     expect(buildMediaMetadataPayload({ ...draft, focalY: "NaN" }).ok).toBe(false)
+    expect(buildMediaMetadataPayload({ ...draft, focalZoom: "3.1" }).ok).toBe(false)
+  })
+  it("accepts only safe private names with the original extension", () => {
+    expect(validatePrivateMediaFileName("foto-perfil.png", "uuid-portrait.png")).toEqual({
+      ok: true,
+      fileName: "foto-perfil.png",
+    })
+    expect(validatePrivateMediaFileName("../foto.png", "uuid-portrait.png").ok).toBe(false)
+    expect(validatePrivateMediaFileName("folder/foto.png", "uuid-portrait.png").ok).toBe(false)
+    expect(validatePrivateMediaFileName("foto.jpg", "uuid-portrait.png").ok).toBe(false)
   })
 })

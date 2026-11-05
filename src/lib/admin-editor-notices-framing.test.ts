@@ -20,6 +20,19 @@ describe("UX do editor: avisos e enquadramento", () => {
     expect(editor).toContain("O primeiro item também aparece junto à foto")
     expect(editor).not.toContain("<strong>Textos da seção 02 — coluna direita</strong>")
   })
+  it("oculta o salvamento quando não há edições e mantém o aviso acima do botão", () => {
+    const save = read("FloatingSaveButton.tsx")
+    expect(save).toContain("if (!enabled) return null")
+    expect(css).toContain(".admin-shell:has(.admin-floating-save) .admin-toast")
+  })
+  it("permite editar enquadramento na biblioteca sem campos de ponto focal soltos", () => {
+    const library = read("AdminModules.tsx")
+    expect(library).toContain('label={mediaDisplayTitle(asset)}')
+    expect(library).toContain("validatePrivateMediaFileName")
+    expect(library).toContain("MediaFramingDialog")
+    expect(library).not.toContain("Crédito / procedência (não inventar autoria)")
+    expect(library).not.toContain("Arquivo físico (não renomeado)")
+  })
   it("mantém a imagem do modal confinada à prévia, separada dos controles", () => {
     const frame = read("MediaFramingDialog.tsx")
     expect(frame).toContain("42dvh")

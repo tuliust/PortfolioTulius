@@ -10,6 +10,7 @@ import { stagePrivateMediaChange } from "../../lib/media-operations"
 import { uploadPrivateMedia, publishPrivateMedia } from "../../lib/media-library-actions"
 import { resolveMediaPreview, type MediaPreview } from "../../lib/media-preview"
 import { PublishedMediaPicker } from "./PublishedMediaPicker"
+import { MediaFramingDialog } from "./MediaFramingDialog"
 import { AdminInfoTip } from "./InfoTip"
 import {
   nextExpandedItem,
@@ -24,6 +25,7 @@ import {
   createMediaMetadataDraft,
   hasMediaMetadataChanges,
   mediaDisplayTitle,
+  validatePrivateMediaFileName,
   type MediaMetadataDraft,
   type StoredMediaMetadata,
 } from "../../lib/media-metadata"
@@ -592,7 +594,14 @@ export function ContentStudio({
     onSaved?.()
     return true
   }
-  useEffect(() => registerAdminSaveAction(saveBlock), [saveBlock])
+  useEffect(
+    () =>
+      registerAdminSaveAction(
+        saveBlock,
+        () => blockDirty && !placementsLoading && !placementsReadError,
+      ),
+    [saveBlock, blockDirty, placementsLoading, placementsReadError],
+  )
 
   async function reviewCollectionSourceChange(next: string) {
     if (!supabase || !draft || !savedBlock || reviewingSource) return
@@ -775,7 +784,7 @@ export function ContentStudio({
             <h1>Blocos e painéis</h1>
             <span>Uma fonte de conteúdo, composições desktop e mobile A/B</span>
           </div>
-          <button className="primary-button" onClick={createBlock}>
+          <button className="primary-button" onClick={createBlock} disabled title="Criação de blocos desativada">
             Novo bloco
           </button>
         </header>
@@ -786,7 +795,7 @@ export function ContentStudio({
             <strong>Elementos desta seção</strong>
             <small>Escolha um painel para editar os textos, imagens e itens exibidos.</small>
           </div>
-          <button type="button" className="secondary-button" onClick={createBlock}>
+          <button type="button" className="secondary-button" onClick={createBlock} disabled title="Criação de blocos desativada">
             Novo bloco
           </button>
         </div>
@@ -2021,11 +2030,13 @@ export function ContentStudio({
               <button className="danger-button" onClick={archiveBlock}>
                 Arquivar bloco
               </button>
-              <FloatingSaveButton
-                enabled={blockDirty && !placementsLoading && !placementsReadError}
-                onClick={saveBlock}
-                label="Salvar bloco"
-              />
+              {!embedded && (
+                <FloatingSaveButton
+                  enabled={blockDirty && !placementsLoading && !placementsReadError}
+                  onClick={saveBlock}
+                  label="Salvar bloco"
+                />
+              )}
             </div>
           </section>
         ) : (
@@ -3235,6 +3246,7 @@ export function EnhancedMediaLibrary({
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
   const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null)
   const [mediaDraft, setMediaDraft] = useState<MediaMetadataDraft | null>(null)
+  const [framingOpen, setFramingOpen] = useState(false)
   const [message, setMessage] = useState("")
   const selectedAsset = assets.find((asset) => asset.id === selectedMediaId)
   const mediaDirty = Boolean(
@@ -3272,27 +3284,81 @@ export function EnhancedMediaLibrary({
   }, [])
   async function save(asset: MediaLibraryAsset): Promise<boolean> {
     if (!supabase || !mediaDraft) return false
+    const client = supabase
     const result = buildMediaMetadataPayload(mediaDraft)
     if (!result.ok) {
       setMessage(result.error)
       return false
     }
-    setMessage("Salvando metadados…")
-    // Prevent stale edits from silently overwriting another admin's changes.
-    const { data, error } = await supabase
-      .from("media_assets")
-      .update(result.payload)
-      .eq("id", asset.id)
-      .eq("updated_at", asset.updated_at)
-      .select("id")
-      .maybeSingle()
-    if (error || !data) {
-      setMessage(
-        error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.",
-      )
+    const oldName = mediaFileName(asset.storage_path)
+    const renameRequested = mediaDraft.fileName.trim() !== oldName
+    if (renameRequested && asset.storage_bucket !== "portfolio-private") {
+      setMessage("A renomeação física de mídia pública está bloqueada para preservar as URLs existentes.")
       return false
     }
-    setMessage("Metadados salvos.")
+    const validatedName = renameRequested
+      ? validatePrivateMediaFileName(mediaDraft.fileName, oldName)
+      : ({ ok: true, fileName: oldName } as const)
+    if (!validatedName.ok) {
+      setMessage(validatedName.error)
+      return false
+    }
+    const payload = {
+      ...result.payload,
+      title: renameRequested && result.payload.title === oldName
+        ? validatedName.fileName
+        : result.payload.title,
+    }
+    setMessage(renameRequested ? "Renomeando arquivo privado…" : "Salvando metadados…")
+    if (renameRequested) {
+      const folder = asset.storage_path.includes("/")
+        ? asset.storage_path.slice(0, asset.storage_path.lastIndexOf("/") + 1)
+        : ""
+      const nextPath = folder + validatedName.fileName
+      if (nextPath === asset.storage_path) return false
+      // Copy before changing the DB pointer. Roll back the copy if CAS fails;
+      // the old object remains until the DB confirms the new path.
+      const saved = await stagePrivateMediaChange({
+        stage: () =>
+          client.storage.from("portfolio-private").copy(asset.storage_path, nextPath),
+        persist: () =>
+          client
+            .from("media_assets")
+            .update({ ...payload, storage_path: nextPath })
+            .eq("id", asset.id)
+            .eq("updated_at", asset.updated_at)
+            .select("id")
+            .single(),
+        undoStage: () => client.storage.from("portfolio-private").remove([nextPath]),
+        cleanupOld: () =>
+          client.storage.from("portfolio-private").remove([asset.storage_path]),
+      })
+      if (!saved.ok) {
+        setMessage(saved.message)
+        return false
+      }
+      setMessage(
+        "Nome físico atualizado no Storage e no Supabase." +
+          (saved.warning ? " " + saved.warning : ""),
+      )
+    } else {
+      // CAS prevents overwriting another editor's recent metadata update.
+      const { data, error } = await client
+        .from("media_assets")
+        .update(payload)
+        .eq("id", asset.id)
+        .eq("updated_at", asset.updated_at)
+        .select("id")
+        .maybeSingle()
+      if (error || !data) {
+        setMessage(
+          error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.",
+        )
+        return false
+      }
+      setMessage("Metadados salvos.")
+    }
+    setFramingOpen(false)
     setMediaDraft(null)
     setSelectedMediaId(null)
     await load()
@@ -3421,6 +3487,7 @@ export function EnhancedMediaLibrary({
                       return
                     setSelectedMediaId(null)
                     setMediaDraft(null)
+                    setFramingOpen(false)
                   }}
                 >
                   <Icon name="close" />
@@ -3445,42 +3512,58 @@ export function EnhancedMediaLibrary({
                   }
                 />
               </label>
-              <label>
-                Crédito / procedência (não inventar autoria)
-                <textarea
-                  rows={2}
-                  maxLength={300}
-                  value={mediaDraft.credit}
-                  onChange={(event) => setMediaDraft({ ...mediaDraft, credit: event.target.value })}
-                />
-              </label>
-              <div className="field-grid">
-                <label>
-                  Ponto focal X (%)
-                  <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={mediaDraft.focalX}
-                    onChange={(event) =>
-                      setMediaDraft({ ...mediaDraft, focalX: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Ponto focal Y (%)
-                  <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={mediaDraft.focalY}
-                    onChange={(event) =>
-                      setMediaDraft({ ...mediaDraft, focalY: event.target.value })
-                    }
-                  />
-                </label>
+              <div className="media-library-frame-control">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={!previews[asset.id]?.url}
+                  onClick={() => setFramingOpen(true)}
+                >
+                  <Icon name="sliders" size={18} /> Ajustar posição e zoom
+                </button>
+                <small>
+                  Posição: {mediaDraft.focalX}% / {mediaDraft.focalY}% · Zoom: {Math.round(Number(mediaDraft.focalZoom) * 100)}%
+                </small>
               </div>
-              <small>Arquivo físico (não renomeado): {mediaFileName(asset.storage_path)}</small>
+              {framingOpen && previews[asset.id]?.url && (
+                <MediaFramingDialog
+                  src={previews[asset.id].url}
+                  label={mediaDisplayTitle(asset)}
+                  guidance="Enquadramento da mídia no acervo."
+                  ratio="3 / 4"
+                  value={{
+                    x: Number(mediaDraft.focalX),
+                    y: Number(mediaDraft.focalY),
+                    zoom: Number(mediaDraft.focalZoom),
+                  }}
+                  onChange={(framing) =>
+                    setMediaDraft({
+                      ...mediaDraft,
+                      focalX: String(framing.x),
+                      focalY: String(framing.y),
+                      focalZoom: String(framing.zoom),
+                    })
+                  }
+                  onClose={() => setFramingOpen(false)}
+                  saveHint="O enquadramento será salvo nos metadados da mídia. O arquivo original não é modificado."
+                />
+              )}
+              <label>
+                Nome do arquivo físico
+                <input
+                  maxLength={180}
+                  value={mediaDraft.fileName}
+                  disabled={asset.storage_bucket !== "portfolio-private"}
+                  onChange={(event) =>
+                    setMediaDraft({ ...mediaDraft, fileName: event.target.value })
+                  }
+                />
+                <small>
+                  {asset.storage_bucket === "portfolio-private"
+                    ? "Renomeação segura: copia o arquivo privado e atualiza o caminho no Supabase ao salvar."
+                    : "Arquivo público: nome físico bloqueado para preservar referências. Use o título editorial."}
+                </small>
+              </label>
               <div className="media-library-publication">
                 <span>Status</span>
                 <strong>
@@ -3532,6 +3615,7 @@ export function EnhancedMediaLibrary({
                   ))
                 )
                   return
+                setFramingOpen(false)
                 setSelectedMediaId(asset.id)
                 setMediaDraft(createMediaMetadataDraft(asset))
               }}

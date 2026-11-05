@@ -5,7 +5,7 @@ export type StoredMediaMetadata = {
   title?: string | null
   alt_text?: string | null
   credit?: string | null
-  focal_point?: { x?: number; y?: number } | null
+  focal_point?: { x?: number; y?: number; zoom?: number } | null
 }
 
 export type MediaMetadataDraft = {
@@ -14,6 +14,8 @@ export type MediaMetadataDraft = {
   credit: string
   focalX: string
   focalY: string
+  focalZoom: string
+  fileName: string
 }
 
 export function mediaDisplayTitle(asset: StoredMediaMetadata) {
@@ -33,6 +35,14 @@ export function createMediaMetadataDraft(asset: StoredMediaMetadata): MediaMetad
     credit: asset.credit ?? "",
     focalX: String(focalValue(asset.focal_point?.x)),
     focalY: String(focalValue(asset.focal_point?.y)),
+    focalZoom: String(
+      typeof asset.focal_point?.zoom === "number" &&
+        asset.focal_point.zoom >= 1 &&
+        asset.focal_point.zoom <= 3
+        ? asset.focal_point.zoom
+        : 1,
+    ),
+    fileName: mediaFileName(asset.storage_path),
   }
 }
 
@@ -50,7 +60,7 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
         title: string
         alt_text: string
         credit: string | null
-        focal_point: { x: number; y: number }
+        focal_point: { x: number; y: number; zoom: number }
       }
     }
   | { ok: false; error: string } {
@@ -69,13 +79,33 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
   if (!validPoint(draft.focalX) || !validPoint(draft.focalY)) {
     return { ok: false, error: "O ponto focal deve ficar entre 0% e 100%." }
   }
+  const zoom = Number(draft.focalZoom)
+  if (draft.focalZoom.trim() === "" || !Number.isFinite(zoom) || zoom < 1 || zoom > 3) {
+    return { ok: false, error: "Zoom deve estar entre 100% e 300%." }
+  }
   return {
     ok: true,
     payload: {
       title,
       alt_text: draft.altText.trim(),
       credit: draft.credit.trim() || null,
-      focal_point: { x: Number(draft.focalX), y: Number(draft.focalY) },
+      focal_point: { x: Number(draft.focalX), y: Number(draft.focalY), zoom },
     },
   }
+}
+
+export function validatePrivateMediaFileName(name: string, existing: string):
+  | { ok: true; fileName: string }
+  | { ok: false; error: string } {
+  const candidate = name.trim()
+  if (candidate.length < 3 || candidate.length > 180 ||
+      candidate === "." || candidate === ".." ||
+      !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(candidate)) {
+    return { ok: false, error: "Use até 180 caracteres, sem espaços, barras ou símbolos especiais." }
+  }
+  const extension = (value: string) => value.match(/\.[^.]+$/)?.[0]?.toLowerCase() ?? ""
+  if (extension(candidate) !== extension(existing)) {
+    return { ok: false, error: "Mantenha a extensão original do arquivo." }
+  }
+  return { ok: true, fileName: candidate }
 }
