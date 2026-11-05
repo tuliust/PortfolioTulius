@@ -94,14 +94,22 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
   }
 }
 
-export function validatePrivateMediaFileName(name: string, existing: string):
-  | { ok: true; fileName: string }
-  | { ok: false; error: string } {
+export function validatePrivateMediaFileName(
+  name: string,
+  existing: string,
+): { ok: true; fileName: string } | { ok: false; error: string } {
   const candidate = name.trim()
-  if (candidate.length < 3 || candidate.length > 180 ||
-      candidate === "." || candidate === ".." ||
-      !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(candidate)) {
-    return { ok: false, error: "Use até 180 caracteres, sem espaços, barras ou símbolos especiais." }
+  if (
+    candidate.length < 3 ||
+    candidate.length > 180 ||
+    candidate === "." ||
+    candidate === ".." ||
+    !/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(candidate)
+  ) {
+    return {
+      ok: false,
+      error: "Use até 180 caracteres, sem espaços, barras ou símbolos especiais.",
+    }
   }
   const extension = (value: string) => value.match(/\.[^.]+$/)?.[0]?.toLowerCase() ?? ""
   if (extension(candidate) !== extension(existing)) {

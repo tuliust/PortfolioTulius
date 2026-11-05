@@ -23,7 +23,9 @@ export function registerAdminSaveAction(
   dirty: () => boolean = () => true,
 ): () => void {
   registeredSaves.set(action, { action, dirty })
-  return () => { registeredSaves.delete(action) }
+  return () => {
+    registeredSaves.delete(action)
+  }
 }
 
 export async function saveRegisteredAdminChanges(): Promise<boolean> {

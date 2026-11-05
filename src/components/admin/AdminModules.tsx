@@ -784,7 +784,12 @@ export function ContentStudio({
             <h1>Blocos e painéis</h1>
             <span>Uma fonte de conteúdo, composições desktop e mobile A/B</span>
           </div>
-          <button className="primary-button" onClick={createBlock} disabled title="Criação de blocos desativada">
+          <button
+            className="primary-button"
+            onClick={createBlock}
+            disabled
+            title="Criação de blocos desativada"
+          >
             Novo bloco
           </button>
         </header>
@@ -795,7 +800,13 @@ export function ContentStudio({
             <strong>Elementos desta seção</strong>
             <small>Escolha um painel para editar os textos, imagens e itens exibidos.</small>
           </div>
-          <button type="button" className="secondary-button" onClick={createBlock} disabled title="Criação de blocos desativada">
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={createBlock}
+            disabled
+            title="Criação de blocos desativada"
+          >
             Novo bloco
           </button>
         </div>
@@ -3293,7 +3304,9 @@ export function EnhancedMediaLibrary({
     const oldName = mediaFileName(asset.storage_path)
     const renameRequested = mediaDraft.fileName.trim() !== oldName
     if (renameRequested && asset.storage_bucket !== "portfolio-private") {
-      setMessage("A renomeação física de mídia pública está bloqueada para preservar as URLs existentes.")
+      setMessage(
+        "A renomeação física de mídia pública está bloqueada para preservar as URLs existentes.",
+      )
       return false
     }
     const validatedName = renameRequested
@@ -3305,9 +3318,10 @@ export function EnhancedMediaLibrary({
     }
     const payload = {
       ...result.payload,
-      title: renameRequested && result.payload.title === oldName
-        ? validatedName.fileName
-        : result.payload.title,
+      title:
+        renameRequested && result.payload.title === oldName
+          ? validatedName.fileName
+          : result.payload.title,
     }
     setMessage(renameRequested ? "Renomeando arquivo privado…" : "Salvando metadados…")
     if (renameRequested) {
@@ -3319,8 +3333,7 @@ export function EnhancedMediaLibrary({
       // Copy before changing the DB pointer. Roll back the copy if CAS fails;
       // the old object remains until the DB confirms the new path.
       const saved = await stagePrivateMediaChange({
-        stage: () =>
-          client.storage.from("portfolio-private").copy(asset.storage_path, nextPath),
+        stage: () => client.storage.from("portfolio-private").copy(asset.storage_path, nextPath),
         persist: () =>
           client
             .from("media_assets")
@@ -3330,8 +3343,7 @@ export function EnhancedMediaLibrary({
             .select("id")
             .single(),
         undoStage: () => client.storage.from("portfolio-private").remove([nextPath]),
-        cleanupOld: () =>
-          client.storage.from("portfolio-private").remove([asset.storage_path]),
+        cleanupOld: () => client.storage.from("portfolio-private").remove([asset.storage_path]),
       })
       if (!saved.ok) {
         setMessage(saved.message)
@@ -3522,7 +3534,8 @@ export function EnhancedMediaLibrary({
                   <Icon name="sliders" size={18} /> Ajustar posição e zoom
                 </button>
                 <small>
-                  Posição: {mediaDraft.focalX}% / {mediaDraft.focalY}% · Zoom: {Math.round(Number(mediaDraft.focalZoom) * 100)}%
+                  Posição: {mediaDraft.focalX}% / {mediaDraft.focalY}% · Zoom:{" "}
+                  {Math.round(Number(mediaDraft.focalZoom) * 100)}%
                 </small>
               </div>
               {framingOpen && previews[asset.id]?.url && (

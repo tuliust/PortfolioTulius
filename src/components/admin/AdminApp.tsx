@@ -456,7 +456,12 @@ function SectionsEditor({
           subtitle="Ordem, visibilidade, conteúdo e apresentação"
           action={
             <div className="header-actions">
-              <button className="secondary-button" onClick={create} disabled title="Criação de seções desativada">
+              <button
+                className="secondary-button"
+                onClick={create}
+                disabled
+                title="Criação de seções desativada"
+              >
                 Nova seção
               </button>
               <button className="primary-button" onClick={duplicate}>
@@ -468,7 +473,12 @@ function SectionsEditor({
       )}
       {embedded && (
         <div className="site-editor-actions">
-          <button className="secondary-button" onClick={create} disabled title="Criação de seções desativada">
+          <button
+            className="secondary-button"
+            onClick={create}
+            disabled
+            title="Criação de seções desativada"
+          >
             Nova seção
           </button>
           <button className="secondary-button" onClick={duplicate}>

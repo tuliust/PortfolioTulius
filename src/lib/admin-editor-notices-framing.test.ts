@@ -27,7 +27,7 @@ describe("UX do editor: avisos e enquadramento", () => {
   })
   it("permite editar enquadramento na biblioteca sem campos de ponto focal soltos", () => {
     const library = read("AdminModules.tsx")
-    expect(library).toContain('label={mediaDisplayTitle(asset)}')
+    expect(library).toContain("label={mediaDisplayTitle(asset)}")
     expect(library).toContain("validatePrivateMediaFileName")
     expect(library).toContain("MediaFramingDialog")
     expect(library).not.toContain("Crédito / procedência (não inventar autoria)")

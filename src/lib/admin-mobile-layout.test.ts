@@ -36,7 +36,9 @@ describe("Responsividade administrativa sem alterar o site público", () => {
     expect(adminApp).toContain('type SiteEditorPane = "edit" | "records"')
     expect(adminApp).toContain('id: "edit", title: "Editar seção"')
     expect(adminApp).toContain('className="site-editor-consolidated"')
-    expect(adminApp.indexOf("<SectionsEditor", adminApp.indexOf('className="site-editor-consolidated"'))).toBeLessThan(
+    expect(
+      adminApp.indexOf("<SectionsEditor", adminApp.indexOf('className="site-editor-consolidated"')),
+    ).toBeLessThan(
       adminApp.indexOf("<ContentStudio", adminApp.indexOf('className="site-editor-consolidated"')),
     )
   })
