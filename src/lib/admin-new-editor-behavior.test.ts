@@ -43,6 +43,25 @@ describe("editorial UX and public section transitions", () => {
     expect(modules).toContain("deleteMediaAssetEverywhere")
   })
 
+  it("simplifies site controls while preserving media metadata in the library", () => {
+    const editor = modules.split("export function ContentStudio")[1]?.split("function TrajectoryTextEditor")[0] ?? ""
+    expect(app).toContain('className="site-editor-heading-copy"')
+    expect(app).toContain("onClick={embedded ? saveRegisteredAdminChanges : save}")
+    expect(app).not.toContain("Duplicar seção")
+    expect(app).not.toContain("Nova seção")
+    expect(app).not.toContain("Publicar seção")
+    expect(app).not.toContain("Oculta no site")
+    expect(app).toContain("} itens</small>")
+    expect(editor).not.toContain("Novo bloco")
+    expect(editor).not.toContain("Adicionar item")
+    expect(editor).not.toContain("Texto alternativo (opcional)")
+    expect(editor).not.toContain("Descrição alternativa do logo")
+    expect(editor).not.toContain("Descrição alternativa da foto")
+    expect(editor).toContain("allowFraming={false}")
+    expect(modules).toContain("value={mediaDraft.altText}")
+    expect(css).toContain("aspect-ratio: 390 / 844")
+  })
+
   it("preserves published navigation and clarifies the verified canonical domain", () => {
     expect(modules).toContain('status: "published"')
     expect(modules).toContain('title="Criação de itens desativada"')

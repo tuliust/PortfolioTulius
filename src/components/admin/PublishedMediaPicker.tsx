@@ -16,6 +16,7 @@ export function PublishedMediaPicker({
   ratio = "16 / 9",
   guidanceAsInfo = true,
   iconOnlyActions = true,
+  allowFraming = true,
 }: {
   label: string
   value: string
@@ -26,6 +27,7 @@ export function PublishedMediaPicker({
   ratio?: string
   guidanceAsInfo?: boolean
   iconOnlyActions?: boolean
+  allowFraming?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [previewFailed, setPreviewFailed] = useState(false)
@@ -72,7 +74,7 @@ export function PublishedMediaPicker({
         >
           {iconOnlyActions ? <Icon name="image" size={20} /> : "Escolher da biblioteca"}
         </button>
-        {value && onFramingChange && (
+        {allowFraming && value && onFramingChange && (
           <button
             type="button"
             className={iconOnlyActions ? "secondary-button media-icon-action" : "secondary-button"}
@@ -95,7 +97,7 @@ export function PublishedMediaPicker({
           </button>
         )}
       </div>
-      {framingOpen && value && onFramingChange && (
+      {allowFraming && framingOpen && value && onFramingChange && (
         <MediaFramingDialog
           src={value}
           label={label}
