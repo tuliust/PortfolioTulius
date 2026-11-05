@@ -2964,9 +2964,7 @@ export function EditorialStudio() {
               <p>Novas em aberto</p>
               <h2>Pendências editoriais</h2>
             </div>
-            <span className="status-chip">
-              {issueTotal}
-            </span>
+            <span className="status-chip">{issueTotal}</span>
           </div>
           {issues.map((issue) => (
             <IssueRow key={issue.id} issue={issue} onResolve={resolve} />

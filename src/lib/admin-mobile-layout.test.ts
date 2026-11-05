@@ -3,7 +3,10 @@ import { describe, expect, it } from "vitest"
 
 const css = readFileSync(new URL("../index.css", import.meta.url), "utf8")
 const adminApp = readFileSync(new URL("../components/admin/AdminApp.tsx", import.meta.url), "utf8")
-const editorial = readFileSync(new URL("../components/admin/AdminModules.tsx", import.meta.url), "utf8")
+const editorial = readFileSync(
+  new URL("../components/admin/AdminModules.tsx", import.meta.url),
+  "utf8",
+)
 
 describe("Responsividade administrativa sem alterar o site público", () => {
   it("converte a navegação fixa em faixa horizontal nos tablets e celulares", () => {
@@ -22,11 +25,11 @@ describe("Responsividade administrativa sem alterar o site público", () => {
   })
 
   it("preserva as revisões antigas e pagina os novos registros em grupos de dez", () => {
-    expect(editorial).toContain('const EDITORIAL_PAGE_SIZE = 10')
+    expect(editorial).toContain("const EDITORIAL_PAGE_SIZE = 10")
     expect(editorial).toContain('.gte("created_at", EDITORIAL_ACTIVITY_START)')
-    expect(editorial).toContain('.range(0, revisionLimit - 1)')
-    expect(editorial).toContain('setIssueLimit((limit) => limit + EDITORIAL_PAGE_SIZE)')
-    expect(editorial).toContain('setRevisionLimit((limit) => limit + EDITORIAL_PAGE_SIZE)')
+    expect(editorial).toContain(".range(0, revisionLimit - 1)")
+    expect(editorial).toContain("setIssueLimit((limit) => limit + EDITORIAL_PAGE_SIZE)")
+    expect(editorial).toContain("setRevisionLimit((limit) => limit + EDITORIAL_PAGE_SIZE)")
   })
 
   it("adapta formulários, mídia, modais e toques para celular", () => {

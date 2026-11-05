@@ -1225,7 +1225,11 @@ function PortfolioPreviewPane() {
         title="Pré-visualização"
         subtitle="Rascunhos visíveis somente em sessão administrativa"
       />
-      <div className="site-editor-preview-controls" role="group" aria-label="Visualizar em dispositivo">
+      <div
+        className="site-editor-preview-controls"
+        role="group"
+        aria-label="Visualizar em dispositivo"
+      >
         <button
           type="button"
           className={device === "desktop" ? "active" : ""}
@@ -1244,11 +1248,7 @@ function PortfolioPreviewPane() {
         </button>
       </div>
       <div className={`site-editor-preview-frame ${device}`}>
-        <iframe
-          key={device}
-          title={`Prévia ${device} do portfólio`}
-          src="/admin/preview"
-        />
+        <iframe key={device} title={`Prévia ${device} do portfólio`} src="/admin/preview" />
       </div>
       <small>
         A simulação ajusta a largura da prévia; não substitui testes em dispositivos reais.
