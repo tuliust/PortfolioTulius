@@ -2081,17 +2081,41 @@ function TrajectoryTextEditor({
 
   return (
     <div className="trajectory-editor">
-      <div className="trajectory-format-controls" role="toolbar" aria-label="Formatação da trajetória">
-        <button type="button" title="Bullets" aria-label="Inserir bullets" onClick={() => formatSelection("bullet")}>
+      <div
+        className="trajectory-format-controls"
+        role="toolbar"
+        aria-label="Formatação da trajetória"
+      >
+        <button
+          type="button"
+          title="Bullets"
+          aria-label="Inserir bullets"
+          onClick={() => formatSelection("bullet")}
+        >
           • Lista
         </button>
-        <button type="button" title="Negrito" aria-label="Negrito" onClick={() => formatSelection("bold")}>
+        <button
+          type="button"
+          title="Negrito"
+          aria-label="Negrito"
+          onClick={() => formatSelection("bold")}
+        >
           <strong>N</strong>
         </button>
-        <button type="button" title="Itálico" aria-label="Itálico" onClick={() => formatSelection("italic")}>
+        <button
+          type="button"
+          title="Itálico"
+          aria-label="Itálico"
+          onClick={() => formatSelection("italic")}
+        >
           <em>I</em>
         </button>
-        <button type="button" title="Sublinhado" aria-label="Sublinhado" onClick={() => formatSelection("underline")}>
+        <button
+          type="button"
+          title="Sublinhado"
+          aria-label="Sublinhado"
+          onClick={() => formatSelection("underline")}
+        >
           <u>S</u>
         </button>
       </div>
@@ -2107,9 +2131,9 @@ function TrajectoryTextEditor({
         className={aboveLimit ? "trajectory-format-note is-warning" : "trajectory-format-note"}
         role="status"
       >
-        {visibleLength} / {TRAJECTORY_RECOMMENDED_CHARS} caracteres visíveis recomendados para
-        caber no desktop sem rolagem interna. O espaço depende da resolução; ultrapassar
-        este valor não corta nem apaga o texto existente.
+        {visibleLength} / {TRAJECTORY_RECOMMENDED_CHARS} caracteres visíveis recomendados para caber
+        no desktop sem rolagem interna. O espaço depende da resolução; ultrapassar este valor não
+        corta nem apaga o texto existente.
       </p>
       <small className="trajectory-format-hint">
         Selecione o trecho para aplicar a formatação. A marcação é salva como texto e renderizada

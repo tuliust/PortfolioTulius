@@ -5,7 +5,6 @@ export function splitExperienceBullet(line: string): { heading: string; body: st
   return { heading: match[1], body: match[2] }
 }
 
-/** Map the published slide titles to visible editorial cards without exposing hidden CMS items. */
 /** Formatação editorial restrita; tokens são renderizados como elementos React, nunca como HTML. */
 export type TrajectoryInlinePart = {
   text: string
@@ -33,10 +32,16 @@ export function parseTrajectoryInline(text: string): TrajectoryInlinePart[] {
 export function trajectoryVisibleLength(text: string): number {
   return text
     .split("\n")
-    .map((line) => parseTrajectoryInline(line).map((part) => part.text).join("").replace(/^[•-]\s+/u, ""))
+    .map((line) =>
+      parseTrajectoryInline(line)
+        .map((part) => part.text)
+        .join("")
+        .replace(/^[•-]\s+/u, ""),
+    )
     .join("\n").length
 }
 
+/** Normaliza títulos para casar slides com projetos. */
 export function experienceTitleKey(title: string): string {
   return title
     .normalize("NFD")

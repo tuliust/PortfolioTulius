@@ -188,10 +188,7 @@ function ExperienceDetails({
       {lines.map((line, index) => {
         const bullet = splitExperienceBullet(line)
         return (
-          <p
-            key={index}
-            className={/^[•-]\s+/u.test(line) ? "experience-full-point" : undefined}
-          >
+          <p key={index} className={/^[•-]\s+/u.test(line) ? "experience-full-point" : undefined}>
             {bullet ? (
               <>
                 <strong>
@@ -631,9 +628,7 @@ export function ExperienceStack({
   useEffect(() => {
     if (isMobile) {
       setActive((current) =>
-        sections.some((section) => section.slug === current)
-          ? current
-          : (sections[0]?.slug ?? ""),
+        sections.some((section) => section.slug === current) ? current : (sections[0]?.slug ?? ""),
       )
       return
     }
