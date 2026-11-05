@@ -832,11 +832,15 @@ try {
         console.log("P3_PROJECT_GALLERY_LINK " + JSON.stringify({ result: "PASS", projectToGallery, galleryToProject }))
       }
       const refinements = await page.evaluate(() => {
-        const photo = document.querySelector("#contato .contact-portrait")
-        const border = document.querySelector("#contato .contact-footer")
+        const section = document.querySelector("#contato")
+        const photo = section?.querySelector(".contact-portrait")
+        const image = photo?.querySelector("img")
+        const border = section?.querySelector(".contact-footer")
         const cards = Array.from(document.querySelectorAll("#depoimentos .testimonial-card"))
         return {
+          contactSectionBottom: section?.getBoundingClientRect().bottom ?? null,
           contactPhotoBottom: photo?.getBoundingClientRect().bottom ?? null,
+          contactImageBottom: image?.getBoundingClientRect().bottom ?? null,
           contactLineTop: border?.getBoundingClientRect().top ?? null,
           testimonialCount: cards.length,
           tallestCard: cards.length ? Math.max(...cards.map((card) => card.getBoundingClientRect().height)) : null,
@@ -844,9 +848,15 @@ try {
         }
       })
       console.log("P3_EDITORIAL_REFINEMENTS " + JSON.stringify(refinements))
-      const contactAligned = refinements.contactPhotoBottom !== null &&
+      // New owner request (05/11): the portrait ends at the section's bottom,
+      // while the footer divider keeps its separate position above the photo edge.
+      const contactAligned = refinements.contactSectionBottom !== null &&
+        refinements.contactPhotoBottom !== null &&
+        refinements.contactImageBottom !== null &&
         refinements.contactLineTop !== null &&
-        Math.abs(refinements.contactPhotoBottom - refinements.contactLineTop) <= 2
+        Math.abs(refinements.contactPhotoBottom - refinements.contactSectionBottom) <= 2 &&
+        Math.abs(refinements.contactImageBottom - refinements.contactSectionBottom) <= 2 &&
+        refinements.contactLineTop < refinements.contactSectionBottom - 12
       // Owner-approved editorial revision (31/10): exactly three real testimonials stay published.
       const cardsCompact = refinements.testimonialCount === 3 &&
         refinements.tallestCard !== null &&
