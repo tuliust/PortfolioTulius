@@ -388,7 +388,9 @@ function SectionsEditor({
   }
   return (
     <>
-      {!embedded && <AdminHeader title="Seções" subtitle="Ordem, visibilidade, conteúdo e apresentação" />}
+      {!embedded && (
+        <AdminHeader title="Seções" subtitle="Ordem, visibilidade, conteúdo e apresentação" />
+      )}
       <div className={embedded ? "site-editor-section" : "section-editor-layout"}>
         {!embedded && (
           <div className="section-list" aria-label="Seções do site">
@@ -705,31 +707,31 @@ function SiteEditor({
               <div className="site-editor-heading">
                 <div className="site-editor-heading-copy">
                   <p>
-                  {selectedIsExperience
-                    ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
-                    : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug}`}
-                </p>
-                <h2>{selectedIsExperience ? "Experiências Profissionais" : selected.title}</h2>
-                <span>
-                  {selectedIsExperience
-                    ? "Escolha abaixo o trabalho que deseja editar."
-                    : sectionPublicationLabel(selected)}
-                </span>
-              </div>
+                    {selectedIsExperience
+                      ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
+                      : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug}`}
+                  </p>
+                  <h2>{selectedIsExperience ? "Experiências Profissionais" : selected.title}</h2>
+                  <span>
+                    {selectedIsExperience
+                      ? "Escolha abaixo o trabalho que deseja editar."
+                      : sectionPublicationLabel(selected)}
+                  </span>
+                </div>
                 <div className="site-editor-tabs" role="tablist" aria-label="Edição da seção">
-                {panes.map((item) => (
-                  <button
-                    type="button"
-                    role="tab"
-                    key={item.id}
-                    aria-selected={pane === item.id}
-                    className={pane === item.id ? "active" : ""}
-                    onClick={() => selectPane(item.id)}
-                  >
-                    {item.title}
-                  </button>
-                ))}
-              </div>
+                  {panes.map((item) => (
+                    <button
+                      type="button"
+                      role="tab"
+                      key={item.id}
+                      aria-selected={pane === item.id}
+                      className={pane === item.id ? "active" : ""}
+                      onClick={() => selectPane(item.id)}
+                    >
+                      {item.title}
+                    </button>
+                  ))}
+                </div>
               </div>
               {selectedIsExperience && (
                 <section

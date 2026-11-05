@@ -86,7 +86,6 @@ type BlockRow = {
   editorial_note: string | null
 }
 
-
 function StatusMessage({ children }: { children: string }) {
   return <AdminNotice message={children} />
 }
@@ -1357,7 +1356,7 @@ export function ContentStudio({
                   <div className="block-item-help">
                     <AdminInfoTip
                       label="Textos da seção 02 — coluna direita"
-                      description="Cada item corresponde a um título e texto. Use as setas de ordenação e Remover item para organizar os itens existentes. O primeiro item também aparece junto à foto no painel A mobile. Clique em Salvar alterações para publicar suas edições no bloco."
+                      description="Cada item corresponde a um título e texto. Use as setas de ordenação e Remover item para organizar os itens existentes. O primeiro item também aparece junto à foto no painel A mobile. Use Salvar para confirmar suas edições no bloco."
                     />
                   </div>
                 )}

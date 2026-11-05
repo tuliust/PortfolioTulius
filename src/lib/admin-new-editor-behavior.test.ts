@@ -44,7 +44,9 @@ describe("editorial UX and public section transitions", () => {
   })
 
   it("simplifies site controls while preserving media metadata in the library", () => {
-    const editor = modules.split("export function ContentStudio")[1]?.split("function TrajectoryTextEditor")[0] ?? ""
+    const editor =
+      modules.split("export function ContentStudio")[1]?.split("function TrajectoryTextEditor")[0] ??
+      ""
     expect(app).toContain('className="site-editor-heading-copy"')
     expect(app).toContain("onClick={embedded ? saveRegisteredAdminChanges : save}")
     expect(app).not.toContain("Duplicar seção")
