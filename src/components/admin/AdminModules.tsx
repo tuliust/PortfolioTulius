@@ -3334,8 +3334,8 @@ export function EnhancedMediaLibrary({
       // the old object remains until the DB confirms the new path.
       const saved = await stagePrivateMediaChange({
         stage: () => client.storage.from("portfolio-private").copy(asset.storage_path, nextPath),
-        persist: () =>
-          client
+        persist: async () =>
+          await client
             .from("media_assets")
             .update({ ...payload, storage_path: nextPath })
             .eq("id", asset.id)
@@ -3540,7 +3540,7 @@ export function EnhancedMediaLibrary({
               </div>
               {framingOpen && previews[asset.id]?.url && (
                 <MediaFramingDialog
-                  src={previews[asset.id].url}
+                  src={previews[asset.id]?.url ?? ""}
                   label={mediaDisplayTitle(asset)}
                   guidance="Enquadramento da mídia no acervo."
                   ratio="3 / 4"
