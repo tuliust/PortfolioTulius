@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { usePortfolio } from "../../hooks/usePortfolio"
 import { splitProfileTitle } from "../../lib/profile-title"
-import type { ContentItem, HeroVisualConfig, PortfolioSection } from "../../types/content"
+import type { ContentItem, HeroVisualConfig, MetricIconName, PortfolioSection } from "../../types/content"
 import { Icon } from "../ui/Icons"
 import { Navigation } from "./Navigation"
 import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"

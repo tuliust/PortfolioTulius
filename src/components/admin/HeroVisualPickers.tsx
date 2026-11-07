@@ -165,7 +165,10 @@ export function HeroIconPicker({
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
   const ref = useDismiss(open, close)
-  const groups = [{ category: "Navegação e controles", icons: specialIcons }, ...iconCategories]
+  const groups: { category: string; icons: ReadonlyArray<readonly [string, string]> }[] = [
+    { category: "Navegação e controles", icons: specialIcons },
+    ...iconCategories,
+  ]
   const iconLabel =
     groups.flatMap((group) => group.icons).find(([key]) => key === value)?.[1] ?? "Ícone atual"
   const image = (key: string, size: number) =>

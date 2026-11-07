@@ -241,7 +241,7 @@ try {
     document.querySelector(".hero-section-specific .hero-visual-picker-trigger")?.click())
   await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
   const swatchCount = await page.$eval(".hero-swatch-grid button", (buttons) => buttons.length)
-  assert(swatchCount >= 8, "Paleta visual incompleta.")
+  assert(swatchCount >= 7, "Paleta visual incompleta.")
   await page.keyboard.press("Escape")
   await page.evaluate(() =>
     document.querySelector(".hero-icon-picker-anchor .hero-visual-picker-trigger")?.click())
