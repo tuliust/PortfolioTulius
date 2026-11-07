@@ -228,8 +228,8 @@ try {
       (option) => option.value === "transparent"),
     paletteColors: document.querySelectorAll(".hero-section-specific option[value^='color.']").length,
     formatButtons: document.querySelectorAll(".hero-format-trigger").length,
-    photo: [...document.querySelectorAll(".block-item-body label")].some(
-      (node) => node.textContent?.includes("Foto")),
+    photo: [...document.querySelectorAll(".block-item-body .published-media-picker-label")].some(
+      (node) => node.textContent?.trim() === "Foto"),
   }))
   assert(heroLeft.group?.includes("Esquerda") && heroLeft.transparent &&
     heroLeft.paletteColors >= 7 && heroLeft.formatButtons >= 3 && heroLeft.photo,
