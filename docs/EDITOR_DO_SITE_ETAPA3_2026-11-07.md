@@ -43,3 +43,11 @@ As fontes selecionadas na abertura mobile são registradas como chaves `font.hea
 - Testar manualmente em sessão administrativa: Título, Transições, Arquivar/Exibir e os seletores de cor/fonte/tamanho, com releitura após salvar.
 - Revisar screenshots desktop/mobile usando o baseline anterior. **Não confundir CI aprovado com homologação visual.**
 - Não alterar o Acervo Estruturado, fluxos de mídia ou seções não relacionadas nesta etapa.
+
+## Evidência de publicação e ajuste editorial pontual
+
+- **Código funcional validado:** `41827c399503edeab9ecfb5746a143743ec292ee`. GitHub Actions [Validate PortfolioTulius — sucesso](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42339484271) com formatação, TypeScript, 193 testes e build.
+- **Produção:** deployment Vercel `dpl_BjxrNqyqavJKrAFooseb7tyNqJuV` com estado `READY` e aliases `tulius.work` / `www.tulius.work`, conferidos em 07/11/2026.
+- **Correção de conteúdo autorizada pelo escopo Título:** no Supabase de produção, `sections.slug='perfil'` foi alterado sob guarda `title='Tulius Tsangaropuloss'`, passando para `title='Tulius Tsangaropulos'`, com `UPDATE ... RETURNING` confirmando somente a linha do Perfil. Os valores `status='published'`, `is_visible=true`, `theme='paper'`, `layout_variant='hero'`, `animation_preset='fade-up'` permaneceram iguais. Consulte o SQL idempotente em [docs/sql](sql/2026-11-07-perfil-titulo-etapa3.sql).
+- **Auditoria visual:** o workflow P3 executado em commits intermediários não substitui teste visual do SHA final com sessão autenticada. A Etapa 5 permanece pendente.
+- **Banco, leitura final:** 21 tokens de design, 28 blocos publicados e 56 placements; nenhuma outra correção editorial foi executada no Supabase.
