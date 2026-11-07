@@ -241,6 +241,11 @@ try {
     document.querySelector(".hero-section-specific .hero-visual-picker-trigger")?.click())
   await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
   const swatchCount = await page.$eval(".hero-swatch-grid button", (buttons) => buttons.length)
+  console.log("P5_HERO_PALETTE " + JSON.stringify({
+    swatchCount,
+    choices: await page.$eval(".hero-swatch-grid button", (nodes) =>
+      nodes.map((node) => node.getAttribute("aria-label"))),
+  }))
   assert(swatchCount >= 7, "Paleta visual incompleta.")
   await page.keyboard.press("Escape")
   await page.evaluate(() =>
