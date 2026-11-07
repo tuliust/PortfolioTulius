@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
+import { adminVisualAreas, type AdminVisualArea } from "../../lib/admin-visual-areas"
 import { acervoUsageLabel, usagesForAcervoRecord, type AcervoUsage } from "../../lib/shared-acervo"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
 import {
@@ -628,14 +629,12 @@ export function ContentStudio({
   sectionIdOverride,
   embedded = false,
   onDirtyChange,
-  onEditCollection,
   onSaved,
 }: {
   sections: SectionOption[]
   sectionIdOverride?: string
   embedded?: boolean
   onDirtyChange?: (dirty: boolean) => void
-  onEditCollection?: (source: string) => void
   onSaved?: () => void
 }) {
   const identityOptions = useEditorIdentityOptions()
@@ -644,11 +643,16 @@ export function ContentStudio({
   const [selectedId, setSelectedId] = useState("")
   const [expandedItemIndex, setExpandedItemIndex] = useState<number | null>(null)
   const [aboutImageTarget, setAboutImageTarget] = useState<"mobile" | "desktop">("mobile")
+  const [visualArea, setVisualArea] = useState<AdminVisualArea["id"]>(() => {
+    const slug = sections.find((entry) => entry.id === sectionIdOverride)?.slug
+    return slug === "sobre" || slug === "resultados" ? "center" : "left"
+  })
   const [draft, setDraft] = useState<BlockRow | null>(null)
   const [message, setMessage] = useState("")
   const [reviewingSource, setReviewingSource] = useState(false)
   const [trajectoryDirty, setTrajectoryDirty] = useState(false)
   const experienceSlug = sections.find((entry) => entry.id === sectionId)?.slug
+  const visualAreas = adminVisualAreas(experienceSlug)
   const hasCareerTrajectory = [
     "invest-rs",
     "prefeitura-sp",
@@ -722,6 +726,15 @@ export function ContentStudio({
     setExpandedItemIndex(null)
     setAboutImageTarget("mobile")
   }, [selectedId, sectionId])
+
+  // The existing A item holds two independent photos for Sobre.
+  useEffect(() => {
+    const block = blocks.find((entry) => entry.id === selectedId)
+    if (experienceSlug === "sobre" && visualArea === "center" && block?.mobile_panel === "a") {
+      setExpandedItemIndex(0)
+      setAboutImageTarget("desktop")
+    }
+  }, [selectedId, sectionId, visualArea, experienceSlug])
 
   useEffect(() => {
     let cancelled = false
@@ -1055,6 +1068,36 @@ export function ContentStudio({
     setExpandedItemIndex((current) => expandedAfterRemoval(current, index))
   }
 
+  async function selectVisualArea(area: AdminVisualArea) {
+    if (area.source === "section") {
+      setVisualArea(area.id)
+      document.getElementById("site-editor-section-details")?.scrollIntoView({
+        behavior: "smooth", block: "start",
+      })
+      return
+    }
+    const block = blocks.find((entry) => entry.mobile_panel === area.source)
+    if (!block) return
+    if (block.id !== selectedId && blockDirty &&
+      !(await adminConfirmUnsaved(
+        "Existem alterações não salvas neste bloco. Como deseja continuar?",
+        { title: "Alterações não salvas" },
+      ))) return
+    setVisualArea(area.id)
+    if (block.id !== selectedId) setSelectedId(block.id)
+    if (area.focus === "about-photo") {
+      setExpandedItemIndex(0)
+      setAboutImageTarget("desktop")
+    }
+    if (area.focus === "experience-gallery") {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.getElementById("site-editor-experience-gallery")?.scrollIntoView({
+          behavior: "smooth", block: "start",
+        })
+      }))
+    }
+  }
+
   return (
     <EditorIdentityProvider value={identityOptions}>
       {!embedded && (
@@ -1089,7 +1132,33 @@ export function ContentStudio({
         </div>
       )}
       <div className={embedded ? "studio-inline-layout" : "section-editor-layout"}>
-        <div className={embedded ? "studio-block-picker" : "section-list"}>
+        {embedded && visualAreas.length > 0 && (
+          <nav className="site-editor-visual-areas" aria-label="Áreas visuais no desktop">
+            {visualAreas.map((area) => (
+              <button
+                type="button"
+                key={area.id}
+                className={visualArea === area.id ? "active" : ""}
+                aria-pressed={visualArea === area.id}
+                onClick={() => void selectVisualArea(area)}
+              >
+                <strong>{area.label}</strong>
+                <small>{area.description}</small>
+              </button>
+            ))}
+          </nav>
+        )}
+        {embedded && visualAreas.length > 0 && (
+          <p className="site-editor-area-hint">
+            Áreas da composição desktop vinculadas aos campos existentes. No mobile, os
+            mesmos conteúdos continuam nos painéis A e B.
+            {hasCareerTrajectory && " Alguns projetos usam itens de A e B; a galeria pertence a A."}
+          </p>
+        )}
+        <div
+          className={embedded ? "studio-block-picker" : "section-list"}
+          hidden={embedded && visualAreas.length > 0}
+        >
           {blocks.map((block) => (
             <button
               key={block.id}
@@ -1121,16 +1190,12 @@ export function ContentStudio({
         </div>
         {draft ? (
           <section className="admin-card editor-form">
-            {isCollectionSource(draft.content_json.source_collection) && onEditCollection && (
-              <div className="site-editor-collection-action">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => onEditCollection(draft.content_json.source_collection!)}
-                >
-                  Editar no Acervo
-                </button>
-              </div>
+            {draft.content_json.source_collection === "testimonials" && (
+              <p className="site-editor-note">
+                Os depoimentos exibidos no site são editados em
+                <strong> Gerenciar depoimentos</strong>, acima. Os itens manuais deste bloco
+                permanecem armazenados como reserva.
+              </p>
             )}
             <details className="site-editor-advanced">
               <summary>Configurações avançadas do bloco e dos painéis</summary>
@@ -1222,7 +1287,7 @@ export function ContentStudio({
                     {draft.content_json.source_collection && (
                       <>
                         <small>
-                          Fonte vinculada: edite e publique registros na aba Coleções. Os cards
+                          Fonte vinculada: edite e publique registros em Gerenciar depoimentos quando a origem for Depoimentos. Os cards
                           manuais abaixo continuam armazenados e voltam a aparecer quando o vínculo
                           for removido.
                         </small>
@@ -1381,7 +1446,7 @@ export function ContentStudio({
               sections.find((entry) => entry.id === draft.section_id)?.slug ?? "",
             ) &&
               draft.mobile_panel === "a" && (
-                <fieldset className="admin-card">
+                <fieldset className="admin-card" id="site-editor-experience-gallery">
                   <legend>Identidade da empresa e galeria de projetos</legend>
                   <div className="experience-admin-competencies">
                     <label className="field-wide">
@@ -3037,7 +3102,13 @@ export function CollectionsStudio({
               >
                 {isUnpublishOnlyCollection(config.table) ? "Despublicar" : "Arquivar"}
               </button>
-              <FloatingSaveButton enabled={recordDirty} onClick={save} label="Salvar registro" />
+              {embedded ? (
+                <button type="button" className="secondary-button" onClick={() => void save()} disabled={!recordDirty}>
+                  Salvar depoimento
+                </button>
+              ) : (
+                <FloatingSaveButton enabled={recordDirty} onClick={save} label="Salvar registro" />
+              )}
             </div>
           </section>
         )}

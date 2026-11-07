@@ -100,11 +100,11 @@ try {
   report("LOGIN", { authenticated: true, contentWrites: blockedWrites.length })
 
   const modules = [
-    "Visão geral", "Editor do site", "Identidade", "Acervo Estruturado",
+    "Visão geral", "Editor do site", "Identidade",
     "Mídia", "Navegação", "SEO", "Revisões", "Prévia",
   ]
   for (const label of modules) await selectModule(page, label)
-  report("MODULES", { count: modules.length, includesIndependentAcervo: true })
+  report("MODULES", { count: modules.length, acervoRemoved: true })
 
   await selectModule(page, "Identidade")
   await page.waitForSelector(".identity-type-style", { timeout: 18000 })
@@ -123,54 +123,70 @@ try {
   report("IDENTITY_CATALOG", { colors: identity.colors, fonts: identity.fonts, styles: identity.styles })
 
   const identityNameSelector = ".identity-color-row input[name^='identity-color-name-']"
+  const labelStyle = await page.$eval(".identity-color-row label", (node) => ({
+    fontSize: getComputedStyle(node).fontSize,
+    fontWeight: getComputedStyle(node).fontWeight,
+  }))
+  assert(parseFloat(labelStyle.fontSize) <= 14 && Number(labelStyle.fontWeight) >= 600,
+    "Labels de Identidade não receberam padrão editorial: " + JSON.stringify(labelStyle))
   const originalColorName = await page.$eval(identityNameSelector, (input) => input.value)
   await updateInput(page, identityNameSelector, originalColorName + " HOMOLOGAÇÃO")
   await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
-  await requestModule(page, "Acervo Estruturado")
+  await requestModule(page, "Editor do site")
   await chooseDialog(page, "Não sair")
   assert((await page.$eval(identityNameSelector, (input) => input.value)) ===
     originalColorName + " HOMOLOGAÇÃO", "Cancelar descartou rascunho de Identidade.")
-  await requestModule(page, "Acervo Estruturado")
+  await requestModule(page, "Editor do site")
   await chooseDialog(page, "Sair sem salvar")
-  await page.waitForSelector(".shared-acervo-usage-list", { timeout: 18000 })
   await selectModule(page, "Identidade")
   await page.waitForSelector(identityNameSelector, { timeout: 10000 })
   assert((await page.$eval(identityNameSelector, (input) => input.value)) === originalColorName,
     "Alteração de Identidade descartada foi persistida.")
-  report("IDENTITY_DISCARD", { unsavedGuard: true, reloadedValuePreserved: true })
-  await selectModule(page, "Acervo Estruturado")
+  report("IDENTITY_DISCARD", { unsavedGuard: true, labels: labelStyle,
+    reloadedValuePreserved: true })
 
-  await page.waitForSelector(".shared-acervo-usage-list", { timeout: 15000 })
-  await page.waitForSelector(".shared-acervo .section-editor-layout .section-list button", { timeout: 15000 })
-  const acervo = await page.evaluate(() => ({
-    sourceSummary: [...document.querySelectorAll(".shared-acervo-usage-summary strong")]
-      .map((x) => x.textContent?.trim()),
-    selectedRecords: document.querySelectorAll(".shared-acervo .section-editor-layout .section-list button").length,
-    usageLabels: [...document.querySelectorAll(".shared-acervo-record-location")]
-      .map((x) => x.textContent?.trim() ?? ""),
-    nineSourceTabsPresent: document.querySelectorAll(".shared-acervo .collection-tabs button").length === 9,
-    sectionContext: document.querySelector(".shared-acervo-usage-summary span")?.textContent ?? "",
+  await selectModule(page, "Editor do site")
+  const chooseSection = async (label) => {
+    const clicked = await page.evaluate((value) => {
+      const item = [...document.querySelectorAll(".site-editor-sidebar button")]
+        .find((node) => node.textContent?.includes(value))
+      if (!item) return false
+      item.click()
+      return true
+    }, label)
+    assert(clicked, "Seção ausente: " + label)
+    await waitFor(page, (value) =>
+      document.querySelector(".site-editor-sidebar button.active")?.textContent?.includes(value),
+      label)
+  }
+  await chooseSection("Depoimentos")
+  await page.waitForSelector(".site-editor-testimonials .editor-form .field-grid", { timeout: 16000 })
+  await waitFor(page, () =>
+    document.querySelectorAll(".site-editor-testimonials .section-list button").length === 5)
+  const testimonials = await page.evaluate(() => ({
+    count: document.querySelectorAll(".site-editor-testimonials .section-list button").length,
+    sourceTabs: document.querySelectorAll(".site-editor-testimonials .collection-tabs button").length,
+    hasEditForm: !!document.querySelector(".site-editor-testimonials .editor-form"),
+    acervoInMenu: [...document.querySelectorAll(".admin-sidebar nav button")]
+      .some(x => x.textContent?.includes("Acervo Estruturado")),
   }))
-  assert(acervo.sourceSummary.length === 1 && acervo.sourceSummary[0] === "Depoimentos" &&
-    acervo.selectedRecords === 5 && !acervo.nineSourceTabsPresent &&
-    acervo.usageLabels.some((x) => x.startsWith("Utilizado em:")) &&
-    acervo.sectionContext.includes("Depoimentos"),
-    "Filtro ou localização do Acervo incorretos: " + JSON.stringify(acervo))
-  report("SHARED_COLLECTION", { sources: acervo.sourceSummary.length, records: acervo.selectedRecords,
-    linkedCardsLabeled: acervo.usageLabels.filter((x) => x.startsWith("Utilizado em:")).length })
+  assert(testimonials.count === 5 && testimonials.sourceTabs === 0 &&
+    testimonials.hasEditForm && !testimonials.acervoInMenu,
+    "Edição local de depoimentos incompleta: " + JSON.stringify(testimonials))
+  report("INLINE_TESTIMONIALS", { records: testimonials.count, onlyOnEditor: true })
 
-  const recordInput = ".shared-acervo .section-editor-layout .editor-form .field-grid input:not([type=number])"
-  await page.waitForSelector(recordInput, { timeout: 16000 })
+  const recordInput = ".site-editor-testimonials .editor-form .field-grid input:not([type=number])"
   const oldRecordValue = await page.$eval(recordInput, (input) => input.value)
   await updateInput(page, recordInput, oldRecordValue + " HOMOLOGAÇÃO")
   await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
-  await requestModule(page, "Editor do site")
+  await requestModule(page, "Identidade")
   await chooseDialog(page, "Sair sem salvar")
-  await selectModule(page, "Acervo Estruturado")
+  await selectModule(page, "Editor do site")
+  await chooseSection("Depoimentos")
   await page.waitForSelector(recordInput, { timeout: 15000 })
   assert((await page.$eval(recordInput, (input) => input.value)) === oldRecordValue,
-    "Alteração do Acervo descartada foi persistida.")
-  report("SHARED_RECORD_DISCARD", { unsavedGuard: true, recoveredOriginal: true })
+    "Depoimento descartado foi persistido.")
+  report("INLINE_TESTIMONIAL_DISCARD", { unsavedGuard: true, recoveredOriginal: true })
 
   await selectModule(page, "Editor do site")
   await page.waitForSelector(".site-editor-section .editor-form .field-grid", { timeout: 16000 })
@@ -224,15 +240,42 @@ try {
     "Transição alterada em rascunho foi persistida.")
   report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true })
 
+  // Three desktop visual zones map to the existing two content blocks.
+  const verifyZones = async (sectionName, expectedLabels) => {
+    await chooseSection(sectionName)
+    await waitFor(page, () =>
+      document.querySelectorAll(".site-editor-visual-areas button").length === 3)
+    const buttons = await page.$eval(".site-editor-visual-areas button", (nodes) =>
+      nodes.map(x => x.querySelector("strong")?.textContent?.trim()))
+    assert(JSON.stringify(buttons) === JSON.stringify(expectedLabels),
+      "Áreas visuais erradas para " + sectionName + ": " + JSON.stringify(buttons))
+  }
+  const triple = ["Esquerda", "Centro", "Direita"]
+  await verifyZones("Olá!", triple)
+  await page.$eval(".site-editor-visual-areas button", (nodes) =>
+    nodes.find(x => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
+  await page.waitForSelector(".admin-image-target-switch button.active", { timeout: 12000 })
+  const photoTarget = await page.$eval(".admin-image-target-switch button.active",
+    node => node.textContent?.trim())
+  assert(photoTarget === "Desktop", "Centro de Sobre não seleciona fotografia desktop.")
+  await verifyZones("Resultados e projetos", triple)
+  await verifyZones("Experiências Profissionais", triple)
+  await page.$eval(".site-editor-visual-areas button", (nodes) =>
+    nodes.find(x => x.querySelector("strong")?.textContent?.trim() === "Direita")?.click())
+  await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
+  report("VISUAL_AREAS", { sections: 3, positions: triple, desktopPortrait: true,
+    sharedExperienceGallery: true })
+  await chooseSection("Tulius Tsangaropulos")
+
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
   await page.waitForSelector(".studio-block-picker button", { timeout: 15000 })
   const mobile = await page.evaluate(() => ({
     horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 2,
     panelButtons: [...document.querySelectorAll(".studio-block-picker button strong")].map(x => x.textContent?.trim()),
-    menuPresent: !![...document.querySelectorAll(".admin-sidebar nav button")]
-      .find((node) => node.textContent?.trim() === "Acervo Estruturado"),
+    acervoRemoved: ![...document.querySelectorAll(".admin-sidebar nav button")]
+      .some((node) => node.textContent?.trim() === "Acervo Estruturado"),
   }))
-  assert(!mobile.horizontalOverflow && mobile.menuPresent && mobile.panelButtons.length >= 2,
+  assert(!mobile.horizontalOverflow && mobile.acervoRemoved && mobile.panelButtons.length >= 2,
     "Layout do editor em 390 px: " + JSON.stringify(mobile))
   report("MOBILE_EDITOR", { viewport: "390x844", overflow: mobile.horizontalOverflow })
   await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 })
@@ -250,5 +293,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 11, writes: blockedWrites.length }))
-if (checks !== 11) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 12, writes: blockedWrites.length }))
+if (checks !== 12) process.exitCode = 1

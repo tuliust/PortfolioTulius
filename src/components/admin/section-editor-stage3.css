@@ -7,3 +7,47 @@
 .site-editor-restore-button:focus-visible {
   background: #ffe3d8;
 }
+
+/* Navegação administrativa pelas áreas visuais, sem modificar o site público. */
+.site-editor-visual-areas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .5rem;
+  min-width: 0;
+}
+.site-editor-visual-areas button {
+  display: grid;
+  align-content: start;
+  gap: .35rem;
+  min-width: 0;
+  min-height: 4.8rem;
+  padding: .75rem .85rem;
+  border: 1px solid #d7d2ce;
+  background: #fff;
+  color: #171617;
+  text-align: left;
+}
+.site-editor-visual-areas button strong {
+  font: 800 1.35rem/1 var(--font-display);
+  text-transform: uppercase;
+}
+.site-editor-visual-areas button small {
+  font: 500 .75rem/1.4 var(--font-body);
+  color: #716b67;
+}
+.site-editor-visual-areas button.active {
+  border-color: #171617;
+  background: #171617;
+  color: #fff;
+}
+.site-editor-visual-areas button.active small { color: #ddd6d0; }
+.site-editor-visual-areas button:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+.site-editor-area-hint { margin: 0; color: #716b67; font-size: .78rem; line-height: 1.5; }
+.site-editor-visual-areas ~ .studio-block-picker[hidden] { display: none; }
+.site-editor-testimonials { display: grid; gap: .75rem; min-width: 0; }
+.site-editor-testimonials > .site-editor-consolidated-heading { margin-bottom: 0; }
+@media (max-width: 767px) {
+  .site-editor-visual-areas button { padding: .55rem; }
+  .site-editor-visual-areas button strong { font-size: 1.1rem; }
+  .site-editor-visual-areas button small { font-size: .7rem; }
+}
