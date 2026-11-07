@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import type { PortfolioSection } from "../../types/content"
+import { splitProfileTitle } from "../../lib/profile-title"
 import type { PublicNavigationItem } from "../../lib/navigation"
 import { Icon } from "../ui/Icons"
 
@@ -7,15 +8,21 @@ export function Navigation({
   sections,
   navigation,
   current,
+  brandTitle,
 }: {
   sections: PortfolioSection[]
   navigation: PublicNavigationItem[]
   current: string
+  brandTitle?: string
 }) {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const drawerRef = useRef<HTMLElement>(null)
   const activeSection = sections.find((section) => section.slug === current)
+  const profileName = splitProfileTitle(brandTitle)
+  const homeSlug = sections.some((section) => section.slug === "perfil")
+    ? "perfil"
+    : (sections[0]?.slug ?? "")
   const theme = current === "perfil" ? "profile" : (activeSection?.theme ?? "paper")
 
   const mobileEditorialEnabled =
@@ -102,9 +109,13 @@ export function Navigation({
       <header
         className={`site-header header-${theme}${mobileEditorialEnabled && firstPanelVisible && current === "perfil" ? " header-profile-editorial" : ""}`}
       >
-        <button className="brand-button" onClick={() => go("perfil")} aria-label="Voltar ao perfil">
-          <span>TULIUS</span>
-          <span>TSANGAROPULOS</span>
+        <button
+          className="brand-button"
+          onClick={() => homeSlug && go(homeSlug)}
+          aria-label="Ir ao início do portfólio"
+        >
+          <span>{profileName.first}</span>
+          <span>{profileName.rest}</span>
         </button>
         <button
           ref={triggerRef}

@@ -1399,7 +1399,10 @@ export function PublicSite({
 
   return (
     <div className="public-site" style={style}>
-      <a className="skip-link" href="#perfil">
+      <a
+        className="skip-link"
+        href={`#${visible.some((section) => section.slug === "perfil") ? "perfil" : (visible[0]?.slug ?? "perfil")}`}
+      >
         Pular para o conteúdo
       </a>
       {preview && (

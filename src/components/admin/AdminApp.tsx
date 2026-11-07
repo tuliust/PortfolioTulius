@@ -18,6 +18,7 @@ import {
 } from "./AdminConfirmationHost"
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import { IdentityCatalogEditor } from "./IdentityCatalogEditor"
+import "./section-editor-stage3.css"
 import { AdminInfoTip } from "./InfoTip"
 import {
   CollectionsStudio,
@@ -302,19 +303,6 @@ function SectionsEditor({
   const sectionDirty = Boolean(
     draft && selected && JSON.stringify(draft) !== JSON.stringify(selected),
   )
-  const fixedLayouts: Record<string, string> = {
-    perfil: "hero",
-    sobre: "editorial",
-    resultados: "metrics",
-    "invest-rs": "timeline",
-    "prefeitura-sp": "timeline",
-    vale: "timeline",
-    "globo-sportv": "timeline",
-    inpress: "timeline",
-    cdi: "timeline",
-    depoimentos: "quotes",
-    contato: "contact",
-  }
   useEffect(() => setDraft(selected ?? null), [selectedId, selected])
   useEffect(() => {
     onDirtyChange?.(sectionDirty)
@@ -325,33 +313,35 @@ function SectionsEditor({
 
   async function save(): Promise<boolean> {
     if (!draft || !supabase) return false
-    if (draft.status === "archived" && selected?.status !== "archived") {
-      setMessage("Para arquivar uma seção use o botão Arquivar.")
+    if (!draft.title.trim()) {
+      setMessage("O título da seção é obrigatório.")
       return false
     }
-    if (draft.status === "published" && selected?.status !== "published") {
-      setMessage("Uma seção arquivada não pode ser reativada pelo salvamento simples.")
+    const allowed = ["none", "fade-in", "fade-up", "stagger", "image-reveal", "metric-count"]
+    if (!allowed.includes(draft.animation_preset)) {
+      setMessage("Selecione uma transição válida.")
       return false
     }
     setMessage("Salvando…")
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("sections")
       .update({
-        title: draft.title,
+        title: draft.title.trim(),
         intro: draft.intro,
         eyebrow: draft.eyebrow,
-        status: draft.status === "archived" ? "archived" : "published",
-        is_visible: draft.status === "archived" ? false : draft.is_visible,
-        theme: draft.theme,
-        layout_variant: draft.layout_variant,
         animation_preset: draft.animation_preset,
       })
       .eq("id", draft.id)
-      .select("id")
+      .select("id,title,animation_preset")
       .single()
-    setMessage(error ? error.message : "Alterações salvas.")
-    if (!error) reload()
-    return !error
+    if (error || !data || data.title !== draft.title.trim() ||
+      data.animation_preset !== draft.animation_preset) {
+      setMessage(error?.message ?? "Não foi possível confirmar o salvamento da seção.")
+      return false
+    }
+    setMessage("Alterações salvas.")
+    reload()
+    return true
   }
   useEffect(() => registerAdminSaveAction(save, () => sectionDirty), [save, sectionDirty])
   async function move(direction: -1 | 1) {
@@ -366,24 +356,36 @@ function SectionsEditor({
     setMessage(error?.message ?? "Ordem atualizada.")
     if (!error) reload()
   }
-  async function remove() {
+  async function togglePublication() {
     if (!selected || !supabase) return
-    if (
-      !(await adminConfirm(`Arquivar “${selected.title}”?`, {
-        title: "Arquivar seção",
-        confirmLabel: "Arquivar",
-        tone: "danger",
-      }))
-    )
-      return
-    const { error } = await supabase
+    if (sectionDirty && !(await adminConfirmUnsaved(
+      "Existem alterações não salvas. Salve ou descarte antes de alterar a publicação.",
+      { title: "Alterações não salvas" },
+    ))) return
+    const currentlyVisible = selected.status === "published" && selected.is_visible
+    const confirmTitle = currentlyVisible ? "Arquivar seção" : "Exibir seção"
+    const confirmMessage = currentlyVisible
+      ? `Arquivar “${selected.title}”? A seção deixará de aparecer no site e poderá ser restaurada.`
+      : `Exibir “${selected.title}”? A seção será publicada e ficará visível no site.`
+    if (!(await adminConfirm(confirmMessage, {
+      title: confirmTitle,
+      confirmLabel: currentlyVisible ? "Arquivar" : "Exibir",
+      tone: currentlyVisible ? "danger" : "warning",
+    }))) return
+    const status = currentlyVisible ? "archived" : "published"
+    const is_visible = !currentlyVisible
+    const { data, error } = await supabase
       .from("sections")
-      .update({ status: "archived", is_visible: false })
+      .update({ status, is_visible })
       .eq("id", selected.id)
-      .select("id")
+      .select("id,status,is_visible")
       .single()
-    setMessage(error ? error.message : "Seção arquivada.")
-    if (!error) reload()
+    if (error || !data || data.status !== status || data.is_visible !== is_visible) {
+      setMessage(error?.message ?? "Não foi possível confirmar a alteração de publicação.")
+      return
+    }
+    setMessage(currentlyVisible ? "Seção arquivada." : "Seção publicada e visível.")
+    reload()
   }
   return (
     <>
@@ -453,84 +455,37 @@ function SectionsEditor({
               </label>
               <label>
                 <span className="admin-field-label">
-                  Tema
-                  <AdminInfoTip
-                    label="Tema"
-                    description="Controla cores de fundo e texto da seção publicada. Papel: fundo claro neutro; Creme: fundo claro quente; Grafite: fundo escuro; Laranja: fundo da marca. Algumas composições especiais preservam detalhes visuais próprios."
-                  />
-                </span>
-                <select
-                  value={draft.theme}
-                  onChange={(e) => setDraft({ ...draft, theme: e.target.value })}
-                >
-                  <option value="paper">Papel</option>
-                  <option value="cream">Creme</option>
-                  <option value="ink">Grafite</option>
-                  <option value="orange">Laranja</option>
-                </select>
-              </label>
-              <label>
-                <span className="admin-field-label">
-                  Layout
-                  <AdminInfoTip
-                    label="Layout"
-                    description="Composição exclusiva desta seção. O layout é fixo para preservar o design aprovado."
-                  />
-                </span>
-                <select
-                  value={draft.layout_variant}
-                  disabled={Boolean(fixedLayouts[draft.slug])}
-                  onChange={(e) => setDraft({ ...draft, layout_variant: e.target.value })}
-                >
-                  <option value="hero">Abertura especial</option>
-                  <option value="editorial">Editorial</option>
-                  <option value="metrics">Métricas</option>
-                  <option value="timeline">Timeline</option>
-                  <option value="quotes">Depoimentos</option>
-                  <option value="contact">Contato</option>
-                </select>
-              </label>
-              <label>
-                <span className="admin-field-label">
                   Transições
                   <AdminInfoTip
                     label="Transições"
-                    description="Define a entrada inicial da seção quando ela aparece na página pública. Nenhuma: sem efeito; Suavizar: revelar opacidade; Subir: entrar de baixo; Vir da esquerda/direita: deslizamento horizontal; Zoom suave: ampliação discreta. Movimentos internos de composições especiais continuam definidos pelo design editorial."
+                    description="Escolha um efeito de entrada compatível com os presets publicados no Supabase. Movimentos internos das composições especiais continuam independentes."
                   />
                 </span>
                 <select
                   value={draft.animation_preset}
-                  onChange={(e) => setDraft({ ...draft, animation_preset: e.target.value })}
+                  onChange={(event) => setDraft({ ...draft, animation_preset: event.target.value })}
                 >
                   <option value="none">Nenhuma</option>
-                  <option value="fade-in">Suavizar (fade)</option>
+                  <option value="fade-in">Aparecer suavemente</option>
                   <option value="fade-up">Subir suavemente</option>
-                  <option value="slide-left">Vir da esquerda</option>
-                  <option value="slide-right">Vir da direita</option>
-                  <option value="zoom-in">Zoom suave</option>
-                  {!["none", "fade-in", "fade-up", "slide-left", "slide-right", "zoom-in"].includes(
-                    draft.animation_preset,
-                  ) && (
-                    <option value={draft.animation_preset}>
-                      Preset anterior: {draft.animation_preset}
-                    </option>
-                  )}
+                  <option value="stagger">Revelar em sequência</option>
+                  <option value="image-reveal">Revelar imagem</option>
+                  <option value="metric-count">Destacar métricas</option>
                 </select>
-              </label>
-              <label className="toggle-field">
-                <input
-                  type="checkbox"
-                  checked={draft.is_visible && draft.status !== "archived"}
-                  disabled={draft.status === "archived"}
-                  onChange={(e) => setDraft({ ...draft, is_visible: e.target.checked })}
-                />{" "}
-                Exibir no site
               </label>
             </div>
             <AdminNotice message={message} />
             <div className="form-actions">
-              <button className="danger-button" onClick={remove}>
-                Arquivar
+              <button
+                type="button"
+                className={
+                  draft.status === "published" && draft.is_visible
+                    ? "danger-button"
+                    : "secondary-button site-editor-restore-button"
+                }
+                onClick={togglePublication}
+              >
+                {draft.status === "published" && draft.is_visible ? "Arquivar" : "Exibir"}
               </button>
               <button
                 type="button"
@@ -785,7 +740,7 @@ function SiteEditor({
                       onDirtyChange={setSectionInfoDirty}
                     />
                     <div className="site-editor-consolidated-heading">
-                      <h3>Conteúdo e painéis</h3>
+                      <h3>Conteúdo</h3>
                       <p>Textos, imagens e itens da seção.</p>
                     </div>
                     <ContentStudio

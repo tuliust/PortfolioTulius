@@ -67,6 +67,9 @@ export function mobileEditorialLines(value?: string) {
   return lines.length ? lines.slice(0, 5) : MOBILE_PROFILE_EDITORIAL_DEFAULTS.headline.split("\n")
 }
 
-export function mobileEditorialFont(value?: string): MobileEditorialFont {
+export function mobileEditorialFont(value?: string): string {
+  if (value === "font.heading") return "var(--font-heading)"
+  if (value === "font.body") return "var(--font-body)"
+  if (value === "font.serif") return "var(--font-serif)"
   return MOBILE_EDITORIAL_FONTS.find((font) => font === value) ?? "Big Shoulders Display"
 }

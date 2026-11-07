@@ -1,0 +1,9 @@
+.site-editor-restore-button {
+  color: #bc390c;
+  border-color: #ff5414;
+  background: #fff2ed;
+}
+.site-editor-restore-button:hover,
+.site-editor-restore-button:focus-visible {
+  background: #ffe3d8;
+}

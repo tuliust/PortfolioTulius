@@ -66,10 +66,17 @@ import type {
   ExperienceMedia,
 } from "../../types/content"
 import {
-  MOBILE_EDITORIAL_FONTS,
   MOBILE_PROFILE_EDITORIAL_DEFAULTS,
   mobileProfileEditorial,
 } from "../../lib/mobile-profile-editorial"
+import {
+  EditorIdentityProvider,
+  IdentityColorSelect,
+  IdentityFontSelect,
+  IdentityNumericSize,
+  useEditorIdentityOptions,
+} from "./EditorIdentityFields"
+import "./EditorIdentityFields.css"
 import { Icon } from "../ui/Icons"
 import { VisualIconLibrary, PlatformIconLibrary } from "./VisualIconLibrary"
 import { FloatingSaveButton } from "./FloatingSaveButton"
@@ -105,27 +112,13 @@ function optionalNumber(value: string) {
   return value === "" ? undefined : Number(value)
 }
 
-function ColorField({
-  label,
-  value,
-  fallback,
-  onChange,
-}: {
+function ColorField(props: {
   label: string
   value?: string
   fallback: string
   onChange: (value: string) => void
 }) {
-  return (
-    <label>
-      {label}
-      <input
-        type="color"
-        value={value || fallback}
-        onChange={(event) => onChange(event.target.value)}
-      />
-    </label>
-  )
+  return <IdentityColorSelect {...props} />
 }
 
 function NumericField({
@@ -141,6 +134,19 @@ function NumericField({
   max: number
   onChange: (value?: number) => void
 }) {
+  const typography =
+    /^(Título \(px\)|Texto \(px\)|Tamanho máximo do título|Tamanho máximo do nome|Tamanho máximo do indicador|Frase: tamanho \(px\))/.test(label)
+  if (typography) {
+    return (
+      <IdentityNumericSize
+        label={label}
+        value={value}
+        min={min}
+        max={max}
+        onChange={onChange}
+      />
+    )
+  }
   return (
     <label>
       {label}
@@ -242,19 +248,11 @@ function MobileEditorialFontField({
   onChange: (value: MobileEditorialFont) => void
 }) {
   return (
-    <label>
-      {label}
-      <select
-        value={value ?? "Big Shoulders Display"}
-        onChange={(event) => onChange(event.target.value as MobileEditorialFont)}
-      >
-        {MOBILE_EDITORIAL_FONTS.map((font) => (
-          <option key={font} value={font}>
-            {font}
-          </option>
-        ))}
-      </select>
-    </label>
+    <IdentityFontSelect
+      label={label}
+      value={value}
+      onChange={(selected) => onChange(selected as MobileEditorialFont)}
+    />
   )
 }
 
@@ -643,6 +641,7 @@ export function ContentStudio({
   onEditCollection?: (source: string) => void
   onSaved?: () => void
 }) {
+  const identityOptions = useEditorIdentityOptions()
   const [sectionId, setSectionId] = useState(sectionIdOverride ?? sections[0]?.id ?? "")
   const [blocks, setBlocks] = useState<BlockRow[]>([])
   const [selectedId, setSelectedId] = useState("")
@@ -1060,13 +1059,13 @@ export function ContentStudio({
   }
 
   return (
-    <>
+    <EditorIdentityProvider value={identityOptions}>
       {!embedded && (
         <header className="admin-header">
           <div>
             <p>Conteúdo modular</p>
-            <h1>Blocos e painéis</h1>
-            <span>Uma fonte de conteúdo, composições desktop e mobile A/B</span>
+            <h1>Conteúdo</h1>
+            <span>Uma fonte de conteúdo, composições desktop e mobile</span>
           </div>
         </header>
       )}
@@ -1113,10 +1112,11 @@ export function ContentStudio({
             >
               <span>{block.mobile_panel.toUpperCase()}</span>
               <div>
-                <strong>{block.content_json.items?.[0]?.title ?? block.block_type}</strong>
+                <strong>{block.mobile_panel === "a" ? "Esquerda" : "Direita"}</strong>
                 <small>
                   {block.status === "published" ? "Publicado" : "Oculto"} ·{" "}
-                  {block.content_json.items?.length ?? 0} itens
+                  {block.content_json.items?.length ?? 0} itens ·
+                  {block.mobile_panel === "a" ? " Primeiro no mobile" : " Segundo no mobile"}
                 </small>
               </div>
             </button>
@@ -1188,8 +1188,8 @@ export function ContentStudio({
                       })
                     }
                   >
-                    <option value="a">Painel A</option>
-                    <option value="b">Painel B</option>
+                    <option value="a">Esquerda (primeiro no mobile)</option>
+                    <option value="b">Direita (segundo no mobile)</option>
                   </select>
                 </label>
                 <label>
@@ -2250,7 +2250,7 @@ export function ContentStudio({
           />
         )}
       </div>
-    </>
+    </EditorIdentityProvider>
   )
 }
 

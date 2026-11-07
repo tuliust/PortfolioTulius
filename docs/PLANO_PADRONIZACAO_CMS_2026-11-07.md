@@ -1,8 +1,8 @@
 # Plano completo — padronização do CMS (Identidade, Editor do Site e Acervo Estruturado)
 
-**Registrado em:** 07/11/2026. **Autorização posterior:** Etapa 2 (Identidade como catálogo central) solicitada e executada em 07/11/2026. Etapas 3–5 permanecem não autorizadas. **Código-fonte de referência anterior ao inventário:** `207327b1ebe974e768a81f752fe1184249d210ba`.
+**Registrado em:** 07/11/2026. **Autorização posterior:** Etapas 2 e 3 solicitadas e implementadas em 07/11/2026. Etapas 4–5 permanecem não autorizadas. **Código-fonte de referência anterior ao inventário:** `207327b1ebe974e768a81f752fe1184249d210ba`.
 
-> Este documento formaliza o plano. A Etapa 2 foi posteriormente autorizada pelo proprietário e criou o catálogo no Supabase e no CMS; **não autoriza as Etapas 3–5**. O CSS e os componentes públicos permanecem inalterados. A identidade visual publicada é a linha de base a preservar. [Relatório da Etapa 2](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md).
+> Este documento formaliza o plano. As Etapas 2 e 3 foram posteriormente autorizadas. A Etapa 3 vinculou os controles do Editor do Site ao catálogo e corrigiu o título público; **Etapas 4–5 não estão autorizadas**. O CSS global permaneceu inalterado, e a exibição atual deve ser confirmada na homologação. [Etapa 2](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md) · [Etapa 3](EDITOR_DO_SITE_ETAPA3_2026-11-07.md).
 
 ## Objetivo e princípios invariantes
 
@@ -111,7 +111,7 @@ Tornar a edição do portfólio mais intuitiva, com **Identidade** como catálog
 |---|---|---|
 | 1. Inventário e preservação | Executada como documentação e backup parcial | Não |
 | 2. Biblioteca Identidade | Executada em 07/11/2026; homologação autenticada de formulário pendente | Não houve ajuste visual automático |
-| 3. Editor do Site | Planejada, não iniciada | Não autorizada |
+| 3. Editor do Site | Implementada em 07/11/2026; homologação transacional do CMS pendente | Sem alteração deliberada de aparência |
 | 4. Acervo Estruturado | Planejada, não iniciada | Não autorizada |
 | 5. Homologação e publicação | Planejada, não iniciada | Não autorizada |
 

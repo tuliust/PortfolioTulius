@@ -1,6 +1,7 @@
 import type { DesignTokens } from "../types/content"
 
 export const defaultTokens: DesignTokens = {
+  white: "#FFFFFF",
   orange: "#FF5414",
   ink: "#171617",
   paper: "#FAFAFA",

@@ -44,6 +44,6 @@ describe("Administração usa apenas diálogos próprios", () => {
     expect(modules).toContain("saveBlock,")
     expect(dialog).toContain("saveRegisteredAdminChanges")
     expect(modules).toContain("hasMediaMetadataChanges")
-    expect(app).toContain('title: "Arquivar seção"')
+    expect(app).toContain('const confirmTitle = currentlyVisible ? "Arquivar seção" : "Exibir seção"')
   })
 })

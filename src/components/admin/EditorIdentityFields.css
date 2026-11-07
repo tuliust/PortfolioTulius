@@ -1,0 +1,17 @@
+.editor-identity-select {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+}
+.editor-identity-select select {
+  min-width: 0;
+  width: 100%;
+}
+.editor-identity-swatch {
+  display: inline-block;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid #d6d0cb;
+  border-radius: 50%;
+}

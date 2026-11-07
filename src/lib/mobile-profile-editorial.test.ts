@@ -31,6 +31,9 @@ describe("Perfil editorial 360 mobile", () => {
 
   it("restringe família tipográfica às fontes permitidas", () => {
     expect(mobileEditorialFont("Inter")).toBe("Inter")
+    expect(mobileEditorialFont("font.heading")).toBe("var(--font-heading)")
+    expect(mobileEditorialFont("font.body")).toBe("var(--font-body)")
+    expect(mobileEditorialFont("font.serif")).toBe("var(--font-serif)")
     expect(mobileEditorialFont("url(evil)")).toBe("Big Shoulders Display")
   })
 })

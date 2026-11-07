@@ -33,7 +33,13 @@ export type HeroDeviceStyle = {
   introAlign?: "left" | "center" | "right"
 }
 
-export type MobileEditorialFont = "Big Shoulders Display" | "Inter" | "Georgia"
+export type MobileEditorialFont =
+  | "Big Shoulders Display"
+  | "Inter"
+  | "Georgia"
+  | "font.heading"
+  | "font.body"
+  | "font.serif"
 
 export type MobileEditorialTop = {
   background?: string
@@ -180,6 +186,7 @@ export type PortfolioSection = {
 }
 
 export type DesignTokens = {
+  white: string
   orange: string
   ink: string
   paper: string
