@@ -709,10 +709,7 @@ function ProfileMobileDetails({
           const content = (
             <>
               <span
-                className={[
-                  "profile-mobile-area-number",
-                  heroSizeClass(item.fieldFormats?.label),
-                ]
+                className={["profile-mobile-area-number", heroSizeClass(item.fieldFormats?.label)]
                   .filter(Boolean)
                   .join(" ")}
                 style={heroTextStyle(item.fieldFormats?.label)}
