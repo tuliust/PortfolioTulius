@@ -640,6 +640,7 @@ export function ContentStudio({
   onDirtyChange,
   onSaved,
   heroArea,
+  editorArea,
 }: {
   sections: SectionOption[]
   sectionIdOverride?: string
@@ -647,6 +648,7 @@ export function ContentStudio({
   onDirtyChange?: (dirty: boolean) => void
   onSaved?: () => void
   heroArea?: "left" | "right"
+  editorArea?: AdminVisualArea
 }) {
   const identityOptions = useEditorIdentityOptions()
   const [sectionId, setSectionId] = useState(sectionIdOverride ?? sections[0]?.id ?? "")
@@ -678,6 +680,7 @@ export function ContentStudio({
   const heroCopyDirty =
     experienceSlug === "perfil" && JSON.stringify(heroCopy) !== JSON.stringify(heroCopySaved)
   const visualAreas = adminVisualAreas(experienceSlug)
+  const activeVisualArea = editorArea?.id ?? visualArea
   const hasCareerTrajectory = [
     "invest-rs",
     "prefeitura-sp",
@@ -739,7 +742,9 @@ export function ContentStudio({
     }
     setBlocks((data as BlockRow[]) ?? [])
     setMessage("")
-    const expectedPanel = heroArea === "left" ? "a" : heroArea === "right" ? "b" : undefined
+    const expectedPanel = editorArea?.source === "a" || editorArea?.source === "b"
+      ? editorArea.source
+      : heroArea === "left" ? "a" : heroArea === "right" ? "b" : undefined
     if (expectedPanel) {
       const preferred = data?.find((block) => block.mobile_panel === expectedPanel)
       if (preferred) {
@@ -756,7 +761,7 @@ export function ContentStudio({
 
   useEffect(() => {
     void load()
-  }, [sectionId, heroArea])
+  }, [sectionId, heroArea, editorArea?.id, editorArea?.source])
 
   useEffect(() => {
     setExpandedItemIndex(experienceSlug === "perfil" ? 0 : null)
@@ -766,7 +771,7 @@ export function ContentStudio({
   // The existing A item holds two independent photos for Sobre.
   useEffect(() => {
     const block = blocks.find((entry) => entry.id === selectedId)
-    if (experienceSlug === "sobre" && visualArea === "center" && block?.mobile_panel === "a") {
+    if (experienceSlug === "sobre" && activeVisualArea === "center" && block?.mobile_panel === "a") {
       setExpandedItemIndex(0)
       setAboutImageTarget("desktop")
     }
@@ -902,7 +907,7 @@ export function ContentStudio({
 
     setMessage("Salvando bloco e painéis…")
     let contentToSave = draft.content_json
-    if (experienceSlug === "perfil" && draft.mobile_panel === "a") {
+    if (draft.mobile_panel === "a") {
       // Another editor can save the CMS-only section label while this item form is open.
       // Read it again immediately before the atomic write to avoid losing that label.
       const latest = await supabase
@@ -1226,7 +1231,7 @@ export function ContentStudio({
           </div>
         </header>
       )}
-      {embedded && !heroArea && (
+      {embedded && !heroArea && !editorArea && (
         <div className="site-editor-actions">
           <div>
             <strong>Elementos desta seção</strong>
@@ -1249,7 +1254,7 @@ export function ContentStudio({
         </div>
       )}
       <div className={embedded ? "studio-inline-layout" : "section-editor-layout"}>
-        {embedded && visualAreas.length > 0 && (
+        {embedded && !editorArea && visualAreas.length > 0 && (
           <nav className="site-editor-visual-areas" aria-label="Áreas visuais no desktop">
             {visualAreas.map((area) => (
               <button
@@ -1269,14 +1274,14 @@ export function ContentStudio({
             ))}
           </nav>
         )}
-        {embedded && visualAreas.length > 0 && (
+        {embedded && !editorArea && visualAreas.length > 0 && (
           <p className="site-editor-area-hint">
             Áreas da composição desktop vinculadas aos campos existentes. No mobile, os mesmos
             conteúdos continuam nos painéis A e B.
             {hasCareerTrajectory && " Alguns projetos usam itens de A e B; a galeria pertence a A."}
           </p>
         )}
-        {embedded && hasCareerTrajectory && visualArea === "center" && (
+        {embedded && hasCareerTrajectory && activeVisualArea === "center" && (
           <div
             className="site-editor-center-blocks"
             role="group"
@@ -1304,7 +1309,7 @@ export function ContentStudio({
         )}
         <div
           className={embedded ? "studio-block-picker" : "section-list"}
-          hidden={embedded && (visualAreas.length > 0 || Boolean(heroArea))}
+          hidden={embedded && (visualAreas.length > 0 || Boolean(heroArea) || Boolean(editorArea))}
         >
           {blocks.map((block) => (
             <button
@@ -1337,7 +1342,7 @@ export function ContentStudio({
         </div>
         {draft ? (
           <section className="admin-card editor-form">
-            {experienceSlug === "sobre" && visualArea === "center" && draft.mobile_panel === "a" ? (
+            {experienceSlug === "sobre" && activeVisualArea === "center" && draft.mobile_panel === "a" ? (
               <div className="about-center-photo-only">
                 <div>
                   <h3>Fotografia desktop · Centro</h3>
@@ -1997,12 +2002,15 @@ export function ContentStudio({
                                 />
                                 <span className="block-item-toggle-label">
                                   <strong>
-                                    Item {String(index + 1).padStart(2, "0")}
+                                    {experienceSlug === "perfil"
+                                      ? `Item ${String(index + 1).padStart(2, "0")}`
+                                      : item.title?.trim() || `Elemento ${index + 1}`}
                                     {item.isHidden === true && (
                                       <span className="admin-hidden-label"> · Ocultado</span>
                                     )}
                                   </strong>
-                                  <small>{item.title?.trim() || "Sem título"}</small>
+                                  <small>{experienceSlug === "perfil" ? item.title?.trim() || "Sem título"
+                                    : `Elemento ${String(index + 1).padStart(2, "0")} · ${draft.mobile_panel.toUpperCase()}`}</small>
                                 </span>
                               </button>
                               <div className="order-buttons">
@@ -2280,13 +2288,10 @@ export function ContentStudio({
                                           }
                                         />
                                       </label>
-                                      <label>
+                                      {Boolean(item.label?.trim()) && <label>
                                         <span className="hero-field-label">
-                                          {experienceSlug === "perfil" &&
-                                          draft.mobile_panel === "b" &&
-                                          index < 5
-                                            ? "Linha superior / número"
-                                            : "Rótulo / número"}
+                                          {draft.mobile_panel === "b" && experienceSlug === "perfil" && index < 5
+                                            ? "Linha superior / número" : "Rótulo / número"}
                                           {experienceSlug === "perfil" &&
                                             draft.mobile_panel === "b" &&
                                             index < 5 && (
@@ -2306,8 +2311,8 @@ export function ContentStudio({
                                             updateItem(index, { label: event.target.value })
                                           }
                                         />
-                                      </label>
-                                      <label className="field-wide">
+                                      </label>}
+                                      {Boolean(item.text?.trim()) && <label className="field-wide">
                                         <span className="hero-field-label">
                                           {experienceSlug === "perfil"
                                             ? draft.mobile_panel === "a"
@@ -2335,8 +2340,8 @@ export function ContentStudio({
                                             updateItem(index, { text: event.target.value })
                                           }
                                         />
-                                      </label>
-                                      <label>
+                                      </label>}
+                                      {Boolean(item.value?.trim()) && <label>
                                         <span className="admin-field-with-info">
                                           Valor/métrica
                                           <AdminInfoTip
@@ -2350,8 +2355,8 @@ export function ContentStudio({
                                             updateItem(index, { value: event.target.value })
                                           }
                                         />
-                                      </label>
-                                      <label>
+                                      </label>}
+                                      {Boolean(item.meta?.trim()) && <label>
                                         <span className="admin-field-with-info">
                                           {experienceSlug === "perfil" &&
                                           draft.mobile_panel === "b" &&
@@ -2381,7 +2386,7 @@ export function ContentStudio({
                                             updateItem(index, { meta: event.target.value })
                                           }
                                         />
-                                      </label>
+                                      </label>}
                                     </>
                                   )}
                                   {sections.find((entry) => entry.id === draft.section_id)?.slug ===

@@ -164,3 +164,20 @@
     font-size: 0.66rem;
   }
 }
+
+/* Common tabs: three areas for two-panel sections, four only where published. */
+.site-editor-area-tabs {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+}
+.site-editor-consolidated .site-editor-section .card-heading .order-buttons {
+  display: none;
+}
+.site-editor-consolidated .site-editor-section small {
+  font-size: .73rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #6c6662;
+}
+.site-editor-area-tabs button[aria-selected="true"] {
+  box-shadow: inset 0 3px var(--orange, #ff5414);
+}

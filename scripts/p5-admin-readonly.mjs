@@ -160,6 +160,12 @@ try {
       label)
   }
   await chooseSection("Depoimentos")
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-area-tabs button")]
+      .find((node) => node.querySelector("strong")?.textContent?.trim() === "Esquerda")?.click())
+  await waitFor(page, () =>
+    document.querySelector(".site-editor-area-tabs button[aria-selected='true'] strong")?.textContent?.trim() === "Esquerda")
+
   await page.waitForSelector(".site-editor-testimonials .editor-form .field-grid", { timeout: 16000 })
   await waitFor(page, () =>
     document.querySelectorAll(".site-editor-testimonials .section-list button").length === 5)
@@ -183,6 +189,12 @@ try {
   await chooseDialog(page, "Sair sem salvar")
   await selectModule(page, "Editor do site")
   await chooseSection("Depoimentos")
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-area-tabs button")]
+      .find((node) => node.querySelector("strong")?.textContent?.trim() === "Esquerda")?.click())
+  await waitFor(page, () =>
+    document.querySelector(".site-editor-area-tabs button[aria-selected='true'] strong")?.textContent?.trim() === "Esquerda")
+
   await page.waitForSelector(recordInput, { timeout: 15000 })
   assert((await page.$eval(recordInput, (input) => input.value)) === oldRecordValue,
     "Depoimento descartado foi persistido.")
@@ -197,7 +209,7 @@ try {
     const names = fields.map((item) => item.textContent?.trim() ?? "")
     const title = fields.find((item) => item.textContent?.trim() === "Título da seção (nome no CMS)")?.querySelector("input")?.value
     const select = document.querySelector(".site-editor-section select")
-    const anchor = document.querySelector(".site-editor-section [aria-describedby='hero-anchor-help']")
+    const anchor = document.querySelector(".site-editor-section [aria-describedby='editor-anchor-help']")
     return {
       title,
       anchorEditable: anchor instanceof HTMLInputElement && !anchor.disabled,
@@ -326,7 +338,7 @@ try {
   const adminTitleSelector = ".site-editor-section .field-grid label:first-child input"
   const originalAdminTitle = await page.$eval(adminTitleSelector, (node) => node.value)
   await updateInput(page, adminTitleSelector, originalAdminTitle + " ENSAIO")
-  const anchorSelector = ".site-editor-section [aria-describedby='hero-anchor-help']"
+  const anchorSelector = ".site-editor-section [aria-describedby='editor-anchor-help']"
   const originalAnchor = await page.$eval(anchorSelector, (node) => node.value)
   await updateInput(page, anchorSelector, "novo-perfil-ensaio")
   const transitionSelector = ".site-editor-section select"
@@ -347,60 +359,107 @@ try {
   report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true,
     adminSectionTitleIndependent: true })
 
-  // Three desktop visual zones map to the existing two content blocks.
+  // Every section has the same top-level navigation; center appears only
+  // for the layouts where it exists in the published composition.
+  const chooseArea = async (label) => {
+    const clicked = await page.evaluate((name) => {
+      const button = [...document.querySelectorAll(".site-editor-area-tabs button")]
+        .find((item) => item.querySelector("strong")?.textContent?.trim() === name)
+      button?.click()
+      return Boolean(button)
+    }, label)
+    assert(clicked, "Área indisponível: " + label)
+    await waitFor(page, (name) =>
+      document.querySelector(".site-editor-area-tabs button[aria-selected='true'] strong")
+        ?.textContent?.trim() === name, label)
+  }
   const verifyZones = async (sectionName, expectedLabels) => {
     await chooseSection(sectionName)
-    await waitFor(page, () =>
-      document.querySelectorAll(".site-editor-visual-areas button").length === 3 &&
-      document.querySelectorAll(".studio-block-picker button").length >= 2 &&
-      [...document.querySelectorAll(".site-editor-visual-areas button")].every(x => !x.disabled))
+    await waitFor(page, (length) =>
+      document.querySelectorAll(".site-editor-area-tabs button").length === length,
+      expectedLabels.length)
     const buttons = await page.evaluate(() =>
-      [...document.querySelectorAll(".site-editor-visual-areas button")]
+      [...document.querySelectorAll(".site-editor-area-tabs button")]
         .map((x) => x.querySelector("strong")?.textContent?.trim()))
     assert(JSON.stringify(buttons) === JSON.stringify(expectedLabels),
-      "Áreas visuais erradas para " + sectionName + ": " + JSON.stringify(buttons))
+      "Áreas erradas para " + sectionName + ": " + JSON.stringify(buttons))
   }
-  const triple = ["Esquerda", "Centro", "Direita"]
+  const triple = ["Seção", "Esquerda", "Centro", "Direita"]
   await verifyZones("Olá!", triple)
-  await page.evaluate(() =>
-    [...document.querySelectorAll(".site-editor-visual-areas button")]
-      .find((x) => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
+  await chooseArea("Centro")
   await page.waitForSelector(".about-center-photo-only .published-media-picker-label", { timeout: 12000 })
   const photoTarget = await page.evaluate(() => ({
     title: document.querySelector(".about-center-photo-only h3")?.textContent?.trim(),
     mediaLabel: document.querySelector(".about-center-photo-only .published-media-picker-label")?.textContent?.trim(),
     itemEditors: document.querySelectorAll(".studio-inline-layout .block-item-editor").length,
-    textInputs: document.querySelectorAll(".about-center-photo-only input:not([type=file]), .about-center-photo-only textarea").length,
     advancedSettings: document.querySelectorAll(".studio-inline-layout .site-editor-advanced").length,
   }))
   assert(photoTarget.title?.includes("Fotografia desktop") &&
     photoTarget.mediaLabel === "Fotografia desktop" &&
-    photoTarget.itemEditors === 0 && photoTarget.advancedSettings === 0 &&
-    photoTarget.textInputs === 0,
-    "Centro da seção 02 precisa gerenciar apenas a foto: " + JSON.stringify(photoTarget))
+    photoTarget.itemEditors === 0 && photoTarget.advancedSettings === 0,
+    "Centro de Olá! deve ter somente fotografia: " + JSON.stringify(photoTarget))
   await verifyZones("Resultados e projetos", triple)
-  await verifyZones("Experiências Profissionais", triple)
-  await page.evaluate(() =>
-    [...document.querySelectorAll(".site-editor-visual-areas button")]
-      .find((x) => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
+  await chooseArea("Centro")
   await waitFor(page, () =>
-    document.querySelectorAll(".site-editor-center-blocks button").length === 2)
+    document.querySelector(".studio-inline-layout .block-items") !== null)
+  await verifyZones("Experiências Profissionais", triple)
+  await chooseArea("Centro")
+  await waitFor(page, () => document.querySelectorAll(".site-editor-center-blocks button").length === 2)
   const centerSources = await page.evaluate(() =>
-    [...document.querySelectorAll(".site-editor-center-blocks button")].map(x => x.textContent?.trim()))
+    [...document.querySelectorAll(".site-editor-center-blocks button")].map((x) => x.textContent?.trim()))
   assert(centerSources.includes("Projetos do bloco A") &&
     centerSources.includes("Projetos do bloco B"), "Projetos A/B indisponíveis no Centro.")
   await page.evaluate(() =>
     [...document.querySelectorAll(".site-editor-center-blocks button")]
-      .find(x => x.textContent?.includes("bloco A"))?.click())
+      .find((x) => x.textContent?.includes("bloco A"))?.click())
   await waitFor(page, () =>
     [...document.querySelectorAll(".site-editor-center-blocks button")]
-      .find(x => x.textContent?.includes("bloco A"))?.getAttribute("aria-pressed") === "true")
-  await page.evaluate(() =>
-    [...document.querySelectorAll(".site-editor-visual-areas button")]
-      .find((x) => x.querySelector("strong")?.textContent?.trim() === "Direita")?.click())
+      .find((x) => x.textContent?.includes("bloco A"))?.getAttribute("aria-pressed") === "true")
+  await chooseArea("Direita")
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, positions: triple,
     desktopPortraitOnly: true, sharedExperienceGallery: true })
+
+  const ordinarySections = ["Comunicação e estratégia", "Formação",
+    "Ferramentas", "Depoimentos", "Contato"]
+  for (const name of ordinarySections) {
+    await verifyZones(name, ["Seção", "Esquerda", "Direita"])
+    await chooseArea("Esquerda")
+    await waitFor(page, () =>
+      document.querySelector(".site-editor-section input[value]") !== null &&
+      document.querySelector(".studio-inline-layout .block-items") !== null)
+    await chooseArea("Direita")
+    await waitFor(page, () => document.querySelector(".studio-inline-layout .block-items") !== null)
+  }
+  const experienceNames = ["Invest RS", "Prefeitura de São Paulo",
+    "Vale", "TV Globo / SporTV", "Grupo InPress", "CDI Comunicação"]
+  await chooseSection("Experiências Profissionais")
+  for (const name of experienceNames) {
+    const activated = await page.evaluate((label) => {
+      const button = [...document.querySelectorAll(".site-editor-experience-options button")]
+        .find((item) => item.textContent?.includes(label))
+      button?.click()
+      return Boolean(button)
+    }, name)
+    assert(activated, "Trabalho ausente: " + name)
+    await waitFor(page, (label) =>
+      [...document.querySelectorAll(".site-editor-experience-options button")]
+        .some((button) => button.classList.contains("active") &&
+          button.textContent?.includes(label)), name)
+    await waitFor(page, () => document.querySelectorAll(".site-editor-area-tabs button").length === 4)
+  }
+  report("ALL_SECTIONS", { total: 14, ordinary: ordinarySections.length,
+    experiences: experienceNames.length, areaRouting: true })
+
+  await chooseSection("Formação")
+  await chooseArea("Esquerda")
+  const copyFields = await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-section .field-grid label")]
+      .map((node) => node.textContent?.trim()))
+  assert(copyFields.some((text) => text?.includes("Título público")) &&
+    copyFields.some((text) => text?.includes("Introdução")),
+    "Textos públicos não aparecem na área Esquerda.")
+  report("EDITORIAL_COPY", { publicTitleSeparatedFromCmsTitle: true, section: "Formação" })
   await chooseSection("Hero")
 
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
@@ -429,5 +488,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 15, writes: blockedWrites.length }))
-if (checks !== 15) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 17, writes: blockedWrites.length }))
+if (checks !== 17) process.exitCode = 1

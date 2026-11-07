@@ -58,8 +58,8 @@ describe("editorial UX and public section transitions", () => {
     expect(app).not.toContain("Oculta no site")
     expect(modules).toContain('block.mobile_panel === "a" ? "Esquerda" : "Direita"')
     // The Hero now switches between section settings and its two content areas.
-    expect(app).toContain('className="hero-editor-tabs"')
-    expect(app).toContain('heroMode === "section"')
+    expect(app).toContain('className="hero-editor-tabs site-editor-area-tabs"')
+    expect(app).toContain('editorMode === "section"')
     expect(editor).not.toContain("Novo bloco")
     expect(editor).not.toContain("Adicionar item")
     expect(editor).not.toContain("Texto alternativo (opcional)")

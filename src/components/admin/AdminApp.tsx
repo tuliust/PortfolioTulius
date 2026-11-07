@@ -8,6 +8,7 @@ import {
 } from "../../lib/admin-experience-navigation"
 import { Icon } from "../ui/Icons"
 import { editorAnchorError, normalizeEditorAnchor } from "../../lib/editor-anchor"
+import { siteEditorAreas, editorCopyInArea } from "../../lib/site-editor-areas"
 import { AdminNotice } from "./AdminNotice"
 import {
   adminConfirm,
@@ -290,12 +291,14 @@ function SectionsEditor({
   selectedSectionId,
   embedded = false,
   onDirtyChange,
+  mode = "settings",
 }: {
   sections: SectionRow[]
   reload: () => void
   selectedSectionId?: string
   embedded?: boolean
   onDirtyChange?: (dirty: boolean) => void
+  mode?: "settings" | "editorial"
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(
     selectedSectionId ?? sections[0]?.id ?? null,
@@ -316,17 +319,18 @@ function SectionsEditor({
 
   async function save(): Promise<boolean> {
     if (!draft || !supabase) return false
-    if (!(draft.slug === "perfil" ? draft.editor_title?.trim() : draft.title.trim())) {
+    const isSettings = mode === "settings"
+    const adminTitle = draft.editor_title?.trim() || ""
+    if (isSettings ? !adminTitle : !draft.title.trim()) {
       setMessage("O título da seção é obrigatório.")
       return false
     }
     const anchor = normalizeEditorAnchor(draft.editor_anchor ?? draft.slug)
-    if (draft.slug === "perfil") {
+    if (isSettings) {
       const warning = editorAnchorError(
         anchor,
         draft.slug,
-        sections
-          .filter((entry) => entry.id !== draft.id)
+        sections.filter((entry) => entry.id !== draft.id)
           .flatMap((entry) => [entry.slug, entry.editor_anchor ?? entry.slug]),
       )
       if (warning) {
@@ -335,73 +339,57 @@ function SectionsEditor({
       }
     }
     const allowed = ["none", "fade-in", "fade-up", "stagger", "image-reveal", "metric-count"]
-    if (!allowed.includes(draft.animation_preset)) {
+    if (isSettings && !allowed.includes(draft.animation_preset)) {
       setMessage("Selecione uma transição válida.")
       return false
     }
     setMessage("Salvando…")
-    const { data, error } = await supabase
+    const expected = isSettings
+      ? { animation_preset: draft.animation_preset }
+      : { title: draft.title.trim(), eyebrow: draft.eyebrow, intro: draft.intro }
+    const updated = await supabase
       .from("sections")
-      .update(
-        draft.slug === "perfil"
-          ? { animation_preset: draft.animation_preset }
-          : {
-              title: draft.title.trim(),
-              intro: draft.intro,
-              eyebrow: draft.eyebrow,
-              animation_preset: draft.animation_preset,
-            },
-      )
+      .update(expected)
       .eq("id", draft.id)
-      .select("id,title,animation_preset")
+      .select("id,title,eyebrow,intro,animation_preset")
       .single()
-    if (
-      error ||
-      !data ||
-      (draft.slug !== "perfil" && data.title !== draft.title.trim()) ||
-      data.animation_preset !== draft.animation_preset
-    ) {
-      setMessage(error?.message ?? "Não foi possível confirmar o salvamento da seção.")
+    const verified = isSettings
+      ? updated.data?.animation_preset === draft.animation_preset
+      : updated.data?.title === draft.title.trim() &&
+        updated.data?.eyebrow === draft.eyebrow &&
+        updated.data?.intro === draft.intro
+    if (updated.error || !verified) {
+      setMessage(updated.error?.message ?? "Não foi possível confirmar o salvamento da seção.")
       return false
     }
-    if (
-      draft.slug === "perfil" &&
-      (draft.editor_title?.trim() !== selected?.editor_title?.trim() ||
-        anchor !== (selected?.editor_anchor ?? selected?.slug))
-    ) {
+    if (isSettings && (
+      adminTitle !== (selected?.editor_title ?? selected?.title)?.trim() ||
+      anchor !== (selected?.editor_anchor ?? selected?.slug)
+    )) {
       if (!draft.editor_block_id) {
-        setMessage("Bloco esquerdo do Hero não encontrado para guardar os dados da seção.")
+        setMessage("Bloco de conteúdo não encontrado para salvar os dados administrativos.")
         return false
       }
-      // The canonical slug remains "perfil" because public components and
-      // existing navigation depend on it. An edited anchor is an extra alias.
-      const latest = await supabase
-        .from("content_blocks")
-        .select("content_json")
-        .eq("id", draft.editor_block_id)
-        .single()
+      // Editor-only metadata belongs to the existing panel A JSONB; never
+      // overwrite the public title or the canonical slug used by components.
+      const latest = await supabase.from("content_blocks")
+        .select("content_json").eq("id", draft.editor_block_id).single()
       if (latest.error || !latest.data) {
-        setMessage(latest.error?.message ?? "Não foi possível ler os dados da seção.")
+        setMessage(latest.error?.message ?? "Não foi possível ler os dados administrativos.")
         return false
       }
-      const desired = draft.editor_title?.trim() || "Hero"
-      const updatedJson = {
+      const nextContent = {
         ...(latest.data.content_json ?? {}),
-        editorTitle: desired,
+        editorTitle: adminTitle,
         editorAnchor: anchor,
       }
-      const written = await supabase
-        .from("content_blocks")
-        .update({ content_json: updatedJson })
+      const saved = await supabase.from("content_blocks")
+        .update({ content_json: nextContent })
         .eq("id", draft.editor_block_id)
-        .select("content_json")
-        .single()
-      if (
-        written.error ||
-        written.data?.content_json?.editorTitle !== desired ||
-        written.data?.content_json?.editorAnchor !== anchor
-      ) {
-        setMessage(written.error?.message ?? "Não foi possível confirmar a âncora da seção.")
+        .select("content_json").single()
+      if (saved.error || saved.data?.content_json?.editorTitle !== adminTitle ||
+        saved.data?.content_json?.editorAnchor !== anchor) {
+        setMessage(saved.error?.message ?? "Não foi possível confirmar o nome e a âncora.")
         return false
       }
     }
@@ -488,7 +476,7 @@ function SectionsEditor({
             <div className="card-heading">
               <div>
                 <p>Seção {String(draft.sort_order).padStart(2, "0")}</p>
-                <h2>{draft.slug === "perfil" ? draft.editor_title || "Hero" : draft.title}</h2>
+                <h2>{mode === "editorial" ? "Textos públicos" : draft.editor_title || (draft.slug === "perfil" ? "Hero" : draft.title)}</h2>
               </div>
               <div className="order-buttons">
                 <button onClick={() => move(-1)} aria-label="Mover para cima">
@@ -499,80 +487,71 @@ function SectionsEditor({
                 </button>
               </div>
             </div>
-            <div className="field-grid">
-              <label>
-                {draft.slug === "perfil" ? "Título da seção (nome no CMS)" : "Título"}
-                <input
-                  value={draft.slug === "perfil" ? (draft.editor_title ?? "Hero") : draft.title}
-                  onChange={(e) =>
-                    setDraft(
-                      draft.slug === "perfil"
-                        ? { ...draft, editor_title: e.target.value }
-                        : { ...draft, title: e.target.value },
-                    )
-                  }
-                />
-              </label>
-              <label>
-                Âncora
-                <input
-                  value={draft.slug === "perfil" ? (draft.editor_anchor ?? draft.slug) : draft.slug}
-                  disabled={draft.slug !== "perfil"}
-                  maxLength={64}
-                  spellCheck={false}
-                  aria-describedby={draft.slug === "perfil" ? "hero-anchor-help" : undefined}
-                  onChange={(event) => setDraft({ ...draft, editor_anchor: event.target.value })}
-                />
-                {draft.slug === "perfil" && (
-                  <small id="hero-anchor-help">
-                    A âncora pública pode ser editada. O identificador interno #perfil e os links
-                    existentes continuam funcionando.
-                  </small>
-                )}
-              </label>
-              {draft.slug !== "perfil" && (
-                <>
-                  <label className="field-wide">
-                    Linha editorial
-                    <input
-                      value={draft.eyebrow ?? ""}
-                      onChange={(e) => setDraft({ ...draft, eyebrow: e.target.value })}
-                    />
-                  </label>
-                  <label className="field-wide">
-                    Introdução
-                    <textarea
-                      rows={4}
-                      value={draft.intro ?? ""}
-                      onChange={(e) => setDraft({ ...draft, intro: e.target.value })}
-                    />
-                  </label>
-                </>
-              )}
-              <label>
-                <span className="admin-field-label">
-                  Transições
-                  <AdminInfoTip
-                    label="Transições"
-                    description="Escolha um efeito de entrada compatível com os presets publicados no Supabase. Movimentos internos das composições especiais continuam independentes."
+            {mode === "settings" ? (
+              <div className="field-grid">
+                <label>
+                  Título da seção (nome no CMS)
+                  <input
+                    value={draft.editor_title ?? (draft.slug === "perfil" ? "Hero" : draft.title)}
+                    onChange={(event) => setDraft({ ...draft, editor_title: event.target.value })}
                   />
-                </span>
-                <select
-                  value={draft.animation_preset}
-                  onChange={(event) => setDraft({ ...draft, animation_preset: event.target.value })}
-                >
-                  <option value="none">Nenhuma</option>
-                  <option value="fade-in">Aparecer suavemente</option>
-                  <option value="fade-up">Subir suavemente</option>
-                  <option value="stagger">Revelar em sequência</option>
-                  <option value="image-reveal">Revelar imagem</option>
-                  <option value="metric-count">Destacar métricas</option>
-                </select>
-              </label>
-            </div>
+                </label>
+                <label>
+                  Âncora
+                  <input
+                    value={draft.editor_anchor ?? draft.slug}
+                    maxLength={64}
+                    spellCheck={false}
+                    aria-describedby="editor-anchor-help"
+                    onChange={(event) => setDraft({ ...draft, editor_anchor: event.target.value })}
+                  />
+                  <small id="editor-anchor-help">
+                    Altere o endereço público sem perder os links para #{draft.slug}.
+                  </small>
+                </label>
+                <label>
+                  <span className="admin-field-label">
+                    Transições
+                    <AdminInfoTip
+                      label="Transições"
+                      description="Efeito de entrada da seção. Animações internas permanecem independentes."
+                    />
+                  </span>
+                  <select
+                    value={draft.animation_preset}
+                    onChange={(event) => setDraft({ ...draft, animation_preset: event.target.value })}
+                  >
+                    <option value="none">Nenhuma</option>
+                    <option value="fade-in">Aparecer suavemente</option>
+                    <option value="fade-up">Subir suavemente</option>
+                    <option value="stagger">Revelar em sequência</option>
+                    <option value="image-reveal">Revelar imagem</option>
+                    <option value="metric-count">Destacar métricas</option>
+                  </select>
+                </label>
+              </div>
+            ) : (
+              <div className="field-grid">
+                <label className="field-wide">
+                  Título público
+                  <input value={draft.title}
+                    onChange={(event) => setDraft({ ...draft, title: event.target.value })} />
+                </label>
+                <label className="field-wide">
+                  Linha editorial / descritivo
+                  <input value={draft.eyebrow ?? ""}
+                    onChange={(event) => setDraft({ ...draft, eyebrow: event.target.value })} />
+                </label>
+                <label className="field-wide">
+                  Introdução / frase editorial
+                  <textarea rows={4} value={draft.intro ?? ""}
+                    onChange={(event) => setDraft({ ...draft, intro: event.target.value })} />
+                </label>
+              </div>
+            )}
             <AdminNotice message={message} />
             <div className="form-actions">
-              <button
+              {mode === "settings" && <button
                 type="button"
                 className={
                   draft.status === "published" && draft.is_visible
@@ -582,7 +561,7 @@ function SectionsEditor({
                 onClick={togglePublication}
               >
                 {draft.status === "published" && draft.is_visible ? "Arquivar" : "Exibir"}
-              </button>
+              </button>}
               <button
                 type="button"
                 className="secondary-button"
@@ -611,7 +590,7 @@ function SiteEditor({
   onDirtyChange: (dirty: boolean) => void
 }) {
   const [selectedId, setSelectedId] = useState(sections[0]?.id ?? "")
-  const [heroMode, setHeroMode] = useState<"section" | "left" | "right">("section")
+  const [editorMode, setEditorMode] = useState<"section" | "left" | "center" | "right">("section")
   const [sectionInfoDirty, setSectionInfoDirty] = useState(false)
   const [contentDirty, setContentDirty] = useState(false)
   const [testimonialsDirty, setTestimonialsDirty] = useState(false)
@@ -620,6 +599,8 @@ function SiteEditor({
   }, [sectionInfoDirty, contentDirty, testimonialsDirty, onDirtyChange])
   const [lastExperienceId, setLastExperienceId] = useState("")
   const selected = sections.find((item) => item.id === selectedId)
+  const editorAreas = siteEditorAreas(selected?.slug)
+  const selectedArea = editorAreas.find((area) => area.id === editorMode) ?? editorAreas[0]
   const navigationEntries = buildAdminSectionNavigation(sections)
   const experienceSections = sections.filter((section) => isExperienceSection(section.slug))
   const selectedIsExperience = Boolean(selected && isExperienceSection(selected.slug))
@@ -642,20 +623,21 @@ function SiteEditor({
     setSectionInfoDirty(false)
     setContentDirty(false)
     setTestimonialsDirty(false)
-    setHeroMode("section")
+    setEditorMode("section")
     setSelectedId(id)
     if (sections.some((section) => section.id === id && isExperienceSection(section.slug))) {
       setLastExperienceId(id)
     }
   }
 
-  async function chooseHeroMode(next: "section" | "left" | "right") {
-    if (next === heroMode || !(await canLeave())) return
+  async function chooseEditorMode(next: "section" | "left" | "center" | "right") {
+    if (next === editorMode || !editorAreas.some((area) => area.id === next) ||
+      !(await canLeave())) return
     onDirtyChange(false)
     setSectionInfoDirty(false)
     setContentDirty(false)
     setTestimonialsDirty(false)
-    setHeroMode(next)
+    setEditorMode(next)
   }
 
   function selectExperienceGroup() {
@@ -703,9 +685,7 @@ function SiteEditor({
                 <span>{String(entry.section.sort_order).padStart(2, "0")}</span>
                 <div>
                   <strong>
-                    {entry.section.slug === "perfil"
-                      ? entry.section.editor_title || "Hero"
-                      : entry.section.title}
+                    {entry.section.editor_title || (entry.section.slug === "perfil" ? "Hero" : entry.section.title)}
                   </strong>
                   <small>{sectionPublicationLabel(entry.section)}</small>
                 </div>
@@ -721,14 +701,12 @@ function SiteEditor({
                   <p>
                     {selectedIsExperience
                       ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
-                      : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug === "perfil" ? (selected.editor_anchor ?? selected.slug) : selected.slug}`}
+                      : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.editor_anchor ?? selected.slug}`}
                   </p>
                   <h2>
                     {selectedIsExperience
                       ? "Experiências Profissionais"
-                      : selected.slug === "perfil"
-                        ? selected.editor_title || "Hero"
-                        : selected.title}
+                      : selected.editor_title || (selected.slug === "perfil" ? "Hero" : selected.title)}
                   </h2>
                   <span>
                     {selectedIsExperience
@@ -737,34 +715,20 @@ function SiteEditor({
                   </span>
                 </div>
               </div>
-              {selected.slug === "perfil" && (
-                <nav
-                  className="hero-editor-tabs"
-                  role="tablist"
-                  aria-label="Áreas de edição do Hero"
-                >
-                  {(
-                    [
-                      ["section", "Seção", "Configurações gerais"],
-                      ["left", "Esquerda", "Elementos da área esquerda"],
-                      ["right", "Direita", "Elementos da área direita"],
-                    ] as const
-                  ).map(([value, label, description]) => (
-                    <button
-                      type="button"
-                      role="tab"
-                      key={value}
-                      className={heroMode === value ? "active" : ""}
-                      aria-selected={heroMode === value}
-                      aria-controls="hero-editor-active-panel"
-                      onClick={() => void chooseHeroMode(value)}
-                    >
-                      <strong>{label}</strong>
-                      <small>{description}</small>
-                    </button>
-                  ))}
-                </nav>
-              )}
+              <nav className="hero-editor-tabs site-editor-area-tabs"
+                role="tablist" aria-label={`Áreas de edição de ${selected.editor_title || selected.title}`}>
+                {editorAreas.map((area) => (
+                  <button type="button" role="tab" key={area.id}
+                    className={editorMode === area.id ? "active" : ""}
+                    aria-selected={editorMode === area.id}
+                    aria-controls="site-editor-active-panel"
+                    onClick={() => void chooseEditorMode(area.id)}
+                  >
+                    <strong>{area.label}</strong>
+                    <small>{area.description}</small>
+                  </button>
+                ))}
+              </nav>
               {selectedIsExperience && (
                 <section
                   className="site-editor-experience-picker"
@@ -805,90 +769,52 @@ function SiteEditor({
                     Alterações não salvas nesta área.
                   </p>
                 )}
-                <div
-                  className="site-editor-consolidated"
-                  id={selected.slug === "perfil" ? "hero-editor-active-panel" : undefined}
-                  role={selected.slug === "perfil" ? "tabpanel" : undefined}
-                  aria-label={
-                    selected.slug === "perfil"
-                      ? heroMode === "section"
-                        ? "Seção"
-                        : heroMode === "left"
-                          ? "Esquerda"
-                          : "Direita"
-                      : undefined
-                  }
-                >
-                  {(selected.slug !== "perfil" || heroMode === "section") && (
+                <div className="site-editor-consolidated"
+                  id="site-editor-active-panel" role="tabpanel"
+                  aria-label={selectedArea.label}>
+                  {selectedArea.id === "section" ? (
                     <>
-                      <div
-                        className="site-editor-consolidated-heading"
-                        id="site-editor-section-details"
-                      >
+                      <div className="site-editor-consolidated-heading"
+                        id="site-editor-section-details">
                         <h3>Informações da seção</h3>
-                        <p>Título, âncora, transição e publicação.</p>
+                        <p>Título administrativo, âncora, transições e publicação.</p>
                       </div>
-                      <SectionsEditor
-                        key={selected.id + "-details"}
-                        sections={sections}
-                        reload={reload}
-                        selectedSectionId={selected.id}
-                        embedded
-                        onDirtyChange={setSectionInfoDirty}
-                      />
+                      <SectionsEditor key={selected.id + "-settings"}
+                        sections={sections} reload={reload} selectedSectionId={selected.id}
+                        embedded mode="settings" onDirtyChange={setSectionInfoDirty} />
                     </>
-                  )}
-                  {(selected.slug !== "perfil" || heroMode !== "section") && (
+                  ) : (
                     <>
                       <div className="site-editor-consolidated-heading">
-                        <h3>
-                          {selected.slug === "perfil"
-                            ? heroMode === "left"
-                              ? "Esquerda"
-                              : "Direita"
-                            : "Conteúdo"}
-                        </h3>
-                        <p>
-                          {selected.slug === "perfil"
-                            ? "Edite os elementos da área selecionada."
-                            : "Textos, imagens e itens da seção."}
-                        </p>
+                        <h3>{selectedArea.label}</h3>
+                        <p>{selectedArea.description} · edite somente os elementos desta área.</p>
                       </div>
-                      {selected.slug === "depoimentos" && (
-                        <section
-                          aria-label="Gerenciar depoimentos"
-                          className="site-editor-testimonials"
-                        >
+                      {editorCopyInArea(selected.slug, selectedArea.id) && (
+                        <SectionsEditor key={selected.id + "-editorial"}
+                          sections={sections} reload={reload} selectedSectionId={selected.id}
+                          embedded mode="editorial" onDirtyChange={setSectionInfoDirty} />
+                      )}
+                      {selected.slug === "depoimentos" && selectedArea.id === "left" && (
+                        <section aria-label="Gerenciar depoimentos"
+                          className="site-editor-testimonials">
                           <div className="site-editor-consolidated-heading">
                             <h3>Gerenciar depoimentos</h3>
-                            <p>
-                              Edite pessoas, cargos, textos, ordem e publicação nesta seção. Os
-                              registros são utilizados pelos dois painéis do site.
-                            </p>
+                            <p>Pessoas, cargos, textos, ordem e publicação; os registros alimentam os painéis A e B.</p>
                           </div>
-                          <CollectionsStudio
-                            key={selected.id + "-testimonials"}
+                          <CollectionsStudio key={selected.id + "-testimonials"}
                             initialSource="testimonials"
                             availableSources={["testimonials"]}
-                            linkedSources={["testimonials"]}
-                            embedded
-                            onDirtyChange={setTestimonialsDirty}
-                          />
+                            linkedSources={["testimonials"]} embedded
+                            onDirtyChange={setTestimonialsDirty} />
                         </section>
                       )}
-                      <ContentStudio
-                        key={selected.id + "-content-" + heroMode}
-                        sections={sections}
-                        sectionIdOverride={selected.id}
-                        heroArea={
-                          selected.slug === "perfil" && heroMode !== "section"
-                            ? heroMode
-                            : undefined
-                        }
-                        embedded
-                        onDirtyChange={setContentDirty}
-                        onSaved={reload}
-                      />
+                      {selectedArea.source !== "section" && (
+                        <ContentStudio
+                          key={selected.id + "-content-" + selectedArea.id}
+                          sections={sections} sectionIdOverride={selected.id}
+                          editorArea={selectedArea}
+                          embedded onDirtyChange={setContentDirty} onSaved={reload} />
+                      )}
                     </>
                   )}
                   <FloatingSaveButton
@@ -990,42 +916,39 @@ export function AdminApp() {
       .select("*")
       .order("sort_order")
       .then(async ({ data, error }) => {
-        // The CMS title is stored separately from the published hero name.
-        // A read failure leaves the familiar default label and never changes public data.
+        // All administrative labels and optional public aliases live in the
+        // pre-existing JSONB of panel A. Public headings and canonical slugs stay intact.
         let next: SectionRow[] = data ?? []
-        if (!error) {
-          const profile = next.find((entry) => entry.slug === "perfil")
-          if (profile) {
-            const read = await supabase
-              ?.from("content_blocks")
-              .select("id,content_json")
-              .eq("section_id", profile.id)
-              .eq("mobile_panel", "a")
-              .order("sort_order")
-              .limit(1)
-            const left = read?.data?.[0]
-            next = next.map((entry) =>
-              entry.id !== profile.id
-                ? entry
-                : {
-                    ...entry,
-                    editor_title:
-                      typeof left?.content_json?.editorTitle === "string" &&
-                      left.content_json.editorTitle.trim()
-                        ? left.content_json.editorTitle
-                        : "Hero",
-                    editor_anchor:
-                      typeof left?.content_json?.editorAnchor === "string" &&
-                      left.content_json.editorAnchor.trim()
-                        ? left.content_json.editorAnchor
-                        : profile.slug,
-                    editor_block_id: left?.id,
-                  },
-            )
+        let metadataError = ""
+        if (!error && next.length && supabase) {
+          const read = await supabase.from("content_blocks")
+            .select("id,section_id,content_json")
+            .eq("mobile_panel", "a")
+            .in("section_id", next.map((row) => row.id))
+            .order("sort_order")
+          metadataError = read.error?.message ?? ""
+          const firstBySection = new Map<string, {
+            id: string
+            content_json: { editorTitle?: string; editorAnchor?: string } | null
+          }>()
+          for (const block of read.data ?? []) {
+            if (!firstBySection.has(block.section_id)) firstBySection.set(block.section_id, block)
           }
-          setSections(next)
+          next = next.map((section) => {
+            const block = firstBySection.get(section.id)
+            const label = block?.content_json?.editorTitle
+            const alias = block?.content_json?.editorAnchor
+            return {
+              ...section,
+              editor_title: typeof label === "string" && label.trim()
+                ? label : section.slug === "perfil" ? "Hero" : section.title,
+              editor_anchor: typeof alias === "string" && alias.trim() ? alias : section.slug,
+              editor_block_id: block?.id,
+            }
+          })
         }
-        setLoadError(error?.message ?? "")
+        if (!error) setSections(next)
+        setLoadError(error?.message ?? metadataError)
         setLoadStatus(error ? "error" : "ready")
       })
   }
