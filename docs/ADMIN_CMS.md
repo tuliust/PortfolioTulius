@@ -1,6 +1,6 @@
 # CMS administrativo — contrato vigente
 
-**Conferência do código funcional:** [`79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2), em 05/11/2026. [CI Validate aprovado](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42020574434). **Não é homologação de gravações reais com sessão administrativa.**
+**Contrato revisado em 07/11/2026:** as correções de rótulos, áreas visuais e gerenciamento de depoimentos estão registradas em [Ajustes do Editor](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md). A homologação anterior das Etapas 1–5 está em [relatório específico](HOMOLOGACAO_CMS_ETAPA5_2026-11-07.md). A auditoria P3 pública continua independente e com pendências conhecidas.
 
 Este documento descreve a interface **atual** e suas limitações, não a cronologia de cada implementação. A versão integral anterior, com decisões, métricas, screenshots citados e evidências, foi preservada em [CMS antes da reorganização](historico/ADMIN_CMS_ANTES_REORGANIZACAO_2026-11-05.md).
 
@@ -8,11 +8,12 @@ Este documento descreve a interface **atual** e suas limitações, não a cronol
 
 O CMS está em `/admin`, com autenticação Supabase Auth e conferência do papel administrativo; a prévia protegida permanece sob `/admin/preview`. Áreas: **Visão geral, Editor do site, Identidade, Mídia, Navegação, SEO, Revisões e Prévia**. O site público e o editor são consumidores distintos do conteúdo Supabase. Erros de rede devem ser apresentados como erro, nunca como sucesso inventado.
 
-- **Editor do site:** lista lateral das seções e experiências; o cabeçalho da seleção concentra as abas compactas **Editar seção** e **Acervo estruturado**, à direita inferior do box. `Informações da seção` e `Conteúdo e painéis` aparecem na mesma página de edição.
+- **Editor do site:** lista lateral de seções e experiências. **Informações da seção** e **Conteúdo** estão na mesma página, sem abas de Acervo. Em **Olá!, Resultados e Experiências**, seletores **Esquerda / Centro / Direita** apontam para os campos e blocos existentes, sem criar novos registros. Nas Experiências, o Centro oferece acesso aos projetos dos blocos A e B.
 - **Seções:** ajustar conteúdo, ordem e visibilidade pelos controles existentes; indicadores da lista mostram `Publicado` ou `Oculto`. As ações **Nova seção**, **Duplicar seção** e **Publicar seção** não são oferecidas nessa interface; o botão de ação passa a ser **Salvar**. A ausência desses controles **não elimina RPCs ou dados** do banco.
 - **Blocos e itens existentes:** editar conteúdo, ordem, placements e campos específicos. **Novo bloco** e **Adicionar item** foram retirados da interface, sem apagar itens preexistentes. O estado `is_placeholder` segue preservado nas gravações.
 - **Salvamento:** o Editor usa o registro de ações pendentes e a ação agregada **Salvar**, com proteção de rascunho e mensagens acessíveis. Salvar seções, blocos e trajetória envolve **operações persistentes distintas**, e não uma transação PostgreSQL única entre todas essas tabelas. Não afirmar persistência sem sucesso do backend.
-- **Acervo estruturado:** continua disponível para editar coleções, quando cabível; o formulário de trajetória da experiência está embutido no editor da própria empresa, sem necessidade do antigo atalho para Coleções.
+- **Depoimentos:** os registros da tabela original `testimonials` são editados em **Editor do site → Depoimentos → Gerenciar depoimentos**, com pessoa, cargo, texto, ordem, publicação e criação de registro; permanece a proteção de rascunhos e a confirmação de salvamento. **Acervo Estruturado foi retirado do menu**, sem exclusão de tabelas, vínculos ou conteúdo. A trajetória profissional permanece dentro da seção de cada empresa.
+- **Identidade:** rótulos e controles de formulário usam agora a mesma tipografia administrativa de **Informações da seção**, sem alterar as famílias ou o CSS do site público.
 
 ## Seis experiências — projetos, slides e Trajetória
 
@@ -21,7 +22,7 @@ As seis empresas preservam seus IDs/associações com `sections`, `content_block
 - O título **Slides relacionados aos projetos** possui um botão de informação. A orientação extensa sobre associação por título, visibilidade dos itens, ordem e indicadores aparece no tooltip acessível, acionável por mouse ou clique. A antiga observação redundante sobre resumos e o botão **Editar trajetória completa (Coleções)** foram retirados.
 - O **formulário de Trajetória** está dentro da edição da experiência e contempla **Empresa, Cargo, Local, Início, Fim, Ordem, Status e Descrição** com formatação (bullets, negrito, itálico e sublinhado).
 - Os campos da Trajetória persistem na **linha original de `career_experiences`**. O salvamento condicional com `updated_at` busca impedir sobrescrita simples de alterações concorrentes; divergências precisam ser tratadas sem declarar sucesso.
-- O vínculo da linha à seção é resolvido por ID/slug conhecido; nenhuma duplicação da descrição em `content_blocks` deve ser introduzida. **Não houve ensaio de edição, salvar e recarregar com credenciais reais nesta rodada.**
+- O vínculo da linha à seção é resolvido por ID/slug conhecido; nenhuma duplicação da descrição em `content_blocks` deve ser introduzida. **A leitura autenticada de produção foi homologada; gravações de teste continuam restritas ao ambiente local sintético, para preservar os dados publicados.**
 
 ## Mídia e metadados
 

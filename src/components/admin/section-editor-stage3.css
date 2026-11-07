@@ -75,3 +75,27 @@
     font-size: 0.7rem;
   }
 }
+
+.site-editor-center-blocks {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.site-editor-center-blocks button {
+  min-height: 44px;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #d7d2ce;
+  background: #fff;
+  color: #171617;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.site-editor-center-blocks button.active {
+  background: #171617;
+  border-color: #171617;
+  color: #fff;
+}
+.site-editor-center-blocks button:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}

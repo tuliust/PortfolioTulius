@@ -265,6 +265,21 @@ try {
   await verifyZones("Experiências Profissionais", triple)
   await page.evaluate(() =>
     [...document.querySelectorAll(".site-editor-visual-areas button")]
+      .find((x) => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
+  await waitFor(page, () =>
+    document.querySelectorAll(".site-editor-center-blocks button").length === 2)
+  const centerSources = await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-center-blocks button")].map(x => x.textContent?.trim()))
+  assert(centerSources.includes("Projetos do bloco A") &&
+    centerSources.includes("Projetos do bloco B"), "Projetos A/B indisponíveis no Centro.")
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-center-blocks button")]
+      .find(x => x.textContent?.includes("bloco A"))?.click())
+  await waitFor(page, () =>
+    [...document.querySelectorAll(".site-editor-center-blocks button")]
+      .find(x => x.textContent?.includes("bloco A"))?.getAttribute("aria-pressed") === "true")
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-visual-areas button")]
       .find((x) => x.querySelector("strong")?.textContent?.trim() === "Direita")?.click())
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, positions: triple, desktopPortrait: true,

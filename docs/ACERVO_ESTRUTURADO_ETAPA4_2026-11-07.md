@@ -1,5 +1,8 @@
 # Etapa 4 — Acervo Estruturado separado do Editor do Site
 
+> **Documento histórico.** Em 07/11/2026, uma solicitação posterior retirou o Acervo do menu e integrou os depoimentos ao Editor do Site. Ver [contrato vigente](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md). Nenhum dado de `testimonials` foi migrado ou apagado.
+
+
 **Data da implementação:** 07/11/2026. **Autorização:** pedido expresso para executar a Etapa 4 do [plano](PLANO_PADRONIZACAO_CMS_2026-11-07.md). **Base anterior:** commit `8c7833bd23e24478e7dadc3d59c29ac043f151a3`.
 
 ## Resultado e limite de escopo

@@ -1,5 +1,7 @@
 # Documentação técnica — PortfolioTulius
 
+> **Atualização posterior de 07/11/2026:** [Ajustes no Editor do Site: rótulos, três áreas e Depoimentos sem Acervo separado](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md). A Etapa 4 anterior permanece documentada apenas como histórico.
+
 **Índice revisado em 07/11/2026.** A revisão adiciona documentação da nova frente de padronização do CMS, sem mudar a hierarquia dos estados e evidências datados de 05/11/2026.
 
 > **Frente atual — Etapas 1 a 5 executadas em 07/11/2026 (homologação parcial):** [Plano completo de padronização do CMS](PLANO_PADRONIZACAO_CMS_2026-11-07.md) · [Inventário de fontes, cores, tamanhos e dados de apresentação](INVENTARIO_ESTILOS_BASELINE_2026-11-07.md) · [Snapshot de estilos do Supabase](baselines/2026-11-07/cms-estilos-supabase.json) · [Declarações CSS indexadas](baselines/2026-11-07/css-declaracoes-de-estilo.csv) · [Referências visuais do SHA funcional anterior](baselines/2026-11-07/REFERENCIAS_VISUAIS.md). **Etapa 2:** [Catálogo Identidade, migração e contratos](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md). **Etapa 3:** [Simplificação do Editor do Site](EDITOR_DO_SITE_ETAPA3_2026-11-07.md). **Etapa 4:** [Acervo Estruturado — navegação e vínculos](ACERVO_ESTRUTURADO_ETAPA4_2026-11-07.md). **Etapa 5:** [Relatório de homologação e pendências](HOMOLOGACAO_CMS_ETAPA5_2026-11-07.md). **A aprovação integral P3/visual ainda está pendente.**

@@ -84,6 +84,9 @@ Tornar a edição do portfólio mais intuitiva, com **Identidade** como catálog
 
 ## Etapa 4 — Reorganização do Acervo Estruturado
 
+> **Decisão posterior (07/11/2026):** a área independente do Acervo foi **removida da navegação administrativa**, por solicitação expressa. Os depoimentos passaram a ser gerenciados em **Editor do Site → Depoimentos** e continuam salvos na tabela `testimonials`. Esta seção preserva o escopo histórico originalmente executado, não descreve a interface vigente. Ver [ajuste posterior](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md).
+
+
 - Adicionar **Acervo Estruturado** ao menu principal do CMS.
 - Retirar sua apresentação como aba principal do Editor do Site; preservar atalhos contextuais **Editar no Acervo** quando houver vínculo efetivo.
 - Identificar coleções compartilhadas **de fato** com base nas consultas e no código renderer: um registro de coleção não é automaticamente exibido no site.

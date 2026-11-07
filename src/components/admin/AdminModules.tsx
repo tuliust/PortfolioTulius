@@ -1163,6 +1163,32 @@ export function ContentStudio({
             {hasCareerTrajectory && " Alguns projetos usam itens de A e B; a galeria pertence a A."}
           </p>
         )}
+        {embedded && hasCareerTrajectory && visualArea === "center" && (
+          <div
+            className="site-editor-center-blocks"
+            role="group"
+            aria-label="Origens dos projetos da área central"
+          >
+            {blocks.map((block) => (
+              <button
+                type="button"
+                key={block.id}
+                aria-pressed={selectedId === block.id}
+                className={selectedId === block.id ? "active" : ""}
+                onClick={() =>
+                  void selectVisualArea({
+                    id: "center",
+                    label: "Centro",
+                    description: "Projetos da experiência",
+                    source: block.mobile_panel,
+                  })
+                }
+              >
+                Projetos do bloco {block.mobile_panel.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        )}
         <div
           className={embedded ? "studio-block-picker" : "section-list"}
           hidden={embedded && visualAreas.length > 0}
