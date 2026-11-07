@@ -246,23 +246,26 @@ try {
     await chooseSection(sectionName)
     await waitFor(page, () =>
       document.querySelectorAll(".site-editor-visual-areas button").length === 3)
-    const buttons = await page.$eval(".site-editor-visual-areas button", (nodes) =>
-      nodes.map(x => x.querySelector("strong")?.textContent?.trim()))
+    const buttons = await page.evaluate(() =>
+      [...document.querySelectorAll(".site-editor-visual-areas button")]
+        .map((x) => x.querySelector("strong")?.textContent?.trim()))
     assert(JSON.stringify(buttons) === JSON.stringify(expectedLabels),
       "Áreas visuais erradas para " + sectionName + ": " + JSON.stringify(buttons))
   }
   const triple = ["Esquerda", "Centro", "Direita"]
   await verifyZones("Olá!", triple)
-  await page.$eval(".site-editor-visual-areas button", (nodes) =>
-    nodes.find(x => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-visual-areas button")]
+      .find((x) => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
   await page.waitForSelector(".admin-image-target-switch button.active", { timeout: 12000 })
   const photoTarget = await page.$eval(".admin-image-target-switch button.active",
     node => node.textContent?.trim())
   assert(photoTarget === "Desktop", "Centro de Sobre não seleciona fotografia desktop.")
   await verifyZones("Resultados e projetos", triple)
   await verifyZones("Experiências Profissionais", triple)
-  await page.$eval(".site-editor-visual-areas button", (nodes) =>
-    nodes.find(x => x.querySelector("strong")?.textContent?.trim() === "Direita")?.click())
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-visual-areas button")]
+      .find((x) => x.querySelector("strong")?.textContent?.trim() === "Direita")?.click())
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, positions: triple, desktopPortrait: true,
     sharedExperienceGallery: true })
