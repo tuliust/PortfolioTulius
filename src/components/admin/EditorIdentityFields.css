@@ -16,5 +16,15 @@
   border-radius: 50%;
 }
 
-.editor-identity-color-field { display: grid; gap: .3rem; min-width: 0; }
-.editor-identity-color-field small { font: 400 .72rem/1.4 Inter, system-ui, sans-serif; color: #625c58; }
+.editor-identity-color-field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.editor-identity-color-field small {
+  font:
+    400 0.72rem/1.4 Inter,
+    system-ui,
+    sans-serif;
+  color: #625c58;
+}

@@ -55,7 +55,10 @@ export function HeroColorPicker({
   const ref = useDismiss(open, close)
   const colors = Object.values(catalog).filter((row) => row.value_type === "color")
   const selected = colors.find(
-    (row) => row.token_key === value || row.token_value.toLowerCase() === value.toLowerCase() || heroColor(row.token_key) === value,
+    (row) =>
+      row.token_key === value ||
+      row.token_value.toLowerCase() === value.toLowerCase() ||
+      heroColor(row.token_key) === value,
   )
   const activeColor =
     selected?.token_value ?? (value === "transparent" || !value ? "transparent" : value)

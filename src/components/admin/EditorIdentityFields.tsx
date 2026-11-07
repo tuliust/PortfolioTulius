@@ -59,18 +59,22 @@ export function IdentityColorSelect({
   const catalog = useContext(IdentityOptionsContext)
   const current = value || fallback
   const selected = Object.values(catalog).find(
-    (item) => item.value_type === "color" && (
-      cssVar(item.token_key) === current ||
-      item.token_key === current ||
-      item.token_value.toLowerCase() === current.toLowerCase()
-    ),
+    (item) =>
+      item.value_type === "color" &&
+      (cssVar(item.token_key) === current ||
+        item.token_key === current ||
+        item.token_value.toLowerCase() === current.toLowerCase()),
   )
   return (
     <div className="editor-identity-color-field">
-      <HeroColorPicker label={label} value={current} catalog={catalog}
+      <HeroColorPicker
+        label={label}
+        value={current}
+        catalog={catalog}
         onChange={(next) => {
           if (cssVar(next)) onChange(cssVar(next))
-        }} />
+        }}
+      />
       {!selected && (
         <small>Valor existente (preservado): {current}. Escolha uma amostra para alterar.</small>
       )}
