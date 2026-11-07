@@ -4,12 +4,12 @@ const email = process.env.P5_ADMIN_EMAIL
 const password = process.env.P5_ADMIN_PASSWORD
 const base = process.env.P5_BASE_URL ?? "https://tulius.work"
 if (!email || !password) {
-  console.error("P5_ADMIN_NOT_RUN: configurar credenciais exclusivamente em secrets do GitHub Actions ou variáveis de ambiente locais.")
+  console.error("P5_ADMIN_NOT_RUN: credenciais de homologação ausentes (GitHub Actions secrets).")
   process.exit(2)
 }
 const url = new URL(base)
 if (url.protocol !== "https:" || url.username || url.password) {
-  throw new Error("P5_BASE_URL precisa ser HTTPS e não conter credenciais.")
+  throw Error("P5_BASE_URL deve ser HTTPS e não pode conter credenciais.")
 }
 
 const browser = await puppeteer.launch({
@@ -17,309 +17,236 @@ const browser = await puppeteer.launch({
   headless: true,
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 })
-let passed = 0
-const mutations = []
+let checks = 0
+const blockedWrites = []
+const report = (name, details = {}) => {
+  checks++
+  console.log("P5_STAGE5_" + name + " " + JSON.stringify({ result: "PASS", ...details }))
+}
+const assert = (condition, message) => {
+  if (!condition) throw Error(message)
+}
+const waitFor = async (page, predicate, arg, timeout = 18000) =>
+  page.waitForFunction(predicate, { timeout }, arg)
+const requestModule = async (page, label) => {
+  const found = await page.$eval(".admin-sidebar nav button", (nodes, name) => {
+    const node = nodes.find((item) => item.textContent?.trim() === name)
+    if (!node) return false
+    node.click()
+    return true
+  }, label)
+  assert(found, "Módulo indisponível: " + label)
+}
+const selectModule = async (page, label) => {
+  await requestModule(page, label)
+  await waitFor(page, (name) => {
+    const active = document.querySelector(".admin-sidebar nav button.active")
+    return active?.textContent?.trim() === name
+  }, label)
+}
+const chooseDialog = async (page, label) => {
+  await page.waitForSelector('.admin-confirm-dialog[role="alertdialog"]', { timeout: 12000 })
+  const clicked = await page.$$eval(".admin-confirm-dialog button", (nodes, name) => {
+    const node = nodes.find((item) => item.textContent?.trim() === name)
+    if (!node) return false
+    node.click()
+    return true
+  }, label)
+  assert(clicked, "Ação de diálogo ausente: " + label)
+  await waitFor(page, () => !document.querySelector(".admin-confirm-dialog"))
+}
+const updateInput = async (page, selector, nextValue) => {
+  await page.click(selector)
+  await page.keyboard.down("Control")
+  await page.keyboard.press("KeyA")
+  await page.keyboard.up("Control")
+  await page.keyboard.type(nextValue)
+  await waitFor(page, (expected) =>
+    document.activeElement instanceof HTMLInputElement &&
+    document.activeElement.value === expected, nextValue)
+}
+
 try {
   const page = await browser.newPage()
-  // Puppeteer's 800×600 default viewport can put "Sair" outside the fixed-height
-  // desktop admin sidebar. Use a normal desktop viewport for pointer interaction.
   await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 })
-  // Login/logout Auth POSTs are allowed. Writes to CMS data/Storage are never allowed.
+  // The suite is strictly read-only. Abort any unexpected CMS/Storage write,
+  // including writes inadvertently triggered by an input or dialog.
+  await page.setRequestInterception(true)
   page.on("request", (request) => {
     const method = request.method()
-    const address = request.url()
-    // POST /object/sign creates an expiring preview URL; it does not mutate
-    // Storage objects. Still reject all other write-like CMS/Storage requests.
-    const pathname = new URL(address).pathname
-    const readOnlySignedPreview = method === "POST" &&
-      pathname.startsWith("/storage/v1/object/sign/")
-    if (!readOnlySignedPreview && ["POST", "PUT", "PATCH", "DELETE"].includes(method) &&
-        (pathname.includes("/rest/v1/") || pathname.includes("/storage/v1/object/"))) {
-      mutations.push({ method, resource: pathname })
+    const target = new URL(request.url())
+    const apiWrite = ["POST", "PATCH", "PUT", "DELETE"].includes(method)
+    const contentApi = target.pathname.includes("/rest/v1/")
+    const storageApi = target.pathname.includes("/storage/v1/object/")
+    const signedRead = method === "POST" && target.pathname.startsWith("/storage/v1/object/sign/")
+    if (apiWrite && (contentApi || storageApi) && !signedRead) {
+      blockedWrites.push({ method, path: target.pathname })
+      void request.abort("blockedbyclient")
+      return
     }
+    void request.continue()
   })
-  await page.goto(new URL("/admin/login", base).href, { waitUntil: "domcontentloaded", timeout: 30000 })
-  await page.waitForSelector(".login-card input[type=email]", { timeout: 12000 })
+
+  await page.goto(new URL("/admin/login", base).href, {
+    waitUntil: "domcontentloaded", timeout: 30000,
+  })
+  await page.waitForSelector(".login-card input[type=email]", { timeout: 15000 })
   await page.type(".login-card input[type=email]", email)
   await page.type(".login-card input[type=password]", password)
   await page.click(".login-card button[type=submit], .login-card .primary-button")
-  await page.waitForFunction(
-    () => location.pathname === "/admin" && !!document.querySelector(".admin-shell"),
-    { timeout: 20000 },
-  )
-  passed++
-  console.log("P5_ADMIN_LOGIN " + JSON.stringify({ result: "PASS", authenticated: true }))
+  await waitFor(page, () =>
+    location.pathname === "/admin" && !!document.querySelector(".admin-shell"), null, 30000)
+  report("LOGIN", { authenticated: true, contentWrites: blockedWrites.length })
 
-  const expectedModules = ["Editor do site", "Identidade", "Mídia", "Navegação", "SEO", "Revisões", "Prévia", "Visão geral"]
-  for (const label of expectedModules) {
-    const clicked = await page.$$eval(".admin-sidebar nav button", (nodes, target) => {
-      const button = nodes.find(node => node.textContent?.trim() === target)
-      if (!button) return false
-      button.click()
-      return true
-    }, label)
-    if (!clicked) throw new Error("Módulo administrativo indisponível: " + label)
-    // Wait for the actual selected module; the old header may remain briefly.
-    await page.waitForFunction((target) => {
-      const active = document.querySelector(".admin-sidebar nav button.active")
-      return active?.textContent?.trim() === target &&
-        !!document.querySelector(".admin-header h1")
-    }, { timeout: 10000 }, label)
-  }
-  passed++
-  console.log("P5_ADMIN_MODULES " + JSON.stringify({ result: "PASS", modules: expectedModules.length }))
-
-  // Read-only P4 checks: confirm the identity token and all nine structured
-  // collections are reachable without submitting any data or media writes.
-  await page[String.fromCharCode(36, 36) + "eval"](".admin-sidebar nav button", (nodes) => {
-    nodes.find((node) => node.textContent?.trim() === "Identidade")?.click()
-  })
-  await page.waitForSelector(".license-card .field-grid", { timeout: 12000 })
-  const radiusVisible = await page.$eval(".license-card", (node) =>
-    [...node.querySelectorAll("label")].some((label) =>
-      label.textContent?.includes("radius.card"),
-    ),
-  )
-  if (!radiusVisible) throw new Error("Token radius.card ausente no editor de identidade.")
-  await page[String.fromCharCode(36, 36) + "eval"](".admin-sidebar nav button", (nodes) => {
-    nodes.find((node) => node.textContent?.trim() === "Editor do site")?.click()
-  })
-  await page.waitForSelector(".site-editor-tabs", { timeout: 12000 })
-  await page[String.fromCharCode(36, 36) + "eval"](".site-editor-tabs [role=tab]", (nodes) => {
-    nodes.find((node) => node.textContent?.includes("Acervo estruturado"))?.click()
-  })
-  await page.waitForSelector(".collection-tabs [role=tab]", { timeout: 15000 })
-  const collections = await page[String.fromCharCode(36, 36) + "eval"](".collection-tabs [role=tab]", (nodes) =>
-    nodes.map((node) => node.textContent?.trim()),
-  )
-  if (collections.length !== 9 || collections.some((label) => !label)) {
-    throw new Error("Acervo estruturado incompleto: " + JSON.stringify(collections))
-  }
-  if (mutations.length) throw new Error("A leitura do acervo tentou alterar dados.")
-  passed++
-  console.log("P5_P4_CMS_READONLY " + JSON.stringify({
-    result: "PASS", radiusField: radiusVisible, collections: collections.length,
-    contentMutations: mutations.length,
-  }))
-
-  // Return to the content pane: the checks below use the block editor.
-  await page[String.fromCharCode(36, 36) + "eval"](".site-editor-tabs [role=tab]", (nodes) => {
-    nodes.find((node) => node.textContent?.includes("Conteúdo e painéis"))?.click()
-  })
-  await page.waitForSelector(".site-editor-body .block-item-toggle", { timeout: 12000 })
-
-  // Verify the newly edited CMS at a narrow viewport, without submitting any
-  // request that mutates the database. Input changes are ephemeral drafts.
-  await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
-  const openEditor = await page.$$eval(".admin-sidebar nav button", (nodes) => {
-    const button = nodes.find((node) => node.textContent?.trim() === "Editor do site")
-    if (!button) return false
-    button.click()
-    return true
-  })
-  if (!openEditor) throw new Error("Editor não disponível em viewport mobile.")
-  await page.waitForSelector(".site-editor-layout .block-item-toggle", { timeout: 20000 })
-  await page.click(".block-item-toggle")
-  await page.waitForSelector(".block-item-body .item-alt-field input", { timeout: 10000 })
-  const initial = await page.evaluate(() => ({
-    overflow: document.documentElement.scrollWidth > innerWidth + 2,
-    saveDisabled: document.querySelector(".admin-floating-save button")?.disabled,
-    altOptional: !document.querySelector(".block-item-body .item-alt-field input")?.required,
-    editorialNoteVisible: [...document.querySelectorAll("label")].some((node) =>
-      node.textContent?.trim().startsWith("Nota editorial")
-    ),
-  }))
-  if (initial.overflow || initial.saveDisabled !== true || !initial.altOptional || initial.editorialNoteVisible)
-    throw new Error("CMS mobile inicial inválido: " + JSON.stringify(initial))
-  // Change a text field locally; assert the floating save and custom leave
-  // guard, then cancel and explicitly discard the draft without writing data.
-  const title = await page.$(".block-item-body input")
-  if (!title) throw new Error("Campo de edição não encontrado.")
-  await title.type(" P5")
-  await page.waitForFunction(() => {
-    return document.querySelector(".admin-floating-save button")?.disabled === false
-  }, { timeout: 7000 })
-  await page.$$eval(".site-editor-tabs [role=tab]", (nodes) => {
-    nodes.find((node) => node.textContent?.includes("Informações da seção"))?.click()
-  })
-  await page.waitForSelector(".admin-confirm-dialog[role=alertdialog]", { timeout: 7000 })
-  await page.click(".admin-confirm-dialog .secondary-button")
-  if (!await page.$(".block-item-body input")) throw new Error("Cancelar descartou a edição local.")
-  await page.$$eval(".site-editor-tabs [role=tab]", (nodes) => {
-    nodes.find((node) => node.textContent?.includes("Informações da seção"))?.click()
-  })
-  await page.waitForSelector(".admin-confirm-dialog[role=alertdialog]", { timeout: 7000 })
-  await page.click(".admin-confirm-dialog .primary-button")
-  await page.waitForSelector(".site-editor-body .editor-form", { timeout: 10000 })
-  await page.waitForFunction(() => document.querySelector(".admin-floating-save button")?.disabled === true, { timeout: 7000 })
-  // Open the published Results block without selecting or saving an icon.
-  await page[String.fromCharCode(36, 36) + "eval"](".site-editor-tabs [role=tab]", (nodes) => {
-    nodes.find((node) => node.textContent?.includes("Conteúdo e painéis"))?.click()
-  })
-  await page.waitForSelector(".site-editor-body .block-item-toggle", { timeout: 12000 })
-  const resultsSelected = await page[String.fromCharCode(36, 36) + "eval"](".site-editor-sidebar button", (nodes) => {
-    const button = nodes.find((node) => node.textContent?.includes("Resultados e projetos"))
-    if (!button) return false
-    button.click()
-    return true
-  })
-  if (!resultsSelected) throw new Error("Seção Resultados indisponível no editor.")
-  await page.waitForFunction(
-    () => document.querySelector(".site-editor-heading h2")?.textContent?.includes("Resultados"),
-    { timeout: 10000 },
-  )
-  await page.waitForSelector(".site-editor-body .block-item-toggle", { timeout: 12000 })
-  await page.click(".site-editor-body .block-item-toggle")
-  await page.waitForSelector(".block-item-body .visual-icon-trigger[aria-expanded=\"false\"]", { timeout: 12000 })
-  await page.click(".block-item-body .visual-icon-trigger")
-  await page.waitForSelector(".block-item-body .visual-icon-popover .visual-icon-grid button", { timeout: 12000 })
-  const iconCatalog = await page[String.fromCharCode(36, 36) + "eval"](".block-item-body .visual-icon-popover .visual-icon-grid button", (nodes) => ({
-    count: nodes.length,
-    labeled: nodes.every((node) => Boolean(node.getAttribute("aria-label"))),
-    visual: nodes.every((node) => [...node.childNodes].every((child) => child.nodeType !== 3 || !child.textContent?.trim())),
-  }))
-  if (iconCatalog.count !== 50 || !iconCatalog.labeled || !iconCatalog.visual) {
-    throw new Error("Biblioteca de ícones incompleta: " + JSON.stringify(iconCatalog))
-  }
-  console.log("P5_ADMIN_ICON_LIBRARY " + JSON.stringify({ result: "PASS", ...iconCatalog }))
-
-  console.log("P5_ADMIN_MOBILE_EDIT_GUARD " + JSON.stringify({
-    result: "PASS", viewport: "390x844", floatingSave: true,
-    altOptional: true, customLeaveDialog: true, contentMutations: mutations.length,
-  }))
-  if (mutations.length) throw new Error("Escrita não autorizada detectada na verificação mobile: " + JSON.stringify(mutations))
-
-  await page.goto(new URL("/admin/preview", base).href, { waitUntil: "networkidle2", timeout: 30000 })
-  await page.waitForSelector(".preview-banner", { timeout: 15000 })
-  // The preview banner renders before Supabase finishes loading. Wait for the
-  // 14 registered sections (including the intentionally hidden "competencias").
-  // Do not treat an early DOM count of zero as an incomplete admin preview.
-  let previewTimedOut = false
-  try {
-    await page.waitForFunction(
-      () => {
-        const count = document.querySelectorAll("section.portfolio-section").length
-        const loading = !!document.querySelector(".public-site .data-status")
-        const failed = !!document.querySelector(".public-site .data-error")
-        return failed || (!loading && count === 14)
-      },
-      { timeout: 20000 },
-    )
-  } catch {
-    previewTimedOut = true
-  }
-  const previewState = await page.evaluate(() => ({
-    sectionCount: document.querySelectorAll("section.portfolio-section").length,
-    loading: !!document.querySelector(".public-site .data-status"),
-    failed: !!document.querySelector(".public-site .data-error"),
-    hiddenSectionPresent: !!document.querySelector("section#competencias"),
-  }))
-  if (previewTimedOut || previewState.failed || previewState.sectionCount !== 14 ||
-      !previewState.hiddenSectionPresent) {
-    throw new Error("Prévia administrativa incompleta: " + JSON.stringify(previewState))
-  }
-  passed++
-  console.log("P5_ADMIN_PREVIEW " + JSON.stringify({
-    result: "PASS",
-    sectionCount: previewState.sectionCount,
-    hiddenSectionPresent: previewState.hiddenSectionPresent,
-  }))
-
-  // Read-only check of the *real protected* Formation/A preview (not a DOM
-  // injection). Confirm all approved periods and institutions on both layouts.
-  const acceptedFormation = [
-    { title: "Comunicação Social — Jornalismo", meta: "UFRN · 2007–2012", text: "Universidade Federal do Rio Grande do Norte (UFRN)" },
-    { title: "Comunicação Integrada e Marketing Digital", meta: "UnP · 2013", text: "Universidade Potiguar (UnP)" },
-    { title: "Marketing Digital, BI e Estratégia Data Driven", meta: "PUCRS · 2020–2021", text: "Pontifícia Universidade Católica do Rio Grande do Sul (PUCRS)" },
+  const modules = [
+    "Visão geral", "Editor do site", "Identidade", "Acervo Estruturado",
+    "Mídia", "Navegação", "SEO", "Revisões", "Prévia",
   ]
-  for (const viewport of [
-    { label: "mobile", width: 390, height: 844 },
-    { label: "desktop", width: 1440, height: 900 },
-  ]) {
-    await page.setViewport({ width: viewport.width, height: viewport.height, deviceScaleFactor: 1 })
-    await page.goto(new URL("/admin/preview?formationPilot=1#formacao", base).href, {
-      waitUntil: "networkidle2", timeout: 30000,
-    })
-    await page.waitForFunction((expected) => {
-      const panel = document.getElementById("formacao")
-      const cards = [...(panel?.querySelectorAll(".content-item") ?? [])]
-      return Boolean(panel && expected.every((item) =>
-        cards.some((card) => card.querySelector("h3")?.textContent?.trim() === item.title &&
-          card.querySelector(".item-meta")?.textContent?.trim() === item.meta &&
-          [...card.querySelectorAll(".item-copy p")].some((p) => p.textContent?.trim() === item.text))),
-      )
-    }, { timeout: 20000 }, acceptedFormation)
-    const result = await page.evaluate(() => ({
-      preview: Boolean(document.querySelector(".preview-banner")),
-      error: Boolean(document.querySelector(".public-site .data-error")),
-      overflow: document.documentElement.scrollWidth > innerWidth + 2,
-      sections: document.querySelectorAll("section.portfolio-section").length,
-    }))
-    if (!result.preview || result.error || result.overflow || result.sections !== 14 || mutations.length) {
-      throw new Error("Prévia protegida de Formação/A inválida: " + JSON.stringify({ viewport: viewport.label, result }))
-    }
-    console.log("P5_FORMATION_PROTECTED_PREVIEW " + JSON.stringify({
-      viewport: viewport.label, result: "PASS", approvedItems: 3, contentMutations: mutations.length,
-    }))
-  }
-  passed++
+  for (const label of modules) await selectModule(page, label)
+  report("MODULES", { count: modules.length, includesIndependentAcervo: true })
 
-  await page.goto(new URL("/admin", base).href, { waitUntil: "domcontentloaded", timeout: 30000 })
-  await page.waitForSelector(".logout-button", { visible: true, timeout: 15000 })
-  // Exercise image selection cancellation after all other CMS interactions,
-  // to keep the icon and unsaved-edit tests independent of modal focus changes.
-  await page[String.fromCharCode(36, 36) + "eval"](".admin-sidebar nav button", (nodes) => {
-    nodes.find((node) => node.textContent?.trim() === "Editor do site")?.click()
-  })
-  await page.waitForSelector(".site-editor-body .block-item-toggle", { timeout: 15000 })
-  await page.click(".site-editor-body .block-item-toggle")
-  await page.waitForSelector(".block-item-body .published-media-picker", { timeout: 10000 })
-  // A library dialog cancellation must leave the current saved image untouched.
-  const originalImage = await page.$eval(
-    ".block-item-body .published-media-picker .published-media-current img",
-    (image) => image.getAttribute("src"),
-  )
-  if (!originalImage) throw new Error("Retrato atual não disponível no editor.")
-  await page.click(
-    '.block-item-body .published-media-picker .published-media-actions button[aria-label="Escolher da biblioteca"]',
-  )
-  await page.waitForSelector(".published-media-dialog footer button", { timeout: 12000 })
-  await page.click(".published-media-dialog footer button")
-  await page.waitForFunction(() => !document.querySelector(".published-media-dialog"), { timeout: 7000 })
-  const retainedImage = await page.$eval(
-    ".block-item-body .published-media-picker .published-media-current img",
-    (image) => image.getAttribute("src"),
-  )
-  if (retainedImage !== originalImage || mutations.length) {
-    throw new Error("Cancelar seleção de mídia alterou o retrato ou tentou gravar conteúdo.")
-  }
-  passed++
-  console.log("P5_P4_MEDIA_CANCEL " + JSON.stringify({
-    result: "PASS", imagePreserved: true, contentMutations: mutations.length,
+  await selectModule(page, "Identidade")
+  await page.waitForSelector(".identity-type-style", { timeout: 18000 })
+  const identity = await page.evaluate(() => ({
+    colors: document.querySelectorAll(".identity-color-row").length,
+    fonts: document.querySelectorAll(".identity-font-row").length,
+    styles: document.querySelectorAll(".identity-type-style").length,
+    names: [...document.querySelectorAll('.identity-type-style input')]
+      .every((input) => input.value.trim().length > 0),
+    responsiveChoices: [...document.querySelectorAll(".identity-type-style select")]
+      .some((select) => [...select.options].some((option) => option.textContent?.includes("px"))),
+    error: document.querySelector(".identity-catalog .admin-notice")?.textContent ?? "",
   }))
+  assert(identity.colors === 7 && identity.fonts === 3 && identity.styles === 7 &&
+    identity.names && identity.responsiveChoices, "Biblioteca de Identidade incompleta: " + JSON.stringify(identity))
+  report("IDENTITY_CATALOG", { colors: identity.colors, fonts: identity.fonts, styles: identity.styles })
 
-  const logoutClickable = await page.$eval(".logout-button", (button) => {
-    const rect = button.getBoundingClientRect()
-    return rect.width > 0 && rect.height > 0 &&
-      rect.top >= 0 && rect.bottom <= window.innerHeight &&
-      rect.left >= 0 && rect.right <= window.innerWidth
+  const identityNameSelector = ".identity-color-row input[name^='identity-color-name-']"
+  const originalColorName = await page.$eval(identityNameSelector, (input) => input.value)
+  await updateInput(page, identityNameSelector, originalColorName + " HOMOLOGAÇÃO")
+  await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
+  await requestModule(page, "Acervo Estruturado")
+  await chooseDialog(page, "Não sair")
+  assert((await page.$eval(identityNameSelector, (input) => input.value)) ===
+    originalColorName + " HOMOLOGAÇÃO", "Cancelar descartou rascunho de Identidade.")
+  await requestModule(page, "Acervo Estruturado")
+  await chooseDialog(page, "Sair sem salvar")
+  await page.waitForSelector(".shared-acervo-usage-list", { timeout: 18000 })
+  await selectModule(page, "Identidade")
+  await page.waitForSelector(identityNameSelector, { timeout: 10000 })
+  assert((await page.$eval(identityNameSelector, (input) => input.value)) === originalColorName,
+    "Alteração de Identidade descartada foi persistida.")
+  report("IDENTITY_DISCARD", { unsavedGuard: true, reloadedValuePreserved: true })
+  await selectModule(page, "Acervo Estruturado")
+
+  await page.waitForSelector(".shared-acervo-usage-list", { timeout: 15000 })
+  await page.waitForSelector(".shared-acervo .section-editor-layout .section-list button", { timeout: 15000 })
+  const acervo = await page.evaluate(() => ({
+    sourceSummary: [...document.querySelectorAll(".shared-acervo-usage-summary strong")]
+      .map((x) => x.textContent?.trim()),
+    selectedRecords: document.querySelectorAll(".shared-acervo .section-editor-layout .section-list button").length,
+    usageLabels: [...document.querySelectorAll(".shared-acervo-record-location")]
+      .map((x) => x.textContent?.trim() ?? ""),
+    nineSourceTabsPresent: document.querySelectorAll(".shared-acervo .collection-tabs button").length === 9,
+    sectionContext: document.querySelector(".shared-acervo-usage-summary span")?.textContent ?? "",
+  }))
+  assert(acervo.sourceSummary.length === 1 && acervo.sourceSummary[0] === "Depoimentos" &&
+    acervo.selectedRecords === 5 && !acervo.nineSourceTabsPresent &&
+    acervo.usageLabels.some((x) => x.startsWith("Utilizado em:")) &&
+    acervo.sectionContext.includes("Depoimentos"),
+    "Filtro ou localização do Acervo incorretos: " + JSON.stringify(acervo))
+  report("SHARED_COLLECTION", { sources: acervo.sourceSummary.length, records: acervo.selectedRecords,
+    linkedCardsLabeled: acervo.usageLabels.filter((x) => x.startsWith("Utilizado em:")).length })
+
+  const recordInput = ".shared-acervo .section-editor-layout .editor-form .field-grid input:not([type=number])"
+  await page.waitForSelector(recordInput, { timeout: 16000 })
+  const oldRecordValue = await page.$eval(recordInput, (input) => input.value)
+  await updateInput(page, recordInput, oldRecordValue + " HOMOLOGAÇÃO")
+  await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
+  await requestModule(page, "Editor do site")
+  await chooseDialog(page, "Sair sem salvar")
+  await selectModule(page, "Acervo Estruturado")
+  await page.waitForSelector(recordInput, { timeout: 15000 })
+  assert((await page.$eval(recordInput, (input) => input.value)) === oldRecordValue,
+    "Alteração do Acervo descartada foi persistida.")
+  report("SHARED_RECORD_DISCARD", { unsavedGuard: true, recoveredOriginal: true })
+
+  await selectModule(page, "Editor do site")
+  await page.waitForSelector(".site-editor-section .editor-form .field-grid", { timeout: 16000 })
+  const section = await page.evaluate(() => {
+    const fields = [...document.querySelectorAll(".site-editor-section .field-grid label")]
+    const names = fields.map((item) => item.textContent?.trim() ?? "")
+    const title = fields.find((item) => item.textContent?.trim() === "Título")?.querySelector("input")?.value
+    const select = document.querySelector(".site-editor-section select")
+    return {
+      title,
+      fieldLabels: names,
+      transitions: select ? [...select.options].map((option) => option.value) : [],
+      archive: !![...document.querySelectorAll(".site-editor-section .form-actions button")]
+        .find((item) => item.textContent?.trim() === "Arquivar"),
+      oldTabs: !!document.querySelector(".site-editor-tabs"),
+      panels: [...document.querySelectorAll(".studio-block-picker button strong")]
+        .map((node) => node.textContent?.trim()),
+    }
   })
-  if (!logoutClickable) {
-    throw new Error("Botão Sair fora da viewport desktop; falha de layout de navegador.")
-  }
+  const transitions = ["none", "fade-in", "fade-up", "stagger", "image-reveal", "metric-count"]
+  assert(section.title === "Tulius Tsangaropulos" && section.archive && !section.oldTabs &&
+    transitions.every((x) => section.transitions.includes(x)) &&
+    section.transitions.length === transitions.length &&
+    section.panels.includes("Esquerda") && section.panels.includes("Direita") &&
+    !section.fieldLabels.some((name) => /^(Tema|Layout|Exibir no site)$/.test(name)),
+    "Editor da seção não corresponde à Etapa 3: " + JSON.stringify(section))
+  report("EDITOR_SECTION", { titleSynced: true, transitions: section.transitions.length,
+    positionPanels: section.panels, removedRedundantFields: true })
+
+  const archiveClicked = await page.$$eval(".site-editor-section .form-actions button", (nodes) => {
+    const btn = nodes.find((item) => item.textContent?.trim() === "Arquivar")
+    if (!btn) return false
+    btn.click()
+    return true
+  })
+  assert(archiveClicked, "Botão Arquivar indisponível.")
+  await chooseDialog(page, "Cancelar")
+  report("ARCHIVE_CANCEL", { confirmationReversible: true })
+
+  const transitionSelector = ".site-editor-section select"
+  const originalTransition = await page.$eval(transitionSelector, (node) => node.value)
+  const alternateTransition = transitions.find((transition) => transition !== originalTransition)
+  await page.select(transitionSelector, alternateTransition)
+  await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
+  await requestModule(page, "Identidade")
+  await chooseDialog(page, "Sair sem salvar")
+  await selectModule(page, "Editor do site")
+  await page.waitForSelector(transitionSelector, { timeout: 16000 })
+  assert((await page.$eval(transitionSelector, (node) => node.value)) === originalTransition,
+    "Transição alterada em rascunho foi persistida.")
+  report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true })
+
+  await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+  await page.waitForSelector(".studio-block-picker button", { timeout: 15000 })
+  const mobile = await page.evaluate(() => ({
+    horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 2,
+    panelButtons: [...document.querySelectorAll(".studio-block-picker button strong")].map(x => x.textContent?.trim()),
+    menuPresent: !![...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Acervo Estruturado"),
+  }))
+  assert(!mobile.horizontalOverflow && mobile.menuPresent && mobile.panelButtons.length >= 2,
+    "Layout do editor em 390 px: " + JSON.stringify(mobile))
+  report("MOBILE_EDITOR", { viewport: "390x844", overflow: mobile.horizontalOverflow })
+  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 })
+  await selectModule(page, "Prévia")
+  await page.waitForSelector(".site-editor-preview-frame iframe", { timeout: 10000 })
+  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 })
+
   await page.click(".logout-button")
-  await page.waitForSelector(".admin-confirm-dialog[role=alertdialog]", { timeout: 10000 })
-  await page.click(".admin-confirm-dialog .primary-button")
-  await page.waitForFunction(() => location.pathname === "/admin/login", { timeout: 15000 })
+  await chooseDialog(page, "Sair")
+  await waitFor(page, () => location.pathname === "/admin/login", null, 16000)
   await page.goto(new URL("/admin/preview", base).href, { waitUntil: "domcontentloaded", timeout: 30000 })
-  await page.waitForFunction(() => location.pathname === "/admin/login", { timeout: 15000 })
-  if (mutations.length) {
-    throw new Error("Unexpected content write from read-only suite: " + JSON.stringify(mutations))
-  }
-  passed++
-  console.log("P5_ADMIN_LOGOUT " + JSON.stringify({ result: "PASS", reaccessBlocked: true }))
+  await waitFor(page, () => location.pathname === "/admin/login", null, 16000)
+  assert(blockedWrites.length === 0, "Tentativas inesperadas de escrita: " + JSON.stringify(blockedWrites))
+  report("LOGOUT", { previewProtected: true, cmsWrites: blockedWrites.length })
 } finally {
   await browser.close()
 }
-console.log("P5_READONLY_RESULT " + JSON.stringify({ passed, expected: 7, contentMutations: 0 }))
-if (passed !== 7) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 11, writes: blockedWrites.length }))
+if (checks !== 11) process.exitCode = 1

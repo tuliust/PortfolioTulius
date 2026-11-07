@@ -12,6 +12,7 @@ on:
       - scripts/p4-partial-failure.mjs
       - scripts/p4-seo-parity.mjs
       - scripts/p5-public-rls.mjs
+      - scripts/p5-admin-readonly.mjs
       - scripts/p6-lighthouse-guard.mjs
       - src/index.css
       - index.html
