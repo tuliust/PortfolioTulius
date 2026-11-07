@@ -1297,7 +1297,7 @@ export function PublicSite({
   useEffect(() => {
     if (loading || error || preview || !visible.length) return
     const portrait = document.querySelector<HTMLImageElement>(
-      "#perfil-a .mobile-profile-hero img, .profile-portrait img",
+      "#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img, .profile-portrait img",
     )
     if (!portrait) return
     // Preserve the first DOM/image timestamp. The complete CMS graph can

@@ -43,7 +43,7 @@ try {
               window.__p3LcpSamples.push({
                 startMs: Math.round(entry.startTime),
                 size: Math.round(entry.size),
-                isProfile: Boolean(entry.element?.closest(".mobile-profile-hero")),
+                isProfile: Boolean(entry.element?.closest(".mobile-profile-hero, .mobile360")),
               })
             }
           }).observe({ type: "largest-contentful-paint", buffered: true })
@@ -62,7 +62,7 @@ try {
             const url = new URL(entry.name)
             return { table: url.pathname.split("/").at(-1), startMs: Math.round(entry.startTime), durationMs: Math.round(entry.duration) }
           })
-        const portrait = document.querySelector(".mobile-profile-hero img")
+        const portrait = document.querySelector(".mobile-profile-hero img, .mobile360-photo img")
         const imageResource = performance.getEntriesByType("resource")
           .find((entry) => entry.name === portrait?.currentSrc)
         return {
@@ -165,10 +165,11 @@ try {
         const result = await page.evaluate(() => {
           const panelA = document.querySelector("#perfil-a")
           const panelB = document.querySelector("#perfil-b")
-          const portrait = panelA?.querySelector(".mobile-profile-hero img")
+          const portrait = panelA?.querySelector(".mobile-profile-hero img, .mobile360-photo img")
           const badge = panelA?.querySelector(".badge-360")
-          const years = panelA?.querySelector(".profile-mobile-years")
-          const name = panelA?.querySelector(".mobile-name")
+          const years = panelA?.querySelector(".profile-mobile-years, .mobile360-experience")
+          const name = panelA?.querySelector(".mobile-name, .mobile360-person-name")
+          const editorialHeadline = panelA?.querySelector(".mobile360-headline")
           const arrow = panelA?.querySelector('a[href="#perfil-b"]')
           const areas = panelB?.querySelectorAll(".profile-mobile-area-list > li")
           const careers = panelB?.querySelectorAll(".profile-mobile-career-list > li")
@@ -185,13 +186,16 @@ try {
           return {
             areas: areas?.length ?? 0,
             careers: careers?.length ?? 0,
+            editorialHeadline: Boolean(editorialHeadline?.textContent?.trim()),
+            introHidden: !panelA?.querySelector(".mobile360") ||
+              !panelA?.textContent?.includes("Foco em gerar conexões autênticas"),
             portraitLoaded: Boolean(portrait?.complete && portrait.naturalWidth > 0),
             badgePresent: Boolean(badge),
             arrowAccessible: Boolean(arrow?.getAttribute("aria-label")),
-            nameFits: fitsWidth(name),
+            nameFits: fitsWidth(name) && [...(name?.children ?? [])].every(fitsWidth),
             panelsFit: fitsWidth(panelA) && fitsWidth(panelB),
             noOverlap: !overlap,
-            careerVisible: Boolean(lastCareer && panelB &&
+            careerVisible: careers?.length === 0 || Boolean(lastCareer && panelB &&
               lastCareer.getBoundingClientRect().bottom <= panelB.getBoundingClientRect().bottom + 2),
             noOldActions: !panelA?.textContent?.includes("EXPLORAR MINHA ATUAÇÃO") &&
               !panelB?.textContent?.includes("VER AS 6 EXPERIÊNCIAS"),
@@ -199,8 +203,9 @@ try {
           }
         })
         console.log("P3_PROFILE_MOBILE " + JSON.stringify({ viewport, ...result }))
-        if (result.areas !== 5 || result.careers !== 6 || !result.portraitLoaded ||
-            !result.badgePresent || !result.arrowAccessible || !result.nameFits ||
+        if (result.areas !== 5 || result.careers !== 0 || !result.portraitLoaded ||
+            !result.badgePresent || !result.editorialHeadline || !result.introHidden ||
+            !result.arrowAccessible || !result.nameFits ||
             !result.panelsFit || !result.noOverlap || !result.careerVisible ||
             !result.noOldActions || result.nextSection !== "sobre") {
           throw new Error("Responsive profile failed at " + viewport.width + "px")
@@ -911,7 +916,7 @@ try {
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
       await page.waitForSelector("section.portfolio-section", { timeout: 15000 })
       const findings = await page.evaluate((requestedWidth) => {
-        const portrait = document.querySelector(".profile-portrait img, .mobile-profile-hero img")
+        const portrait = document.querySelector(".profile-portrait img, .mobile-profile-hero img, .mobile360-photo img")
         const desktop = document.querySelector(".desktop-panel")
         const mobile = document.querySelector(".mobile-panels")
         return {
@@ -955,7 +960,7 @@ try {
             })),
           rootScrollWidth: document.getElementById("root")?.scrollWidth ?? null,
           publicSiteScrollWidth: document.querySelector(".public-site")?.scrollWidth ?? null,
-          mobileName: Array.from(document.querySelectorAll(".mobile-name, .mobile-name span")).slice(0, 3).map((el) => ({ tag: el.tagName, text: el.textContent?.slice(0, 28), clientWidth: el.clientWidth, scrollWidth: el.scrollWidth, right: Math.round(el.getBoundingClientRect().right) })),
+          mobileName: Array.from(document.querySelectorAll(".mobile-name, .mobile-name span, .mobile360-person-name, .mobile360-person-name span, .mobile360-person-name strong")).slice(0, 3).map((el) => ({ tag: el.tagName, text: el.textContent?.slice(0, 28), clientWidth: el.clientWidth, scrollWidth: el.scrollWidth, right: Math.round(el.getBoundingClientRect().right) })),
           headerControls: Array.from(document.querySelectorAll(".site-header > *")).map((el) => ({ tag: el.tagName, className: String(el.className), clientWidth: el.clientWidth, scrollWidth: el.scrollWidth, right: Math.round(el.getBoundingClientRect().right) })),
           overflownContainers: Array.from(document.querySelectorAll(".public-site *"))
             .filter((el) => el.scrollWidth > el.clientWidth + 3 && el.clientWidth > 0 && getComputedStyle(el).display !== "none")
@@ -1069,8 +1074,8 @@ try {
           const r = document.querySelector(selector)?.getBoundingClientRect()
           return r ? { left: r.left, right: r.right, top: r.top, bottom: r.bottom, height: r.height } : null
         }
-        const name = document.querySelector("#perfil-a .mobile-name")
-        const spans = [...(name?.querySelectorAll("span") ?? [])].map((el) => {
+        const name = document.querySelector("#perfil-a .mobile-name, #perfil-a .mobile360-person-name")
+        const spans = [...(name?.querySelectorAll("span, strong") ?? [])].map((el) => {
           const r = el.getBoundingClientRect()
           return { left: r.left, right: r.right }
         })
@@ -1085,7 +1090,7 @@ try {
         return {
           viewportWidth: innerWidth,
           scrollWidth: document.documentElement.scrollWidth,
-          name: getRect("#perfil-a .mobile-name"),
+          name: getRect("#perfil-a .mobile-name, #perfil-a .mobile360-person-name"),
           nameWords: spans,
           aboutHeight: getRect("#sobre-a")?.height,
           formationHeadings: document.querySelectorAll("#formacao .panel-heading h2").length,
@@ -1106,7 +1111,7 @@ try {
         nameWords.length === 2 && nameWords.every(({ left, right }) => left >= -2 && right <= width + 2) &&
         details.formationHeadings === 1 && details.toolsHeadings === 1 &&
         details.formationCounts.join(",") === "3,2" &&
-        details.toolsCounts.join(",") === "3,3" &&
+        details.toolsCounts.join(",") === "3,2" &&
         details.testimonialCount === 3 &&
         details.firstTestimonialHeight > 0 && details.firstTestimonialHeight < 290 &&
         !!portrait && portrait.height >= Math.min(280, details.viewportWidth * .65) &&

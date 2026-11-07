@@ -43,7 +43,7 @@ try {
         ({ expectedSections, errorNotice }) =>
           document.querySelectorAll("section.portfolio-section").length === expectedSections &&
           Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
-          Boolean(document.querySelector("#perfil-a .mobile-profile-hero img")),
+          Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
         { timeout: 22000 },
         { expectedSections, errorNotice },
       )
@@ -52,7 +52,7 @@ try {
         profileVisible: Boolean(document.querySelector("section#perfil")),
         errorNotice: Boolean(document.querySelector(".public-site .data-error")),
         portraitLoaded: (() => {
-          const image = document.querySelector("#perfil-a .mobile-profile-hero img")
+          const image = document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")
           return Boolean(image && image.complete && image.naturalWidth > 0)
         })(),
         testimonials: document.querySelectorAll("#depoimentos .testimonial-card").length,
