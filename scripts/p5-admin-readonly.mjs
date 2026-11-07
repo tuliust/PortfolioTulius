@@ -237,6 +237,19 @@ try {
     heroLeft.colorsAsTextSelect === 0 && heroLeft.singleMessage && heroLeft.genericMetricHidden &&
     heroLeft.formatButtons >= 3 && heroLeft.photo,
     "Hero Esquerda incompleto: " + JSON.stringify(heroLeft))
+  const highlights = await page.evaluate(() => ({
+    group: document.querySelector(".hero-highlights-editor > summary")?.textContent?.trim(),
+    children: document.querySelectorAll(".hero-highlights-editor .hero-highlight-entry").length,
+    topLevelCards: document.querySelectorAll(".block-items > .block-item-editor").length,
+    descriptions: [...document.querySelectorAll(".hero-highlight-entry .hero-highlight-caption")]
+      .map((node) => node.textContent?.trim()),
+  }))
+  assert(highlights.group?.includes("Itens de Destaque") && highlights.children === 4 &&
+    highlights.topLevelCards === 1 &&
+    highlights.descriptions.includes("Experiência em grandes empresas"),
+    "Destaques do Hero não foram agrupados: " + JSON.stringify(highlights))
+  report("HERO_HIGHLIGHTS", { group: "Itens de Destaque",
+    count: highlights.children, preservedLegacyItems: true })
   await page.evaluate(() =>
     document.querySelector(".hero-section-specific .hero-visual-picker-trigger")?.click())
   await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
@@ -339,10 +352,19 @@ try {
   await page.evaluate(() =>
     [...document.querySelectorAll(".site-editor-visual-areas button")]
       .find((x) => x.querySelector("strong")?.textContent?.trim() === "Centro")?.click())
-  await page.waitForSelector(".admin-image-target-switch button.active", { timeout: 12000 })
-  const photoTarget = await page.$eval(".admin-image-target-switch button.active",
-    node => node.textContent?.trim())
-  assert(photoTarget === "Desktop", "Centro de Sobre não seleciona fotografia desktop.")
+  await page.waitForSelector(".about-center-photo-only .published-media-picker-label", { timeout: 12000 })
+  const photoTarget = await page.evaluate(() => ({
+    title: document.querySelector(".about-center-photo-only h3")?.textContent?.trim(),
+    mediaLabel: document.querySelector(".about-center-photo-only .published-media-picker-label")?.textContent?.trim(),
+    itemEditors: document.querySelectorAll(".studio-inline-layout .block-item-editor").length,
+    textInputs: document.querySelectorAll(".about-center-photo-only input:not([type=file]), .about-center-photo-only textarea").length,
+    advancedSettings: document.querySelectorAll(".studio-inline-layout .site-editor-advanced").length,
+  }))
+  assert(photoTarget.title?.includes("Fotografia desktop") &&
+    photoTarget.mediaLabel === "Fotografia desktop" &&
+    photoTarget.itemEditors === 0 && photoTarget.advancedSettings === 0 &&
+    photoTarget.textInputs === 0,
+    "Centro da seção 02 precisa gerenciar apenas a foto: " + JSON.stringify(photoTarget))
   await verifyZones("Resultados e projetos", triple)
   await verifyZones("Experiências Profissionais", triple)
   await page.evaluate(() =>
@@ -364,8 +386,8 @@ try {
     [...document.querySelectorAll(".site-editor-visual-areas button")]
       .find((x) => x.querySelector("strong")?.textContent?.trim() === "Direita")?.click())
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
-  report("VISUAL_AREAS", { sections: 3, positions: triple, desktopPortrait: true,
-    sharedExperienceGallery: true })
+  report("VISUAL_AREAS", { sections: 3, positions: triple,
+    desktopPortraitOnly: true, sharedExperienceGallery: true })
   await chooseSection("Hero")
 
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })

@@ -85,6 +85,7 @@ import { VisualIconLibrary, PlatformIconLibrary } from "./VisualIconLibrary"
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroItemFields } from "./HeroItemFields"
+import { HeroHighlightsEditor } from "./HeroHighlightsEditor"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 
 interface SectionOption {
@@ -1319,6 +1320,42 @@ export function ContentStudio({
         </div>
         {draft ? (
           <section className="admin-card editor-form">
+            {experienceSlug === "sobre" && visualArea === "center" && draft.mobile_panel === "a" ? (
+              <div className="about-center-photo-only">
+                <div>
+                  <h3>Fotografia desktop · Centro</h3>
+                  <p>Esta área controla apenas a fotografia central da seção 02. Os textos e a imagem mobile permanecem em seus próprios campos.</p>
+                </div>
+                {draft.content_json.items?.[0] ? (
+                  <PublishedMediaPicker
+                    label="Fotografia desktop"
+                    guidanceAsInfo
+                    iconOnlyActions
+                    allowFraming={false}
+                    guidance="Retrato vertical 3:4; sugestão 900 × 1200 px."
+                    ratio="3 / 4"
+                    framing={draft.content_json.items[0].aboutDesktopFraming}
+                    onFramingChange={(aboutDesktopFraming) => updateItem(0, { aboutDesktopFraming })}
+                    value={draft.content_json.items[0].aboutDesktopImage ?? ""}
+                    onChange={(aboutDesktopImage, aboutDesktopAlt) =>
+                      updateItem(0, { aboutDesktopImage, aboutDesktopAlt })
+                    }
+                  />
+                ) : (
+                  <p role="status">Não foi encontrado o registro da fotografia desktop.</p>
+                )}
+                <p>Se não houver fotografia desktop, o site conserva a imagem de reserva. A imagem mobile não será modificada.</p>
+                <StatusMessage>{message}</StatusMessage>
+                {!embedded && (
+                  <FloatingSaveButton
+                    enabled={blockDirty && !placementsLoading && !placementsReadError}
+                    onClick={saveBlock}
+                    label="Salvar fotografia desktop"
+                  />
+                )}
+              </div>
+            ) : (
+              <>
             {draft.content_json.source_collection === "testimonials" && (
               <p className="site-editor-note">
                 Os depoimentos exibidos no site são editados em
@@ -1850,6 +1887,7 @@ export function ContentStudio({
                   </div>
                 )}
               {(draft.content_json.items ?? []).map((item, index) => (
+                experienceSlug === "perfil" && draft.mobile_panel === "a" && index > 0 ? null : (
                 <article className="block-item-editor" key={index}>
                   <div className="block-item-head">
                     <button
@@ -2678,7 +2716,19 @@ export function ContentStudio({
                     </div>
                   )}
                 </article>
+                )
               ))}
+              {experienceSlug === "perfil" && draft.mobile_panel === "a" &&
+                (draft.content_json.items?.length ?? 0) > 1 && (
+                  <HeroHighlightsEditor
+                    items={draft.content_json.items ?? []}
+                    catalog={identityOptions}
+                    onUpdate={updateItem}
+                    onFormat={updateFieldFormat}
+                    onMove={moveItem}
+                    onRemove={(index) => void removeItem(index)}
+                  />
+                )}
             </div>
             <StatusMessage>{message}</StatusMessage>
             <div className="form-actions">
@@ -2695,6 +2745,8 @@ export function ContentStudio({
                 />
               )}
             </div>
+              </>
+            )}
           </section>
         ) : (
           <div className="admin-card empty-state">
