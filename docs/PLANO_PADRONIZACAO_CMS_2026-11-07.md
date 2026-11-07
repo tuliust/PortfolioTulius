@@ -1,8 +1,8 @@
 # Plano completo — padronização do CMS (Identidade, Editor do Site e Acervo Estruturado)
 
-**Registrado em:** 07/11/2026. **Autorização posterior:** Etapas 2, 3 e 4 solicitadas e implementadas em 07/11/2026. A Etapa 5 permanece não autorizada. **Código-fonte de referência anterior ao inventário:** `207327b1ebe974e768a81f752fe1184249d210ba`.
+**Registrado em:** 07/11/2026. **Autorização posterior:** Etapas 2, 3, 4 e 5 solicitadas e executadas em 07/11/2026. **Etapa 5 permanece com homologação parcial**, conforme [relatório](HOMOLOGACAO_CMS_ETAPA5_2026-11-07.md). **Código-fonte de referência anterior ao inventário:** `207327b1ebe974e768a81f752fe1184249d210ba`.
 
-> Este documento formaliza o plano. As Etapas 2, 3 e 4 foram posteriormente autorizadas. A Etapa 4 separou o Acervo Estruturado e limita sua interface a coleções com uso público comprovado, sem alterar as fontes de conteúdo. **A Etapa 5 permanece pendente.** [Etapa 2](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md) · [Etapa 3](EDITOR_DO_SITE_ETAPA3_2026-11-07.md) · [Etapa 4](ACERVO_ESTRUTURADO_ETAPA4_2026-11-07.md).
+> Este documento formaliza o plano. As Etapas 2–5 foram autorizadas e executadas. A homologação do CMS autenticado e das operações transacionais sintéticas avançou, mas **a aprovação completa continua bloqueada por quatro falhas P3, variabilidade do LCP mobile e comparações visuais não conclusivas**. [Etapa 2](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md) · [Etapa 3](EDITOR_DO_SITE_ETAPA3_2026-11-07.md) · [Etapa 4](ACERVO_ESTRUTURADO_ETAPA4_2026-11-07.md) · [Etapa 5](HOMOLOGACAO_CMS_ETAPA5_2026-11-07.md).
 
 ## Objetivo e princípios invariantes
 
@@ -113,7 +113,7 @@ Tornar a edição do portfólio mais intuitiva, com **Identidade** como catálog
 | 2. Biblioteca Identidade | Executada em 07/11/2026; homologação autenticada de formulário pendente | Não houve ajuste visual automático |
 | 3. Editor do Site | Implementada em 07/11/2026; homologação transacional do CMS pendente | Sem alteração deliberada de aparência |
 | 4. Acervo Estruturado | Implementada em 07/11/2026; homologação com sessão admin real pendente | Sem alteração deliberada na página pública |
-| 5. Homologação e publicação | Planejada, não iniciada | Não autorizada |
+| 5. Homologação e publicação | Executada: CMS read-only 11/11, banco local sintético 8/8; P3 e paridade visual pendentes | Nenhuma mudança deliberada em conteúdo público |
 
 **Atenção:** backups desta etapa são específicos de **apresentação** e não um dump integral das tabelas. Antes de qualquer edição de conteúdo, realizar também backup completo e protegido dos registros que serão efetivamente alterados, respeitando a natureza pública deste repositório.
 
