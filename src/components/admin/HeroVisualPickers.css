@@ -255,7 +255,9 @@
 }
 
 /* A escolha visual apresenta amostras e pictogramas; nomes permanecem acessíveis via aria-label e title. */
-.hero-visual-picker-trigger > svg:last-child { margin-left: auto; }
+.hero-visual-picker-trigger > svg:last-child {
+  margin-left: auto;
+}
 .hero-visual-picker-trigger .hero-picker-selected,
 .hero-swatch-grid .hero-swatch-caption {
   position: absolute;
@@ -267,5 +269,9 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.hero-swatch-grid button { min-height: 3.1rem; }
-.hero-icon-grid button { min-height: 2.8rem; }
+.hero-swatch-grid button {
+  min-height: 3.1rem;
+}
+.hero-icon-grid button {
+  min-height: 2.8rem;
+}
