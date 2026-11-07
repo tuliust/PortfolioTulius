@@ -2296,7 +2296,7 @@ export function ContentStudio({
                                                 ? "Botão principal · título"
                                                 : "Item · título"
                                             : "Título"}
-                                          {(
+                                          {
                                             <HeroFormattingButton
                                               label="título do item"
                                               value={item.fieldFormats?.title}
@@ -2305,7 +2305,7 @@ export function ContentStudio({
                                               }
                                               catalog={identityOptions}
                                             />
-                                          )}
+                                          }
                                         </span>
                                         <input
                                           value={item.title}
@@ -2322,16 +2322,16 @@ export function ContentStudio({
                                             index < 5
                                               ? "Linha superior / número"
                                               : "Rótulo / número"}
-                                            {(
+                                            {
                                               <HeroFormattingButton
-                                                  label="linha superior"
-                                                  value={item.fieldFormats?.label}
-                                                  onChange={(next) =>
-                                                    updateFieldFormat(index, "label", next)
-                                                  }
-                                                  catalog={identityOptions}
-                                                />
-                                              )}
+                                                label="linha superior"
+                                                value={item.fieldFormats?.label}
+                                                onChange={(next) =>
+                                                  updateFieldFormat(index, "label", next)
+                                                }
+                                                catalog={identityOptions}
+                                              />
+                                            }
                                           </span>
                                           <input
                                             value={item.label ?? ""}
@@ -2353,8 +2353,8 @@ export function ContentStudio({
                                                   ? "Descrição do item"
                                                   : "Texto"
                                               : "Texto"}
-                                            {(
-                                            <HeroFormattingButton
+                                            {
+                                              <HeroFormattingButton
                                                 label="texto do item"
                                                 value={item.fieldFormats?.text}
                                                 onChange={(next) =>
@@ -2362,7 +2362,7 @@ export function ContentStudio({
                                                 }
                                                 catalog={identityOptions}
                                               />
-                                            )}
+                                            }
                                           </span>
                                           <textarea
                                             value={item.text ?? ""}
@@ -2379,7 +2379,9 @@ export function ContentStudio({
                                             <HeroFormattingButton
                                               label="valor ou métrica"
                                               value={item.fieldFormats?.value}
-                                              onChange={(next) => updateFieldFormat(index, "value", next)}
+                                              onChange={(next) =>
+                                                updateFieldFormat(index, "value", next)
+                                              }
                                               catalog={identityOptions}
                                             />
                                             <AdminInfoTip
@@ -2403,16 +2405,16 @@ export function ContentStudio({
                                             index >= 5
                                               ? "Subtítulo do item"
                                               : "Metadado/URL"}
-                                            {(
+                                            {
                                               <HeroFormattingButton
-                                                  label="subtítulo do item"
-                                                  value={item.fieldFormats?.meta}
-                                                  onChange={(next) =>
-                                                    updateFieldFormat(index, "meta", next)
-                                                  }
-                                                  catalog={identityOptions}
-                                                />
-                                              )}
+                                                label="subtítulo do item"
+                                                value={item.fieldFormats?.meta}
+                                                onChange={(next) =>
+                                                  updateFieldFormat(index, "meta", next)
+                                                }
+                                                catalog={identityOptions}
+                                              />
+                                            }
                                             <AdminInfoTip
                                               label="Metadado/URL"
                                               description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."

@@ -185,10 +185,16 @@ function ItemCard({
             {item.label}
           </span>
         )}
-        {item.value && <strong
-          className={["item-value", heroSizeClass(item.fieldFormats?.value)].filter(Boolean).join(" ")}
-          style={heroTextStyle(item.fieldFormats?.value)}
-        >{item.value}</strong>}
+        {item.value && (
+          <strong
+            className={["item-value", heroSizeClass(item.fieldFormats?.value)]
+              .filter(Boolean)
+              .join(" ")}
+            style={heroTextStyle(item.fieldFormats?.value)}
+          >
+            {item.value}
+          </strong>
+        )}
         <h3
           className={heroSizeClass(item.fieldFormats?.title)}
           style={heroTextStyle(item.fieldFormats?.title)}
