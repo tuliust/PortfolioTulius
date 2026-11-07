@@ -132,6 +132,7 @@ try {
   blockId = block.id
   blockBefore = structuredClone(block)
   const json = structuredClone(block.content_json)
+  json.editorTitle = "Hero de homologação " + suffix
   json.items[0].text = "Edição fictícia " + suffix
   json.items[0].fieldFormats = {
     title: {
@@ -145,7 +146,8 @@ try {
   json.items[0].hero = {
     ...(json.items[0].hero ?? {}),
     rootBackground: "transparent",
-    badgeIcon: "arrow",
+    badgeIcon: "chart",
+    nextIcon: "sparkles",
     fieldFormats: { intro: { styleToken: "typography.support-text" } },
   }
   await atomicSave(block, json)
@@ -154,11 +156,14 @@ try {
   must(savedHero.text === "Edição fictícia " + suffix &&
     savedHero.fieldFormats?.title?.colorToken === "color.orange" &&
     savedHero.fieldFormats?.title?.desktopSize === 112 &&
+    blockReloaded.content_json.editorTitle === "Hero de homologação " + suffix &&
+    savedHero.hero?.badgeIcon === "chart" &&
+    savedHero.hero?.nextIcon === "sparkles" &&
     savedHero.hero?.rootBackground === "transparent" &&
     savedHero.hero?.fieldFormats?.intro?.styleToken === "typography.support-text",
     "P5_LOCAL_BLOCK_RELOAD")
   check("ATOMIC_BLOCK_SAVE_RELOAD", { rpc: "save_content_block_atomic", jsonb: true,
-    heroFormats: true })
+    heroFormats: true, editorLabelIndependent: true, iconCatalog: true })
 
   const createdOther = await service.auth.admin.createUser({
     email: nonAdminEmail, password, email_confirm: true,
