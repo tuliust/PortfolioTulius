@@ -102,9 +102,9 @@ export type HeroTextFormat = {
 
 export type HeroVisualConfig = {
   rootBackground?: string
-  badgeIcon?: "arrow" | "plus" | "none"
+  badgeIcon?: string
   secondaryTitle?: string
-  nextIcon?: "down" | "arrow"
+  nextIcon?: string
   nextColor?: string
   nextBackground?: string
   nextTarget?: string

@@ -6,6 +6,7 @@ type IconProps = {
     | "menu"
     | "close"
     | "arrow"
+    | "plus"
     | "up"
     | "down"
     | "edit"
@@ -36,6 +37,7 @@ export function Icon({ name, size = 22 }: IconProps) {
         <path d="M5 19 19 5M9 5h10v10" />
       </>
     ),
+    plus: <path d="M12 3v18M3 12h18" />,
     up: (
       <>
         <path d="m6 15 6-6 6 6" />

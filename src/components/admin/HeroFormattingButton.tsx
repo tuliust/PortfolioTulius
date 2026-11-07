@@ -3,6 +3,7 @@ import type { HeroTextFormat } from "../../types/content"
 import type { IdentityTokenRow } from "../../lib/identity-catalog"
 import { IDENTITY_NUMERIC_SIZES } from "../../lib/identity-catalog"
 import { Icon } from "../ui/Icons"
+import { HeroColorPicker } from "./HeroVisualPickers"
 import "./HeroFormattingButton.css"
 
 export function HeroFormattingButton({
@@ -18,7 +19,6 @@ export function HeroFormattingButton({
 }) {
   const [open, setOpen] = useState(false)
   const styles = Object.values(catalog).filter((entry) => entry.token_key.startsWith("typography."))
-  const colors = Object.values(catalog).filter((entry) => entry.value_type === "color")
   const fonts = Object.values(catalog).filter((entry) => entry.value_type === "font")
   const sizes = Array.from(
     new Set([
@@ -29,7 +29,7 @@ export function HeroFormattingButton({
   ).sort((a, b) => a - b)
   const patch = (next: Partial<HeroTextFormat>) => onChange({ ...value, ...next })
   return (
-    <span className="hero-format-control">
+    <div className="hero-format-control">
       <button
         type="button"
         className="hero-format-trigger"
@@ -41,7 +41,7 @@ export function HeroFormattingButton({
         <Icon name="sliders" size={15} />
       </button>
       {open && (
-        <span className="hero-format-popover" role="group" aria-label={"Formatação de " + label}>
+        <div className="hero-format-popover" role="group" aria-label={"Formatação de " + label}>
           <strong>Formatação · {label}</strong>
           <label>
             Estilo da Identidade
@@ -57,20 +57,9 @@ export function HeroFormattingButton({
               ))}
             </select>
           </label>
-          <label>
-            Cor
-            <select
-              value={value?.colorToken ?? ""}
-              onChange={(event) => patch({ colorToken: event.target.value || undefined })}
-            >
-              <option value="">Herdar do estilo</option>
-              {colors.map((entry) => (
-                <option key={entry.token_key} value={entry.token_key}>
-                  {entry.display_name}
-                </option>
-              ))}
-            </select>
-          </label>
+          <HeroColorPicker label="Cor" value={value?.colorToken ?? ""}
+            catalog={catalog} allowDefault
+            onChange={(colorToken) => patch({ colorToken: colorToken || undefined })} />
           <label>
             Fonte
             <select
@@ -113,8 +102,8 @@ export function HeroFormattingButton({
               Fechar
             </button>
           </div>
-        </span>
+        </div>
       )}
-    </span>
+    </div>
   )
 }

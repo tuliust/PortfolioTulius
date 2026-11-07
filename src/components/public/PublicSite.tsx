@@ -41,13 +41,17 @@ function Badge360({ config }: { config?: HeroVisualConfig }) {
             {config?.badgeText || heroDefaults.badgeText}
           </textPath>
         </text>
-        {config?.badgeIcon !== "none" &&
-          (config?.badgeIcon === "plus" ? (
-            <path d="M80 53v54M53 80h54" />
-          ) : (
-            <path d="M55 100 102 53M70 53h32v32" />
-          ))}
+        {config?.badgeIcon === "plus" ? (
+          <path d="M80 53v54M53 80h54" />
+        ) : config?.badgeIcon === undefined || config.badgeIcon === "arrow" ? (
+          <path d="M55 100 102 53M70 53h32v32" />
+        ) : null}
       </svg>
+      {config?.badgeIcon && !["none", "arrow", "plus"].includes(config.badgeIcon) && (
+        <span className="badge-360-symbol">
+          <Icon name={config.badgeIcon as MetricIconName} size={46} />
+        </span>
+      )}
     </div>
   )
 }
@@ -414,7 +418,9 @@ function ProfileDesktop({
             aria-label="Ir para a próxima seção"
             title="Ir para a próxima seção"
           >
-            <Icon name={rightHero?.nextIcon === "arrow" ? "arrow" : "down"} size={28} />
+            {rightHero?.nextIcon !== "none" && (
+              <Icon name={(rightHero?.nextIcon ?? "down") as MetricIconName} size={28} />
+            )}
           </a>
         )}
       </div>

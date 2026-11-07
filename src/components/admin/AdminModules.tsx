@@ -84,11 +84,15 @@ import { Icon } from "../ui/Icons"
 import { VisualIconLibrary, PlatformIconLibrary } from "./VisualIconLibrary"
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import { HeroFormattingButton } from "./HeroFormattingButton"
+import { HeroItemFields } from "./HeroItemFields"
+import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 
 interface SectionOption {
   id: string
   title: string
   slug: string
+  intro?: string | null
+  eyebrow?: string | null
 }
 type BlockRow = {
   id: string
@@ -100,6 +104,7 @@ type BlockRow = {
     collection_start?: number
     collection_limit?: number
     experienceMedia?: ExperienceMedia
+    editorTitle?: string
   }
   mobile_panel: "a" | "b"
   sort_order: number
@@ -654,6 +659,20 @@ export function ContentStudio({
   const [reviewingSource, setReviewingSource] = useState(false)
   const [trajectoryDirty, setTrajectoryDirty] = useState(false)
   const experienceSlug = sections.find((entry) => entry.id === sectionId)?.slug
+  const [heroCopy, setHeroCopy] = useState({ title: "", eyebrow: "", intro: "" })
+  const [heroCopySaved, setHeroCopySaved] = useState({ title: "", eyebrow: "", intro: "" })
+  useEffect(() => {
+    const section = sections.find((entry) => entry.id === sectionId)
+    const copy = {
+      title: section?.title ?? "",
+      eyebrow: section?.eyebrow ?? "",
+      intro: section?.intro ?? "",
+    }
+    setHeroCopy(copy)
+    setHeroCopySaved(copy)
+  }, [sectionId])
+  const heroCopyDirty = experienceSlug === "perfil" &&
+    JSON.stringify(heroCopy) !== JSON.stringify(heroCopySaved)
   const visualAreas = adminVisualAreas(experienceSlug)
   const hasCareerTrajectory = [
     "invest-rs",
@@ -688,8 +707,8 @@ export function ContentStudio({
     Boolean(draft && savedBlock && JSON.stringify(draft) !== JSON.stringify(savedBlock)) ||
     editedPanelKeys.length > 0
   useEffect(
-    () => onDirtyChange?.(blockDirty || trajectoryDirty),
-    [blockDirty, trajectoryDirty, onDirtyChange],
+    () => onDirtyChange?.(blockDirty || trajectoryDirty || heroCopyDirty),
+    [blockDirty, trajectoryDirty, heroCopyDirty, onDirtyChange],
   )
   const setPlacement = (next: PlacementForm) => {
     setPlacementsByPanel((current) => ({ ...current, [placementPanel]: next }))
@@ -804,6 +823,10 @@ export function ContentStudio({
 
   async function saveBlock(): Promise<boolean> {
     if (!supabase || !draft) return false
+    if (heroCopyDirty && !heroCopy.title.trim()) {
+      setMessage("O título principal é obrigatório.")
+      return false
+    }
     if (placementsLoading || placementsReadError) {
       setMessage("Carregue os placements antes de salvar.")
       return false
@@ -863,10 +886,27 @@ export function ContentStudio({
     })
 
     setMessage("Salvando bloco e painéis…")
+    let contentToSave = draft.content_json
+    if (experienceSlug === "perfil" && draft.mobile_panel === "a") {
+      // Another editor can save the CMS-only section label while this item form is open.
+      // Read it again immediately before the atomic write to avoid losing that label.
+      const latest = await supabase.from("content_blocks")
+        .select("content_json").eq("id", draft.id).single()
+      if (latest.error) {
+        setMessage(latest.error.message)
+        return false
+      }
+      contentToSave = {
+        ...contentToSave,
+        ...(latest.data?.content_json?.editorTitle !== undefined
+          ? { editorTitle: latest.data.content_json.editorTitle }
+          : {}),
+      }
+    }
     const { error } = await supabase.rpc("save_content_block_atomic", {
       p_block_id: draft.id,
       p_block_type: draft.block_type,
-      p_content_json: draft.content_json,
+      p_content_json: contentToSave,
       p_mobile_panel: draft.mobile_panel,
       p_sort_order: draft.sort_order,
       p_status: draft.status === "archived" ? "archived" : "published",
@@ -885,7 +925,28 @@ export function ContentStudio({
       )
       return false
     }
-    setMessage("Bloco e placements salvos em uma transação.")
+    if (heroCopyDirty) {
+      if (!heroCopy.title.trim()) {
+        setMessage("O título principal é obrigatório.")
+        return false
+      }
+      const updated = await supabase.from("sections")
+        .update({
+          title: heroCopy.title.trim(),
+          eyebrow: heroCopy.eyebrow,
+          intro: heroCopy.intro,
+        })
+        .eq("id", draft.section_id)
+        .select("title,eyebrow,intro").single()
+      if (updated.error || updated.data?.title !== heroCopy.title.trim() ||
+        updated.data?.eyebrow !== heroCopy.eyebrow ||
+        updated.data?.intro !== heroCopy.intro) {
+        setMessage(updated.error?.message ?? "Não foi possível confirmar os textos do Hero.")
+        return false
+      }
+      setHeroCopySaved({ ...heroCopy, title: heroCopy.title.trim() })
+    }
+    setMessage("Bloco e textos salvos e conferidos.")
     onSaved?.()
     return true
   }
@@ -893,9 +954,9 @@ export function ContentStudio({
     () =>
       registerAdminSaveAction(
         saveBlock,
-        () => blockDirty && !placementsLoading && !placementsReadError,
+        () => (blockDirty || heroCopyDirty) && !placementsLoading && !placementsReadError,
       ),
-    [saveBlock, blockDirty, placementsLoading, placementsReadError],
+    [saveBlock, blockDirty, heroCopyDirty, placementsLoading, placementsReadError],
   )
 
   async function reviewCollectionSourceChange(next: string) {
@@ -1841,204 +1902,106 @@ export function ContentStudio({
                       )}
                       {experienceSlug === "perfil" && index === 0 && (
                         <fieldset className="hero-section-specific">
-                          <legend>
-                            Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}
-                          </legend>
+                          <legend>Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}</legend>
                           {draft.mobile_panel === "a" ? (
                             <div className="field-grid">
-                              <label>
-                                Cor do BG do Hero
-                                <select
-                                  value={item.hero?.rootBackground ?? "transparent"}
-                                  onChange={(event) =>
-                                    updateHero(index, { rootBackground: event.target.value })
-                                  }
-                                >
-                                  <option value="transparent">Transparente</option>
-                                  {Object.values(identityOptions)
-                                    .filter((row) => row.value_type === "color")
-                                    .map((row) => (
-                                      <option key={row.token_key} value={row.token_key}>
-                                        {row.display_name}
-                                      </option>
-                                    ))}
-                                </select>
-                              </label>
-                              <label>
-                                Cor do BG · Esquerda
-                                <select
-                                  value={
-                                    item.hero?.panelBackground &&
-                                    item.hero.panelBackground.startsWith("color.")
-                                      ? item.hero.panelBackground
-                                      : "color.ink"
-                                  }
-                                  onChange={(event) =>
-                                    updateHero(index, { panelBackground: event.target.value })
-                                  }
-                                >
-                                  {Object.values(identityOptions)
-                                    .filter((row) => row.value_type === "color")
-                                    .map((row) => (
-                                      <option key={row.token_key} value={row.token_key}>
-                                        {row.display_name}
-                                      </option>
-                                    ))}
-                                </select>
+                              <HeroColorPicker label="Cor do BG do Hero"
+                                value={item.hero?.rootBackground ?? "transparent"}
+                                onChange={(rootBackground) => updateHero(index, { rootBackground })}
+                                catalog={identityOptions} allowTransparent />
+                              <HeroColorPicker label="Cor do BG · Esquerda"
+                                value={item.hero?.panelBackground ?? "#171617"}
+                                onChange={(panelBackground) => updateHero(index, { panelBackground })}
+                                catalog={identityOptions} />
+                              <label className="field-wide">
+                                <span className="hero-field-label">
+                                  Frase editorial
+                                  <HeroFormattingButton label="frase editorial"
+                                    value={item.hero?.fieldFormats?.intro}
+                                    onChange={(next) => updateHeroFormat(index, "intro", next)}
+                                    catalog={identityOptions} />
+                                </span>
+                                <textarea rows={3} value={heroCopy.intro}
+                                  onChange={(event) => setHeroCopy((current) => ({
+                                    ...current, intro: event.target.value,
+                                  }))} />
                               </label>
                               <label className="field-wide">
-                                Círculo · texto giratório
-                                <input
-                                  value={
-                                    item.hero?.badgeText ??
-                                    "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
-                                  }
-                                  onChange={(event) =>
-                                    updateHero(index, { badgeText: event.target.value })
-                                  }
-                                />
-                                <HeroFormattingButton
-                                  label="texto giratório"
-                                  value={item.hero?.fieldFormats?.badgeText}
-                                  onChange={(next) => updateHeroFormat(index, "badgeText", next)}
-                                  catalog={identityOptions}
-                                />
+                                <span className="hero-field-label">
+                                  Círculo · texto giratório
+                                  <HeroFormattingButton label="texto giratório"
+                                    value={item.hero?.fieldFormats?.badgeText}
+                                    onChange={(next) => updateHeroFormat(index, "badgeText", next)}
+                                    catalog={identityOptions} />
+                                </span>
+                                <input value={item.hero?.badgeText ?? "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"}
+                                  onChange={(event) => updateHero(index, { badgeText: event.target.value })} />
                               </label>
-                              <label>
-                                Círculo · ícone central
-                                <select
-                                  value={item.hero?.badgeIcon ?? "arrow"}
-                                  onChange={(event) =>
-                                    updateHero(index, {
-                                      badgeIcon: event.target.value as "arrow" | "plus" | "none",
-                                    })
-                                  }
-                                >
-                                  <option value="arrow">Seta diagonal</option>
-                                  <option value="plus">Cruz</option>
-                                  <option value="none">Sem ícone</option>
-                                </select>
-                              </label>
-                              <div className="hero-inline-format field-wide">
-                                Frase editorial
-                                <HeroFormattingButton
-                                  label="frase editorial"
-                                  value={item.hero?.fieldFormats?.intro}
-                                  onChange={(next) => updateHeroFormat(index, "intro", next)}
-                                  catalog={identityOptions}
-                                />
-                                <small>
-                                  O texto é editado em Informações da seção, acima. Esta
-                                  configuração modifica apenas sua apresentação.
-                                </small>
-                              </div>
+                              <HeroIconPicker label="Círculo · ícone central"
+                                value={item.hero?.badgeIcon ?? "arrow"}
+                                onChange={(badgeIcon) => updateHero(index, { badgeIcon })}
+                              />
                             </div>
                           ) : (
                             <div className="field-grid">
-                              <div className="hero-inline-format field-wide">
-                                Título principal
-                                <HeroFormattingButton
-                                  label="título principal"
-                                  value={item.hero?.fieldFormats?.title}
-                                  onChange={(next) => updateHeroFormat(index, "title", next)}
-                                  catalog={identityOptions}
-                                />
-                                <small>Texto editável em Informações da seção, acima.</small>
-                              </div>
-                              <div className="hero-inline-format field-wide">
-                                Descritivo
-                                <HeroFormattingButton
-                                  label="descritivo"
-                                  value={item.hero?.fieldFormats?.role}
-                                  onChange={(next) => updateHeroFormat(index, "role", next)}
-                                  catalog={identityOptions}
-                                />
-                                <small>Texto editável em Informações da seção, acima.</small>
-                              </div>
                               <label className="field-wide">
-                                Título secundário
-                                <input
-                                  value={item.hero?.secondaryTitle ?? "Experiência e atuação"}
-                                  onChange={(event) =>
-                                    updateHero(index, { secondaryTitle: event.target.value })
-                                  }
-                                />
-                                <HeroFormattingButton
-                                  label="título secundário"
-                                  value={item.hero?.fieldFormats?.secondaryTitle}
-                                  onChange={(next) =>
-                                    updateHeroFormat(index, "secondaryTitle", next)
-                                  }
-                                  catalog={identityOptions}
-                                />
+                                <span className="hero-field-label">
+                                  Título principal
+                                  <HeroFormattingButton label="título principal"
+                                    value={item.hero?.fieldFormats?.title}
+                                    onChange={(next) => updateHeroFormat(index, "title", next)}
+                                    catalog={identityOptions} />
+                                </span>
+                                <input value={heroCopy.title}
+                                  onChange={(event) => setHeroCopy((current) => ({
+                                    ...current, title: event.target.value,
+                                  }))} />
                               </label>
-                              <label>
-                                Botão inferior · ícone
-                                <select
-                                  value={item.hero?.nextIcon ?? "down"}
-                                  onChange={(event) =>
-                                    updateHero(index, {
-                                      nextIcon: event.target.value as "down" | "arrow",
-                                    })
-                                  }
-                                >
-                                  <option value="down">Seta para baixo</option>
-                                  <option value="arrow">Seta diagonal</option>
-                                </select>
+                              <label className="field-wide">
+                                <span className="hero-field-label">
+                                  Descritivo
+                                  <HeroFormattingButton label="descritivo"
+                                    value={item.hero?.fieldFormats?.role}
+                                    onChange={(next) => updateHeroFormat(index, "role", next)}
+                                    catalog={identityOptions} />
+                                </span>
+                                <input value={heroCopy.eyebrow}
+                                  onChange={(event) => setHeroCopy((current) => ({
+                                    ...current, eyebrow: event.target.value,
+                                  }))} />
                               </label>
-                              <label>
-                                Botão inferior · cor do ícone
-                                <select
-                                  value={item.hero?.nextColor ?? ""}
-                                  onChange={(event) =>
-                                    updateHero(index, { nextColor: event.target.value })
-                                  }
-                                >
-                                  <option value="">Padrão do site</option>
-                                  {Object.values(identityOptions)
-                                    .filter((row) => row.value_type === "color")
-                                    .map((row) => (
-                                      <option key={row.token_key} value={row.token_key}>
-                                        {row.display_name}
-                                      </option>
-                                    ))}
-                                </select>
+                              <label className="field-wide">
+                                <span className="hero-field-label">
+                                  Título secundário
+                                  <HeroFormattingButton label="título secundário"
+                                    value={item.hero?.fieldFormats?.secondaryTitle}
+                                    onChange={(next) => updateHeroFormat(index, "secondaryTitle", next)}
+                                    catalog={identityOptions} />
+                                </span>
+                                <input value={item.hero?.secondaryTitle ?? "Experiência e atuação"}
+                                  onChange={(event) => updateHero(index, { secondaryTitle: event.target.value })} />
                               </label>
-                              <label>
-                                Botão inferior · cor do BG
-                                <select
-                                  value={item.hero?.nextBackground ?? ""}
-                                  onChange={(event) =>
-                                    updateHero(index, { nextBackground: event.target.value })
-                                  }
-                                >
-                                  <option value="">Padrão do site</option>
-                                  <option value="transparent">Transparente</option>
-                                  {Object.values(identityOptions)
-                                    .filter((row) => row.value_type === "color")
-                                    .map((row) => (
-                                      <option key={row.token_key} value={row.token_key}>
-                                        {row.display_name}
-                                      </option>
-                                    ))}
-                                </select>
-                              </label>
+                              <HeroIconPicker label="Botão inferior · ícone"
+                                value={item.hero?.nextIcon ?? "down"}
+                                onChange={(nextIcon) => updateHero(index, { nextIcon })} />
+                              <HeroColorPicker label="Botão inferior · cor do ícone"
+                                value={item.hero?.nextColor ?? ""} allowDefault
+                                onChange={(nextColor) => updateHero(index, { nextColor })}
+                                catalog={identityOptions} />
+                              <HeroColorPicker label="Botão inferior · cor do BG"
+                                value={item.hero?.nextBackground ?? ""} allowDefault allowTransparent
+                                onChange={(nextBackground) => updateHero(index, { nextBackground })}
+                                catalog={identityOptions} />
                               <label>
                                 Botão inferior · âncora
-                                <select
-                                  value={item.hero?.nextTarget ?? ""}
-                                  onChange={(event) =>
-                                    updateHero(index, { nextTarget: event.target.value })
-                                  }
-                                >
+                                <select value={item.hero?.nextTarget ?? ""}
+                                  onChange={(event) => updateHero(index, { nextTarget: event.target.value })}>
                                   <option value="">Próxima seção publicada</option>
-                                  {sections
-                                    .filter((entry) => entry.slug !== "perfil")
-                                    .map((entry) => (
-                                      <option key={entry.id} value={entry.slug}>
-                                        {entry.title} (#{entry.slug})
-                                      </option>
-                                    ))}
+                                  {sections.filter((entry) => entry.slug !== "perfil").map((entry) => (
+                                    <option key={entry.id} value={entry.slug}>
+                                      {entry.title} (#{entry.slug})
+                                    </option>
+                                  ))}
                                 </select>
                               </label>
                             </div>
@@ -2046,6 +2009,15 @@ export function ContentStudio({
                         </fieldset>
                       )}
                       <div className="field-grid">
+                        {experienceSlug === "perfil" ? (
+                          <HeroItemFields
+                            item={item} index={index} panel={draft.mobile_panel}
+                            catalog={identityOptions}
+                            onUpdate={(patch) => updateItem(index, patch)}
+                            onFormat={(key, next) => updateFieldFormat(index, key, next)}
+                          />
+                        ) : (
+                          <>
                         <label>
                           <span className="hero-field-label">
                             {experienceSlug === "perfil"
@@ -2155,6 +2127,8 @@ export function ContentStudio({
                             onChange={(event) => updateItem(index, { meta: event.target.value })}
                           />
                         </label>
+                          </>
+                        )}
                         {sections.find((entry) => entry.id === draft.section_id)?.slug ===
                           "resultados" &&
                           draft.mobile_panel === "a" && (
@@ -2625,7 +2599,7 @@ export function ContentStudio({
               </button>
               {!embedded && (
                 <FloatingSaveButton
-                  enabled={blockDirty && !placementsLoading && !placementsReadError}
+                  enabled={(blockDirty || heroCopyDirty) && !placementsLoading && !placementsReadError}
                   onClick={saveBlock}
                   label="Salvar bloco"
                 />

@@ -41,6 +41,8 @@ type SectionRow = {
   theme: string
   layout_variant: string
   animation_preset: string
+  editor_title?: string
+  editor_block_id?: string
 }
 
 function sectionPublicationLabel(section: SectionRow): string {
@@ -312,7 +314,7 @@ function SectionsEditor({
 
   async function save(): Promise<boolean> {
     if (!draft || !supabase) return false
-    if (!draft.title.trim()) {
+    if (!(draft.slug === "perfil" ? draft.editor_title?.trim() : draft.title.trim())) {
       setMessage("O título da seção é obrigatório.")
       return false
     }
@@ -324,23 +326,47 @@ function SectionsEditor({
     setMessage("Salvando…")
     const { data, error } = await supabase
       .from("sections")
-      .update({
-        title: draft.title.trim(),
-        intro: draft.intro,
-        eyebrow: draft.eyebrow,
-        animation_preset: draft.animation_preset,
-      })
+      .update(draft.slug === "perfil"
+        ? { animation_preset: draft.animation_preset }
+        : {
+            title: draft.title.trim(),
+            intro: draft.intro,
+            eyebrow: draft.eyebrow,
+            animation_preset: draft.animation_preset,
+          })
       .eq("id", draft.id)
       .select("id,title,animation_preset")
       .single()
     if (
       error ||
       !data ||
-      data.title !== draft.title.trim() ||
+      (draft.slug !== "perfil" && data.title !== draft.title.trim()) ||
       data.animation_preset !== draft.animation_preset
     ) {
       setMessage(error?.message ?? "Não foi possível confirmar o salvamento da seção.")
       return false
+    }
+    if (draft.slug === "perfil" && draft.editor_title?.trim() !== selected?.editor_title?.trim()) {
+      if (!draft.editor_block_id) {
+        setMessage("Bloco esquerdo do Hero não encontrado para guardar o nome administrativo.")
+        return false
+      }
+      // Store the admin-only label in the existing JSONB block. This is never
+      // interpreted as the published person's name or page heading.
+      const latest = await supabase.from("content_blocks")
+        .select("content_json").eq("id", draft.editor_block_id).single()
+      if (latest.error || !latest.data) {
+        setMessage(latest.error?.message ?? "Não foi possível ler o nome administrativo.")
+        return false
+      }
+      const desired = draft.editor_title?.trim() || "Hero"
+      const written = await supabase.from("content_blocks")
+        .update({ content_json: { ...(latest.data.content_json ?? {}), editorTitle: desired } })
+        .eq("id", draft.editor_block_id).select("content_json").single()
+      if (written.error || written.data?.content_json?.editorTitle !== desired) {
+        setMessage(written.error?.message ?? "Não foi possível confirmar o nome administrativo.")
+        return false
+      }
     }
     setMessage("Alterações salvas.")
     reload()
@@ -425,7 +451,7 @@ function SectionsEditor({
             <div className="card-heading">
               <div>
                 <p>Seção {String(draft.sort_order).padStart(2, "0")}</p>
-                <h2>{draft.slug === "perfil" ? "Hero" : draft.title}</h2>
+                <h2>{draft.slug === "perfil" ? draft.editor_title || "Hero" : draft.title}</h2>
               </div>
               <div className="order-buttons">
                 <button onClick={() => move(-1)} aria-label="Mover para cima">
@@ -438,31 +464,32 @@ function SectionsEditor({
             </div>
             <div className="field-grid">
               <label>
-                {draft.slug === "perfil" ? "Título principal" : "Título"}
+                {draft.slug === "perfil" ? "Título da seção (nome no CMS)" : "Título"}
                 <input
-                  value={draft.title}
-                  onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                  value={draft.slug === "perfil" ? draft.editor_title ?? "Hero" : draft.title}
+                  onChange={(e) => setDraft(draft.slug === "perfil"
+                    ? { ...draft, editor_title: e.target.value }
+                    : { ...draft, title: e.target.value })}
                 />
               </label>
               <label>
                 Âncora
                 <input value={draft.slug} disabled title="Âncoras publicadas são estáveis" />
               </label>
-              <label className="field-wide">
-                {draft.slug === "perfil" ? "Descritivo" : "Linha editorial"}
-                <input
-                  value={draft.eyebrow ?? ""}
-                  onChange={(e) => setDraft({ ...draft, eyebrow: e.target.value })}
-                />
-              </label>
-              <label className="field-wide">
-                {draft.slug === "perfil" ? "Frase editorial" : "Introdução"}
-                <textarea
-                  rows={4}
-                  value={draft.intro ?? ""}
-                  onChange={(e) => setDraft({ ...draft, intro: e.target.value })}
-                />
-              </label>
+              {draft.slug !== "perfil" && (
+                <>
+                  <label className="field-wide">
+                    Linha editorial
+                    <input value={draft.eyebrow ?? ""}
+                      onChange={(e) => setDraft({ ...draft, eyebrow: e.target.value })} />
+                  </label>
+                  <label className="field-wide">
+                    Introdução
+                    <textarea rows={4} value={draft.intro ?? ""}
+                      onChange={(e) => setDraft({ ...draft, intro: e.target.value })} />
+                  </label>
+                </>
+              )}
               <label>
                 <span className="admin-field-label">
                   Transições
@@ -605,7 +632,7 @@ function SiteEditor({
               >
                 <span>{String(entry.section.sort_order).padStart(2, "0")}</span>
                 <div>
-                  <strong>{entry.section.slug === "perfil" ? "Hero" : entry.section.title}</strong>
+                  <strong>{entry.section.slug === "perfil" ? entry.section.editor_title || "Hero" : entry.section.title}</strong>
                   <small>{sectionPublicationLabel(entry.section)}</small>
                 </div>
               </button>
@@ -626,7 +653,7 @@ function SiteEditor({
                     {selectedIsExperience
                       ? "Experiências Profissionais"
                       : selected.slug === "perfil"
-                        ? "Hero"
+                        ? selected.editor_title || "Hero"
                         : selected.title}
                   </h2>
                   <span>
@@ -724,6 +751,7 @@ function SiteEditor({
                     sectionIdOverride={selected.id}
                     embedded
                     onDirtyChange={setContentDirty}
+                    onSaved={reload}
                   />
                   <FloatingSaveButton
                     enabled={sectionInfoDirty || contentDirty || testimonialsDirty}
@@ -823,9 +851,26 @@ export function AdminApp() {
       ?.from("sections")
       .select("*")
       .order("sort_order")
-      .then(({ data, error }) => {
-        // Keep the last successfully loaded section list when a later fetch fails.
-        if (!error) setSections(data ?? [])
+      .then(async ({ data, error }) => {
+        // The CMS title is stored separately from the published hero name.
+        // A read failure leaves the familiar default label and never changes public data.
+        let next: SectionRow[] = data ?? []
+        if (!error) {
+          const profile = next.find((entry) => entry.slug === "perfil")
+          if (profile) {
+            const read = await supabase?.from("content_blocks")
+              .select("id,content_json").eq("section_id", profile.id)
+              .eq("mobile_panel", "a").order("sort_order").limit(1)
+            const left = read?.data?.[0]
+            next = next.map((entry) => entry.id !== profile.id ? entry : {
+              ...entry,
+              editor_title: typeof left?.content_json?.editorTitle === "string" &&
+                left.content_json.editorTitle.trim() ? left.content_json.editorTitle : "Hero",
+              editor_block_id: left?.id,
+            })
+          }
+          setSections(next)
+        }
         setLoadError(error?.message ?? "")
         setLoadStatus(error ? "error" : "ready")
       })

@@ -195,7 +195,7 @@ try {
   const section = await page.evaluate(() => {
     const fields = [...document.querySelectorAll(".site-editor-section .field-grid label")]
     const names = fields.map((item) => item.textContent?.trim() ?? "")
-    const title = fields.find((item) => item.textContent?.trim() === "Título principal")?.querySelector("input")?.value
+    const title = fields.find((item) => item.textContent?.trim() === "Título da seção (nome no CMS)")?.querySelector("input")?.value
     const select = document.querySelector(".site-editor-section select")
     return {
       title,
@@ -209,7 +209,7 @@ try {
     }
   })
   const transitions = ["none", "fade-in", "fade-up", "stagger", "image-reveal", "metric-count"]
-  assert(section.title === "Tulius Tsangaropulos" && section.archive && !section.oldTabs &&
+  assert(section.title === "Hero" && section.archive && !section.oldTabs &&
     transitions.every((x) => section.transitions.includes(x)) &&
     section.transitions.length === transitions.length &&
     section.panels.includes("Esquerda") && section.panels.includes("Direita") &&
@@ -224,16 +224,33 @@ try {
     document.querySelectorAll(".hero-format-trigger").length >= 3)
   const heroLeft = await page.evaluate(() => ({
     group: document.querySelector(".hero-section-specific legend")?.textContent?.trim(),
-    transparent: [...document.querySelectorAll(".hero-section-specific select option")].some(
-      (option) => option.value === "transparent"),
-    paletteColors: document.querySelectorAll(".hero-section-specific option[value^='color.']").length,
+    palettes: document.querySelectorAll(".hero-section-specific .hero-visual-picker-trigger").length,
+    colorsAsTextSelect: document.querySelectorAll(".hero-section-specific select option[value^='color.']").length,
+    singleMessage: document.querySelectorAll(".hero-message-group legend").length === 1,
+    genericMetricHidden: ![...document.querySelectorAll(".block-item-body label")].some(
+      (node) => node.textContent?.trim().startsWith("Valor/métrica")),
     formatButtons: document.querySelectorAll(".hero-format-trigger").length,
     photo: [...document.querySelectorAll(".block-item-body .published-media-picker-label")].some(
       (node) => node.textContent?.trim() === "Foto"),
   }))
-  assert(heroLeft.group?.includes("Esquerda") && heroLeft.transparent &&
-    heroLeft.paletteColors >= 7 && heroLeft.formatButtons >= 3 && heroLeft.photo,
+  assert(heroLeft.group?.includes("Esquerda") && heroLeft.palettes >= 3 &&
+    heroLeft.colorsAsTextSelect === 0 && heroLeft.singleMessage && heroLeft.genericMetricHidden &&
+    heroLeft.formatButtons >= 3 && heroLeft.photo,
     "Hero Esquerda incompleto: " + JSON.stringify(heroLeft))
+  await page.evaluate(() =>
+    document.querySelector(".hero-section-specific .hero-visual-picker-trigger")?.click())
+  await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
+  const swatchCount = await page.$eval(".hero-swatch-grid button", (buttons) => buttons.length)
+  assert(swatchCount >= 8, "Paleta visual incompleta.")
+  await page.keyboard.press("Escape")
+  await page.evaluate(() =>
+    document.querySelector(".hero-icon-picker-anchor .hero-visual-picker-trigger")?.click())
+  await page.waitForSelector(".hero-icon-popover .hero-icon-grid button", { timeout: 10000 })
+  const iconGroups = await page.$eval(".hero-icon-popover h4", (nodes) =>
+    nodes.map((node) => node.textContent?.trim()))
+  assert(iconGroups.includes("Resultados") && iconGroups.includes("Digital") &&
+    iconGroups.includes("Navegação e controles"), "Ícones não agrupados.")
+  await page.keyboard.press("Escape")
   const changedPanel = await page.evaluate(() => {
     const button = [...document.querySelectorAll(".studio-block-picker button")].find(
       (node) => node.querySelector("strong")?.textContent?.includes("Direita"))
@@ -249,12 +266,14 @@ try {
     buttons: document.querySelectorAll(".hero-section-specific .hero-format-trigger").length,
     secondary: [...document.querySelectorAll(".hero-section-specific input")].some(
       (input) => input.value === "Experiência e atuação"),
-    labels: [...document.querySelectorAll(".hero-section-specific label")]
+    labels: [...document.querySelectorAll(".hero-section-specific label, .hero-section-specific .hero-picker-label")]
       .map((node) => node.textContent?.trim()),
+    mainTitle: [...document.querySelectorAll(".hero-section-specific input")]
+      .some((node) => node.value === "Tulius Tsangaropulos"),
     originalBlockCount: document.querySelectorAll(".studio-block-picker button").length,
   }))
   assert(heroRight.group?.includes("Direita") && heroRight.secondary &&
-    heroRight.buttons >= 3 && heroRight.originalBlockCount === 2 &&
+    heroRight.buttons >= 3 && heroRight.originalBlockCount === 2 && heroRight.mainTitle &&
     heroRight.labels.some((x) => x.includes("Botão inferior")),
     "Hero Direita incompleto: " + JSON.stringify(heroRight))
   await page.evaluate(() =>
