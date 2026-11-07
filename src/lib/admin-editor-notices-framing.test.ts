@@ -11,7 +11,7 @@ describe("UX do editor: avisos e enquadramento", () => {
     expect(editor).not.toContain("Origem do conteúdo:")
     expect(editor).not.toContain("As alterações dos itens deste bloco")
     expect(editor).toContain("site-editor-collection-action")
-    expect(editor).toContain("Editar registros vinculados")
+    expect(editor).toContain("Editar no Acervo")
   })
   it("mostra a orientação da seção 02 somente no ícone de informações", () => {
     const editor = read("AdminModules.tsx")
