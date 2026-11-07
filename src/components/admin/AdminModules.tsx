@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
+import { acervoUsageLabel, usagesForAcervoRecord, type AcervoUsage } from "../../lib/shared-acervo"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
 import {
   isRestorableEntity,
@@ -2682,12 +2683,16 @@ export function CollectionsStudio({
   initialSource,
   sectionId,
   linkedSources = [],
+  availableSources,
+  usageLinks,
   embedded = false,
   onDirtyChange,
 }: {
   initialSource?: string
   sectionId?: string
   linkedSources?: string[]
+  availableSources?: readonly CollectionSource[]
+  usageLinks?: readonly AcervoUsage[]
   embedded?: boolean
   onDirtyChange?: (dirty: boolean) => void
 }) {
@@ -2699,6 +2704,9 @@ export function CollectionsStudio({
   const [draft, setDraft] = useState<Record<string, any> | null>(null)
   const [message, setMessage] = useState("")
   const savedRecord = records.find((item) => item.id === selectedId)
+  const visibleConfigs = availableSources
+    ? collectionConfigs.filter((item) => availableSources.includes(item.table as CollectionSource))
+    : collectionConfigs
   const recordDirty = Boolean(
     draft && (!savedRecord || JSON.stringify(draft) !== JSON.stringify(savedRecord)),
   )
@@ -2784,7 +2792,7 @@ export function CollectionsStudio({
     )
     return confirmed
   }
-  useEffect(() => registerAdminSaveAction(save), [save])
+  useEffect(() => registerAdminSaveAction(save, () => recordDirty), [save, recordDirty])
 
   async function archive() {
     if (!supabase || !draft?.id) return
@@ -2846,13 +2854,15 @@ export function CollectionsStudio({
       )}
       {embedded && (
         <p className="site-editor-note" role="status">
-          {linkedSources.includes(config.table)
-            ? "Coleção vinculada nesta seção: os registros publicados alimentam o bloco correspondente."
-            : "Coleção não vinculada a esta seção. Salvar aqui atualiza o acervo, mas não os cards manuais do site. Para vinculá-la, use Fonte do conteúdo exibido nas configurações avançadas do bloco."}
+          {usageLinks
+            ? "Registros publicados desta fonte são reutilizados nos painéis indicados. Alterações salvas podem aparecer imediatamente no site."
+            : linkedSources.includes(config.table)
+              ? "Coleção vinculada nesta seção: os registros publicados alimentam o bloco correspondente."
+              : "Coleção não vinculada a esta seção. Salvar aqui atualiza o acervo, mas não os cards manuais do site. Para vinculá-la, use Fonte do conteúdo exibido nas configurações avançadas do bloco."}
         </p>
       )}
-      <div className="collection-tabs" role="tablist">
-        {collectionConfigs.map((item) => (
+      {visibleConfigs.length > 1 && <div className="collection-tabs" role="tablist">
+        {visibleConfigs.map((item) => (
           <button
             key={item.table}
             role="tab"
@@ -2878,7 +2888,7 @@ export function CollectionsStudio({
             {item.label}
           </button>
         ))}
-      </div>
+      </div>}
       <div className="section-editor-layout">
         <div className="section-list">
           {records.map((record, index) => (
@@ -2904,6 +2914,21 @@ export function CollectionsStudio({
               <div>
                 <strong>{record[config.titleKey] || "Sem título"}</strong>
                 <small>{statusPt(record.status)}</small>
+                {usageLinks && (
+                  <small className={
+                    usagesForAcervoRecord(config.table as CollectionSource, record, records, usageLinks)
+                      .length ? "shared-acervo-record-location" : "shared-acervo-record-location is-unlinked"
+                  }>
+                    {(() => {
+                      const used = usagesForAcervoRecord(
+                        config.table as CollectionSource, record, records, usageLinks,
+                      )
+                      return used.length
+                        ? "Utilizado em: " + [...new Set(used.map(acervoUsageLabel))].join(" · ")
+                        : "Sem utilização publicada neste momento"
+                    })()}
+                  </small>
+                )}
               </div>
             </button>
           ))}

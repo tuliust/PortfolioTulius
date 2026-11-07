@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, Navigate, useBlocker, useNavigate } from "react-router"
-import { isCollectionSource } from "../../lib/collections"
 import { isAdmin, supabase } from "../../lib/supabase"
 import { PublicSite } from "../public/PublicSite"
 import {
@@ -18,10 +17,10 @@ import {
 } from "./AdminConfirmationHost"
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import { IdentityCatalogEditor } from "./IdentityCatalogEditor"
+import { SharedCollectionsEditor } from "./SharedCollectionsEditor"
 import "./section-editor-stage3.css"
 import { AdminInfoTip } from "./InfoTip"
 import {
-  CollectionsStudio,
   ContentStudio,
   EditorialStudio,
   EnhancedMediaLibrary,
@@ -76,6 +75,7 @@ function AdminShell({
     ["dashboard", "Visão geral", "edit"],
     ["editor", "Editor do site", "edit"],
     ["design", "Identidade", "palette"],
+    ["acervo", "Acervo Estruturado", "edit"],
     ["media", "Mídia", "image"],
     ["navigation", "Navegação", "arrow"],
     ["seo", "SEO", "edit"],
@@ -514,54 +514,30 @@ function SectionsEditor({
   )
 }
 
-type SiteEditorPane = "edit" | "records"
-
 function SiteEditor({
   sections,
   reload,
   dirty,
   onDirtyChange,
+  onOpenCollection,
 }: {
   sections: SectionRow[]
   reload: () => void
   dirty: boolean
   onDirtyChange: (dirty: boolean) => void
+  onOpenCollection: (source: string) => void
 }) {
   const [selectedId, setSelectedId] = useState(sections[0]?.id ?? "")
-  const [pane, setPane] = useState<SiteEditorPane>("edit")
   const [sectionInfoDirty, setSectionInfoDirty] = useState(false)
   const [contentDirty, setContentDirty] = useState(false)
   useEffect(() => {
-    if (pane === "edit") onDirtyChange(sectionInfoDirty || contentDirty)
-  }, [sectionInfoDirty, contentDirty, pane, onDirtyChange])
-  const [collectionSource, setCollectionSource] = useState("career_experiences")
-  const [linkedSources, setLinkedSources] = useState<string[]>([])
-  const [sourcesRevision, setSourcesRevision] = useState(0)
+    onDirtyChange(sectionInfoDirty || contentDirty)
+  }, [sectionInfoDirty, contentDirty, onDirtyChange])
   const [lastExperienceId, setLastExperienceId] = useState("")
   const selected = sections.find((item) => item.id === selectedId)
   const navigationEntries = buildAdminSectionNavigation(sections)
   const experienceSections = sections.filter((section) => isExperienceSection(section.slug))
   const selectedIsExperience = Boolean(selected && isExperienceSection(selected.slug))
-  useEffect(() => {
-    let cancelled = false
-    setLinkedSources([])
-    if (!supabase || !selectedId) return
-    void supabase
-      .from("content_blocks")
-      .select("content_json")
-      .eq("section_id", selectedId)
-      .then(({ data }) => {
-        if (cancelled) return
-        const sources = (data ?? [])
-          .map((row) => row.content_json?.source_collection)
-          .filter(isCollectionSource)
-        setLinkedSources([...new Set(sources)])
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [selectedId, sourcesRevision])
-
   useEffect(() => {
     if (!selectedId && sections[0]) setSelectedId(sections[0].id)
   }, [selectedId, sections])
@@ -584,7 +560,6 @@ function SiteEditor({
     if (sections.some((section) => section.id === id && isExperienceSection(section.slug))) {
       setLastExperienceId(id)
     }
-    setPane("edit")
   }
 
   function selectExperienceGroup() {
@@ -594,37 +569,15 @@ function SiteEditor({
     if (next) selectSection(next.id)
   }
 
-  async function selectPane(next: SiteEditorPane) {
-    if (next === pane || !(await canLeave())) return
-    onDirtyChange(false)
-    setSectionInfoDirty(false)
-    setContentDirty(false)
-    setPane(next)
+  function editLinkedCollection(source: string) {
+    onOpenCollection(source)
   }
-
-  async function editLinkedCollection(source: string) {
-    if (!(await canLeave())) return
-    onDirtyChange(false)
-    setCollectionSource(source)
-    setPane("records")
-  }
-
-  async function switchCollection(source: string) {
-    if (source === collectionSource || !(await canLeave())) return
-    onDirtyChange(false)
-    setCollectionSource(source)
-  }
-
-  const panes: { id: SiteEditorPane; title: string }[] = [
-    { id: "edit", title: "Editar seção" },
-    { id: "records", title: "Acervo estruturado" },
-  ]
 
   return (
     <>
       <AdminHeader
         title="Editor do site"
-        subtitle="Seções, conteúdo e coleções em um único fluxo de trabalho"
+        subtitle="Edição de cada seção; registros compartilhados ficam no Acervo Estruturado"
       />
       <div className="site-editor-layout">
         <nav className="section-list site-editor-sidebar" aria-label="Escolher seção do site">
@@ -681,20 +634,6 @@ function SiteEditor({
                       : sectionPublicationLabel(selected)}
                   </span>
                 </div>
-                <div className="site-editor-tabs" role="tablist" aria-label="Edição da seção">
-                  {panes.map((item) => (
-                    <button
-                      type="button"
-                      role="tab"
-                      key={item.id}
-                      aria-selected={pane === item.id}
-                      className={pane === item.id ? "active" : ""}
-                      onClick={() => selectPane(item.id)}
-                    >
-                      {item.title}
-                    </button>
-                  ))}
-                </div>
               </div>
               {selectedIsExperience && (
                 <section
@@ -736,8 +675,7 @@ function SiteEditor({
                     Alterações não salvas nesta área.
                   </p>
                 )}
-                {pane === "edit" && (
-                  <div className="site-editor-consolidated">
+                <div className="site-editor-consolidated">
                     <div className="site-editor-consolidated-heading">
                       <h3>Informações da seção</h3>
                       <p>Título, linha editorial, publicação e apresentação.</p>
@@ -761,48 +699,12 @@ function SiteEditor({
                       embedded
                       onDirtyChange={setContentDirty}
                       onEditCollection={editLinkedCollection}
-                      onSaved={() => setSourcesRevision((revision) => revision + 1)}
                     />
                     <FloatingSaveButton
                       enabled={sectionInfoDirty || contentDirty}
                       onClick={saveRegisteredAdminChanges}
                     />
-                  </div>
-                )}
-                {pane === "records" && (
-                  <>
-                    <p className="site-editor-note">
-                      O acervo é compartilhado entre seções. Um registro só altera o conteúdo
-                      público desta seção quando um bloco aponta explicitamente para a coleção;
-                      editar um registro não cria esse vínculo automaticamente.
-                    </p>
-                    {linkedSources.length > 0 && (
-                      <div className="site-editor-contextual-sources">
-                        <strong>Fontes vinculadas aos blocos desta seção</strong>
-                        <div>
-                          {linkedSources.map((source) => (
-                            <button
-                              type="button"
-                              key={source}
-                              className={source === collectionSource ? "active" : ""}
-                              onClick={() => switchCollection(source)}
-                            >
-                              {source.replace(/_/g, " ")}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <CollectionsStudio
-                      key={collectionSource}
-                      initialSource={collectionSource}
-                      sectionId={selected.id}
-                      linkedSources={linkedSources}
-                      embedded
-                      onDirtyChange={onDirtyChange}
-                    />
-                  </>
-                )}
+                </div>
               </div>
             </>
           ) : (
@@ -834,6 +736,7 @@ export function AdminApp() {
   const [active, setActive] = useState("dashboard")
   const [editorDirty, setEditorDirty] = useState(false)
   const [designEntrySession, setDesignEntrySession] = useState(0)
+  const [acervoSource, setAcervoSource] = useState<string | undefined>()
   const bypassRouteGuard = useRef(false)
   // SPA history transitions can use the CMS dialog; closing/reloading a tab
   // is handled only by the browser's non-customizable beforeunload prompt.
@@ -873,7 +776,7 @@ export function AdminApp() {
     window.addEventListener("beforeunload", warn)
     return () => window.removeEventListener("beforeunload", warn)
   }, [editorDirty])
-  async function selectModule(next: string) {
+  async function selectModule(next: string, requestedSource?: string) {
     if (next === active) return
     if (
       editorDirty &&
@@ -886,6 +789,7 @@ export function AdminApp() {
     // Explicitly give each Identity visit a fresh React and browser form
     // identity. Discarded colors must not reappear via form restoration.
     if (next === "design") setDesignEntrySession((session) => session + 1)
+    if (next === "acervo") setAcervoSource(requestedSource)
     setActive(next)
   }
   const [sections, setSections] = useState<SectionRow[]>([])
@@ -916,7 +820,11 @@ export function AdminApp() {
         reload={load}
         dirty={editorDirty}
         onDirtyChange={setEditorDirty}
+        onOpenCollection={(source) => { void selectModule("acervo", source) }}
       />
+    ),
+    acervo: (
+      <SharedCollectionsEditor requestedSource={acervoSource} onDirtyChange={setEditorDirty} />
     ),
     design: (
       <DesignEditor

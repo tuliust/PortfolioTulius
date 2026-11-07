@@ -1,8 +1,8 @@
 # Plano completo — padronização do CMS (Identidade, Editor do Site e Acervo Estruturado)
 
-**Registrado em:** 07/11/2026. **Autorização posterior:** Etapas 2 e 3 solicitadas e implementadas em 07/11/2026. Etapas 4–5 permanecem não autorizadas. **Código-fonte de referência anterior ao inventário:** `207327b1ebe974e768a81f752fe1184249d210ba`.
+**Registrado em:** 07/11/2026. **Autorização posterior:** Etapas 2, 3 e 4 solicitadas e implementadas em 07/11/2026. A Etapa 5 permanece não autorizada. **Código-fonte de referência anterior ao inventário:** `207327b1ebe974e768a81f752fe1184249d210ba`.
 
-> Este documento formaliza o plano. As Etapas 2 e 3 foram posteriormente autorizadas. A Etapa 3 vinculou os controles do Editor do Site ao catálogo e corrigiu o título público; **Etapas 4–5 não estão autorizadas**. O CSS global permaneceu inalterado, e a exibição atual deve ser confirmada na homologação. [Etapa 2](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md) · [Etapa 3](EDITOR_DO_SITE_ETAPA3_2026-11-07.md).
+> Este documento formaliza o plano. As Etapas 2, 3 e 4 foram posteriormente autorizadas. A Etapa 4 separou o Acervo Estruturado e limita sua interface a coleções com uso público comprovado, sem alterar as fontes de conteúdo. **A Etapa 5 permanece pendente.** [Etapa 2](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md) · [Etapa 3](EDITOR_DO_SITE_ETAPA3_2026-11-07.md) · [Etapa 4](ACERVO_ESTRUTURADO_ETAPA4_2026-11-07.md).
 
 ## Objetivo e princípios invariantes
 
@@ -112,7 +112,7 @@ Tornar a edição do portfólio mais intuitiva, com **Identidade** como catálog
 | 1. Inventário e preservação | Executada como documentação e backup parcial | Não |
 | 2. Biblioteca Identidade | Executada em 07/11/2026; homologação autenticada de formulário pendente | Não houve ajuste visual automático |
 | 3. Editor do Site | Implementada em 07/11/2026; homologação transacional do CMS pendente | Sem alteração deliberada de aparência |
-| 4. Acervo Estruturado | Planejada, não iniciada | Não autorizada |
+| 4. Acervo Estruturado | Implementada em 07/11/2026; homologação com sessão admin real pendente | Sem alteração deliberada na página pública |
 | 5. Homologação e publicação | Planejada, não iniciada | Não autorizada |
 
 **Atenção:** backups desta etapa são específicos de **apresentação** e não um dump integral das tabelas. Antes de qualquer edição de conteúdo, realizar também backup completo e protegido dos registros que serão efetivamente alterados, respeitando a natureza pública deste repositório.

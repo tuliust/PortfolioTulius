@@ -1,0 +1,30 @@
+.shared-acervo {
+  display: grid;
+  gap: 1.25rem;
+}
+.shared-acervo-explanation p {
+  margin-block: .5rem 0;
+  line-height: 1.5;
+}
+.shared-acervo-usage-list {
+  display: grid;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+.shared-acervo-usage-summary {
+  display: grid;
+  gap: .3rem;
+  border-top: 1px solid rgba(23, 22, 23, .12);
+  padding-top: .7rem;
+}
+.shared-acervo-usage-summary span {
+  font-size: .85rem;
+  line-height: 1.45;
+}
+.shared-acervo-record-location {
+  display: block;
+  line-height: 1.35;
+}
+.shared-acervo-record-location.is-unlinked {
+  opacity: .7;
+}
