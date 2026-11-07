@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import type { IdentityTokenRow } from "../../lib/identity-catalog"
 import { Icon } from "../ui/Icons"
 import { iconCategories } from "../../lib/icon-catalog"
+import { heroColor } from "../../lib/hero-formatting"
 import type { MetricIconName } from "../../types/content"
 import "./HeroVisualPickers.css"
 
@@ -54,7 +55,7 @@ export function HeroColorPicker({
   const ref = useDismiss(open, close)
   const colors = Object.values(catalog).filter((row) => row.value_type === "color")
   const selected = colors.find(
-    (row) => row.token_key === value || row.token_value.toLowerCase() === value.toLowerCase(),
+    (row) => row.token_key === value || row.token_value.toLowerCase() === value.toLowerCase() || heroColor(row.token_key) === value,
   )
   const activeColor =
     selected?.token_value ?? (value === "transparent" || !value ? "transparent" : value)

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { HeroColorPicker } from "./HeroVisualPickers"
 import {
   IDENTITY_NUMERIC_SIZES,
   identityCatalogFromRows,
@@ -57,39 +58,23 @@ export function IdentityColorSelect({
 }) {
   const catalog = useContext(IdentityOptionsContext)
   const current = value || fallback
-  const choices = Object.values(catalog).filter((item) => item.value_type === "color")
-  const selected = choices.find(
-    (item) =>
+  const selected = Object.values(catalog).find(
+    (item) => item.value_type === "color" && (
       cssVar(item.token_key) === current ||
-      item.token_value.toLowerCase() === current.toLowerCase(),
+      item.token_key === current ||
+      item.token_value.toLowerCase() === current.toLowerCase()
+    ),
   )
   return (
-    <label>
-      {label}
-      <span className="editor-identity-select">
-        <span
-          aria-hidden="true"
-          className="editor-identity-swatch"
-          style={{ backgroundColor: current }}
-        />
-        <select
-          aria-label={label}
-          value={selected?.token_key ?? "__custom__"}
-          onChange={(event) => {
-            const next = event.target.value
-            if (next !== "__custom__" && cssVar(next)) onChange(cssVar(next))
-          }}
-        >
-          {!selected && <option value="__custom__">Valor existente (preservado)</option>}
-          {choices.map((item) => (
-            <option value={item.token_key} key={item.token_key}>
-              {item.display_name}
-            </option>
-          ))}
-        </select>
-      </span>
-      {!selected && <small>Cor atual: {current}. Altere somente se desejar.</small>}
-    </label>
+    <div className="editor-identity-color-field">
+      <HeroColorPicker label={label} value={current} catalog={catalog}
+        onChange={(next) => {
+          if (cssVar(next)) onChange(cssVar(next))
+        }} />
+      {!selected && (
+        <small>Valor existente (preservado): {current}. Escolha uma amostra para alterar.</small>
+      )}
+    </div>
   )
 }
 
