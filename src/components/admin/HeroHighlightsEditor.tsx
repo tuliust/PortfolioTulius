@@ -55,32 +55,49 @@ export function HeroHighlightsEditor({
                 <fieldset className="hero-highlight-icon-choice field-wide">
                   <legend>Ícone do destaque</legend>
                   <div className="hero-highlight-icon-buttons">
-                    <button type="button" aria-label={`Seta diagonal no destaque ${index}`}
+                    <button
+                      type="button"
+                      aria-label={`Seta diagonal no destaque ${index}`}
                       aria-pressed={item.icon !== "none"}
                       className={item.icon !== "none" ? "active" : ""}
-                      onClick={() => onUpdate(index, { icon: "arrow" })}>
+                      onClick={() => onUpdate(index, { icon: "arrow" })}
+                    >
                       <Icon name="arrow" size={20} />
                     </button>
-                    <button type="button" aria-label={`Sem ícone no destaque ${index}`}
+                    <button
+                      type="button"
+                      aria-label={`Sem ícone no destaque ${index}`}
                       aria-pressed={item.icon === "none"}
                       className={item.icon === "none" ? "active" : ""}
-                      onClick={() => onUpdate(index, { icon: "none" })}>
+                      onClick={() => onUpdate(index, { icon: "none" })}
+                    >
                       —
                     </button>
                   </div>
                 </fieldset>
               </div>
               <div className="hero-highlight-controls">
-                <button type="button" aria-label={`Subir destaque ${index}`}
-                  disabled={index === 1} onClick={() => onMove(index, -1)}>
+                <button
+                  type="button"
+                  aria-label={`Subir destaque ${index}`}
+                  disabled={index === 1}
+                  onClick={() => onMove(index, -1)}
+                >
                   <Icon name="up" size={17} />
                 </button>
-                <button type="button" aria-label={`Descer destaque ${index}`}
-                  disabled={index === items.length - 1} onClick={() => onMove(index, 1)}>
+                <button
+                  type="button"
+                  aria-label={`Descer destaque ${index}`}
+                  disabled={index === items.length - 1}
+                  onClick={() => onMove(index, 1)}
+                >
                   <Icon name="down" size={17} />
                 </button>
-                <button type="button" aria-label={`Remover destaque ${index}`}
-                  onClick={() => onRemove(index)}>
+                <button
+                  type="button"
+                  aria-label={`Remover destaque ${index}`}
+                  onClick={() => onRemove(index)}
+                >
                   <Icon name="close" size={17} />
                 </button>
               </div>

@@ -416,5 +416,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 13, writes: blockedWrites.length }))
-if (checks !== 13) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 14, writes: blockedWrites.length }))
+if (checks !== 14) process.exitCode = 1
