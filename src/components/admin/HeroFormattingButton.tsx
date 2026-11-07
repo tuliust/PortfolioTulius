@@ -57,9 +57,13 @@ export function HeroFormattingButton({
               ))}
             </select>
           </label>
-          <HeroColorPicker label="Cor" value={value?.colorToken ?? ""}
-            catalog={catalog} allowDefault
-            onChange={(colorToken) => patch({ colorToken: colorToken || undefined })} />
+          <HeroColorPicker
+            label="Cor"
+            value={value?.colorToken ?? ""}
+            catalog={catalog}
+            allowDefault
+            onChange={(colorToken) => patch({ colorToken: colorToken || undefined })}
+          />
           <label>
             Fonte
             <select

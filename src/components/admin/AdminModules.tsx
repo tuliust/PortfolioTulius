@@ -671,8 +671,8 @@ export function ContentStudio({
     setHeroCopy(copy)
     setHeroCopySaved(copy)
   }, [sectionId])
-  const heroCopyDirty = experienceSlug === "perfil" &&
-    JSON.stringify(heroCopy) !== JSON.stringify(heroCopySaved)
+  const heroCopyDirty =
+    experienceSlug === "perfil" && JSON.stringify(heroCopy) !== JSON.stringify(heroCopySaved)
   const visualAreas = adminVisualAreas(experienceSlug)
   const hasCareerTrajectory = [
     "invest-rs",
@@ -890,8 +890,11 @@ export function ContentStudio({
     if (experienceSlug === "perfil" && draft.mobile_panel === "a") {
       // Another editor can save the CMS-only section label while this item form is open.
       // Read it again immediately before the atomic write to avoid losing that label.
-      const latest = await supabase.from("content_blocks")
-        .select("content_json").eq("id", draft.id).single()
+      const latest = await supabase
+        .from("content_blocks")
+        .select("content_json")
+        .eq("id", draft.id)
+        .single()
       if (latest.error) {
         setMessage(latest.error.message)
         return false
@@ -930,17 +933,22 @@ export function ContentStudio({
         setMessage("O título principal é obrigatório.")
         return false
       }
-      const updated = await supabase.from("sections")
+      const updated = await supabase
+        .from("sections")
         .update({
           title: heroCopy.title.trim(),
           eyebrow: heroCopy.eyebrow,
           intro: heroCopy.intro,
         })
         .eq("id", draft.section_id)
-        .select("title,eyebrow,intro").single()
-      if (updated.error || updated.data?.title !== heroCopy.title.trim() ||
+        .select("title,eyebrow,intro")
+        .single()
+      if (
+        updated.error ||
+        updated.data?.title !== heroCopy.title.trim() ||
         updated.data?.eyebrow !== heroCopy.eyebrow ||
-        updated.data?.intro !== heroCopy.intro) {
+        updated.data?.intro !== heroCopy.intro
+      ) {
         setMessage(updated.error?.message ?? "Não foi possível confirmar os textos do Hero.")
         return false
       }
@@ -1902,42 +1910,69 @@ export function ContentStudio({
                       )}
                       {experienceSlug === "perfil" && index === 0 && (
                         <fieldset className="hero-section-specific">
-                          <legend>Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}</legend>
+                          <legend>
+                            Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}
+                          </legend>
                           {draft.mobile_panel === "a" ? (
                             <div className="field-grid">
-                              <HeroColorPicker label="Cor do BG do Hero"
+                              <HeroColorPicker
+                                label="Cor do BG do Hero"
                                 value={item.hero?.rootBackground ?? "transparent"}
                                 onChange={(rootBackground) => updateHero(index, { rootBackground })}
-                                catalog={identityOptions} allowTransparent />
-                              <HeroColorPicker label="Cor do BG · Esquerda"
+                                catalog={identityOptions}
+                                allowTransparent
+                              />
+                              <HeroColorPicker
+                                label="Cor do BG · Esquerda"
                                 value={item.hero?.panelBackground ?? "#171617"}
-                                onChange={(panelBackground) => updateHero(index, { panelBackground })}
-                                catalog={identityOptions} />
+                                onChange={(panelBackground) =>
+                                  updateHero(index, { panelBackground })
+                                }
+                                catalog={identityOptions}
+                              />
                               <label className="field-wide">
                                 <span className="hero-field-label">
                                   Frase editorial
-                                  <HeroFormattingButton label="frase editorial"
+                                  <HeroFormattingButton
+                                    label="frase editorial"
                                     value={item.hero?.fieldFormats?.intro}
                                     onChange={(next) => updateHeroFormat(index, "intro", next)}
-                                    catalog={identityOptions} />
+                                    catalog={identityOptions}
+                                  />
                                 </span>
-                                <textarea rows={3} value={heroCopy.intro}
-                                  onChange={(event) => setHeroCopy((current) => ({
-                                    ...current, intro: event.target.value,
-                                  }))} />
+                                <textarea
+                                  rows={3}
+                                  value={heroCopy.intro}
+                                  onChange={(event) =>
+                                    setHeroCopy((current) => ({
+                                      ...current,
+                                      intro: event.target.value,
+                                    }))
+                                  }
+                                />
                               </label>
                               <label className="field-wide">
                                 <span className="hero-field-label">
                                   Círculo · texto giratório
-                                  <HeroFormattingButton label="texto giratório"
+                                  <HeroFormattingButton
+                                    label="texto giratório"
                                     value={item.hero?.fieldFormats?.badgeText}
                                     onChange={(next) => updateHeroFormat(index, "badgeText", next)}
-                                    catalog={identityOptions} />
+                                    catalog={identityOptions}
+                                  />
                                 </span>
-                                <input value={item.hero?.badgeText ?? "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"}
-                                  onChange={(event) => updateHero(index, { badgeText: event.target.value })} />
+                                <input
+                                  value={
+                                    item.hero?.badgeText ??
+                                    "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
+                                  }
+                                  onChange={(event) =>
+                                    updateHero(index, { badgeText: event.target.value })
+                                  }
+                                />
                               </label>
-                              <HeroIconPicker label="Círculo · ícone central"
+                              <HeroIconPicker
+                                label="Círculo · ícone central"
                                 value={item.hero?.badgeIcon ?? "arrow"}
                                 onChange={(badgeIcon) => updateHero(index, { badgeIcon })}
                               />
@@ -1947,61 +1982,98 @@ export function ContentStudio({
                               <label className="field-wide">
                                 <span className="hero-field-label">
                                   Título principal
-                                  <HeroFormattingButton label="título principal"
+                                  <HeroFormattingButton
+                                    label="título principal"
                                     value={item.hero?.fieldFormats?.title}
                                     onChange={(next) => updateHeroFormat(index, "title", next)}
-                                    catalog={identityOptions} />
+                                    catalog={identityOptions}
+                                  />
                                 </span>
-                                <input value={heroCopy.title}
-                                  onChange={(event) => setHeroCopy((current) => ({
-                                    ...current, title: event.target.value,
-                                  }))} />
+                                <input
+                                  value={heroCopy.title}
+                                  onChange={(event) =>
+                                    setHeroCopy((current) => ({
+                                      ...current,
+                                      title: event.target.value,
+                                    }))
+                                  }
+                                />
                               </label>
                               <label className="field-wide">
                                 <span className="hero-field-label">
                                   Descritivo
-                                  <HeroFormattingButton label="descritivo"
+                                  <HeroFormattingButton
+                                    label="descritivo"
                                     value={item.hero?.fieldFormats?.role}
                                     onChange={(next) => updateHeroFormat(index, "role", next)}
-                                    catalog={identityOptions} />
+                                    catalog={identityOptions}
+                                  />
                                 </span>
-                                <input value={heroCopy.eyebrow}
-                                  onChange={(event) => setHeroCopy((current) => ({
-                                    ...current, eyebrow: event.target.value,
-                                  }))} />
+                                <input
+                                  value={heroCopy.eyebrow}
+                                  onChange={(event) =>
+                                    setHeroCopy((current) => ({
+                                      ...current,
+                                      eyebrow: event.target.value,
+                                    }))
+                                  }
+                                />
                               </label>
                               <label className="field-wide">
                                 <span className="hero-field-label">
                                   Título secundário
-                                  <HeroFormattingButton label="título secundário"
+                                  <HeroFormattingButton
+                                    label="título secundário"
                                     value={item.hero?.fieldFormats?.secondaryTitle}
-                                    onChange={(next) => updateHeroFormat(index, "secondaryTitle", next)}
-                                    catalog={identityOptions} />
+                                    onChange={(next) =>
+                                      updateHeroFormat(index, "secondaryTitle", next)
+                                    }
+                                    catalog={identityOptions}
+                                  />
                                 </span>
-                                <input value={item.hero?.secondaryTitle ?? "Experiência e atuação"}
-                                  onChange={(event) => updateHero(index, { secondaryTitle: event.target.value })} />
+                                <input
+                                  value={item.hero?.secondaryTitle ?? "Experiência e atuação"}
+                                  onChange={(event) =>
+                                    updateHero(index, { secondaryTitle: event.target.value })
+                                  }
+                                />
                               </label>
-                              <HeroIconPicker label="Botão inferior · ícone"
+                              <HeroIconPicker
+                                label="Botão inferior · ícone"
                                 value={item.hero?.nextIcon ?? "down"}
-                                onChange={(nextIcon) => updateHero(index, { nextIcon })} />
-                              <HeroColorPicker label="Botão inferior · cor do ícone"
-                                value={item.hero?.nextColor ?? ""} allowDefault
+                                onChange={(nextIcon) => updateHero(index, { nextIcon })}
+                              />
+                              <HeroColorPicker
+                                label="Botão inferior · cor do ícone"
+                                value={item.hero?.nextColor ?? ""}
+                                allowDefault
                                 onChange={(nextColor) => updateHero(index, { nextColor })}
-                                catalog={identityOptions} />
-                              <HeroColorPicker label="Botão inferior · cor do BG"
-                                value={item.hero?.nextBackground ?? ""} allowDefault allowTransparent
+                                catalog={identityOptions}
+                              />
+                              <HeroColorPicker
+                                label="Botão inferior · cor do BG"
+                                value={item.hero?.nextBackground ?? ""}
+                                allowDefault
+                                allowTransparent
                                 onChange={(nextBackground) => updateHero(index, { nextBackground })}
-                                catalog={identityOptions} />
+                                catalog={identityOptions}
+                              />
                               <label>
                                 Botão inferior · âncora
-                                <select value={item.hero?.nextTarget ?? ""}
-                                  onChange={(event) => updateHero(index, { nextTarget: event.target.value })}>
+                                <select
+                                  value={item.hero?.nextTarget ?? ""}
+                                  onChange={(event) =>
+                                    updateHero(index, { nextTarget: event.target.value })
+                                  }
+                                >
                                   <option value="">Próxima seção publicada</option>
-                                  {sections.filter((entry) => entry.slug !== "perfil").map((entry) => (
-                                    <option key={entry.id} value={entry.slug}>
-                                      {entry.title} (#{entry.slug})
-                                    </option>
-                                  ))}
+                                  {sections
+                                    .filter((entry) => entry.slug !== "perfil")
+                                    .map((entry) => (
+                                      <option key={entry.id} value={entry.slug}>
+                                        {entry.title} (#{entry.slug})
+                                      </option>
+                                    ))}
                                 </select>
                               </label>
                             </div>
@@ -2011,122 +2083,138 @@ export function ContentStudio({
                       <div className="field-grid">
                         {experienceSlug === "perfil" ? (
                           <HeroItemFields
-                            item={item} index={index} panel={draft.mobile_panel}
+                            item={item}
+                            index={index}
+                            panel={draft.mobile_panel}
                             catalog={identityOptions}
                             onUpdate={(patch) => updateItem(index, patch)}
                             onFormat={(key, next) => updateFieldFormat(index, key, next)}
                           />
                         ) : (
                           <>
-                        <label>
-                          <span className="hero-field-label">
-                            {experienceSlug === "perfil"
-                              ? draft.mobile_panel === "a"
-                                ? index === 0
-                                  ? "Mensagem principal · texto grande"
-                                  : "Destaque · título"
-                                : index < 5
-                                  ? "Botão principal · título"
-                                  : "Item · título"
-                              : "Título"}
-                            {experienceSlug === "perfil" && (
-                              <HeroFormattingButton
-                                label="título do item"
-                                value={item.fieldFormats?.title}
-                                onChange={(next) => updateFieldFormat(index, "title", next)}
-                                catalog={identityOptions}
+                            <label>
+                              <span className="hero-field-label">
+                                {experienceSlug === "perfil"
+                                  ? draft.mobile_panel === "a"
+                                    ? index === 0
+                                      ? "Mensagem principal · texto grande"
+                                      : "Destaque · título"
+                                    : index < 5
+                                      ? "Botão principal · título"
+                                      : "Item · título"
+                                  : "Título"}
+                                {experienceSlug === "perfil" && (
+                                  <HeroFormattingButton
+                                    label="título do item"
+                                    value={item.fieldFormats?.title}
+                                    onChange={(next) => updateFieldFormat(index, "title", next)}
+                                    catalog={identityOptions}
+                                  />
+                                )}
+                              </span>
+                              <input
+                                value={item.title}
+                                onChange={(event) =>
+                                  updateItem(index, { title: event.target.value })
+                                }
                               />
-                            )}
-                          </span>
-                          <input
-                            value={item.title}
-                            onChange={(event) => updateItem(index, { title: event.target.value })}
-                          />
-                        </label>
-                        <label>
-                          <span className="hero-field-label">
-                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index < 5
-                              ? "Linha superior / número"
-                              : "Rótulo / número"}
-                            {experienceSlug === "perfil" &&
-                              draft.mobile_panel === "b" &&
-                              index < 5 && (
-                                <HeroFormattingButton
-                                  label="linha superior"
-                                  value={item.fieldFormats?.label}
-                                  onChange={(next) => updateFieldFormat(index, "label", next)}
-                                  catalog={identityOptions}
-                                />
-                              )}
-                          </span>
-                          <input
-                            value={item.label ?? ""}
-                            onChange={(event) => updateItem(index, { label: event.target.value })}
-                          />
-                        </label>
-                        <label className="field-wide">
-                          <span className="hero-field-label">
-                            {experienceSlug === "perfil"
-                              ? draft.mobile_panel === "a"
-                                ? index === 0
-                                  ? "Mensagem principal · texto pequeno"
-                                  : "Destaque · subtítulo"
-                                : index >= 5
-                                  ? "Descrição do item"
-                                  : "Texto"
-                              : "Texto"}
-                            {experienceSlug === "perfil" && (
-                              <HeroFormattingButton
-                                label="texto do item"
-                                value={item.fieldFormats?.text}
-                                onChange={(next) => updateFieldFormat(index, "text", next)}
-                                catalog={identityOptions}
+                            </label>
+                            <label>
+                              <span className="hero-field-label">
+                                {experienceSlug === "perfil" &&
+                                draft.mobile_panel === "b" &&
+                                index < 5
+                                  ? "Linha superior / número"
+                                  : "Rótulo / número"}
+                                {experienceSlug === "perfil" &&
+                                  draft.mobile_panel === "b" &&
+                                  index < 5 && (
+                                    <HeroFormattingButton
+                                      label="linha superior"
+                                      value={item.fieldFormats?.label}
+                                      onChange={(next) => updateFieldFormat(index, "label", next)}
+                                      catalog={identityOptions}
+                                    />
+                                  )}
+                              </span>
+                              <input
+                                value={item.label ?? ""}
+                                onChange={(event) =>
+                                  updateItem(index, { label: event.target.value })
+                                }
                               />
-                            )}
-                          </span>
-                          <textarea
-                            value={item.text ?? ""}
-                            onChange={(event) => updateItem(index, { text: event.target.value })}
-                          />
-                        </label>
-                        <label>
-                          <span className="admin-field-with-info">
-                            Valor/métrica
-                            <AdminInfoTip
-                              label="Valor/métrica"
-                              description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
-                            />
-                          </span>
-                          <input
-                            value={item.value ?? ""}
-                            onChange={(event) => updateItem(index, { value: event.target.value })}
-                          />
-                        </label>
-                        <label>
-                          <span className="admin-field-with-info">
-                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index >= 5
-                              ? "Subtítulo do item"
-                              : "Metadado/URL"}
-                            {experienceSlug === "perfil" &&
-                              draft.mobile_panel === "b" &&
-                              index >= 5 && (
-                                <HeroFormattingButton
-                                  label="subtítulo do item"
-                                  value={item.fieldFormats?.meta}
-                                  onChange={(next) => updateFieldFormat(index, "meta", next)}
-                                  catalog={identityOptions}
+                            </label>
+                            <label className="field-wide">
+                              <span className="hero-field-label">
+                                {experienceSlug === "perfil"
+                                  ? draft.mobile_panel === "a"
+                                    ? index === 0
+                                      ? "Mensagem principal · texto pequeno"
+                                      : "Destaque · subtítulo"
+                                    : index >= 5
+                                      ? "Descrição do item"
+                                      : "Texto"
+                                  : "Texto"}
+                                {experienceSlug === "perfil" && (
+                                  <HeroFormattingButton
+                                    label="texto do item"
+                                    value={item.fieldFormats?.text}
+                                    onChange={(next) => updateFieldFormat(index, "text", next)}
+                                    catalog={identityOptions}
+                                  />
+                                )}
+                              </span>
+                              <textarea
+                                value={item.text ?? ""}
+                                onChange={(event) =>
+                                  updateItem(index, { text: event.target.value })
+                                }
+                              />
+                            </label>
+                            <label>
+                              <span className="admin-field-with-info">
+                                Valor/métrica
+                                <AdminInfoTip
+                                  label="Valor/métrica"
+                                  description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
                                 />
-                              )}
-                            <AdminInfoTip
-                              label="Metadado/URL"
-                              description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
-                            />
-                          </span>
-                          <input
-                            value={item.meta ?? ""}
-                            onChange={(event) => updateItem(index, { meta: event.target.value })}
-                          />
-                        </label>
+                              </span>
+                              <input
+                                value={item.value ?? ""}
+                                onChange={(event) =>
+                                  updateItem(index, { value: event.target.value })
+                                }
+                              />
+                            </label>
+                            <label>
+                              <span className="admin-field-with-info">
+                                {experienceSlug === "perfil" &&
+                                draft.mobile_panel === "b" &&
+                                index >= 5
+                                  ? "Subtítulo do item"
+                                  : "Metadado/URL"}
+                                {experienceSlug === "perfil" &&
+                                  draft.mobile_panel === "b" &&
+                                  index >= 5 && (
+                                    <HeroFormattingButton
+                                      label="subtítulo do item"
+                                      value={item.fieldFormats?.meta}
+                                      onChange={(next) => updateFieldFormat(index, "meta", next)}
+                                      catalog={identityOptions}
+                                    />
+                                  )}
+                                <AdminInfoTip
+                                  label="Metadado/URL"
+                                  description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
+                                />
+                              </span>
+                              <input
+                                value={item.meta ?? ""}
+                                onChange={(event) =>
+                                  updateItem(index, { meta: event.target.value })
+                                }
+                              />
+                            </label>
                           </>
                         )}
                         {sections.find((entry) => entry.id === draft.section_id)?.slug ===
@@ -2599,7 +2687,9 @@ export function ContentStudio({
               </button>
               {!embedded && (
                 <FloatingSaveButton
-                  enabled={(blockDirty || heroCopyDirty) && !placementsLoading && !placementsReadError}
+                  enabled={
+                    (blockDirty || heroCopyDirty) && !placementsLoading && !placementsReadError
+                  }
                   onClick={saveBlock}
                   label="Salvar bloco"
                 />

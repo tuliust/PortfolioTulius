@@ -6,7 +6,12 @@ type Catalog = Record<string, IdentityTokenRow>
 
 /** Profile-specific fields. Other sections retain their unchanged generic item editor. */
 export function HeroItemFields({
-  item, index, panel, catalog, onUpdate, onFormat,
+  item,
+  index,
+  panel,
+  catalog,
+  onUpdate,
+  onFormat,
 }: {
   item: ContentItem
   index: number
@@ -16,13 +21,21 @@ export function HeroItemFields({
   onFormat: (key: string, value?: HeroTextFormat) => void
 }) {
   const format = (name: string, key: string) => (
-    <HeroFormattingButton label={name} value={item.fieldFormats?.[key]}
-      onChange={(next) => onFormat(key, next)} catalog={catalog} />
+    <HeroFormattingButton
+      label={name}
+      value={item.fieldFormats?.[key]}
+      onChange={(next) => onFormat(key, next)}
+      catalog={catalog}
+    />
   )
   const title = (
     <label>
       <span className="hero-field-label">
-        {panel === "a" ? "Título do destaque" : index < 5 ? "Título do botão principal" : "Título do item"}
+        {panel === "a"
+          ? "Título do destaque"
+          : index < 5
+            ? "Título do botão principal"
+            : "Título do item"}
         {format("título do item", "title")}
       </span>
       <input value={item.title} onChange={(e) => onUpdate({ title: e.target.value })} />
@@ -31,10 +44,18 @@ export function HeroItemFields({
   const text = (
     <label className="field-wide">
       <span className="hero-field-label">
-        {panel === "a" ? "Subtítulo do destaque" : index < 5 ? "Descrição do botão" : "Descrição do item"}
+        {panel === "a"
+          ? "Subtítulo do destaque"
+          : index < 5
+            ? "Descrição do botão"
+            : "Descrição do item"}
         {format("texto do item", "text")}
       </span>
-      <textarea rows={3} value={item.text ?? ""} onChange={(e) => onUpdate({ text: e.target.value })} />
+      <textarea
+        rows={3}
+        value={item.text ?? ""}
+        onChange={(e) => onUpdate({ text: e.target.value })}
+      />
     </label>
   )
   return (
@@ -44,14 +65,25 @@ export function HeroItemFields({
           <legend>Mensagem principal</legend>
           <div className="field-grid">
             <label>
-              <span className="hero-field-label">Texto grande {format("texto grande", "title")}</span>
-              <input aria-label="Mensagem principal, texto grande" value={item.title}
-                onChange={(e) => onUpdate({ title: e.target.value })} />
+              <span className="hero-field-label">
+                Texto grande {format("texto grande", "title")}
+              </span>
+              <input
+                aria-label="Mensagem principal, texto grande"
+                value={item.title}
+                onChange={(e) => onUpdate({ title: e.target.value })}
+              />
             </label>
             <label>
-              <span className="hero-field-label">Texto pequeno {format("texto pequeno", "text")}</span>
-              <textarea aria-label="Mensagem principal, texto pequeno" rows={3}
-                value={item.text ?? ""} onChange={(e) => onUpdate({ text: e.target.value })} />
+              <span className="hero-field-label">
+                Texto pequeno {format("texto pequeno", "text")}
+              </span>
+              <textarea
+                aria-label="Mensagem principal, texto pequeno"
+                rows={3}
+                value={item.text ?? ""}
+                onChange={(e) => onUpdate({ text: e.target.value })}
+              />
             </label>
           </div>
         </fieldset>
@@ -64,7 +96,10 @@ export function HeroItemFields({
                 {panel === "b" && index < 5 ? "Rótulo / número" : "Rótulo"}
                 {format("rótulo do item", "label")}
               </span>
-              <input value={item.label ?? ""} onChange={(e) => onUpdate({ label: e.target.value })} />
+              <input
+                value={item.label ?? ""}
+                onChange={(e) => onUpdate({ label: e.target.value })}
+              />
             </label>
           )}
           {text}

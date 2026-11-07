@@ -326,14 +326,16 @@ function SectionsEditor({
     setMessage("Salvando…")
     const { data, error } = await supabase
       .from("sections")
-      .update(draft.slug === "perfil"
-        ? { animation_preset: draft.animation_preset }
-        : {
-            title: draft.title.trim(),
-            intro: draft.intro,
-            eyebrow: draft.eyebrow,
-            animation_preset: draft.animation_preset,
-          })
+      .update(
+        draft.slug === "perfil"
+          ? { animation_preset: draft.animation_preset }
+          : {
+              title: draft.title.trim(),
+              intro: draft.intro,
+              eyebrow: draft.eyebrow,
+              animation_preset: draft.animation_preset,
+            },
+      )
       .eq("id", draft.id)
       .select("id,title,animation_preset")
       .single()
@@ -353,16 +355,22 @@ function SectionsEditor({
       }
       // Store the admin-only label in the existing JSONB block. This is never
       // interpreted as the published person's name or page heading.
-      const latest = await supabase.from("content_blocks")
-        .select("content_json").eq("id", draft.editor_block_id).single()
+      const latest = await supabase
+        .from("content_blocks")
+        .select("content_json")
+        .eq("id", draft.editor_block_id)
+        .single()
       if (latest.error || !latest.data) {
         setMessage(latest.error?.message ?? "Não foi possível ler o nome administrativo.")
         return false
       }
       const desired = draft.editor_title?.trim() || "Hero"
-      const written = await supabase.from("content_blocks")
+      const written = await supabase
+        .from("content_blocks")
         .update({ content_json: { ...(latest.data.content_json ?? {}), editorTitle: desired } })
-        .eq("id", draft.editor_block_id).select("content_json").single()
+        .eq("id", draft.editor_block_id)
+        .select("content_json")
+        .single()
       if (written.error || written.data?.content_json?.editorTitle !== desired) {
         setMessage(written.error?.message ?? "Não foi possível confirmar o nome administrativo.")
         return false
@@ -466,10 +474,14 @@ function SectionsEditor({
               <label>
                 {draft.slug === "perfil" ? "Título da seção (nome no CMS)" : "Título"}
                 <input
-                  value={draft.slug === "perfil" ? draft.editor_title ?? "Hero" : draft.title}
-                  onChange={(e) => setDraft(draft.slug === "perfil"
-                    ? { ...draft, editor_title: e.target.value }
-                    : { ...draft, title: e.target.value })}
+                  value={draft.slug === "perfil" ? (draft.editor_title ?? "Hero") : draft.title}
+                  onChange={(e) =>
+                    setDraft(
+                      draft.slug === "perfil"
+                        ? { ...draft, editor_title: e.target.value }
+                        : { ...draft, title: e.target.value },
+                    )
+                  }
                 />
               </label>
               <label>
@@ -480,13 +492,18 @@ function SectionsEditor({
                 <>
                   <label className="field-wide">
                     Linha editorial
-                    <input value={draft.eyebrow ?? ""}
-                      onChange={(e) => setDraft({ ...draft, eyebrow: e.target.value })} />
+                    <input
+                      value={draft.eyebrow ?? ""}
+                      onChange={(e) => setDraft({ ...draft, eyebrow: e.target.value })}
+                    />
                   </label>
                   <label className="field-wide">
                     Introdução
-                    <textarea rows={4} value={draft.intro ?? ""}
-                      onChange={(e) => setDraft({ ...draft, intro: e.target.value })} />
+                    <textarea
+                      rows={4}
+                      value={draft.intro ?? ""}
+                      onChange={(e) => setDraft({ ...draft, intro: e.target.value })}
+                    />
                   </label>
                 </>
               )}
@@ -632,7 +649,11 @@ function SiteEditor({
               >
                 <span>{String(entry.section.sort_order).padStart(2, "0")}</span>
                 <div>
-                  <strong>{entry.section.slug === "perfil" ? entry.section.editor_title || "Hero" : entry.section.title}</strong>
+                  <strong>
+                    {entry.section.slug === "perfil"
+                      ? entry.section.editor_title || "Hero"
+                      : entry.section.title}
+                  </strong>
                   <small>{sectionPublicationLabel(entry.section)}</small>
                 </div>
               </button>
@@ -858,16 +879,27 @@ export function AdminApp() {
         if (!error) {
           const profile = next.find((entry) => entry.slug === "perfil")
           if (profile) {
-            const read = await supabase?.from("content_blocks")
-              .select("id,content_json").eq("section_id", profile.id)
-              .eq("mobile_panel", "a").order("sort_order").limit(1)
+            const read = await supabase
+              ?.from("content_blocks")
+              .select("id,content_json")
+              .eq("section_id", profile.id)
+              .eq("mobile_panel", "a")
+              .order("sort_order")
+              .limit(1)
             const left = read?.data?.[0]
-            next = next.map((entry) => entry.id !== profile.id ? entry : {
-              ...entry,
-              editor_title: typeof left?.content_json?.editorTitle === "string" &&
-                left.content_json.editorTitle.trim() ? left.content_json.editorTitle : "Hero",
-              editor_block_id: left?.id,
-            })
+            next = next.map((entry) =>
+              entry.id !== profile.id
+                ? entry
+                : {
+                    ...entry,
+                    editor_title:
+                      typeof left?.content_json?.editorTitle === "string" &&
+                      left.content_json.editorTitle.trim()
+                        ? left.content_json.editorTitle
+                        : "Hero",
+                    editor_block_id: left?.id,
+                  },
+            )
           }
           setSections(next)
         }
