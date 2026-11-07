@@ -32,9 +32,10 @@ describe("Responsividade administrativa sem alterar o site público", () => {
     expect(editorial).toContain("setRevisionLimit((limit) => limit + EDITORIAL_PAGE_SIZE)")
   })
 
-  it("consolida os dois editores, mantendo acervo em aba separada", () => {
-    expect(adminApp).toContain('type SiteEditorPane = "edit" | "records"')
-    expect(adminApp).toContain('id: "edit", title: "Editar seção"')
+  it("consolida os dois editores e move o acervo para o menu principal", () => {
+    expect(adminApp).not.toContain('type SiteEditorPane = "edit" | "records"')
+    expect(adminApp).toContain('["acervo", "Acervo Estruturado", "edit"]')
+    expect(adminApp).toContain("<SharedCollectionsEditor")
     expect(adminApp).toContain('className="site-editor-consolidated"')
     expect(
       adminApp.indexOf("<SectionsEditor", adminApp.indexOf('className="site-editor-consolidated"')),
