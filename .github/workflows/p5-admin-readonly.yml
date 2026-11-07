@@ -24,6 +24,31 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "24.16.0"
+      - name: Validate browser suite syntax
+        run: node --check scripts/p5-admin-readonly.mjs
+      - name: Verify live deployment matches tested SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            body="$(curl --fail --silent --show-error --location --max-time 15 \
+              -H 'Cache-Control: no-cache' \
+              "https://tulius.work/p3-deployment.json?sha=$GITHUB_SHA&attempt=$attempt" || true)"
+            if printf '%s' "$body" | node -e '
+              let text = ""
+              process.stdin.on("data", x => text += x)
+              process.stdin.on("end", () => {
+                try { process.exit(JSON.parse(text).sha === process.env.GITHUB_SHA ? 0 : 1) }
+                catch { process.exit(1) }
+              })
+            '; then
+              echo "P5_DEPLOYMENT_GATE MATCH sha=$GITHUB_SHA"
+              exit 0
+            fi
+            sleep 4
+          done
+          echo "P5_DEPLOYMENT_GATE FAIL: production SHA mismatch" >&2
+          exit 1
       - name: Install browser driver
         run: |
           mkdir -p "$RUNNER_TEMP/p5-browser"
