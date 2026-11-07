@@ -7,6 +7,9 @@ on:
     paths:
       - .github/workflows/p5-admin-readonly.yml
       - scripts/p5-admin-readonly.mjs
+      - src/components/admin/**
+      - src/lib/hero-formatting.ts
+      - src/types/content.ts
 
 permissions:
   contents: read

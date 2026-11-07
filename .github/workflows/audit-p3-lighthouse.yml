@@ -15,6 +15,9 @@ on:
       - scripts/p5-admin-readonly.mjs
       - scripts/p6-lighthouse-guard.mjs
       - src/index.css
+      - src/lib/hero-formatting.ts
+      - src/lib/identity-catalog.ts
+      - src/types/content.ts
       - index.html
       - src/hooks/usePortfolio.ts
       - vite.config.ts
