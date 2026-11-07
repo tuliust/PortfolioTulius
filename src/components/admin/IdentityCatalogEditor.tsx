@@ -158,9 +158,9 @@ export function IdentityCatalogEditor({
     <div className="identity-catalog">
       <div className="identity-catalog-intro">
         <p>
-          Centralize nomes, cores e fontes. Os sete estilos tipográficos são referências do
-          projeto e <strong>não alteram a página pública nesta etapa</strong>. A vinculação aos
-          elementos do Editor do Site será feita na Etapa 3.
+          Centralize nomes, cores e fontes. Os sete estilos tipográficos são referências do projeto
+          e <strong>não alteram a página pública nesta etapa</strong>. A vinculação aos elementos do
+          Editor do Site será feita na Etapa 3.
         </p>
       </div>
 
@@ -178,7 +178,11 @@ export function IdentityCatalogEditor({
               <div className="identity-color-row" key={key}>
                 <span
                   className="identity-swatch"
-                  style={{ backgroundColor: /^#[0-9a-fA-F]{6}$/.test(item.token_value) ? item.token_value : "#FFFFFF" }}
+                  style={{
+                    backgroundColor: /^#[0-9a-fA-F]{6}$/.test(item.token_value)
+                      ? item.token_value
+                      : "#FFFFFF",
+                  }}
                   aria-hidden="true"
                 />
                 <label>
@@ -196,7 +200,9 @@ export function IdentityCatalogEditor({
                   <span>
                     <input
                       type="color"
-                      value={/^#[0-9a-fA-F]{6}$/.test(item.token_value) ? item.token_value : "#FFFFFF"}
+                      value={
+                        /^#[0-9a-fA-F]{6}$/.test(item.token_value) ? item.token_value : "#FFFFFF"
+                      }
                       aria-label={"Selecionar " + item.display_name}
                       onChange={(event) =>
                         change(key, { token_value: event.target.value.toUpperCase() })
@@ -266,9 +272,9 @@ export function IdentityCatalogEditor({
           })}
         </div>
         <small>
-          As famílias usadas são Big Shoulders Display, Inter e Georgia. Fontes sem licença web
-          não são disponibilizadas. Uma alteração na fonte global de títulos ou textos pode
-          modificar a página pública; nenhuma foi realizada automaticamente.
+          As famílias usadas são Big Shoulders Display, Inter e Georgia. Fontes sem licença web não
+          são disponibilizadas. Uma alteração na fonte global de títulos ou textos pode modificar a
+          página pública; nenhuma foi realizada automaticamente.
         </small>
       </section>
 

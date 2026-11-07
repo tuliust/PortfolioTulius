@@ -20,7 +20,7 @@
 .identity-font-grid,
 .identity-type-list {
   display: grid;
-  gap: .85rem;
+  gap: 0.85rem;
 }
 
 .identity-color-grid {
@@ -30,24 +30,24 @@
 .identity-color-row,
 .identity-font-row {
   display: grid;
-  gap: .7rem;
-  padding: .8rem;
+  gap: 0.7rem;
+  padding: 0.8rem;
   border: 1px solid #eae5e1;
   background: #fff;
 }
 
 .identity-color-row {
-  grid-template-columns: 2.5rem minmax(0, 1fr) minmax(9.5rem, .8fr);
+  grid-template-columns: 2.5rem minmax(0, 1fr) minmax(9.5rem, 0.8fr);
   align-items: end;
 }
 
 .identity-catalog label {
   display: grid;
-  gap: .4rem;
+  gap: 0.4rem;
   min-width: 0;
 }
 
-.identity-catalog input:not([type='color']),
+.identity-catalog input:not([type="color"]),
 .identity-catalog select {
   width: 100%;
   min-width: 0;
@@ -65,15 +65,15 @@
 .identity-color-value > span {
   display: flex;
   align-items: center;
-  gap: .4rem;
+  gap: 0.4rem;
   min-width: 0;
 }
 
-.identity-color-value input[type='color'] {
+.identity-color-value input[type="color"] {
   flex: 0 0 2.15rem;
   width: 2.15rem;
   height: 2.5rem;
-  padding: .1rem;
+  padding: 0.1rem;
 }
 
 .identity-font-grid {
@@ -81,7 +81,7 @@
 }
 
 .identity-font-preview {
-  padding: .75rem;
+  padding: 0.75rem;
   background: var(--paper);
   font-size: 1.55rem;
 }
@@ -101,13 +101,13 @@
 }
 
 .identity-type-style legend {
-  padding-inline: .25rem;
+  padding-inline: 0.25rem;
   font-weight: 700;
 }
 
 .identity-type-fields {
   display: grid;
-  gap: .8rem;
+  gap: 0.8rem;
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
@@ -117,8 +117,8 @@
 
 .identity-type-baseline {
   display: grid;
-  gap: .3rem;
-  margin-top: .85rem;
+  gap: 0.3rem;
+  margin-top: 0.85rem;
   color: var(--muted);
 }
 

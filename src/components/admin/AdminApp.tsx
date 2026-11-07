@@ -857,10 +857,7 @@ function DesignEditor({
 }) {
   return (
     <>
-      <AdminHeader
-        title="Identidade"
-        subtitle="Cores, famílias e estilos tipográficos nomeados"
-      />
+      <AdminHeader title="Identidade" subtitle="Cores, famílias e estilos tipográficos nomeados" />
       <IdentityCatalogEditor onDirtyChange={onDirtyChange} entrySession={entrySession} />
     </>
   )
