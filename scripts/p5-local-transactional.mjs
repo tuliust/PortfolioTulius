@@ -205,6 +205,6 @@ try {
   if (adminId) await service.auth.admin.deleteUser(adminId)
   if (nonAdminId) await service.auth.admin.deleteUser(nonAdminId)
 }
-console.log("P5_LOCAL_RESULT " + JSON.stringify({ passed, expected: 7, endpoint: "127.0.0.1",
+console.log("P5_LOCAL_RESULT " + JSON.stringify({ passed, expected: 8, endpoint: "127.0.0.1",
   cloudConnections: 0, syntheticOnly: true }))
-if (passed !== 7) process.exitCode = 1
+if (passed !== 8) process.exitCode = 1
