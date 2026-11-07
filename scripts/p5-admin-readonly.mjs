@@ -188,14 +188,14 @@ try {
     "Depoimento descartado foi persistido.")
   report("INLINE_TESTIMONIAL_DISCARD", { unsavedGuard: true, recoveredOriginal: true })
 
-  await chooseSection("Tulius Tsangaropulos")
+  await chooseSection("Hero")
   await selectModule(page, "Editor do site")
   await page.waitForSelector(".site-editor-section .editor-form .field-grid", { timeout: 16000 })
   await page.waitForSelector(".studio-block-picker button", { timeout: 16000 })
   const section = await page.evaluate(() => {
     const fields = [...document.querySelectorAll(".site-editor-section .field-grid label")]
     const names = fields.map((item) => item.textContent?.trim() ?? "")
-    const title = fields.find((item) => item.textContent?.trim() === "Título")?.querySelector("input")?.value
+    const title = fields.find((item) => item.textContent?.trim() === "Título principal")?.querySelector("input")?.value
     const select = document.querySelector(".site-editor-section select")
     return {
       title,
@@ -217,6 +217,56 @@ try {
     "Editor da seção não corresponde à Etapa 3: " + JSON.stringify(section))
   report("EDITOR_SECTION", { titleSynced: true, transitions: section.transitions.length,
     positionPanels: section.panels, removedRedundantFields: true })
+
+  // Verify new Hero controls in both existing blocks; never persist test edits.
+  await waitFor(page, () =>
+    document.querySelector(".hero-section-specific legend")?.textContent?.includes("Esquerda") &&
+    document.querySelectorAll(".hero-format-trigger").length >= 3)
+  const heroLeft = await page.evaluate(() => ({
+    group: document.querySelector(".hero-section-specific legend")?.textContent?.trim(),
+    transparent: [...document.querySelectorAll(".hero-section-specific select option")].some(
+      (option) => option.value === "transparent"),
+    paletteColors: document.querySelectorAll(".hero-section-specific option[value^='color.']").length,
+    formatButtons: document.querySelectorAll(".hero-format-trigger").length,
+    photo: [...document.querySelectorAll(".block-item-body label")].some(
+      (node) => node.textContent?.includes("Foto")),
+  }))
+  assert(heroLeft.group?.includes("Esquerda") && heroLeft.transparent &&
+    heroLeft.paletteColors >= 7 && heroLeft.formatButtons >= 3 && heroLeft.photo,
+    "Hero Esquerda incompleto: " + JSON.stringify(heroLeft))
+  const changedPanel = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".studio-block-picker button")].find(
+      (node) => node.querySelector("strong")?.textContent?.includes("Direita"))
+    if (!button) return false
+    button.click()
+    return true
+  })
+  assert(changedPanel, "Bloco Direito do Hero indisponível.")
+  await waitFor(page, () =>
+    document.querySelector(".hero-section-specific legend")?.textContent?.includes("Direita"))
+  const heroRight = await page.evaluate(() => ({
+    group: document.querySelector(".hero-section-specific legend")?.textContent?.trim(),
+    buttons: document.querySelectorAll(".hero-section-specific .hero-format-trigger").length,
+    secondary: [...document.querySelectorAll(".hero-section-specific input")].some(
+      (input) => input.value === "Experiência e atuação"),
+    labels: [...document.querySelectorAll(".hero-section-specific label")]
+      .map((node) => node.textContent?.trim()),
+    originalBlockCount: document.querySelectorAll(".studio-block-picker button").length,
+  }))
+  assert(heroRight.group?.includes("Direita") && heroRight.secondary &&
+    heroRight.buttons >= 3 && heroRight.originalBlockCount === 2 &&
+    heroRight.labels.some((x) => x.includes("Botão inferior")),
+    "Hero Direita incompleto: " + JSON.stringify(heroRight))
+  await page.evaluate(() =>
+    document.querySelector(".hero-section-specific .hero-format-trigger")?.click())
+  await page.waitForSelector(".hero-format-popover select", { timeout: 10000 })
+  const styleChoices = await page.$eval(".hero-format-popover select", (select) =>
+    [...select.options].filter((option) => option.value.startsWith("typography.")).length)
+  assert(styleChoices === 7, "Popover não usa os 7 estilos da Identidade.")
+  await page.evaluate(() =>
+    document.querySelector(".hero-format-popover .hero-format-actions button:last-child")?.click())
+  report("HERO_FIELDS", { left: heroLeft.group, right: heroRight.group, styles: styleChoices,
+    fieldsPersistedInExistingBlocks: true })
 
   const archiveClicked = await page.$$eval(".site-editor-section .form-actions button", (nodes) => {
     const btn = nodes.find((item) => item.textContent?.trim() === "Arquivar")
@@ -286,7 +336,7 @@ try {
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, positions: triple, desktopPortrait: true,
     sharedExperienceGallery: true })
-  await chooseSection("Tulius Tsangaropulos")
+  await chooseSection("Hero")
 
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
   await page.waitForSelector(".studio-block-picker button", { timeout: 15000 })
@@ -314,5 +364,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 12, writes: blockedWrites.length }))
-if (checks !== 12) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 13, writes: blockedWrites.length }))
+if (checks !== 13) process.exitCode = 1
