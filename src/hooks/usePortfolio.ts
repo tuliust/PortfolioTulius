@@ -22,6 +22,7 @@ import {
 import type { DesignTokens, PortfolioSection } from "../types/content"
 import { selectSectionExperienceMedia } from "../lib/cms-contract"
 import { parseCardRadius } from "../lib/design-tokens"
+import { publicEditorAnchor } from "../lib/editor-anchor"
 import type { FormationPilotEducationRow } from "../lib/formation-pilot-preview"
 
 type SectionResult = {
@@ -52,9 +53,13 @@ function toSection(
 ): PortfolioSection {
   const blocks = resolveCollectionBlocks(row.content_blocks ?? [], collectionItems)
   const composition = composeSectionPlacements(row.id, blocks, panels, placements, includeDrafts)
+  const storedAnchor = row.content_blocks
+    ?.find((block) => block.mobile_panel === "a" && (includeDrafts ? block.status !== "archived" : block.status === "published"))
+    ?.content_json?.editorAnchor
   return {
     id: row.id,
     slug: row.slug,
+    anchor: publicEditorAnchor(storedAnchor, row.slug),
     number: row.sort_order,
     title: row.title,
     eyebrow: row.eyebrow ?? undefined,

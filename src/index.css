@@ -2582,3 +2582,6 @@
 .badge-360 { position: relative; }
 .badge-360-symbol { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
 .badge-360-symbol > svg { width: 32%; height: 32%; }
+
+/* Optional CMS anchor alias: preserves the canonical #perfil hash and public layout. */
+.portfolio-anchor-alias { position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; pointer-events: none; }

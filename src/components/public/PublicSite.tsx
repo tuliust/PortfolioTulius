@@ -1353,6 +1353,9 @@ function Section({
       data-section={section.slug}
       className={`portfolio-section theme-${section.theme} layout-${section.layout} motion-${section.animation ?? "fade-up"} cms-entrance-${section.animation ?? "fade-up"}`}
     >
+      {section.anchor && (
+        <span className="portfolio-anchor-alias" id={section.anchor} aria-hidden="true" />
+      )}
       {!isMobile && (
         <div className="desktop-panel">
           {section.slug === "perfil" ? (

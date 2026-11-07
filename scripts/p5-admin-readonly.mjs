@@ -191,92 +191,95 @@ try {
   await chooseSection("Hero")
   await selectModule(page, "Editor do site")
   await page.waitForSelector(".site-editor-section .editor-form .field-grid", { timeout: 16000 })
-  await page.waitForSelector(".studio-block-picker button", { timeout: 16000 })
+  await page.waitForSelector(".hero-editor-tabs button", { timeout: 16000 })
   const section = await page.evaluate(() => {
     const fields = [...document.querySelectorAll(".site-editor-section .field-grid label")]
     const names = fields.map((item) => item.textContent?.trim() ?? "")
     const title = fields.find((item) => item.textContent?.trim() === "Título da seção (nome no CMS)")?.querySelector("input")?.value
     const select = document.querySelector(".site-editor-section select")
+    const anchor = document.querySelector(".site-editor-section [aria-describedby='hero-anchor-help']")
     return {
       title,
+      anchorEditable: anchor instanceof HTMLInputElement && !anchor.disabled,
+      anchorValue: anchor?.value,
       fieldLabels: names,
       transitions: select ? [...select.options].map((option) => option.value) : [],
       archive: !![...document.querySelectorAll(".site-editor-section .form-actions button")]
         .find((item) => item.textContent?.trim() === "Arquivar"),
-      oldTabs: !!document.querySelector(".site-editor-tabs"),
-      panels: [...document.querySelectorAll(".studio-block-picker button strong")]
-        .map((node) => node.textContent?.trim()),
+      tabs: [...document.querySelectorAll(".hero-editor-tabs button")].map((node) => ({
+        label: node.querySelector("strong")?.textContent?.trim(),
+        selected: node.getAttribute("aria-selected"),
+      })),
+      contentHidden: !document.querySelector(".studio-inline-layout"),
     }
   })
   const transitions = ["none", "fade-in", "fade-up", "stagger", "image-reveal", "metric-count"]
-  assert(section.title === "Hero" && section.archive && !section.oldTabs &&
+  assert(section.title === "Hero" && section.anchorEditable && section.anchorValue === "perfil" &&
+    section.archive && section.contentHidden &&
     transitions.every((x) => section.transitions.includes(x)) &&
     section.transitions.length === transitions.length &&
-    section.panels.includes("Esquerda") && section.panels.includes("Direita") &&
     !section.fieldLabels.some((name) => /^(Tema|Layout|Exibir no site)$/.test(name)),
-    "Editor da seção não corresponde à Etapa 3: " + JSON.stringify(section))
+    "Editor geral do Hero incompleto: " + JSON.stringify(section))
+  assert(JSON.stringify(section.tabs.map((tab) => tab.label)) ===
+    JSON.stringify(["Seção", "Esquerda", "Direita"]) &&
+    section.tabs[0].selected === "true",
+    "Três botões do Hero ausentes: " + JSON.stringify(section.tabs))
   report("EDITOR_SECTION", { titleSynced: true, transitions: section.transitions.length,
-    positionPanels: section.panels, removedRedundantFields: true })
+    editableAnchor: true, removedRedundantFields: true })
+  report("HERO_TABS", { tabs: section.tabs.map((tab) => tab.label),
+    defaultMode: "Seção" })
 
-  // Verify new Hero controls in both existing blocks; never persist test edits.
-  await waitFor(page, () =>
-    document.querySelector(".hero-section-specific legend")?.textContent?.includes("Esquerda") &&
-    document.querySelectorAll(".hero-format-trigger").length >= 3)
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".hero-editor-tabs button")]
+      .find((node) => node.textContent?.includes("Esquerda"))?.click())
+  await waitFor(page, () => document.querySelector(".hero-left-editor .hero-message-group") &&
+    document.querySelector(".hero-left-editor fieldset[aria-label='Selo']") &&
+    document.querySelector(".hero-left-editor fieldset[aria-label='Apresentação']"))
+
   const heroLeft = await page.evaluate(() => ({
-    group: document.querySelector(".hero-section-specific legend")?.textContent?.trim(),
-    palettes: document.querySelectorAll(".hero-section-specific .hero-visual-picker-trigger").length,
-    colorsAsTextSelect: document.querySelectorAll(".hero-section-specific select option[value^='color.']").length,
-    singleMessage: document.querySelectorAll(".hero-message-group legend").length === 1,
-    genericMetricHidden: ![...document.querySelectorAll(".block-item-body label")].some(
-      (node) => node.textContent?.trim().startsWith("Valor/métrica")),
-    formatButtons: document.querySelectorAll(".hero-format-trigger").length,
-    photo: [...document.querySelectorAll(".block-item-body .published-media-picker-label")].some(
-      (node) => node.textContent?.trim() === "Foto"),
+    groups: [...document.querySelectorAll(".hero-left-editor > fieldset")].map((node) =>
+      node.querySelector("legend")?.textContent?.trim()),
+    palettes: document.querySelectorAll(".hero-left-editor .hero-visual-picker-trigger").length,
+    genericCards: document.querySelectorAll(".hero-left-editor .block-item-editor").length,
+    formatButtons: document.querySelectorAll(".hero-left-editor .hero-format-trigger").length,
+    photo: [...document.querySelectorAll(".hero-left-editor .published-media-picker-label")]
+      .some((node) => node.textContent?.trim() === "Foto"),
   }))
-  assert(heroLeft.group?.includes("Esquerda") && heroLeft.palettes >= 3 &&
-    heroLeft.colorsAsTextSelect === 0 && heroLeft.singleMessage && heroLeft.genericMetricHidden &&
-    heroLeft.formatButtons >= 3 && heroLeft.photo,
-    "Hero Esquerda incompleto: " + JSON.stringify(heroLeft))
+  assert(heroLeft.groups.includes("Mensagem principal") && heroLeft.groups.includes("Selo") &&
+    heroLeft.groups.includes("Apresentação") && heroLeft.genericCards === 0 &&
+    heroLeft.palettes >= 5 && heroLeft.formatButtons >= 3 && heroLeft.photo,
+    "Elementos da Esquerda incompletos: " + JSON.stringify(heroLeft))
+
   const highlights = await page.evaluate(() => ({
     group: document.querySelector(".hero-highlights-editor > summary")?.textContent?.trim(),
     children: document.querySelectorAll(".hero-highlights-editor .hero-highlight-entry").length,
-    topLevelCards: document.querySelectorAll(".block-items > .block-item-editor").length,
     descriptions: [...document.querySelectorAll(".hero-highlight-entry .hero-highlight-caption")]
       .map((node) => node.textContent?.trim()),
   }))
   assert(highlights.group?.includes("Itens de Destaque") && highlights.children === 4 &&
-    highlights.topLevelCards === 1 &&
     highlights.descriptions.includes("Experiência em grandes empresas"),
     "Destaques do Hero não foram agrupados: " + JSON.stringify(highlights))
   report("HERO_HIGHLIGHTS", { group: "Itens de Destaque",
     count: highlights.children, preservedLegacyItems: true })
+
   await page.evaluate(() =>
-    document.querySelector(".hero-section-specific .hero-visual-picker-trigger")?.click())
+    document.querySelector(".hero-left-editor button[aria-label='Fundo do selo']")?.click())
   await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
   const swatchCount = await page.evaluate(() => document.querySelectorAll(".hero-swatch-grid button").length)
-  console.log("P5_HERO_PALETTE " + JSON.stringify({
-    swatchCount,
-    choices: await page.evaluate(() => [...document.querySelectorAll(".hero-swatch-grid button")]
-      .map((node) => node.getAttribute("aria-label"))),
-  }))
   assert(swatchCount >= 7, "Paleta visual incompleta.")
   await page.keyboard.press("Escape")
   await page.evaluate(() =>
-    document.querySelector(".hero-icon-picker-anchor .hero-visual-picker-trigger")?.click())
+    document.querySelector(".hero-left-editor button[aria-label='Ícone central']")?.click())
   await page.waitForSelector(".hero-icon-popover .hero-icon-grid button", { timeout: 10000 })
   const iconGroups = await page.evaluate(() => [...document.querySelectorAll(".hero-icon-popover h4")]
     .map((node) => node.textContent?.trim()))
   assert(iconGroups.includes("Resultados") && iconGroups.includes("Digital") &&
     iconGroups.includes("Navegação e controles"), "Ícones não agrupados.")
   await page.keyboard.press("Escape")
-  const changedPanel = await page.evaluate(() => {
-    const button = [...document.querySelectorAll(".studio-block-picker button")].find(
-      (node) => node.querySelector("strong")?.textContent?.includes("Direita"))
-    if (!button) return false
-    button.click()
-    return true
-  })
-  assert(changedPanel, "Bloco Direito do Hero indisponível.")
+
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".hero-editor-tabs button")]
+      .find((node) => node.textContent?.includes("Direita"))?.click())
   await waitFor(page, () =>
     document.querySelector(".hero-section-specific legend")?.textContent?.includes("Direita"))
   const heroRight = await page.evaluate(() => ({
@@ -302,8 +305,13 @@ try {
   assert(styleChoices === 7, "Popover não usa os 7 estilos da Identidade.")
   await page.evaluate(() =>
     document.querySelector(".hero-format-popover .hero-format-actions button:last-child")?.click())
-  report("HERO_FIELDS", { left: heroLeft.group, right: heroRight.group, styles: styleChoices,
+  report("HERO_FIELDS", { left: heroLeft.groups, right: heroRight.group, styles: styleChoices,
     fieldsPersistedInExistingBlocks: true })
+
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".hero-editor-tabs button")]
+      .find((node) => node.textContent?.trim().startsWith("Seção"))?.click())
+  await page.waitForSelector(".site-editor-section .form-actions button", { timeout: 10000 })
 
   const archiveClicked = await page.$$eval(".site-editor-section .form-actions button", (nodes) => {
     const btn = nodes.find((item) => item.textContent?.trim() === "Arquivar")
@@ -318,6 +326,9 @@ try {
   const adminTitleSelector = ".site-editor-section .field-grid label:first-child input"
   const originalAdminTitle = await page.$eval(adminTitleSelector, (node) => node.value)
   await updateInput(page, adminTitleSelector, originalAdminTitle + " ENSAIO")
+  const anchorSelector = ".site-editor-section [aria-describedby='hero-anchor-help']"
+  const originalAnchor = await page.$eval(anchorSelector, (node) => node.value)
+  await updateInput(page, anchorSelector, "novo-perfil-ensaio")
   const transitionSelector = ".site-editor-section select"
   const originalTransition = await page.$eval(transitionSelector, (node) => node.value)
   const alternateTransition = transitions.find((transition) => transition !== originalTransition)
@@ -331,6 +342,8 @@ try {
     "Transição alterada em rascunho foi persistida.")
   assert((await page.$eval(adminTitleSelector, (node) => node.value)) === originalAdminTitle,
     "Título administrativo descartado foi persistido.")
+  assert((await page.$eval(anchorSelector, (node) => node.value)) === originalAnchor,
+    "Âncora editada foi gravada apesar do descarte.")
   report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true,
     adminSectionTitleIndependent: true })
 
@@ -391,10 +404,10 @@ try {
   await chooseSection("Hero")
 
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
-  await page.waitForSelector(".studio-block-picker button", { timeout: 15000 })
+  await page.waitForSelector(".hero-editor-tabs button", { timeout: 15000 })
   const mobile = await page.evaluate(() => ({
     horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 2,
-    panelButtons: [...document.querySelectorAll(".studio-block-picker button strong")].map(x => x.textContent?.trim()),
+    panelButtons: [...document.querySelectorAll(".hero-editor-tabs button strong")].map(x => x.textContent?.trim()),
     acervoRemoved: ![...document.querySelectorAll(".admin-sidebar nav button")]
       .some((node) => node.textContent?.trim() === "Acervo Estruturado"),
   }))
@@ -416,5 +429,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 14, writes: blockedWrites.length }))
-if (checks !== 14) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 15, writes: blockedWrites.length }))
+if (checks !== 15) process.exitCode = 1

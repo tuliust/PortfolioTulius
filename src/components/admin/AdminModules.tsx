@@ -85,7 +85,7 @@ import { VisualIconLibrary, PlatformIconLibrary } from "./VisualIconLibrary"
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroItemFields } from "./HeroItemFields"
-import { HeroHighlightsEditor } from "./HeroHighlightsEditor"
+import { HeroLeftEditor } from "./HeroLeftEditor"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 
 interface SectionOption {
@@ -106,6 +106,7 @@ type BlockRow = {
     collection_limit?: number
     experienceMedia?: ExperienceMedia
     editorTitle?: string
+    editorAnchor?: string
   }
   mobile_panel: "a" | "b"
   sort_order: number
@@ -638,12 +639,14 @@ export function ContentStudio({
   embedded = false,
   onDirtyChange,
   onSaved,
+  heroArea,
 }: {
   sections: SectionOption[]
   sectionIdOverride?: string
   embedded?: boolean
   onDirtyChange?: (dirty: boolean) => void
   onSaved?: () => void
+  heroArea?: "left" | "right"
 }) {
   const identityOptions = useEditorIdentityOptions()
   const [sectionId, setSectionId] = useState(sectionIdOverride ?? sections[0]?.id ?? "")
@@ -736,13 +739,24 @@ export function ContentStudio({
     }
     setBlocks((data as BlockRow[]) ?? [])
     setMessage("")
-    if (data?.length && !data.some((block) => block.id === selectedId)) setSelectedId(data[0].id)
+    const expectedPanel = heroArea === "left" ? "a" : heroArea === "right" ? "b" : undefined
+    if (expectedPanel) {
+      const preferred = data?.find((block) => block.mobile_panel === expectedPanel)
+      if (preferred) {
+        if (preferred.id !== selectedId) setSelectedId(preferred.id)
+      } else {
+        setSelectedId("")
+        setMessage("O painel solicitado não foi encontrado nesta seção.")
+      }
+    } else if (data?.length && !data.some((block) => block.id === selectedId)) {
+      setSelectedId(data[0].id)
+    }
     return true
   }
 
   useEffect(() => {
     void load()
-  }, [sectionId])
+  }, [sectionId, heroArea])
 
   useEffect(() => {
     setExpandedItemIndex(experienceSlug === "perfil" ? 0 : null)
@@ -904,6 +918,9 @@ export function ContentStudio({
         ...contentToSave,
         ...(latest.data?.content_json?.editorTitle !== undefined
           ? { editorTitle: latest.data.content_json.editorTitle }
+          : {}),
+        ...(latest.data?.content_json?.editorAnchor !== undefined
+          ? { editorAnchor: latest.data.content_json.editorAnchor }
           : {}),
       }
     }
@@ -1209,7 +1226,7 @@ export function ContentStudio({
           </div>
         </header>
       )}
-      {embedded && (
+      {embedded && !heroArea && (
         <div className="site-editor-actions">
           <div>
             <strong>Elementos desta seção</strong>
@@ -1287,7 +1304,7 @@ export function ContentStudio({
         )}
         <div
           className={embedded ? "studio-block-picker" : "section-list"}
-          hidden={embedded && visualAreas.length > 0}
+          hidden={embedded && (visualAreas.length > 0 || Boolean(heroArea))}
         >
           {blocks.map((block) => (
             <button
@@ -1905,6 +1922,46 @@ export function ContentStudio({
                     </fieldset>
                   )}
                 <div className="block-items">
+                  {experienceSlug === "perfil" && draft.mobile_panel === "a" ? (
+                    <HeroLeftEditor
+                      items={draft.content_json.items ?? []}
+                      intro={heroCopy.intro}
+                      catalog={identityOptions}
+                      onIntroChange={(intro) => setHeroCopy((current) => ({ ...current, intro }))}
+                      onUpdateItem={updateItem}
+                      onUpdateHero={(patch) => updateHero(0, patch)}
+                      onFormat={updateFieldFormat}
+                      onHeroFormat={(key, next) => updateHeroFormat(0, key, next)}
+                      onMove={moveItem}
+                      onRemove={(index) => void removeItem(index)}
+                      mobileSettings={draft.content_json.items?.[0] ? (
+                        <>
+                          <div className="responsive-style-grid">
+                            {(["desktop", "mobile"] as const).map((device) => (
+                              <DeviceStyleEditor
+                                key={device} device={device}
+                                value={draft.content_json.items?.[0]?.[device]}
+                                onChange={(patch) => updateDeviceStyle(0, device, patch)}
+                              />
+                            ))}
+                            {(["desktop", "mobile"] as const).map((device) => (
+                              <HeroDeviceEditor
+                                key={device} device={device}
+                                value={draft.content_json.items?.[0]?.hero?.[device]}
+                                onChange={(patch) => updateHeroDevice(0, device, patch)}
+                              />
+                            ))}
+                          </div>
+                          <ProfileMobileEditorialEditor
+                            value={draft.content_json.items[0].hero?.mobileEditorial}
+                            onChange={(mobileEditorial) => updateHero(0, { mobileEditorial })}
+                          />
+                        </>
+                      ) : undefined}
+                    />
+                  ) : (
+                    <>
+
                   {sections.find((entry) => entry.id === draft.section_id)?.slug === "sobre" &&
                     draft.mobile_panel === "b" && (
                       <div className="block-item-help">
@@ -2800,18 +2857,8 @@ export function ContentStudio({
                       </article>
                     ),
                   )}
-                  {experienceSlug === "perfil" &&
-                    draft.mobile_panel === "a" &&
-                    (draft.content_json.items?.length ?? 0) > 1 && (
-                      <HeroHighlightsEditor
-                        items={draft.content_json.items ?? []}
-                        catalog={identityOptions}
-                        onUpdate={updateItem}
-                        onFormat={updateFieldFormat}
-                        onMove={moveItem}
-                        onRemove={(index) => void removeItem(index)}
-                      />
-                    )}
+                    </>
+                  )}
                 </div>
                 <StatusMessage>{message}</StatusMessage>
                 <div className="form-actions">

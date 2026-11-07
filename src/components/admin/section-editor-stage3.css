@@ -104,3 +104,20 @@
   opacity: 0.5;
   cursor: wait;
 }
+
+/* Independent Hero editor views directly beneath the section heading. */
+.hero-editor-tabs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .5rem; margin: .75rem 0; min-width: 0; }
+.hero-editor-tabs button { display: grid; align-content: center; gap: .3rem; min-width: 0; min-height: 4.2rem; padding: .7rem .85rem; border: 1px solid #d7d2ce; background: #fff; text-align: left; color: #171617; }
+.hero-editor-tabs button strong { font: 800 1.35rem/1 var(--font-display, sans-serif); text-transform: uppercase; }
+.hero-editor-tabs button small { color: #716b67; font: 500 .74rem/1.35 var(--font-body, sans-serif); }
+.hero-editor-tabs button.active { background: #171617; color: #fff; border-color: #171617; }
+.hero-editor-tabs button.active small { color: #ddd6d0; }
+.hero-editor-tabs button:focus-visible { outline: 3px solid var(--orange, #ff5414); outline-offset: 2px; }
+/* Author display rules must not override the browser's hidden attribute. */
+.studio-block-picker[hidden] { display: none !important; }
+@media (max-width: 640px) {
+  .hero-editor-tabs { gap: .35rem; }
+  .hero-editor-tabs button { min-height: 3.6rem; padding: .55rem; }
+  .hero-editor-tabs button strong { font-size: 1.1rem; }
+  .hero-editor-tabs button small { font-size: .66rem; }
+}

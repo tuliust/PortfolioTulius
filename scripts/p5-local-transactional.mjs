@@ -133,6 +133,7 @@ try {
   blockBefore = structuredClone(block)
   const json = structuredClone(block.content_json)
   json.editorTitle = "Hero de homologação " + suffix
+  json.editorAnchor = "perfil-homologacao-" + suffix.toLowerCase().replace(/[^a-z0-9-]/g, "")
   json.items[0].text = "Edição fictícia " + suffix
   json.items[0].fieldFormats = {
     title: {
@@ -157,6 +158,7 @@ try {
     savedHero.fieldFormats?.title?.colorToken === "color.orange" &&
     savedHero.fieldFormats?.title?.desktopSize === 112 &&
     blockReloaded.content_json.editorTitle === "Hero de homologação " + suffix &&
+    blockReloaded.content_json.editorAnchor?.startsWith("perfil-homologacao-") &&
     savedHero.hero?.badgeIcon === "chart" &&
     savedHero.hero?.nextIcon === "sparkles" &&
     savedHero.hero?.rootBackground === "transparent" &&

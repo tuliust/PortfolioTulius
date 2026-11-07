@@ -186,6 +186,7 @@ export type ExperienceMedia = {
 export type PortfolioSection = {
   id: string
   slug: string
+  anchor?: string
   number: number
   title: string
   eyebrow?: string

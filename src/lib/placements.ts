@@ -25,6 +25,7 @@ export type ContentBlockRow = {
     /** Optional positive number of linked items for this block. */
     collection_limit?: number
     experienceMedia?: ExperienceMedia
+    editorAnchor?: string
   } | null
 }
 
