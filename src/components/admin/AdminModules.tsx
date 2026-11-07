@@ -1148,6 +1148,10 @@ export function ContentStudio({
                 key={area.id}
                 className={visualArea === area.id ? "active" : ""}
                 aria-pressed={visualArea === area.id}
+                disabled={
+                  area.source !== "section" &&
+                  !blocks.some((block) => block.mobile_panel === area.source)
+                }
                 onClick={() => void selectVisualArea(area)}
               >
                 <strong>{area.label}</strong>

@@ -245,7 +245,9 @@ try {
   const verifyZones = async (sectionName, expectedLabels) => {
     await chooseSection(sectionName)
     await waitFor(page, () =>
-      document.querySelectorAll(".site-editor-visual-areas button").length === 3)
+      document.querySelectorAll(".site-editor-visual-areas button").length === 3 &&
+      document.querySelectorAll(".studio-block-picker button").length >= 2 &&
+      [...document.querySelectorAll(".site-editor-visual-areas button")].every(x => !x.disabled))
     const buttons = await page.evaluate(() =>
       [...document.querySelectorAll(".site-editor-visual-areas button")]
         .map((x) => x.querySelector("strong")?.textContent?.trim()))

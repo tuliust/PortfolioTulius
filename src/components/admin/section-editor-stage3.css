@@ -99,3 +99,8 @@
   outline: 3px solid var(--orange);
   outline-offset: 2px;
 }
+
+.site-editor-visual-areas button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
