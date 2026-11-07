@@ -230,7 +230,7 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
               ),
             supabase
               .from("design_tokens")
-              .select("token_key,token_value")
+              .select("token_key,token_value,style_config")
               .eq("status", "published"),
             supabase
               .from("navigation_items")
@@ -396,6 +396,18 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
             if (!tokenResult.error && tokenResult.data?.length) {
               const next = { ...defaultTokens }
               tokenResult.data.forEach((t) => {
+                if (t.token_key.startsWith("typography.") && t.style_config) {
+                  const style = t.style_config as Record<string, unknown>
+                  next.editorialStyles = {
+                    ...next.editorialStyles,
+                    [t.token_key]: {
+                      fontToken: typeof style.fontToken === "string" ? style.fontToken : undefined,
+                      colorToken: typeof style.colorToken === "string" ? style.colorToken : undefined,
+                      desktopPx: typeof style.desktopPx === "number" ? style.desktopPx : undefined,
+                      mobilePx: typeof style.mobilePx === "number" ? style.mobilePx : undefined,
+                    },
+                  }
+                }
                 const key = t.token_key.replace("color.", "")
                 if (
                   ["orange", "ink", "paper", "cream", "muted", "orangeDark", "white"].includes(key)

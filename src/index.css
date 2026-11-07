@@ -2573,3 +2573,7 @@
     }
   }
 }
+
+/* Optional CMS typography overrides: absent until individually configured in Hero. */
+.public-site .hero-formatted-size { font-size: var(--hero-format-desktop) !important; }
+@media (max-width: 767px) { .public-site .hero-formatted-size { font-size: var(--hero-format-mobile, var(--hero-format-desktop)) !important; } }

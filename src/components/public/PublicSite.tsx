@@ -8,6 +8,7 @@ import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"
 import { ToolIcons } from "./ToolIcons"
 import { placementMotionVariables } from "../../lib/placement-motion"
 import { imageFramingStyle } from "../../lib/media-framing"
+import { heroColor, heroFont, heroSizeClass, heroTextStyle } from "../../lib/hero-formatting"
 import { isSafeEditorialImage, resolveHeroCardDestination } from "../../lib/validation"
 import {
   mobileEditorialFont,
@@ -32,12 +33,12 @@ function Badge360({ config }: { config?: HeroVisualConfig }) {
         <defs>
           <path id={pathId} d="M80,80 m-58,0 a58,58 0 1,1 116,0 a58,58 0 1,1 -116,0" />
         </defs>
-        <text>
+        <text className={heroSizeClass(config?.fieldFormats?.badgeText)} style={heroTextStyle(config?.fieldFormats?.badgeText)}>
           <textPath href={`#${pathId}`} textLength="350" lengthAdjust="spacingAndGlyphs">
             {config?.badgeText || heroDefaults.badgeText}
           </textPath>
         </text>
-        <path d="M55 100 102 53M70 53h32v32" />
+        {config?.badgeIcon !== "none" && (config?.badgeIcon === "plus" ? <path d="M80 53v54M53 80h54" /> : <path d="M55 100 102 53M70 53h32v32" />)}
       </svg>
     </div>
   )
@@ -159,11 +160,11 @@ function ItemCard({
           />
         ))}
       <div className="item-copy">
-        {item.label && <span className="item-label">{item.label}</span>}
+        {item.label && <span className={"item-label " + (heroSizeClass(item.fieldFormats?.label) ?? "")} style={heroTextStyle(item.fieldFormats?.label)}>{item.label}</span>}
         {item.value && <strong className="item-value">{item.value}</strong>}
-        <h3>{item.title}</h3>
-        {item.meta && !contact && <p className="item-meta">{item.meta}</p>}
-        {item.text && <p>{item.text}</p>}
+        <h3 className={heroSizeClass(item.fieldFormats?.title)} style={heroTextStyle(item.fieldFormats?.title)}>{item.title}</h3>
+        {item.meta && !contact && <p className={"item-meta " + (heroSizeClass(item.fieldFormats?.meta) ?? "")} style={heroTextStyle(item.fieldFormats?.meta)}>{item.meta}</p>}
+        {item.text && <p className={heroSizeClass(item.fieldFormats?.text)} style={heroTextStyle(item.fieldFormats?.text)}>{item.text}</p>}
         {item.tags && (
           <ul className="tags">
             {item.tags.map((tag) => (
@@ -260,6 +261,7 @@ function ProfileDesktop({
   const careers = panelB.slice(5)
   const profile = panelA[0]
   const hero = profile?.hero
+  const rightHero = panelB[0]?.hero
   const profileName = splitProfileTitle(section.title)
   if (!profile)
     return (
@@ -269,7 +271,7 @@ function ProfileDesktop({
       </div>
     )
   return (
-    <div className="profile-desktop">
+    <div className="profile-desktop" style={hero?.rootBackground ? { backgroundColor: heroColor(hero.rootBackground) } : undefined}>
       <aside className="profile-sidebar" style={{ ...itemStyle(profile), ...heroStyle(hero) }}>
         <div className="profile-portrait">
           <ApprovedProfileImage
@@ -278,13 +280,13 @@ function ProfileDesktop({
             style={imageFramingStyle(profile.mediaFraming)}
           />
           <div className="years">
-            <strong>{profile.title}</strong>
-            <span>{profile.text}</span>
+            <strong className={heroSizeClass(profile.fieldFormats?.title)} style={heroTextStyle(profile.fieldFormats?.title)}>{profile.title}</strong>
+            <span className={heroSizeClass(profile.fieldFormats?.text)} style={heroTextStyle(profile.fieldFormats?.text)}>{profile.text}</span>
           </div>
           <Badge360 config={hero} />
         </div>
         <div className="profile-sidebar-content">
-          <p className="profile-intro">{section.intro}</p>
+          <p className={"profile-intro " + (heroSizeClass(hero?.fieldFormats?.intro) ?? "")} style={heroTextStyle(hero?.fieldFormats?.intro)}>{section.intro}</p>
           <div className="profile-highlights">
             <h2 className="sr-only">Destaques</h2>
             {panelA.slice(1).map((item, i) => (
@@ -295,10 +297,10 @@ function ProfileDesktop({
       </aside>
       <div className="profile-main">
         <div className="name-lockup">
-          <span>{profileName.first}</span>
-          <span>{profileName.rest}</span>
+          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.first}</span>
+          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.rest}</span>
         </div>
-        <p className="profile-role">{section.eyebrow}</p>
+        <p className={"profile-role " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")} style={heroTextStyle(rightHero?.fieldFormats?.role)}>{section.eyebrow}</p>
         <div className="area-grid">
           {areas.map((item, index) => (
             <ItemCard
@@ -315,7 +317,7 @@ function ProfileDesktop({
             />
           ))}
         </div>
-        <h2>Experiência e atuação</h2>
+        <h2 className={heroSizeClass(rightHero?.fieldFormats?.secondaryTitle)} style={heroTextStyle(rightHero?.fieldFormats?.secondaryTitle)}>{rightHero?.secondaryTitle || "Experiência e atuação"}</h2>
         <div className="career-grid">
           {careers.map((item, i) => (
             <ItemCard
@@ -332,11 +334,12 @@ function ProfileDesktop({
         {nextSectionSlug && (
           <a
             className="profile-next-section"
-            href={`#${nextSectionSlug}`}
+            style={{ color: heroColor(rightHero?.nextColor), backgroundColor: heroColor(rightHero?.nextBackground) }}
+            href={`#${rightHero?.nextTarget && publishedSlugs.includes(rightHero.nextTarget) ? rightHero.nextTarget : nextSectionSlug}`}
             aria-label="Ir para a próxima seção"
             title="Ir para a próxima seção"
           >
-            <Icon name="down" size={28} />
+            <Icon name={rightHero?.nextIcon === "arrow" ? "arrow" : "down"} size={28} />
           </a>
         )}
       </div>
@@ -353,6 +356,7 @@ function ProfileMobileEditorial({
   profile: ContentItem
 }) {
   const config = mobileProfileEditorial(profile.hero?.mobileEditorial)
+  const rightHero = section.panelB[0]?.hero
   const positioning = (section.eyebrow ?? "").split(" · ").slice(1).join(" · ")
   const profileName = splitProfileTitle(section.title)
   const firstName = profileName.first
@@ -363,7 +367,7 @@ function ProfileMobileEditorial({
       : profile.image
 
   return (
-    <div className="mobile360" style={heroStyle(profile.hero)}>
+    <div className="mobile360" style={{ ...heroStyle(profile.hero), ...(profile.hero?.rootBackground ? { backgroundColor: heroColor(profile.hero.rootBackground) } : {}) }}>
       <div
         className="mobile360-top"
         style={
@@ -393,7 +397,7 @@ function ProfileMobileEditorial({
           </h1>
         )}
         {config.top.showSupport !== false && positioning && (
-          <p className="mobile360-support">{positioning}</p>
+          <p className={"mobile360-support " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")} style={heroTextStyle(rightHero?.fieldFormats?.role)}>{positioning}</p>
         )}
       </div>
       <div
@@ -457,14 +461,14 @@ function ProfileMobileEditorial({
           <div className="mobile360-bottom-copy">
             {config.bottom.showName !== false && (
               <div className="mobile360-person-name">
-                <span>{firstName}</span>
-                <strong>{surname}</strong>
+                <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{firstName}</span>
+                <strong className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{surname}</strong>
               </div>
             )}
             {config.bottom.showExperience !== false && (
               <div className="mobile360-experience">
-                <strong>{profile.title}</strong>
-                {profile.text && <p>{profile.text}</p>}
+                <strong className={heroSizeClass(profile.fieldFormats?.title)} style={heroTextStyle(profile.fieldFormats?.title)}>{profile.title}</strong>
+                {profile.text && <p className={heroSizeClass(profile.fieldFormats?.text)} style={heroTextStyle(profile.fieldFormats?.text)}>{profile.text}</p>}
               </div>
             )}
             {config.bottom.showArrow !== false && (
@@ -492,6 +496,7 @@ function ProfileMobilePresentation({
   profile: ContentItem
 }) {
   const hero = profile.hero
+  const rightHero = section.panelB[0]?.hero
   if (hero?.mobileEditorial?.enabled) {
     return <ProfileMobileEditorial section={section} profile={profile} />
   }
@@ -502,11 +507,11 @@ function ProfileMobilePresentation({
       <div className="profile-mobile-identity">
         {kicker && <p className="profile-mobile-kicker">{kicker}</p>}
         <div className="mobile-name">
-          <span>{profileName.first}</span>
-          <span>{profileName.rest}</span>
+          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.first}</span>
+          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.rest}</span>
         </div>
         {positioning.length > 0 && (
-          <p className="profile-mobile-positioning">{positioning.join(" · ")}</p>
+          <p className={"profile-mobile-positioning " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")} style={heroTextStyle(rightHero?.fieldFormats?.role)}>{positioning.join(" · ")}</p>
         )}
       </div>
       <div className="profile-mobile-stage" style={{ ...itemStyle(profile), ...heroStyle(hero) }}>
@@ -518,12 +523,12 @@ function ProfileMobilePresentation({
             mobile
           />
           <div className="profile-mobile-years">
-            <strong>{profile.title}</strong>
-            {profile.text && <p>{profile.text}</p>}
+            <strong className={heroSizeClass(profile.fieldFormats?.title)} style={heroTextStyle(profile.fieldFormats?.title)}>{profile.title}</strong>
+            {profile.text && <p className={heroSizeClass(profile.fieldFormats?.text)} style={heroTextStyle(profile.fieldFormats?.text)}>{profile.text}</p>}
           </div>
           <Badge360 config={hero} />
         </div>
-        {section.intro && <p className="mobile-intro">{section.intro}</p>}
+        {section.intro && <p className={"mobile-intro " + (heroSizeClass(hero?.fieldFormats?.intro) ?? "")} style={heroTextStyle(hero?.fieldFormats?.intro)}>{section.intro}</p>}
         <a
           className="profile-mobile-next"
           href="#perfil-b"
@@ -758,10 +763,10 @@ function heroStyle(config?: HeroVisualConfig) {
   const desktop = config?.desktop
   const mobile = config?.mobile
   return {
-    "--hero-panel-background": config?.panelBackground || heroDefaults.panelBackground,
-    "--hero-badge-background": config?.badgeBackground || heroDefaults.badgeBackground,
-    "--hero-badge-color": config?.badgeColor || heroDefaults.badgeColor,
-    "--hero-intro-color": config?.introColor || heroDefaults.introColor,
+    "--hero-panel-background": heroColor(config?.panelBackground) || heroDefaults.panelBackground,
+    "--hero-badge-background": heroColor(config?.badgeBackground) || heroDefaults.badgeBackground,
+    "--hero-badge-color": heroColor(config?.badgeColor) || heroDefaults.badgeColor,
+    "--hero-intro-color": heroColor(config?.introColor) || heroDefaults.introColor,
     "--hero-desktop-visual-height": toDvh(desktop?.visualHeight),
     "--hero-desktop-image-width": toPercent(desktop?.imageWidth),
     "--hero-desktop-image-height": toPercent(desktop?.imageHeight),
@@ -1384,7 +1389,23 @@ export function PublicSite({
     }
   }, [loading, visible])
 
+  const typographyVariables: Record<string, string> = {}
+  for (const [key, config] of Object.entries(tokens.editorialStyles ?? {})) {
+    if (!/^typography\.[a-z0-9-]+$/.test(key)) continue
+    const name = key.slice("typography.".length)
+    if (typeof config.desktopPx === "number" && Number.isFinite(config.desktopPx)) {
+      typographyVariables["--hero-style-" + name + "-desktop"] = config.desktopPx + "px"
+    }
+    if (typeof config.mobilePx === "number" && Number.isFinite(config.mobilePx)) {
+      typographyVariables["--hero-style-" + name + "-mobile"] = config.mobilePx + "px"
+    }
+    const font = heroFont(config.fontToken)
+    const color = heroColor(config.colorToken)
+    if (font) typographyVariables["--hero-style-" + name + "-font"] = font
+    if (color) typographyVariables["--hero-style-" + name + "-color"] = color
+  }
   const style = {
+    ...typographyVariables,
     "--white": tokens.white,
     "--font-serif": '"Georgia", serif',
     "--orange": tokens.orange,

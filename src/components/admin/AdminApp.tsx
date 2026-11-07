@@ -425,7 +425,7 @@ function SectionsEditor({
             <div className="card-heading">
               <div>
                 <p>Seção {String(draft.sort_order).padStart(2, "0")}</p>
-                <h2>{draft.title}</h2>
+                <h2>{draft.slug === "perfil" ? "Hero" : draft.title}</h2>
               </div>
               <div className="order-buttons">
                 <button onClick={() => move(-1)} aria-label="Mover para cima">
@@ -438,7 +438,7 @@ function SectionsEditor({
             </div>
             <div className="field-grid">
               <label>
-                Título
+                {draft.slug === "perfil" ? "Título principal" : "Título"}
                 <input
                   value={draft.title}
                   onChange={(e) => setDraft({ ...draft, title: e.target.value })}
@@ -449,14 +449,14 @@ function SectionsEditor({
                 <input value={draft.slug} disabled title="Âncoras publicadas são estáveis" />
               </label>
               <label className="field-wide">
-                Linha editorial
+                {draft.slug === "perfil" ? "Descritivo" : "Linha editorial"}
                 <input
                   value={draft.eyebrow ?? ""}
                   onChange={(e) => setDraft({ ...draft, eyebrow: e.target.value })}
                 />
               </label>
               <label className="field-wide">
-                Introdução
+                {draft.slug === "perfil" ? "Frase editorial" : "Introdução"}
                 <textarea
                   rows={4}
                   value={draft.intro ?? ""}
@@ -605,7 +605,7 @@ function SiteEditor({
               >
                 <span>{String(entry.section.sort_order).padStart(2, "0")}</span>
                 <div>
-                  <strong>{entry.section.title}</strong>
+                  <strong>{entry.section.slug === "perfil" ? "Hero" : entry.section.title}</strong>
                   <small>{sectionPublicationLabel(entry.section)}</small>
                 </div>
               </button>
@@ -622,7 +622,7 @@ function SiteEditor({
                       ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
                       : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug}`}
                   </p>
-                  <h2>{selectedIsExperience ? "Experiências Profissionais" : selected.title}</h2>
+                  <h2>{selectedIsExperience ? "Experiências Profissionais" : selected.slug === "perfil" ? "Hero" : selected.title}</h2>
                   <span>
                     {selectedIsExperience
                       ? "Escolha abaixo o trabalho que deseja editar."

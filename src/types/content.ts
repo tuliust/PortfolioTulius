@@ -92,7 +92,24 @@ export type MobileProfileEditorial = {
   bottom?: MobileEditorialBottom
 }
 
+export type HeroTextFormat = {
+  styleToken?: string
+  colorToken?: string
+  fontToken?: string
+  desktopSize?: number
+  mobileSize?: number
+}
+
 export type HeroVisualConfig = {
+  rootBackground?: string
+  badgeIcon?: "arrow" | "plus" | "none"
+  secondaryTitle?: string
+  nextIcon?: "down" | "arrow"
+  nextColor?: string
+  nextBackground?: string
+  nextTarget?: string
+  fieldFormats?: Record<string, HeroTextFormat>
+
   panelBackground?: string
   badgeText?: string
   badgeVisible?: boolean
@@ -142,6 +159,7 @@ export type ContentItem = {
   themeTopics?: string
   themeSummary?: string
   inheritedHighlights?: string[]
+  fieldFormats?: Record<string, HeroTextFormat>
   titleColor?: string
   textColor?: string
   backgroundColor?: string
@@ -186,6 +204,7 @@ export type PortfolioSection = {
 }
 
 export type DesignTokens = {
+  editorialStyles?: Record<string, { fontToken?: string; colorToken?: string; desktopPx?: number; mobilePx?: number }>
   white: string
   orange: string
   ink: string
