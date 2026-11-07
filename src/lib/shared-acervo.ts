@@ -49,27 +49,28 @@ export function discoverAcervoUsages(
     if (block.mobile_panel !== "a" && block.mobile_panel !== "b") return []
     const start = block.content_json?.collection_start
     const limit = block.content_json?.collection_limit
-    return [{
-      source,
-      blockId: block.id,
-      sectionId: section.id,
-      sectionSlug: section.slug,
-      sectionTitle: section.title,
-      panel: block.mobile_panel,
-      start: Number.isInteger(start) && Number(start) >= 0 ? Number(start) : 0,
-      limit: Number.isInteger(limit) && Number(limit) > 0 ? Number(limit) : undefined,
-      published:
-        block.status === "published" &&
-        section.status === "published" &&
-        section.is_visible,
-    }]
+    return [
+      {
+        source,
+        blockId: block.id,
+        sectionId: section.id,
+        sectionSlug: section.slug,
+        sectionTitle: section.title,
+        panel: block.mobile_panel,
+        start: Number.isInteger(start) && Number(start) >= 0 ? Number(start) : 0,
+        limit: Number.isInteger(limit) && Number(limit) > 0 ? Number(limit) : undefined,
+        published:
+          block.status === "published" && section.status === "published" && section.is_visible,
+      },
+    ]
   })
 }
 
 /** Show only collections feeding at least one currently published block. */
 export function activeAcervoSources(usages: readonly AcervoUsage[]): CollectionSource[] {
-  return [...new Set(usages.filter((usage) => usage.published).map((usage) => usage.source))]
-    .sort((a, b) => a.localeCompare(b))
+  return [...new Set(usages.filter((usage) => usage.published).map((usage) => usage.source))].sort(
+    (a, b) => a.localeCompare(b),
+  )
 }
 
 export function acervoUsageLabel(usage: AcervoUsage): string {

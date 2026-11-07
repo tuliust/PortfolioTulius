@@ -2861,34 +2861,36 @@ export function CollectionsStudio({
               : "Coleção não vinculada a esta seção. Salvar aqui atualiza o acervo, mas não os cards manuais do site. Para vinculá-la, use Fonte do conteúdo exibido nas configurações avançadas do bloco."}
         </p>
       )}
-      {visibleConfigs.length > 1 && <div className="collection-tabs" role="tablist">
-        {visibleConfigs.map((item) => (
-          <button
-            key={item.table}
-            role="tab"
-            aria-selected={item.table === config.table}
-            className={item.table === config.table ? "active" : ""}
-            onClick={async () => {
-              if (item.table === config.table) return
-              if (
-                recordDirty &&
-                !(await adminConfirmUnsaved(
-                  "Existem alterações não salvas neste registro. Como deseja continuar?",
-                  {
-                    title: "Alterações não salvas",
-                  },
-                ))
-              )
-                return
-              setDraft(null)
-              setSelectedId("")
-              setConfig(item)
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>}
+      {visibleConfigs.length > 1 && (
+        <div className="collection-tabs" role="tablist">
+          {visibleConfigs.map((item) => (
+            <button
+              key={item.table}
+              role="tab"
+              aria-selected={item.table === config.table}
+              className={item.table === config.table ? "active" : ""}
+              onClick={async () => {
+                if (item.table === config.table) return
+                if (
+                  recordDirty &&
+                  !(await adminConfirmUnsaved(
+                    "Existem alterações não salvas neste registro. Como deseja continuar?",
+                    {
+                      title: "Alterações não salvas",
+                    },
+                  ))
+                )
+                  return
+                setDraft(null)
+                setSelectedId("")
+                setConfig(item)
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="section-editor-layout">
         <div className="section-list">
           {records.map((record, index) => (
@@ -2915,13 +2917,24 @@ export function CollectionsStudio({
                 <strong>{record[config.titleKey] || "Sem título"}</strong>
                 <small>{statusPt(record.status)}</small>
                 {usageLinks && (
-                  <small className={
-                    usagesForAcervoRecord(config.table as CollectionSource, record, records, usageLinks)
-                      .length ? "shared-acervo-record-location" : "shared-acervo-record-location is-unlinked"
-                  }>
+                  <small
+                    className={
+                      usagesForAcervoRecord(
+                        config.table as CollectionSource,
+                        record,
+                        records,
+                        usageLinks,
+                      ).length
+                        ? "shared-acervo-record-location"
+                        : "shared-acervo-record-location is-unlinked"
+                    }
+                  >
                     {(() => {
                       const used = usagesForAcervoRecord(
-                        config.table as CollectionSource, record, records, usageLinks,
+                        config.table as CollectionSource,
+                        record,
+                        records,
+                        usageLinks,
                       )
                       return used.length
                         ? "Utilizado em: " + [...new Set(used.map(acervoUsageLabel))].join(" · ")

@@ -36,12 +36,8 @@ export function SharedCollectionsEditor({
         return
       }
       const [blocks, sections] = await Promise.all([
-        supabase
-          .from("content_blocks")
-          .select("id,section_id,mobile_panel,status,content_json"),
-        supabase
-          .from("sections")
-          .select("id,slug,title,status,is_visible"),
+        supabase.from("content_blocks").select("id,section_id,mobile_panel,status,content_json"),
+        supabase.from("sections").select("id,slug,title,status,is_visible"),
       ])
       if (cancelled) return
       if (blocks.error || sections.error) {
@@ -82,9 +78,9 @@ export function SharedCollectionsEditor({
       <section className="admin-card shared-acervo-explanation">
         <strong>O que aparece neste acervo?</strong>
         <p>
-          Somente coleções vinculadas explicitamente a conteúdos publicados. Conteúdos próprios
-          de cada seção e trajetórias de Experiências Profissionais continuam no Editor do Site.
-          Nenhum registro ou tabela foi excluído.
+          Somente coleções vinculadas explicitamente a conteúdos publicados. Conteúdos próprios de
+          cada seção e trajetórias de Experiências Profissionais continuam no Editor do Site. Nenhum
+          registro ou tabela foi excluído.
         </p>
         {status === "ready" && (
           <div className="shared-acervo-usage-list">
@@ -92,7 +88,9 @@ export function SharedCollectionsEditor({
               const usages = links.filter((usage) => usage.source === source && usage.published)
               return (
                 <div key={source} className="shared-acervo-usage-summary">
-                  <strong>{source === "testimonials" ? "Depoimentos" : source.replace(/_/g, " ")}</strong>
+                  <strong>
+                    {source === "testimonials" ? "Depoimentos" : source.replace(/_/g, " ")}
+                  </strong>
                   <span>
                     Utilizado em: {[...new Set(usages.map(acervoUsageLabel))].join(" · ")}
                   </span>

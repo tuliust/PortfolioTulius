@@ -15,7 +15,7 @@ describe("Etapa 4 — Acervo Estruturado separado do Editor do Site", () => {
     expect(app).not.toContain('type SiteEditorPane = "edit" | "records"')
     expect(app).not.toContain('pane === "records"')
     expect(app).not.toContain("<CollectionsStudio")
-    expect(app).toContain('onOpenCollection={(source) => {')
+    expect(app).toContain("onOpenCollection={(source) => {")
   })
 
   it("mostra somente fontes efetivamente vinculadas e nunca as nove tabelas por padrão", () => {
@@ -32,7 +32,9 @@ describe("Etapa 4 — Acervo Estruturado separado do Editor do Site", () => {
     expect(modules).toContain("usagesForAcervoRecord(")
     expect(modules).toContain("Utilizado em: ")
     expect(modules).toContain("<InlineCareerTrajectoryEditor")
-    expect(shared).toContain("trajetórias de Experiências Profissionais continuam no Editor do Site")
+    expect(shared).toContain(
+      "trajetórias de Experiências Profissionais continuam no Editor do Site",
+    )
     expect(references).toContain('section.status === "published"')
   })
 

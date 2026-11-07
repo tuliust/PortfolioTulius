@@ -676,34 +676,34 @@ function SiteEditor({
                   </p>
                 )}
                 <div className="site-editor-consolidated">
-                    <div className="site-editor-consolidated-heading">
-                      <h3>Informações da seção</h3>
-                      <p>Título, linha editorial, publicação e apresentação.</p>
-                    </div>
-                    <SectionsEditor
-                      key={selected.id + "-details"}
-                      sections={sections}
-                      reload={reload}
-                      selectedSectionId={selected.id}
-                      embedded
-                      onDirtyChange={setSectionInfoDirty}
-                    />
-                    <div className="site-editor-consolidated-heading">
-                      <h3>Conteúdo</h3>
-                      <p>Textos, imagens e itens da seção.</p>
-                    </div>
-                    <ContentStudio
-                      key={selected.id + "-content"}
-                      sections={sections}
-                      sectionIdOverride={selected.id}
-                      embedded
-                      onDirtyChange={setContentDirty}
-                      onEditCollection={editLinkedCollection}
-                    />
-                    <FloatingSaveButton
-                      enabled={sectionInfoDirty || contentDirty}
-                      onClick={saveRegisteredAdminChanges}
-                    />
+                  <div className="site-editor-consolidated-heading">
+                    <h3>Informações da seção</h3>
+                    <p>Título, linha editorial, publicação e apresentação.</p>
+                  </div>
+                  <SectionsEditor
+                    key={selected.id + "-details"}
+                    sections={sections}
+                    reload={reload}
+                    selectedSectionId={selected.id}
+                    embedded
+                    onDirtyChange={setSectionInfoDirty}
+                  />
+                  <div className="site-editor-consolidated-heading">
+                    <h3>Conteúdo</h3>
+                    <p>Textos, imagens e itens da seção.</p>
+                  </div>
+                  <ContentStudio
+                    key={selected.id + "-content"}
+                    sections={sections}
+                    sectionIdOverride={selected.id}
+                    embedded
+                    onDirtyChange={setContentDirty}
+                    onEditCollection={editLinkedCollection}
+                  />
+                  <FloatingSaveButton
+                    enabled={sectionInfoDirty || contentDirty}
+                    onClick={saveRegisteredAdminChanges}
+                  />
                 </div>
               </div>
             </>
@@ -820,7 +820,9 @@ export function AdminApp() {
         reload={load}
         dirty={editorDirty}
         onDirtyChange={setEditorDirty}
-        onOpenCollection={(source) => { void selectModule("acervo", source) }}
+        onOpenCollection={(source) => {
+          void selectModule("acervo", source)
+        }}
       />
     ),
     acervo: (
