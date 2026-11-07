@@ -1128,7 +1128,7 @@ export function ContentStudio({
                   className="secondary-button"
                   onClick={() => onEditCollection(draft.content_json.source_collection!)}
                 >
-                  Editar registros vinculados
+                  Editar no Acervo
                 </button>
               </div>
             )}
