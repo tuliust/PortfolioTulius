@@ -204,7 +204,10 @@ export type PortfolioSection = {
 }
 
 export type DesignTokens = {
-  editorialStyles?: Record<string, { fontToken?: string; colorToken?: string; desktopPx?: number; mobilePx?: number }>
+  editorialStyles?: Record<
+    string,
+    { fontToken?: string; colorToken?: string; desktopPx?: number; mobilePx?: number }
+  >
   white: string
   orange: string
   ink: string

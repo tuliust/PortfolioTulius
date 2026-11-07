@@ -622,7 +622,13 @@ function SiteEditor({
                       ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
                       : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug}`}
                   </p>
-                  <h2>{selectedIsExperience ? "Experiências Profissionais" : selected.slug === "perfil" ? "Hero" : selected.title}</h2>
+                  <h2>
+                    {selectedIsExperience
+                      ? "Experiências Profissionais"
+                      : selected.slug === "perfil"
+                        ? "Hero"
+                        : selected.title}
+                  </h2>
                   <span>
                     {selectedIsExperience
                       ? "Escolha abaixo o trabalho que deseja editar."

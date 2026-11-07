@@ -33,12 +33,20 @@ function Badge360({ config }: { config?: HeroVisualConfig }) {
         <defs>
           <path id={pathId} d="M80,80 m-58,0 a58,58 0 1,1 116,0 a58,58 0 1,1 -116,0" />
         </defs>
-        <text className={heroSizeClass(config?.fieldFormats?.badgeText)} style={heroTextStyle(config?.fieldFormats?.badgeText)}>
+        <text
+          className={heroSizeClass(config?.fieldFormats?.badgeText)}
+          style={heroTextStyle(config?.fieldFormats?.badgeText)}
+        >
           <textPath href={`#${pathId}`} textLength="350" lengthAdjust="spacingAndGlyphs">
             {config?.badgeText || heroDefaults.badgeText}
           </textPath>
         </text>
-        {config?.badgeIcon !== "none" && (config?.badgeIcon === "plus" ? <path d="M80 53v54M53 80h54" /> : <path d="M55 100 102 53M70 53h32v32" />)}
+        {config?.badgeIcon !== "none" &&
+          (config?.badgeIcon === "plus" ? (
+            <path d="M80 53v54M53 80h54" />
+          ) : (
+            <path d="M55 100 102 53M70 53h32v32" />
+          ))}
       </svg>
     </div>
   )
@@ -160,11 +168,37 @@ function ItemCard({
           />
         ))}
       <div className="item-copy">
-        {item.label && <span className={"item-label " + (heroSizeClass(item.fieldFormats?.label) ?? "")} style={heroTextStyle(item.fieldFormats?.label)}>{item.label}</span>}
+        {item.label && (
+          <span
+            className={"item-label " + (heroSizeClass(item.fieldFormats?.label) ?? "")}
+            style={heroTextStyle(item.fieldFormats?.label)}
+          >
+            {item.label}
+          </span>
+        )}
         {item.value && <strong className="item-value">{item.value}</strong>}
-        <h3 className={heroSizeClass(item.fieldFormats?.title)} style={heroTextStyle(item.fieldFormats?.title)}>{item.title}</h3>
-        {item.meta && !contact && <p className={"item-meta " + (heroSizeClass(item.fieldFormats?.meta) ?? "")} style={heroTextStyle(item.fieldFormats?.meta)}>{item.meta}</p>}
-        {item.text && <p className={heroSizeClass(item.fieldFormats?.text)} style={heroTextStyle(item.fieldFormats?.text)}>{item.text}</p>}
+        <h3
+          className={heroSizeClass(item.fieldFormats?.title)}
+          style={heroTextStyle(item.fieldFormats?.title)}
+        >
+          {item.title}
+        </h3>
+        {item.meta && !contact && (
+          <p
+            className={"item-meta " + (heroSizeClass(item.fieldFormats?.meta) ?? "")}
+            style={heroTextStyle(item.fieldFormats?.meta)}
+          >
+            {item.meta}
+          </p>
+        )}
+        {item.text && (
+          <p
+            className={heroSizeClass(item.fieldFormats?.text)}
+            style={heroTextStyle(item.fieldFormats?.text)}
+          >
+            {item.text}
+          </p>
+        )}
         {item.tags && (
           <ul className="tags">
             {item.tags.map((tag) => (
@@ -271,7 +305,10 @@ function ProfileDesktop({
       </div>
     )
   return (
-    <div className="profile-desktop" style={hero?.rootBackground ? { backgroundColor: heroColor(hero.rootBackground) } : undefined}>
+    <div
+      className="profile-desktop"
+      style={hero?.rootBackground ? { backgroundColor: heroColor(hero.rootBackground) } : undefined}
+    >
       <aside className="profile-sidebar" style={{ ...itemStyle(profile), ...heroStyle(hero) }}>
         <div className="profile-portrait">
           <ApprovedProfileImage
@@ -280,13 +317,28 @@ function ProfileDesktop({
             style={imageFramingStyle(profile.mediaFraming)}
           />
           <div className="years">
-            <strong className={heroSizeClass(profile.fieldFormats?.title)} style={heroTextStyle(profile.fieldFormats?.title)}>{profile.title}</strong>
-            <span className={heroSizeClass(profile.fieldFormats?.text)} style={heroTextStyle(profile.fieldFormats?.text)}>{profile.text}</span>
+            <strong
+              className={heroSizeClass(profile.fieldFormats?.title)}
+              style={heroTextStyle(profile.fieldFormats?.title)}
+            >
+              {profile.title}
+            </strong>
+            <span
+              className={heroSizeClass(profile.fieldFormats?.text)}
+              style={heroTextStyle(profile.fieldFormats?.text)}
+            >
+              {profile.text}
+            </span>
           </div>
           <Badge360 config={hero} />
         </div>
         <div className="profile-sidebar-content">
-          <p className={"profile-intro " + (heroSizeClass(hero?.fieldFormats?.intro) ?? "")} style={heroTextStyle(hero?.fieldFormats?.intro)}>{section.intro}</p>
+          <p
+            className={"profile-intro " + (heroSizeClass(hero?.fieldFormats?.intro) ?? "")}
+            style={heroTextStyle(hero?.fieldFormats?.intro)}
+          >
+            {section.intro}
+          </p>
           <div className="profile-highlights">
             <h2 className="sr-only">Destaques</h2>
             {panelA.slice(1).map((item, i) => (
@@ -297,10 +349,25 @@ function ProfileDesktop({
       </aside>
       <div className="profile-main">
         <div className="name-lockup">
-          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.first}</span>
-          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.rest}</span>
+          <span
+            className={heroSizeClass(rightHero?.fieldFormats?.title)}
+            style={heroTextStyle(rightHero?.fieldFormats?.title)}
+          >
+            {profileName.first}
+          </span>
+          <span
+            className={heroSizeClass(rightHero?.fieldFormats?.title)}
+            style={heroTextStyle(rightHero?.fieldFormats?.title)}
+          >
+            {profileName.rest}
+          </span>
         </div>
-        <p className={"profile-role " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")} style={heroTextStyle(rightHero?.fieldFormats?.role)}>{section.eyebrow}</p>
+        <p
+          className={"profile-role " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")}
+          style={heroTextStyle(rightHero?.fieldFormats?.role)}
+        >
+          {section.eyebrow}
+        </p>
         <div className="area-grid">
           {areas.map((item, index) => (
             <ItemCard
@@ -317,7 +384,12 @@ function ProfileDesktop({
             />
           ))}
         </div>
-        <h2 className={heroSizeClass(rightHero?.fieldFormats?.secondaryTitle)} style={heroTextStyle(rightHero?.fieldFormats?.secondaryTitle)}>{rightHero?.secondaryTitle || "Experiência e atuação"}</h2>
+        <h2
+          className={heroSizeClass(rightHero?.fieldFormats?.secondaryTitle)}
+          style={heroTextStyle(rightHero?.fieldFormats?.secondaryTitle)}
+        >
+          {rightHero?.secondaryTitle || "Experiência e atuação"}
+        </h2>
         <div className="career-grid">
           {careers.map((item, i) => (
             <ItemCard
@@ -334,7 +406,10 @@ function ProfileDesktop({
         {nextSectionSlug && (
           <a
             className="profile-next-section"
-            style={{ color: heroColor(rightHero?.nextColor), backgroundColor: heroColor(rightHero?.nextBackground) }}
+            style={{
+              color: heroColor(rightHero?.nextColor),
+              backgroundColor: heroColor(rightHero?.nextBackground),
+            }}
             href={`#${rightHero?.nextTarget && publishedSlugs.includes(rightHero.nextTarget) ? rightHero.nextTarget : nextSectionSlug}`}
             aria-label="Ir para a próxima seção"
             title="Ir para a próxima seção"
@@ -367,7 +442,15 @@ function ProfileMobileEditorial({
       : profile.image
 
   return (
-    <div className="mobile360" style={{ ...heroStyle(profile.hero), ...(profile.hero?.rootBackground ? { backgroundColor: heroColor(profile.hero.rootBackground) } : {}) }}>
+    <div
+      className="mobile360"
+      style={{
+        ...heroStyle(profile.hero),
+        ...(profile.hero?.rootBackground
+          ? { backgroundColor: heroColor(profile.hero.rootBackground) }
+          : {}),
+      }}
+    >
       <div
         className="mobile360-top"
         style={
@@ -397,7 +480,12 @@ function ProfileMobileEditorial({
           </h1>
         )}
         {config.top.showSupport !== false && positioning && (
-          <p className={"mobile360-support " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")} style={heroTextStyle(rightHero?.fieldFormats?.role)}>{positioning}</p>
+          <p
+            className={"mobile360-support " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")}
+            style={heroTextStyle(rightHero?.fieldFormats?.role)}
+          >
+            {positioning}
+          </p>
         )}
       </div>
       <div
@@ -461,14 +549,36 @@ function ProfileMobileEditorial({
           <div className="mobile360-bottom-copy">
             {config.bottom.showName !== false && (
               <div className="mobile360-person-name">
-                <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{firstName}</span>
-                <strong className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{surname}</strong>
+                <span
+                  className={heroSizeClass(rightHero?.fieldFormats?.title)}
+                  style={heroTextStyle(rightHero?.fieldFormats?.title)}
+                >
+                  {firstName}
+                </span>
+                <strong
+                  className={heroSizeClass(rightHero?.fieldFormats?.title)}
+                  style={heroTextStyle(rightHero?.fieldFormats?.title)}
+                >
+                  {surname}
+                </strong>
               </div>
             )}
             {config.bottom.showExperience !== false && (
               <div className="mobile360-experience">
-                <strong className={heroSizeClass(profile.fieldFormats?.title)} style={heroTextStyle(profile.fieldFormats?.title)}>{profile.title}</strong>
-                {profile.text && <p className={heroSizeClass(profile.fieldFormats?.text)} style={heroTextStyle(profile.fieldFormats?.text)}>{profile.text}</p>}
+                <strong
+                  className={heroSizeClass(profile.fieldFormats?.title)}
+                  style={heroTextStyle(profile.fieldFormats?.title)}
+                >
+                  {profile.title}
+                </strong>
+                {profile.text && (
+                  <p
+                    className={heroSizeClass(profile.fieldFormats?.text)}
+                    style={heroTextStyle(profile.fieldFormats?.text)}
+                  >
+                    {profile.text}
+                  </p>
+                )}
               </div>
             )}
             {config.bottom.showArrow !== false && (
@@ -507,11 +617,28 @@ function ProfileMobilePresentation({
       <div className="profile-mobile-identity">
         {kicker && <p className="profile-mobile-kicker">{kicker}</p>}
         <div className="mobile-name">
-          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.first}</span>
-          <span className={heroSizeClass(rightHero?.fieldFormats?.title)} style={heroTextStyle(rightHero?.fieldFormats?.title)}>{profileName.rest}</span>
+          <span
+            className={heroSizeClass(rightHero?.fieldFormats?.title)}
+            style={heroTextStyle(rightHero?.fieldFormats?.title)}
+          >
+            {profileName.first}
+          </span>
+          <span
+            className={heroSizeClass(rightHero?.fieldFormats?.title)}
+            style={heroTextStyle(rightHero?.fieldFormats?.title)}
+          >
+            {profileName.rest}
+          </span>
         </div>
         {positioning.length > 0 && (
-          <p className={"profile-mobile-positioning " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")} style={heroTextStyle(rightHero?.fieldFormats?.role)}>{positioning.join(" · ")}</p>
+          <p
+            className={
+              "profile-mobile-positioning " + (heroSizeClass(rightHero?.fieldFormats?.role) ?? "")
+            }
+            style={heroTextStyle(rightHero?.fieldFormats?.role)}
+          >
+            {positioning.join(" · ")}
+          </p>
         )}
       </div>
       <div className="profile-mobile-stage" style={{ ...itemStyle(profile), ...heroStyle(hero) }}>
@@ -523,12 +650,31 @@ function ProfileMobilePresentation({
             mobile
           />
           <div className="profile-mobile-years">
-            <strong className={heroSizeClass(profile.fieldFormats?.title)} style={heroTextStyle(profile.fieldFormats?.title)}>{profile.title}</strong>
-            {profile.text && <p className={heroSizeClass(profile.fieldFormats?.text)} style={heroTextStyle(profile.fieldFormats?.text)}>{profile.text}</p>}
+            <strong
+              className={heroSizeClass(profile.fieldFormats?.title)}
+              style={heroTextStyle(profile.fieldFormats?.title)}
+            >
+              {profile.title}
+            </strong>
+            {profile.text && (
+              <p
+                className={heroSizeClass(profile.fieldFormats?.text)}
+                style={heroTextStyle(profile.fieldFormats?.text)}
+              >
+                {profile.text}
+              </p>
+            )}
           </div>
           <Badge360 config={hero} />
         </div>
-        {section.intro && <p className={"mobile-intro " + (heroSizeClass(hero?.fieldFormats?.intro) ?? "")} style={heroTextStyle(hero?.fieldFormats?.intro)}>{section.intro}</p>}
+        {section.intro && (
+          <p
+            className={"mobile-intro " + (heroSizeClass(hero?.fieldFormats?.intro) ?? "")}
+            style={heroTextStyle(hero?.fieldFormats?.intro)}
+          >
+            {section.intro}
+          </p>
+        )}
         <a
           className="profile-mobile-next"
           href="#perfil-b"

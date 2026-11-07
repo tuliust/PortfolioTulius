@@ -402,7 +402,8 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
                     ...next.editorialStyles,
                     [t.token_key]: {
                       fontToken: typeof style.fontToken === "string" ? style.fontToken : undefined,
-                      colorToken: typeof style.colorToken === "string" ? style.colorToken : undefined,
+                      colorToken:
+                        typeof style.colorToken === "string" ? style.colorToken : undefined,
                       desktopPx: typeof style.desktopPx === "number" ? style.desktopPx : undefined,
                       mobilePx: typeof style.mobilePx === "number" ? style.mobilePx : undefined,
                     },

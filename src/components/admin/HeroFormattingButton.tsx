@@ -20,11 +20,13 @@ export function HeroFormattingButton({
   const styles = Object.values(catalog).filter((entry) => entry.token_key.startsWith("typography."))
   const colors = Object.values(catalog).filter((entry) => entry.value_type === "color")
   const fonts = Object.values(catalog).filter((entry) => entry.value_type === "font")
-  const sizes = Array.from(new Set([
-    ...IDENTITY_NUMERIC_SIZES,
-    ...(value?.desktopSize != null ? [value.desktopSize] : []),
-    ...(value?.mobileSize != null ? [value.mobileSize] : []),
-  ])).sort((a, b) => a - b)
+  const sizes = Array.from(
+    new Set([
+      ...IDENTITY_NUMERIC_SIZES,
+      ...(value?.desktopSize != null ? [value.desktopSize] : []),
+      ...(value?.mobileSize != null ? [value.mobileSize] : []),
+    ]),
+  ).sort((a, b) => a - b)
   const patch = (next: Partial<HeroTextFormat>) => onChange({ ...value, ...next })
   return (
     <span className="hero-format-control">
@@ -43,28 +45,43 @@ export function HeroFormattingButton({
           <strong>Formatação · {label}</strong>
           <label>
             Estilo da Identidade
-            <select value={value?.styleToken ?? ""} onChange={(event) => patch({ styleToken: event.target.value || undefined })}>
+            <select
+              value={value?.styleToken ?? ""}
+              onChange={(event) => patch({ styleToken: event.target.value || undefined })}
+            >
               <option value="">Padrão atual do elemento</option>
               {styles.map((entry) => (
-                <option key={entry.token_key} value={entry.token_key}>{entry.display_name}</option>
+                <option key={entry.token_key} value={entry.token_key}>
+                  {entry.display_name}
+                </option>
               ))}
             </select>
           </label>
           <label>
             Cor
-            <select value={value?.colorToken ?? ""} onChange={(event) => patch({ colorToken: event.target.value || undefined })}>
+            <select
+              value={value?.colorToken ?? ""}
+              onChange={(event) => patch({ colorToken: event.target.value || undefined })}
+            >
               <option value="">Herdar do estilo</option>
               {colors.map((entry) => (
-                <option key={entry.token_key} value={entry.token_key}>{entry.display_name}</option>
+                <option key={entry.token_key} value={entry.token_key}>
+                  {entry.display_name}
+                </option>
               ))}
             </select>
           </label>
           <label>
             Fonte
-            <select value={value?.fontToken ?? ""} onChange={(event) => patch({ fontToken: event.target.value || undefined })}>
+            <select
+              value={value?.fontToken ?? ""}
+              onChange={(event) => patch({ fontToken: event.target.value || undefined })}
+            >
               <option value="">Herdar do estilo</option>
               {fonts.map((entry) => (
-                <option key={entry.token_key} value={entry.token_key}>{entry.display_name}</option>
+                <option key={entry.token_key} value={entry.token_key}>
+                  {entry.display_name}
+                </option>
               ))}
             </select>
           </label>
@@ -79,14 +96,22 @@ export function HeroFormattingButton({
                   }
                 >
                   <option value="">Usar estilo</option>
-                  {sizes.map((item) => <option key={item} value={item}>{item} px</option>)}
+                  {sizes.map((item) => (
+                    <option key={item} value={item}>
+                      {item} px
+                    </option>
+                  ))}
                 </select>
               </label>
             ))}
           </div>
           <div className="hero-format-actions">
-            <button type="button" onClick={() => onChange(undefined)}>Restaurar padrão</button>
-            <button type="button" onClick={() => setOpen(false)}>Fechar</button>
+            <button type="button" onClick={() => onChange(undefined)}>
+              Restaurar padrão
+            </button>
+            <button type="button" onClick={() => setOpen(false)}>
+              Fechar
+            </button>
           </div>
         </span>
       )}

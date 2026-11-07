@@ -1841,45 +1841,78 @@ export function ContentStudio({
                       )}
                       {experienceSlug === "perfil" && index === 0 && (
                         <fieldset className="hero-section-specific">
-                          <legend>Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}</legend>
+                          <legend>
+                            Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}
+                          </legend>
                           {draft.mobile_panel === "a" ? (
                             <div className="field-grid">
                               <label>
                                 Cor do BG do Hero
                                 <select
                                   value={item.hero?.rootBackground ?? "transparent"}
-                                  onChange={(event) => updateHero(index, { rootBackground: event.target.value })}
+                                  onChange={(event) =>
+                                    updateHero(index, { rootBackground: event.target.value })
+                                  }
                                 >
                                   <option value="transparent">Transparente</option>
-                                  {Object.values(identityOptions).filter((row) => row.value_type === "color").map((row) => (
-                                    <option key={row.token_key} value={row.token_key}>{row.display_name}</option>
-                                  ))}
+                                  {Object.values(identityOptions)
+                                    .filter((row) => row.value_type === "color")
+                                    .map((row) => (
+                                      <option key={row.token_key} value={row.token_key}>
+                                        {row.display_name}
+                                      </option>
+                                    ))}
                                 </select>
                               </label>
                               <label>
                                 Cor do BG · Esquerda
                                 <select
-                                  value={item.hero?.panelBackground && item.hero.panelBackground.startsWith("color.") ? item.hero.panelBackground : "color.ink"}
-                                  onChange={(event) => updateHero(index, { panelBackground: event.target.value })}
+                                  value={
+                                    item.hero?.panelBackground &&
+                                    item.hero.panelBackground.startsWith("color.")
+                                      ? item.hero.panelBackground
+                                      : "color.ink"
+                                  }
+                                  onChange={(event) =>
+                                    updateHero(index, { panelBackground: event.target.value })
+                                  }
                                 >
-                                  {Object.values(identityOptions).filter((row) => row.value_type === "color").map((row) => (
-                                    <option key={row.token_key} value={row.token_key}>{row.display_name}</option>
-                                  ))}
+                                  {Object.values(identityOptions)
+                                    .filter((row) => row.value_type === "color")
+                                    .map((row) => (
+                                      <option key={row.token_key} value={row.token_key}>
+                                        {row.display_name}
+                                      </option>
+                                    ))}
                                 </select>
                               </label>
                               <label className="field-wide">
                                 Círculo · texto giratório
                                 <input
-                                  value={item.hero?.badgeText ?? "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"}
-                                  onChange={(event) => updateHero(index, { badgeText: event.target.value })}
+                                  value={
+                                    item.hero?.badgeText ??
+                                    "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
+                                  }
+                                  onChange={(event) =>
+                                    updateHero(index, { badgeText: event.target.value })
+                                  }
                                 />
-                                <HeroFormattingButton label="texto giratório" value={item.hero?.fieldFormats?.badgeText} onChange={(next) => updateHeroFormat(index, "badgeText", next)} catalog={identityOptions} />
+                                <HeroFormattingButton
+                                  label="texto giratório"
+                                  value={item.hero?.fieldFormats?.badgeText}
+                                  onChange={(next) => updateHeroFormat(index, "badgeText", next)}
+                                  catalog={identityOptions}
+                                />
                               </label>
                               <label>
                                 Círculo · ícone central
                                 <select
                                   value={item.hero?.badgeIcon ?? "arrow"}
-                                  onChange={(event) => updateHero(index, { badgeIcon: event.target.value as "arrow" | "plus" | "none" })}
+                                  onChange={(event) =>
+                                    updateHero(index, {
+                                      badgeIcon: event.target.value as "arrow" | "plus" | "none",
+                                    })
+                                  }
                                 >
                                   <option value="arrow">Seta diagonal</option>
                                   <option value="plus">Cruz</option>
@@ -1888,63 +1921,124 @@ export function ContentStudio({
                               </label>
                               <div className="hero-inline-format field-wide">
                                 Frase editorial
-                                <HeroFormattingButton label="frase editorial" value={item.hero?.fieldFormats?.intro} onChange={(next) => updateHeroFormat(index, "intro", next)} catalog={identityOptions} />
-                                <small>O texto é editado em Informações da seção, acima. Esta configuração modifica apenas sua apresentação.</small>
+                                <HeroFormattingButton
+                                  label="frase editorial"
+                                  value={item.hero?.fieldFormats?.intro}
+                                  onChange={(next) => updateHeroFormat(index, "intro", next)}
+                                  catalog={identityOptions}
+                                />
+                                <small>
+                                  O texto é editado em Informações da seção, acima. Esta
+                                  configuração modifica apenas sua apresentação.
+                                </small>
                               </div>
                             </div>
                           ) : (
                             <div className="field-grid">
                               <div className="hero-inline-format field-wide">
                                 Título principal
-                                <HeroFormattingButton label="título principal" value={item.hero?.fieldFormats?.title} onChange={(next) => updateHeroFormat(index, "title", next)} catalog={identityOptions} />
+                                <HeroFormattingButton
+                                  label="título principal"
+                                  value={item.hero?.fieldFormats?.title}
+                                  onChange={(next) => updateHeroFormat(index, "title", next)}
+                                  catalog={identityOptions}
+                                />
                                 <small>Texto editável em Informações da seção, acima.</small>
                               </div>
                               <div className="hero-inline-format field-wide">
                                 Descritivo
-                                <HeroFormattingButton label="descritivo" value={item.hero?.fieldFormats?.role} onChange={(next) => updateHeroFormat(index, "role", next)} catalog={identityOptions} />
+                                <HeroFormattingButton
+                                  label="descritivo"
+                                  value={item.hero?.fieldFormats?.role}
+                                  onChange={(next) => updateHeroFormat(index, "role", next)}
+                                  catalog={identityOptions}
+                                />
                                 <small>Texto editável em Informações da seção, acima.</small>
                               </div>
                               <label className="field-wide">
                                 Título secundário
                                 <input
                                   value={item.hero?.secondaryTitle ?? "Experiência e atuação"}
-                                  onChange={(event) => updateHero(index, { secondaryTitle: event.target.value })}
+                                  onChange={(event) =>
+                                    updateHero(index, { secondaryTitle: event.target.value })
+                                  }
                                 />
-                                <HeroFormattingButton label="título secundário" value={item.hero?.fieldFormats?.secondaryTitle} onChange={(next) => updateHeroFormat(index, "secondaryTitle", next)} catalog={identityOptions} />
+                                <HeroFormattingButton
+                                  label="título secundário"
+                                  value={item.hero?.fieldFormats?.secondaryTitle}
+                                  onChange={(next) =>
+                                    updateHeroFormat(index, "secondaryTitle", next)
+                                  }
+                                  catalog={identityOptions}
+                                />
                               </label>
                               <label>
                                 Botão inferior · ícone
-                                <select value={item.hero?.nextIcon ?? "down"} onChange={(event) => updateHero(index, { nextIcon: event.target.value as "down" | "arrow" })}>
+                                <select
+                                  value={item.hero?.nextIcon ?? "down"}
+                                  onChange={(event) =>
+                                    updateHero(index, {
+                                      nextIcon: event.target.value as "down" | "arrow",
+                                    })
+                                  }
+                                >
                                   <option value="down">Seta para baixo</option>
                                   <option value="arrow">Seta diagonal</option>
                                 </select>
                               </label>
                               <label>
                                 Botão inferior · cor do ícone
-                                <select value={item.hero?.nextColor ?? ""} onChange={(event) => updateHero(index, { nextColor: event.target.value })}>
+                                <select
+                                  value={item.hero?.nextColor ?? ""}
+                                  onChange={(event) =>
+                                    updateHero(index, { nextColor: event.target.value })
+                                  }
+                                >
                                   <option value="">Padrão do site</option>
-                                  {Object.values(identityOptions).filter((row) => row.value_type === "color").map((row) => (
-                                    <option key={row.token_key} value={row.token_key}>{row.display_name}</option>
-                                  ))}
+                                  {Object.values(identityOptions)
+                                    .filter((row) => row.value_type === "color")
+                                    .map((row) => (
+                                      <option key={row.token_key} value={row.token_key}>
+                                        {row.display_name}
+                                      </option>
+                                    ))}
                                 </select>
                               </label>
                               <label>
                                 Botão inferior · cor do BG
-                                <select value={item.hero?.nextBackground ?? ""} onChange={(event) => updateHero(index, { nextBackground: event.target.value })}>
+                                <select
+                                  value={item.hero?.nextBackground ?? ""}
+                                  onChange={(event) =>
+                                    updateHero(index, { nextBackground: event.target.value })
+                                  }
+                                >
                                   <option value="">Padrão do site</option>
                                   <option value="transparent">Transparente</option>
-                                  {Object.values(identityOptions).filter((row) => row.value_type === "color").map((row) => (
-                                    <option key={row.token_key} value={row.token_key}>{row.display_name}</option>
-                                  ))}
+                                  {Object.values(identityOptions)
+                                    .filter((row) => row.value_type === "color")
+                                    .map((row) => (
+                                      <option key={row.token_key} value={row.token_key}>
+                                        {row.display_name}
+                                      </option>
+                                    ))}
                                 </select>
                               </label>
                               <label>
                                 Botão inferior · âncora
-                                <select value={item.hero?.nextTarget ?? ""} onChange={(event) => updateHero(index, { nextTarget: event.target.value })}>
+                                <select
+                                  value={item.hero?.nextTarget ?? ""}
+                                  onChange={(event) =>
+                                    updateHero(index, { nextTarget: event.target.value })
+                                  }
+                                >
                                   <option value="">Próxima seção publicada</option>
-                                  {sections.filter((entry) => entry.slug !== "perfil").map((entry) => (
-                                    <option key={entry.id} value={entry.slug}>{entry.title} (#{entry.slug})</option>
-                                  ))}
+                                  {sections
+                                    .filter((entry) => entry.slug !== "perfil")
+                                    .map((entry) => (
+                                      <option key={entry.id} value={entry.slug}>
+                                        {entry.title} (#{entry.slug})
+                                      </option>
+                                    ))}
                                 </select>
                               </label>
                             </div>
@@ -1956,10 +2050,21 @@ export function ContentStudio({
                           <span className="hero-field-label">
                             {experienceSlug === "perfil"
                               ? draft.mobile_panel === "a"
-                                ? index === 0 ? "Mensagem principal · texto grande" : "Destaque · título"
-                                : index < 5 ? "Botão principal · título" : "Item · título"
+                                ? index === 0
+                                  ? "Mensagem principal · texto grande"
+                                  : "Destaque · título"
+                                : index < 5
+                                  ? "Botão principal · título"
+                                  : "Item · título"
                               : "Título"}
-                            {experienceSlug === "perfil" && <HeroFormattingButton label="título do item" value={item.fieldFormats?.title} onChange={(next) => updateFieldFormat(index, "title", next)} catalog={identityOptions} />}
+                            {experienceSlug === "perfil" && (
+                              <HeroFormattingButton
+                                label="título do item"
+                                value={item.fieldFormats?.title}
+                                onChange={(next) => updateFieldFormat(index, "title", next)}
+                                catalog={identityOptions}
+                              />
+                            )}
                           </span>
                           <input
                             value={item.title}
@@ -1968,8 +2073,19 @@ export function ContentStudio({
                         </label>
                         <label>
                           <span className="hero-field-label">
-                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index < 5 ? "Linha superior / número" : "Rótulo / número"}
-                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index < 5 && <HeroFormattingButton label="linha superior" value={item.fieldFormats?.label} onChange={(next) => updateFieldFormat(index, "label", next)} catalog={identityOptions} />}
+                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index < 5
+                              ? "Linha superior / número"
+                              : "Rótulo / número"}
+                            {experienceSlug === "perfil" &&
+                              draft.mobile_panel === "b" &&
+                              index < 5 && (
+                                <HeroFormattingButton
+                                  label="linha superior"
+                                  value={item.fieldFormats?.label}
+                                  onChange={(next) => updateFieldFormat(index, "label", next)}
+                                  catalog={identityOptions}
+                                />
+                              )}
                           </span>
                           <input
                             value={item.label ?? ""}
@@ -1980,10 +2096,21 @@ export function ContentStudio({
                           <span className="hero-field-label">
                             {experienceSlug === "perfil"
                               ? draft.mobile_panel === "a"
-                                ? index === 0 ? "Mensagem principal · texto pequeno" : "Destaque · subtítulo"
-                                : index >= 5 ? "Descrição do item" : "Texto"
+                                ? index === 0
+                                  ? "Mensagem principal · texto pequeno"
+                                  : "Destaque · subtítulo"
+                                : index >= 5
+                                  ? "Descrição do item"
+                                  : "Texto"
                               : "Texto"}
-                            {experienceSlug === "perfil" && <HeroFormattingButton label="texto do item" value={item.fieldFormats?.text} onChange={(next) => updateFieldFormat(index, "text", next)} catalog={identityOptions} />}
+                            {experienceSlug === "perfil" && (
+                              <HeroFormattingButton
+                                label="texto do item"
+                                value={item.fieldFormats?.text}
+                                onChange={(next) => updateFieldFormat(index, "text", next)}
+                                catalog={identityOptions}
+                              />
+                            )}
                           </span>
                           <textarea
                             value={item.text ?? ""}
@@ -2005,8 +2132,19 @@ export function ContentStudio({
                         </label>
                         <label>
                           <span className="admin-field-with-info">
-                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index >= 5 ? "Subtítulo do item" : "Metadado/URL"}
-                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index >= 5 && <HeroFormattingButton label="subtítulo do item" value={item.fieldFormats?.meta} onChange={(next) => updateFieldFormat(index, "meta", next)} catalog={identityOptions} />}
+                            {experienceSlug === "perfil" && draft.mobile_panel === "b" && index >= 5
+                              ? "Subtítulo do item"
+                              : "Metadado/URL"}
+                            {experienceSlug === "perfil" &&
+                              draft.mobile_panel === "b" &&
+                              index >= 5 && (
+                                <HeroFormattingButton
+                                  label="subtítulo do item"
+                                  value={item.fieldFormats?.meta}
+                                  onChange={(next) => updateFieldFormat(index, "meta", next)}
+                                  catalog={identityOptions}
+                                />
+                              )}
                             <AdminInfoTip
                               label="Metadado/URL"
                               description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
@@ -2262,7 +2400,11 @@ export function ContentStudio({
                             </div>
                           )}
                         <PublishedMediaPicker
-                          label={experienceSlug === "perfil" && draft.mobile_panel === "a" && index === 0 ? "Foto" : "Imagem do item"}
+                          label={
+                            experienceSlug === "perfil" && draft.mobile_panel === "a" && index === 0
+                              ? "Foto"
+                              : "Imagem do item"
+                          }
                           guidanceAsInfo
                           iconOnlyActions
                           allowFraming={false}

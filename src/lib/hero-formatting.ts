@@ -33,9 +33,7 @@ export function heroFont(value?: string): string | undefined {
 
 function styleName(format?: HeroTextFormat): string | undefined {
   const key = format?.styleToken
-  return key && /^typography\.[a-z0-9-]+$/.test(key)
-    ? key.slice("typography.".length)
-    : undefined
+  return key && /^typography\.[a-z0-9-]+$/.test(key) ? key.slice("typography.".length) : undefined
 }
 
 export function heroSizeClass(format?: HeroTextFormat): string | undefined {
@@ -53,10 +51,14 @@ function size(value: number | undefined): string | undefined {
 export function heroTextStyle(format?: HeroTextFormat): CSSProperties | undefined {
   if (!format) return undefined
   const key = styleName(format)
-  const desktop = size(format.desktopSize) || (key ? "var(--hero-style-" + key + "-desktop)" : undefined)
-  const mobile = size(format.mobileSize) || (key ? "var(--hero-style-" + key + "-mobile)" : undefined)
-  const color = heroColor(format.colorToken) || (key ? "var(--hero-style-" + key + "-color)" : undefined)
-  const fontFamily = heroFont(format.fontToken) || (key ? "var(--hero-style-" + key + "-font)" : undefined)
+  const desktop =
+    size(format.desktopSize) || (key ? "var(--hero-style-" + key + "-desktop)" : undefined)
+  const mobile =
+    size(format.mobileSize) || (key ? "var(--hero-style-" + key + "-mobile)" : undefined)
+  const color =
+    heroColor(format.colorToken) || (key ? "var(--hero-style-" + key + "-color)" : undefined)
+  const fontFamily =
+    heroFont(format.fontToken) || (key ? "var(--hero-style-" + key + "-font)" : undefined)
   return {
     ...(color ? { color } : {}),
     ...(fontFamily ? { fontFamily } : {}),
