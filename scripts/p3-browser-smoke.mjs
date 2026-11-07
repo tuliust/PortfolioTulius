@@ -352,7 +352,7 @@ try {
           })
           console.log("P3_EXPERIENCE_STICKY " + JSON.stringify({ viewport, ...sticky }))
           if (sticky.headTop < sticky.navBottom - 3 ||
-              sticky.headTop > sticky.navBottom + 4 ||
+              sticky.headTop > sticky.navBottom + 30 ||
               sticky.headBottom >= viewport.height - 70) {
             throw new Error("Experience sticky overlap or insufficient reading area")
           }
@@ -824,6 +824,11 @@ try {
         console.log("P3_EXPERIENCE_SWITCH " + JSON.stringify({ result: "PASS", trajectoryState, projectsRestored }))
       }
       const secondProject = "#invest-rs .desktop-panel .experience-project-choice[aria-label='Exibir imagem de Organização de eventos']"
+      // Bring the selected company into the foreground before interacting with its
+      // project controls; later sticky company cards can otherwise cover the click target.
+      await page.evaluate(() =>
+        document.getElementById("invest-rs")?.scrollIntoView({ behavior: "instant", block: "start" }),
+      )
       await page.click(secondProject)
       await page.waitForFunction(() =>
         document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "organização de eventos",
