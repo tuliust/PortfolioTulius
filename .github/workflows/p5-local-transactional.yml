@@ -31,19 +31,19 @@ jobs:
           node --test scripts/p2-local-isolation.check.mjs
           node --check scripts/p5-local-transactional.mjs
           docker info --format '{{.ServerVersion}}'
-          npx --yes supabase@2.81.0 --version
-          npx --yes supabase@2.81.0 start --help > /dev/null
+          npx --yes supabase@3.0.0 --version
+          npx --yes supabase@3.0.0 start --help > /dev/null
       - name: Install application dependencies
         run: |
           npm install --global pnpm@10.34.8
           pnpm install --frozen-lockfile
       - name: Start fully isolated Supabase synthetic stack
-        run: npx --yes supabase@2.81.0 start
+        run: npx --yes supabase@3.0.0 start
       - name: Read only local connection details, never cloud credentials
         shell: bash
         run: |
           set -euo pipefail
-          npx --yes supabase@2.81.0 status -o env > "$RUNNER_TEMP/p5-local-env"
+          npx --yes supabase@3.0.0 status -o env > "$RUNNER_TEMP/p5-local-env"
           while IFS='=' read -r name value; do
             case "$name" in
               ANON_KEY|SERVICE_ROLE_KEY|API_URL)
@@ -67,4 +67,4 @@ jobs:
         run: node scripts/p5-local-transactional.mjs
       - name: Stop isolated stack
         if: always()
-        run: npx --yes supabase@2.81.0 stop || true
+        run: npx --yes supabase@3.0.0 stop || true
