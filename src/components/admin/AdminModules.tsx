@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
 import { adminVisualAreas, type AdminVisualArea } from "../../lib/admin-visual-areas"
+import { sectionElementGroup } from "../../lib/section-element-group"
 import { acervoUsageLabel, usagesForAcervoRecord, type AcervoUsage } from "../../lib/shared-acervo"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
 import {
@@ -681,6 +682,7 @@ export function ContentStudio({
     experienceSlug === "perfil" && JSON.stringify(heroCopy) !== JSON.stringify(heroCopySaved)
   const visualAreas = adminVisualAreas(experienceSlug)
   const activeVisualArea = editorArea?.id ?? visualArea
+  const sectionGroup = sectionElementGroup(experienceSlug, activeVisualArea, draft?.mobile_panel ?? "a")
   const hasCareerTrajectory = [
     "invest-rs",
     "prefeitura-sp",
@@ -1937,6 +1939,12 @@ export function ContentStudio({
                       </button>
                     </fieldset>
                   )}
+                {editorArea && experienceSlug !== "perfil" && (
+                  <div className="site-editor-element-group">
+                    <h3>{sectionGroup[0]}</h3>
+                    <p>{sectionGroup[1]}</p>
+                  </div>
+                )}
                 <div className="block-items">
                   {experienceSlug === "perfil" && draft.mobile_panel === "a" ? (
                     <HeroLeftEditor
