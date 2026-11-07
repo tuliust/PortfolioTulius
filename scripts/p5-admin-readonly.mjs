@@ -302,6 +302,9 @@ try {
   await chooseDialog(page, "Cancelar")
   report("ARCHIVE_CANCEL", { confirmationReversible: true })
 
+  const adminTitleSelector = ".site-editor-section .field-grid label:first-child input"
+  const originalAdminTitle = await page.$eval(adminTitleSelector, (node) => node.value)
+  await updateInput(page, adminTitleSelector, originalAdminTitle + " ENSAIO")
   const transitionSelector = ".site-editor-section select"
   const originalTransition = await page.$eval(transitionSelector, (node) => node.value)
   const alternateTransition = transitions.find((transition) => transition !== originalTransition)
@@ -313,7 +316,10 @@ try {
   await page.waitForSelector(transitionSelector, { timeout: 16000 })
   assert((await page.$eval(transitionSelector, (node) => node.value)) === originalTransition,
     "Transição alterada em rascunho foi persistida.")
-  report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true })
+  assert((await page.$eval(adminTitleSelector, (node) => node.value)) === originalAdminTitle,
+    "Título administrativo descartado foi persistido.")
+  report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true,
+    adminSectionTitleIndependent: true })
 
   // Three desktop visual zones map to the existing two content blocks.
   const verifyZones = async (sectionName, expectedLabels) => {
