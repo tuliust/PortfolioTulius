@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { imageFramingStyle } from "../../lib/media-framing"
+import { heroSizeClass, heroTextStyle } from "../../lib/hero-formatting"
 import { Icon } from "../ui/Icons"
 import {
   complementaryCareerLines,
@@ -286,12 +287,12 @@ function ExperienceContent({
                   aria-current={slideIndex === activeSlide ? "true" : undefined}
                   onClick={() => onSlideChange(slideIndex)}
                 >
-                  {item?.meta && <span className="experience-project-meta">{item.meta}</span>}
-                  <span className="experience-project-heading" role="heading" aria-level={3}>
+                  {item?.meta && <span className={["experience-project-meta", heroSizeClass(item.fieldFormats?.meta)].filter(Boolean).join(" ")} style={heroTextStyle(item.fieldFormats?.meta)}>{item.meta}</span>}
+                  <span className={["experience-project-heading", heroSizeClass(item?.fieldFormats?.title)].filter(Boolean).join(" ")} style={heroTextStyle(item?.fieldFormats?.title)} role="heading" aria-level={3}>
                     {title}
                   </span>
-                  {item?.value && <strong className="experience-value">{item.value}</strong>}
-                  {item?.text && <p>{item.text}</p>}
+                  {item?.value && <strong className={["experience-value", heroSizeClass(item.fieldFormats?.value)].filter(Boolean).join(" ")} style={heroTextStyle(item.fieldFormats?.value)}>{item.value}</strong>}
+                  {item?.text && <p className={heroSizeClass(item.fieldFormats?.text)} style={heroTextStyle(item.fieldFormats?.text)}>{item.text}</p>}
                   {item?.tags && <p>{item.tags.join(" · ")}</p>}
                 </button>
               </article>
@@ -300,8 +301,8 @@ function ExperienceContent({
               <div className="experience-extra-metrics" aria-label="Indicadores complementares">
                 {extraMetrics.map((item, index) => (
                   <div key={`${item.title}-${index}`}>
-                    <span>{item.title}</span>
-                    <strong>{item.value}</strong>
+                    <span className={heroSizeClass(item.fieldFormats?.title)} style={heroTextStyle(item.fieldFormats?.title)}>{item.title}</span>
+                    <strong className={heroSizeClass(item.fieldFormats?.value)} style={heroTextStyle(item.fieldFormats?.value)}>{item.value}</strong>
                   </div>
                 ))}
               </div>
@@ -397,11 +398,11 @@ function ExperienceMobileBody({
                     onClick={() => selectProject(index)}
                   >
                     {project.item?.meta && (
-                      <span className="experience-project-meta">{project.item.meta}</span>
+                      <span className={["experience-project-meta", heroSizeClass(project.item.fieldFormats?.meta)].filter(Boolean).join(" ")} style={heroTextStyle(project.item.fieldFormats?.meta)}>{project.item.meta}</span>
                     )}
                     <span className="experience-mobile-project-title">
                       <span>{String(index + 1).padStart(2, "0")}</span>
-                      <span className="experience-project-heading" role="heading" aria-level={3}>
+                      <span className={["experience-project-heading", heroSizeClass(project.item?.fieldFormats?.title)].filter(Boolean).join(" ")} style={heroTextStyle(project.item?.fieldFormats?.title)} role="heading" aria-level={3}>
                         {project.title}
                       </span>
                       <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
@@ -410,9 +411,9 @@ function ExperienceMobileBody({
                   {isOpen && (
                     <div className="experience-mobile-project-detail" id={contentId}>
                       {project.item?.value && (
-                        <strong className="experience-value">{project.item.value}</strong>
+                        <strong className={["experience-value", heroSizeClass(project.item.fieldFormats?.value)].filter(Boolean).join(" ")} style={heroTextStyle(project.item.fieldFormats?.value)}>{project.item.value}</strong>
                       )}
-                      {project.item?.text && <p>{project.item.text}</p>}
+                      {project.item?.text && <p className={heroSizeClass(project.item.fieldFormats?.text)} style={heroTextStyle(project.item.fieldFormats?.text)}>{project.item.text}</p>}
                       {project.item?.tags?.length ? <p>{project.item.tags.join(" · ")}</p> : null}
                       {hasMedia && (
                         <PhotoGallery
@@ -434,8 +435,8 @@ function ExperienceMobileBody({
             <div className="experience-extra-metrics" aria-label="Indicadores complementares">
               {extraMetrics.map((item, index) => (
                 <div key={`${item.title}-${index}`}>
-                  <span>{item.title}</span>
-                  <strong>{item.value}</strong>
+                  <span className={heroSizeClass(item.fieldFormats?.title)} style={heroTextStyle(item.fieldFormats?.title)}>{item.title}</span>
+                  <strong className={heroSizeClass(item.fieldFormats?.value)} style={heroTextStyle(item.fieldFormats?.value)}>{item.value}</strong>
                 </div>
               ))}
             </div>

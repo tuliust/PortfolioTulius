@@ -2296,7 +2296,7 @@ export function ContentStudio({
                                                 ? "Botão principal · título"
                                                 : "Item · título"
                                             : "Título"}
-                                          {experienceSlug === "perfil" && (
+                                          {(
                                             <HeroFormattingButton
                                               label="título do item"
                                               value={item.fieldFormats?.title}
@@ -2322,10 +2322,8 @@ export function ContentStudio({
                                             index < 5
                                               ? "Linha superior / número"
                                               : "Rótulo / número"}
-                                            {experienceSlug === "perfil" &&
-                                              draft.mobile_panel === "b" &&
-                                              index < 5 && (
-                                                <HeroFormattingButton
+                                            {(
+                                              <HeroFormattingButton
                                                   label="linha superior"
                                                   value={item.fieldFormats?.label}
                                                   onChange={(next) =>
@@ -2355,8 +2353,8 @@ export function ContentStudio({
                                                   ? "Descrição do item"
                                                   : "Texto"
                                               : "Texto"}
-                                            {experienceSlug === "perfil" && (
-                                              <HeroFormattingButton
+                                            {(
+                                            <HeroFormattingButton
                                                 label="texto do item"
                                                 value={item.fieldFormats?.text}
                                                 onChange={(next) =>
@@ -2378,6 +2376,12 @@ export function ContentStudio({
                                         <label>
                                           <span className="admin-field-with-info">
                                             Valor/métrica
+                                            <HeroFormattingButton
+                                              label="valor ou métrica"
+                                              value={item.fieldFormats?.value}
+                                              onChange={(next) => updateFieldFormat(index, "value", next)}
+                                              catalog={identityOptions}
+                                            />
                                             <AdminInfoTip
                                               label="Valor/métrica"
                                               description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
@@ -2399,10 +2403,8 @@ export function ContentStudio({
                                             index >= 5
                                               ? "Subtítulo do item"
                                               : "Metadado/URL"}
-                                            {experienceSlug === "perfil" &&
-                                              draft.mobile_panel === "b" &&
-                                              index >= 5 && (
-                                                <HeroFormattingButton
+                                            {(
+                                              <HeroFormattingButton
                                                   label="subtítulo do item"
                                                   value={item.fieldFormats?.meta}
                                                   onChange={(next) =>
