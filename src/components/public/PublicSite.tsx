@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { usePortfolio } from "../../hooks/usePortfolio"
+import { splitProfileTitle } from "../../lib/profile-title"
 import type { ContentItem, HeroVisualConfig, PortfolioSection } from "../../types/content"
 import { Icon } from "../ui/Icons"
 import { Navigation } from "./Navigation"
@@ -259,6 +260,7 @@ function ProfileDesktop({
   const careers = panelB.slice(5)
   const profile = panelA[0]
   const hero = profile?.hero
+  const profileName = splitProfileTitle(section.title)
   if (!profile)
     return (
       <div className="desktop-editorial">
@@ -293,8 +295,8 @@ function ProfileDesktop({
       </aside>
       <div className="profile-main">
         <div className="name-lockup">
-          <span>TULIUS</span>
-          <span>TSANGAROPULOS</span>
+          <span>{profileName.first}</span>
+          <span>{profileName.rest}</span>
         </div>
         <p className="profile-role">{section.eyebrow}</p>
         <div className="area-grid">
@@ -352,9 +354,9 @@ function ProfileMobileEditorial({
 }) {
   const config = mobileProfileEditorial(profile.hero?.mobileEditorial)
   const positioning = (section.eyebrow ?? "").split(" · ").slice(1).join(" · ")
-  const nameParts = section.title.trim().split(/\s+/)
-  const firstName = nameParts[0] || "TULIUS"
-  const surname = nameParts.slice(1).join(" ")
+  const profileName = splitProfileTitle(section.title)
+  const firstName = profileName.first
+  const surname = profileName.rest
   const portrait =
     config.mobileImage && isSafeEditorialImage(config.mobileImage)
       ? config.mobileImage
@@ -494,13 +496,14 @@ function ProfileMobilePresentation({
     return <ProfileMobileEditorial section={section} profile={profile} />
   }
   const [kicker, ...positioning] = (section.eyebrow ?? "").split(" · ")
+  const profileName = splitProfileTitle(section.title)
   return (
     <>
       <div className="profile-mobile-identity">
         {kicker && <p className="profile-mobile-kicker">{kicker}</p>}
         <div className="mobile-name">
-          <span>TULIUS</span>
-          <span>TSANGAROPULOS</span>
+          <span>{profileName.first}</span>
+          <span>{profileName.rest}</span>
         </div>
         {positioning.length > 0 && (
           <p className="profile-mobile-positioning">{positioning.join(" · ")}</p>
@@ -1382,6 +1385,8 @@ export function PublicSite({
   }, [loading, visible])
 
   const style = {
+    "--white": tokens.white,
+    "--font-serif": '"Georgia", serif',
     "--orange": tokens.orange,
     "--ink": tokens.ink,
     "--paper": tokens.paper,
@@ -1408,7 +1413,12 @@ export function PublicSite({
       {preview && (
         <div className="preview-banner">Pré-visualização protegida · conteúdo em rascunho</div>
       )}
-      <Navigation sections={visible} navigation={navigation} current={current} />
+      <Navigation
+        sections={visible}
+        navigation={navigation}
+        current={current}
+        brandTitle={sections.find((section) => section.slug === "perfil")?.title}
+      />
       {loading && <div className="data-status">Sincronizando conteúdo…</div>}
       {error && (
         <div className="data-error" role="status">
@@ -1426,7 +1436,10 @@ export function PublicSite({
             Nenhuma seção publicada no momento.
           </div>
         )}
-        <h1 className="sr-only">Tulius Tsangaropulos — Comunicação e Estratégia</h1>
+        <h1 className="sr-only">
+          {sections.find((section) => section.slug === "perfil")?.title || "Tulius Tsangaropulos"}
+          {" — Comunicação e Estratégia"}
+        </h1>
         {visible.map((section, index) => {
           if (EXPERIENCE_SLUGS.includes(section.slug as (typeof EXPERIENCE_SLUGS)[number])) {
             if (
