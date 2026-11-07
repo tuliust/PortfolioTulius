@@ -75,7 +75,7 @@ try {
   })
   if (created.error || !created.data.user) throw Error("P5_LOCAL_CREATE_ADMIN:" + created.error?.message)
   adminId = created.data.user.id
-  const membership = await service.from("admin_users").insert({ user_id: adminId, role: "admin" })
+  const membership = await service.from("admin_users").insert({ user_id: adminId, role: "owner" })
   if (membership.error) throw Error("P5_LOCAL_ADMIN_MEMBERSHIP:" + membership.error.message)
   const signed = await admin.auth.signInWithPassword({ email: adminEmail, password })
   if (signed.error || !signed.data.user) throw Error("P5_LOCAL_SIGNIN_ADMIN")
