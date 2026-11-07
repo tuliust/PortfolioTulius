@@ -99,7 +99,9 @@ export function Navigation({
 
   return (
     <>
-      <header className={`site-header header-${theme}${mobileEditorialEnabled && firstPanelVisible && current === "perfil" ? " header-profile-editorial" : ""}`}>
+      <header
+        className={`site-header header-${theme}${mobileEditorialEnabled && firstPanelVisible && current === "perfil" ? " header-profile-editorial" : ""}`}
+      >
         <button className="brand-button" onClick={() => go("perfil")} aria-label="Voltar ao perfil">
           <span>TULIUS</span>
           <span>TSANGAROPULOS</span>

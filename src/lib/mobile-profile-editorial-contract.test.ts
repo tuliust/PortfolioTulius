@@ -20,7 +20,7 @@ describe("Perfil Editorial 360 — exclusivo mobile", () => {
     expect(publicSource).toContain("function ProfileDesktop(")
     expect(publicSource).toContain("function ProfileMobileEditorial(")
     expect(publicSource).toContain("if (hero?.mobileEditorial?.enabled)")
-    expect(publicSource).toContain('<ProfileDesktop')
+    expect(publicSource).toContain("<ProfileDesktop")
     expect(publicSource).toContain('href="#perfil-b"')
   })
   it("tem três áreas com conteúdo vinculado ao CMS", () => {

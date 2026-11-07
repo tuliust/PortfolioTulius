@@ -428,21 +428,27 @@ function ProfileMobileEditorial({
             "--mobile360-bottom-accent": config.bottom.accentColor,
             "--mobile360-bottom-text": config.bottom.textColor,
             "--mobile360-description-color": config.bottom.descriptionColor,
-            "--mobile360-description-font": mobileEditorialFont(config.bottom.descriptionFontFamily),
+            "--mobile360-description-font": mobileEditorialFont(
+              config.bottom.descriptionFontFamily,
+            ),
             "--mobile360-photo-width": `${config.bottom.photoWidth}%`,
             "--mobile360-name-size": `${config.bottom.nameSize}px`,
             "--mobile360-years-size": `${config.bottom.yearsSize}px`,
           } as React.CSSProperties
         }
       >
-        <div className={`mobile360-bottom-grid${config.bottom.showPhoto === false || !portrait ? " no-photo" : ""}`}>
+        <div
+          className={`mobile360-bottom-grid${config.bottom.showPhoto === false || !portrait ? " no-photo" : ""}`}
+        >
           {config.bottom.showPhoto !== false && portrait && (
             <div className="mobile360-photo">
               <ApprovedProfileImage
                 src={portrait}
                 alt={config.mobileImage ? config.mobileAlt : profile.alt}
                 mobile
-                style={imageFramingStyle(config.mobileImage ? config.mobileFraming : profile.mediaFraming)}
+                style={imageFramingStyle(
+                  config.mobileImage ? config.mobileFraming : profile.mediaFraming,
+                )}
               />
             </div>
           )}

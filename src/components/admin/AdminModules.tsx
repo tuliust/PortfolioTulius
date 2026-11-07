@@ -232,7 +232,6 @@ function DeviceStyleEditor({
   )
 }
 
-
 function MobileEditorialFontField({
   label,
   value,
@@ -296,7 +295,10 @@ function ProfileMobileEditorialEditor({
           value={current.headline}
           onChange={(event) => onChange({ ...current, headline: event.target.value })}
         />
-        <small>A última linha aparece na cor de destaque. Valor inicial: CONEXÕES / AUTÊNTICAS. / INOVAÇÃO.</small>
+        <small>
+          A última linha aparece na cor de destaque. Valor inicial: CONEXÕES / AUTÊNTICAS. /
+          INOVAÇÃO.
+        </small>
       </label>
       <fieldset className="mobile360-admin-zone">
         <legend>Área 1 · Abertura grafite</legend>
@@ -511,8 +513,8 @@ function ProfileMobileEditorialEditor({
           ratio="3 / 4"
         />
         <small>
-          Até selecionar outra fotografia publicada na biblioteca, somente a composição mobile
-          usa provisoriamente a mesma imagem já aprovada para o desktop.
+          Até selecionar outra fotografia publicada na biblioteca, somente a composição mobile usa
+          provisoriamente a mesma imagem já aprovada para o desktop.
         </small>
       </fieldset>
     </fieldset>
@@ -2214,9 +2216,7 @@ export function ContentStudio({
                         index === 0 && (
                           <ProfileMobileEditorialEditor
                             value={item.hero?.mobileEditorial}
-                            onChange={(mobileEditorial) =>
-                              updateHero(index, { mobileEditorial })
-                            }
+                            onChange={(mobileEditorial) => updateHero(index, { mobileEditorial })}
                           />
                         )}
                     </div>
