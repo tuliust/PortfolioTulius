@@ -1072,17 +1072,22 @@ export function ContentStudio({
     if (area.source === "section") {
       setVisualArea(area.id)
       document.getElementById("site-editor-section-details")?.scrollIntoView({
-        behavior: "smooth", block: "start",
+        behavior: "smooth",
+        block: "start",
       })
       return
     }
     const block = blocks.find((entry) => entry.mobile_panel === area.source)
     if (!block) return
-    if (block.id !== selectedId && blockDirty &&
+    if (
+      block.id !== selectedId &&
+      blockDirty &&
       !(await adminConfirmUnsaved(
         "Existem alterações não salvas neste bloco. Como deseja continuar?",
         { title: "Alterações não salvas" },
-      ))) return
+      ))
+    )
+      return
     setVisualArea(area.id)
     if (block.id !== selectedId) setSelectedId(block.id)
     if (area.focus === "about-photo") {
@@ -1090,11 +1095,14 @@ export function ContentStudio({
       setAboutImageTarget("desktop")
     }
     if (area.focus === "experience-gallery") {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        document.getElementById("site-editor-experience-gallery")?.scrollIntoView({
-          behavior: "smooth", block: "start",
-        })
-      }))
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          document.getElementById("site-editor-experience-gallery")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          })
+        }),
+      )
     }
   }
 
@@ -1150,8 +1158,8 @@ export function ContentStudio({
         )}
         {embedded && visualAreas.length > 0 && (
           <p className="site-editor-area-hint">
-            Áreas da composição desktop vinculadas aos campos existentes. No mobile, os
-            mesmos conteúdos continuam nos painéis A e B.
+            Áreas da composição desktop vinculadas aos campos existentes. No mobile, os mesmos
+            conteúdos continuam nos painéis A e B.
             {hasCareerTrajectory && " Alguns projetos usam itens de A e B; a galeria pertence a A."}
           </p>
         )}
@@ -1287,9 +1295,9 @@ export function ContentStudio({
                     {draft.content_json.source_collection && (
                       <>
                         <small>
-                          Fonte vinculada: edite e publique registros em Gerenciar depoimentos quando a origem for Depoimentos. Os cards
-                          manuais abaixo continuam armazenados e voltam a aparecer quando o vínculo
-                          for removido.
+                          Fonte vinculada: edite e publique registros em Gerenciar depoimentos
+                          quando a origem for Depoimentos. Os cards manuais abaixo continuam
+                          armazenados e voltam a aparecer quando o vínculo for removido.
                         </small>
                         {draft.content_json.source_collection === "testimonials" && (
                           <div className="field-grid compact-grid">
@@ -3103,7 +3111,12 @@ export function CollectionsStudio({
                 {isUnpublishOnlyCollection(config.table) ? "Despublicar" : "Arquivar"}
               </button>
               {embedded ? (
-                <button type="button" className="secondary-button" onClick={() => void save()} disabled={!recordDirty}>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => void save()}
+                  disabled={!recordDirty}
+                >
                   Salvar depoimento
                 </button>
               ) : (

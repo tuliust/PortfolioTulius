@@ -671,7 +671,10 @@ function SiteEditor({
                   </p>
                 )}
                 <div className="site-editor-consolidated">
-                  <div className="site-editor-consolidated-heading" id="site-editor-section-details">
+                  <div
+                    className="site-editor-consolidated-heading"
+                    id="site-editor-section-details"
+                  >
                     <h3>Informações da seção</h3>
                     <p>Título, linha editorial, publicação e apresentação.</p>
                   </div>
@@ -688,7 +691,10 @@ function SiteEditor({
                     <p>Textos, imagens e itens da seção.</p>
                   </div>
                   {selected.slug === "depoimentos" && (
-                    <section aria-label="Gerenciar depoimentos" className="site-editor-testimonials">
+                    <section
+                      aria-label="Gerenciar depoimentos"
+                      className="site-editor-testimonials"
+                    >
                       <div className="site-editor-consolidated-heading">
                         <h3>Gerenciar depoimentos</h3>
                         <p>

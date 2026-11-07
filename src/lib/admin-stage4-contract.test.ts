@@ -17,7 +17,7 @@ describe("Editor do Site — depoimentos na própria seção", () => {
     expect(app).toContain("setTestimonialsDirty")
     expect(modules).not.toContain("Editar no Acervo")
     expect(modules).toContain("buildCollectionSavePayload(draft, config.table)")
-    expect(modules).toContain('registerAdminSaveAction(save, () => recordDirty)')
+    expect(modules).toContain("registerAdminSaveAction(save, () => recordDirty)")
   })
   it("expõe as três áreas sem criar terceiro content_blocks", () => {
     expect(visuals).toContain('slug === "sobre"')
@@ -25,8 +25,10 @@ describe("Editor do Site — depoimentos na própria seção", () => {
     expect(visuals).toContain('"vale"')
     expect(modules).toContain('aria-label="Áreas visuais no desktop"')
     expect(modules).toContain("selectVisualArea(area)")
-    expect(modules).toContain("setAboutImageTarget(\"desktop\")")
-    expect(publicSite).toContain("const customDesktopImage = introductoryItem?.aboutDesktopImage?.trim()")
+    expect(modules).toContain('setAboutImageTarget("desktop")')
+    expect(publicSite).toContain(
+      "const customDesktopImage = introductoryItem?.aboutDesktopImage?.trim()",
+    )
   })
   it("iguala os labels de Identidade aos outros formulários", () => {
     expect(identity).toContain(".identity-catalog label")

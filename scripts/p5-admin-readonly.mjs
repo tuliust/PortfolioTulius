@@ -188,6 +188,7 @@ try {
     "Depoimento descartado foi persistido.")
   report("INLINE_TESTIMONIAL_DISCARD", { unsavedGuard: true, recoveredOriginal: true })
 
+  await chooseSection("Tulius Tsangaropulos")
   await selectModule(page, "Editor do site")
   await page.waitForSelector(".site-editor-section .editor-form .field-grid", { timeout: 16000 })
   await page.waitForSelector(".studio-block-picker button", { timeout: 16000 })
