@@ -135,16 +135,12 @@ function NumericField({
   onChange: (value?: number) => void
 }) {
   const typography =
-    /^(Título \(px\)|Texto \(px\)|Tamanho máximo do título|Tamanho máximo do nome|Tamanho máximo do indicador|Frase: tamanho \(px\))/.test(label)
+    /^(Título \(px\)|Texto \(px\)|Tamanho máximo do título|Tamanho máximo do nome|Tamanho máximo do indicador|Frase: tamanho \(px\))/.test(
+      label,
+    )
   if (typography) {
     return (
-      <IdentityNumericSize
-        label={label}
-        value={value}
-        min={min}
-        max={max}
-        onChange={onChange}
-      />
+      <IdentityNumericSize label={label} value={value} min={min} max={max} onChange={onChange} />
     )
   }
   return (

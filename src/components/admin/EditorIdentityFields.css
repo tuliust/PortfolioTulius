@@ -1,7 +1,7 @@
 .editor-identity-select {
   display: flex;
   align-items: center;
-  gap: .65rem;
+  gap: 0.65rem;
 }
 .editor-identity-select select {
   min-width: 0;

@@ -334,8 +334,12 @@ function SectionsEditor({
       .eq("id", draft.id)
       .select("id,title,animation_preset")
       .single()
-    if (error || !data || data.title !== draft.title.trim() ||
-      data.animation_preset !== draft.animation_preset) {
+    if (
+      error ||
+      !data ||
+      data.title !== draft.title.trim() ||
+      data.animation_preset !== draft.animation_preset
+    ) {
       setMessage(error?.message ?? "Não foi possível confirmar o salvamento da seção.")
       return false
     }
@@ -358,20 +362,27 @@ function SectionsEditor({
   }
   async function togglePublication() {
     if (!selected || !supabase) return
-    if (sectionDirty && !(await adminConfirmUnsaved(
-      "Existem alterações não salvas. Salve ou descarte antes de alterar a publicação.",
-      { title: "Alterações não salvas" },
-    ))) return
+    if (
+      sectionDirty &&
+      !(await adminConfirmUnsaved(
+        "Existem alterações não salvas. Salve ou descarte antes de alterar a publicação.",
+        { title: "Alterações não salvas" },
+      ))
+    )
+      return
     const currentlyVisible = selected.status === "published" && selected.is_visible
     const confirmTitle = currentlyVisible ? "Arquivar seção" : "Exibir seção"
     const confirmMessage = currentlyVisible
       ? `Arquivar “${selected.title}”? A seção deixará de aparecer no site e poderá ser restaurada.`
       : `Exibir “${selected.title}”? A seção será publicada e ficará visível no site.`
-    if (!(await adminConfirm(confirmMessage, {
-      title: confirmTitle,
-      confirmLabel: currentlyVisible ? "Arquivar" : "Exibir",
-      tone: currentlyVisible ? "danger" : "warning",
-    }))) return
+    if (
+      !(await adminConfirm(confirmMessage, {
+        title: confirmTitle,
+        confirmLabel: currentlyVisible ? "Arquivar" : "Exibir",
+        tone: currentlyVisible ? "danger" : "warning",
+      }))
+    )
+      return
     const status = currentlyVisible ? "archived" : "published"
     const is_visible = !currentlyVisible
     const { data, error } = await supabase

@@ -146,7 +146,9 @@ export function IdentityNumericSize({
     .filter((item) => item.token_key.startsWith("typography."))
     .map((item) => Number(item.token_value))
     .filter((size) => Number.isFinite(size))
-  const choices = [...new Set([...IDENTITY_NUMERIC_SIZES, ...presets, ...(value === undefined ? [] : [value])])]
+  const choices = [
+    ...new Set([...IDENTITY_NUMERIC_SIZES, ...presets, ...(value === undefined ? [] : [value])]),
+  ]
     .filter((size) => size >= min && size <= max)
     .sort((a, b) => a - b)
   return (
