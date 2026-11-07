@@ -349,12 +349,22 @@ try {
   await requestModule(page, "Identidade")
   await chooseDialog(page, "Sair sem salvar")
   await selectModule(page, "Editor do site")
-  await page.waitForSelector(transitionSelector, { timeout: 16000 })
-  assert((await page.$eval(transitionSelector, (node) => node.value)) === originalTransition,
+  await chooseSection("Hero")
+  await waitFor(page, () =>
+    document.querySelector(".site-editor-heading h2")?.textContent?.trim() === "Hero" &&
+    document.querySelector(".site-editor-area-tabs button[aria-selected='true'] strong")
+      ?.textContent?.trim() === "Seção" &&
+    document.querySelector(".site-editor-section select")?.options.length === 6)
+  const discarded = await page.evaluate(() => ({
+    transition: document.querySelector(".site-editor-section select")?.value,
+    adminTitle: document.querySelector(".site-editor-section .field-grid label:first-child input")?.value,
+    anchor: document.querySelector(".site-editor-section [aria-describedby='editor-anchor-help']")?.value,
+  }))
+  assert(discarded.transition === originalTransition,
     "Transição alterada em rascunho foi persistida.")
-  assert((await page.$eval(adminTitleSelector, (node) => node.value)) === originalAdminTitle,
+  assert(discarded.adminTitle === originalAdminTitle,
     "Título administrativo descartado foi persistido.")
-  assert((await page.$eval(anchorSelector, (node) => node.value)) === originalAnchor,
+  assert(discarded.anchor === originalAnchor,
     "Âncora editada foi gravada apesar do descarte.")
   report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true,
     adminSectionTitleIndependent: true })
