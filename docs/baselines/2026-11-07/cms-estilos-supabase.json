@@ -1,0 +1,2188 @@
+{
+  "format": "portfolio-tulius-style-baseline-v1",
+  "captured_at_utc": "2026-11-07 04:07:01.503068+00",
+  "source": {
+    "project_ref": "zfnrhzplwpjpdljraypt",
+    "repository": "tuliustsangaropulos/PortfolioTulius",
+    "code_baseline_sha": "207327b1ebe974e768a81f752fe1184249d210ba"
+  },
+  "safeguards": {
+    "public_repository": true,
+    "includes_content_text": false,
+    "includes_full_content_json": false,
+    "includes_auth_or_secret_data": false,
+    "contains_only_presentation_fields_and_record_identifiers": true,
+    "note": "Cópia parcial de campos de apresentação; não substitui um dump integral do Supabase. Nunca restaurar sem revisar mudanças posteriores."
+  },
+  "counts": {
+    "tokens": 12,
+    "sections": 14,
+    "panels": 42,
+    "placements": 56,
+    "block_styles": 28
+  },
+  "data": {
+    "design_tokens": [
+      {
+        "token_key": "color.cream",
+        "token_value": "#F8F4F1",
+        "value_type": "color",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "color.ink",
+        "token_value": "#171617",
+        "value_type": "color",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "color.muted",
+        "token_value": "#514742",
+        "value_type": "color",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "color.orange",
+        "token_value": "#FF5414",
+        "value_type": "color",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "color.orangeDark",
+        "token_value": "#BC390C",
+        "value_type": "color",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "color.paper",
+        "token_value": "#FAFAFA",
+        "value_type": "color",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "font.body",
+        "token_value": "Inter",
+        "value_type": "font",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "font.heading",
+        "token_value": "Big Shoulders Display",
+        "value_type": "font",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "layout.container",
+        "token_value": "1680",
+        "value_type": "size",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "motion.duration",
+        "token_value": "520",
+        "value_type": "motion",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "radius.card",
+        "token_value": "4",
+        "value_type": "radius",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      },
+      {
+        "token_key": "space.section",
+        "token_value": "64",
+        "value_type": "space",
+        "scope": "global",
+        "status": "published",
+        "updated_at": "2026-11-04 12:30:46.000962+00"
+      }
+    ],
+    "sections_presentation": [
+      {
+        "id": "7d676233-b5d6-46bb-af76-52dbd4abeb44",
+        "slug": "perfil",
+        "sort_order": 1,
+        "layout_variant": "hero",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-11-07 03:37:04.679056+00"
+      },
+      {
+        "id": "5119424d-a03c-439b-9cd2-1024534e7f98",
+        "slug": "sobre",
+        "sort_order": 2,
+        "layout_variant": "editorial",
+        "theme": "orange",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-24 05:15:48.724517+00"
+      },
+      {
+        "id": "b4bc996d-54a4-4f9c-b358-57b2d60956a6",
+        "slug": "resultados",
+        "sort_order": 3,
+        "layout_variant": "metrics",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "e41e6eb4-6bb9-42d3-b9fb-1e672faf796f",
+        "slug": "competencias",
+        "sort_order": 4,
+        "layout_variant": "editorial",
+        "theme": "cream",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": false,
+        "updated_at": "2026-10-26 04:32:42.80968+00"
+      },
+      {
+        "id": "681d92de-f777-4c01-82d6-041fb58f174c",
+        "slug": "formacao",
+        "sort_order": 5,
+        "layout_variant": "timeline",
+        "theme": "ink",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-26 05:12:16.53764+00"
+      },
+      {
+        "id": "ae5b2365-15df-4b82-957b-aed76adc7fe2",
+        "slug": "invest-rs",
+        "sort_order": 6,
+        "layout_variant": "timeline",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-11-05 08:02:14.697031+00"
+      },
+      {
+        "id": "32291cd7-2b3a-420c-96f7-1dce311744d6",
+        "slug": "prefeitura-sp",
+        "sort_order": 7,
+        "layout_variant": "metrics",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-31 06:26:46.571559+00"
+      },
+      {
+        "id": "2b6cf8b3-8b08-4708-939c-3ef1303bf7e4",
+        "slug": "vale",
+        "sort_order": 8,
+        "layout_variant": "metrics",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-31 06:26:46.571559+00"
+      },
+      {
+        "id": "54f327f4-1c63-4ea9-8b5d-e2fabf580edc",
+        "slug": "globo-sportv",
+        "sort_order": 9,
+        "layout_variant": "timeline",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-31 06:26:46.571559+00"
+      },
+      {
+        "id": "da9658b8-f1b5-42bc-8964-7cd2111ce4ae",
+        "slug": "inpress",
+        "sort_order": 10,
+        "layout_variant": "timeline",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-31 06:26:46.571559+00"
+      },
+      {
+        "id": "6139dbf3-8cc7-44eb-aeb9-736a106e9403",
+        "slug": "cdi",
+        "sort_order": 11,
+        "layout_variant": "timeline",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-31 06:26:46.571559+00"
+      },
+      {
+        "id": "b32075c9-b9fb-4f8e-9193-61e4de0c53c7",
+        "slug": "ferramentas",
+        "sort_order": 12,
+        "layout_variant": "editorial",
+        "theme": "ink",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-26 05:51:53.392927+00"
+      },
+      {
+        "id": "2aa2885d-7acf-4d58-a27f-801886172f36",
+        "slug": "depoimentos",
+        "sort_order": 13,
+        "layout_variant": "quotes",
+        "theme": "paper",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "c7ec1c53-d503-46a8-a1e6-5e21290cb813",
+        "slug": "contato",
+        "sort_order": 14,
+        "layout_variant": "contact",
+        "theme": "orange",
+        "animation_preset": "fade-up",
+        "status": "published",
+        "is_visible": true,
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      }
+    ],
+    "section_panels_presentation": [
+      {
+        "id": "ec8f25ba-2b97-463d-ae0b-f5446ccb50b9",
+        "section_id": "7d676233-b5d6-46bb-af76-52dbd4abeb44",
+        "section_slug": "perfil",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "ba35e4f9-eb6c-4623-a6f8-b6cfaddc5638",
+        "section_id": "7d676233-b5d6-46bb-af76-52dbd4abeb44",
+        "section_slug": "perfil",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "b995ce77-a470-4a47-b501-4cd44ce904ff",
+        "section_id": "7d676233-b5d6-46bb-af76-52dbd4abeb44",
+        "section_slug": "perfil",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "49b543f7-e59e-469a-b328-911804fb5b67",
+        "section_id": "5119424d-a03c-439b-9cd2-1024534e7f98",
+        "section_slug": "sobre",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "2d9d78d6-dc35-4851-b30c-6d31fbed6916",
+        "section_id": "5119424d-a03c-439b-9cd2-1024534e7f98",
+        "section_slug": "sobre",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "1b3041e8-bdbe-4276-913b-821ceb74a7f8",
+        "section_id": "5119424d-a03c-439b-9cd2-1024534e7f98",
+        "section_slug": "sobre",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "371c2137-4152-4922-9655-587588282479",
+        "section_id": "b4bc996d-54a4-4f9c-b358-57b2d60956a6",
+        "section_slug": "resultados",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "8954f4f1-136a-4874-be2e-80856f1cdce8",
+        "section_id": "b4bc996d-54a4-4f9c-b358-57b2d60956a6",
+        "section_slug": "resultados",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "a717fd38-a350-4e6e-84b3-0154f49f513c",
+        "section_id": "b4bc996d-54a4-4f9c-b358-57b2d60956a6",
+        "section_slug": "resultados",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "83668efd-7a43-4a49-8e2f-1d07b79e14ee",
+        "section_id": "e41e6eb4-6bb9-42d3-b9fb-1e672faf796f",
+        "section_slug": "competencias",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "39baa286-ffcd-4748-8502-56a30d95531c",
+        "section_id": "e41e6eb4-6bb9-42d3-b9fb-1e672faf796f",
+        "section_slug": "competencias",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "d65b7fe5-33e3-4252-beb0-6da061c0d7e0",
+        "section_id": "e41e6eb4-6bb9-42d3-b9fb-1e672faf796f",
+        "section_slug": "competencias",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "9cebc61c-4f34-42bb-a4f8-05b4a0293301",
+        "section_id": "681d92de-f777-4c01-82d6-041fb58f174c",
+        "section_slug": "formacao",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "6903a28c-4a39-4d85-92a1-fc856de3f8dc",
+        "section_id": "681d92de-f777-4c01-82d6-041fb58f174c",
+        "section_slug": "formacao",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "fcf6e9c9-1a59-4eaa-bbdf-d61e5d50306d",
+        "section_id": "681d92de-f777-4c01-82d6-041fb58f174c",
+        "section_slug": "formacao",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "293e323b-5ddb-4021-b152-5f1d5932f9d8",
+        "section_id": "ae5b2365-15df-4b82-957b-aed76adc7fe2",
+        "section_slug": "invest-rs",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "df8dde15-6867-4821-8077-ebc7a3724c44",
+        "section_id": "ae5b2365-15df-4b82-957b-aed76adc7fe2",
+        "section_slug": "invest-rs",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "6935ca8f-2aea-4a82-9914-b5ef3a466000",
+        "section_id": "ae5b2365-15df-4b82-957b-aed76adc7fe2",
+        "section_slug": "invest-rs",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "56c37a7d-3baf-4324-a056-03bccfa9f476",
+        "section_id": "32291cd7-2b3a-420c-96f7-1dce311744d6",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "2aa5166d-e3bc-464e-aef7-63423d7474e6",
+        "section_id": "32291cd7-2b3a-420c-96f7-1dce311744d6",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "f75eff32-4291-4eec-ad91-f1110819e4fd",
+        "section_id": "32291cd7-2b3a-420c-96f7-1dce311744d6",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "ee2264f9-d8e3-4f6e-a7c7-df35f564ee96",
+        "section_id": "2b6cf8b3-8b08-4708-939c-3ef1303bf7e4",
+        "section_slug": "vale",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "456005a1-ff6d-48c6-b6b2-054cd581f126",
+        "section_id": "2b6cf8b3-8b08-4708-939c-3ef1303bf7e4",
+        "section_slug": "vale",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "d656a210-8d5d-4915-a0a8-f379d2db05b7",
+        "section_id": "2b6cf8b3-8b08-4708-939c-3ef1303bf7e4",
+        "section_slug": "vale",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "2921739b-f442-4286-abba-2a3f92b9f0fc",
+        "section_id": "54f327f4-1c63-4ea9-8b5d-e2fabf580edc",
+        "section_slug": "globo-sportv",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "b44116eb-8c17-49cd-a104-803b96a5d042",
+        "section_id": "54f327f4-1c63-4ea9-8b5d-e2fabf580edc",
+        "section_slug": "globo-sportv",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "06c02419-94fc-491a-89a9-cb2337624aef",
+        "section_id": "54f327f4-1c63-4ea9-8b5d-e2fabf580edc",
+        "section_slug": "globo-sportv",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "55c48a56-1385-4d5d-b271-157bfc4d18a7",
+        "section_id": "da9658b8-f1b5-42bc-8964-7cd2111ce4ae",
+        "section_slug": "inpress",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "72beb9f4-1267-48cd-8877-9933f401980f",
+        "section_id": "da9658b8-f1b5-42bc-8964-7cd2111ce4ae",
+        "section_slug": "inpress",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "75bd147b-1317-4e72-88a1-758f73820d64",
+        "section_id": "da9658b8-f1b5-42bc-8964-7cd2111ce4ae",
+        "section_slug": "inpress",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "037e1e05-1327-4ebd-ac31-6d757da52760",
+        "section_id": "6139dbf3-8cc7-44eb-aeb9-736a106e9403",
+        "section_slug": "cdi",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "c8db7b5a-8244-410f-90a5-c526ca709a2b",
+        "section_id": "6139dbf3-8cc7-44eb-aeb9-736a106e9403",
+        "section_slug": "cdi",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "89e7b7e8-0b0d-4c2a-93d4-6b7e054f9470",
+        "section_id": "6139dbf3-8cc7-44eb-aeb9-736a106e9403",
+        "section_slug": "cdi",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "faa5244c-8101-40ca-8b0c-554cbd6014c4",
+        "section_id": "b32075c9-b9fb-4f8e-9193-61e4de0c53c7",
+        "section_slug": "ferramentas",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "a297a632-cd28-4f4f-ab81-493375156426",
+        "section_id": "b32075c9-b9fb-4f8e-9193-61e4de0c53c7",
+        "section_slug": "ferramentas",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "40c18e06-9b3a-4695-a0ea-83ebd642c8a6",
+        "section_id": "b32075c9-b9fb-4f8e-9193-61e4de0c53c7",
+        "section_slug": "ferramentas",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "74a96e7e-71f0-49f4-b129-d4fbeb5441a3",
+        "section_id": "2aa2885d-7acf-4d58-a27f-801886172f36",
+        "section_slug": "depoimentos",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "e8aafb2d-4490-43c5-96cb-ed5886bd219c",
+        "section_id": "2aa2885d-7acf-4d58-a27f-801886172f36",
+        "section_slug": "depoimentos",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "39355b8d-c8c2-4e7c-9989-693c7fa6957d",
+        "section_id": "2aa2885d-7acf-4d58-a27f-801886172f36",
+        "section_slug": "depoimentos",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "7f3dc789-ea1d-45cd-ae35-a4fbf5072375",
+        "section_id": "c7ec1c53-d503-46a8-a1e6-5e21290cb813",
+        "section_slug": "contato",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "cc385fa0-6d07-41f6-84aa-096a98027c6e",
+        "section_id": "c7ec1c53-d503-46a8-a1e6-5e21290cb813",
+        "section_slug": "contato",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "theme": "inherit",
+        "sort_order": 1,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      },
+      {
+        "id": "48678786-98a9-4fc1-95ca-0cc8ebe3ef21",
+        "section_id": "c7ec1c53-d503-46a8-a1e6-5e21290cb813",
+        "section_slug": "contato",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "theme": "inherit",
+        "sort_order": 2,
+        "layout_variant": "inherit",
+        "style_config": {},
+        "updated_at": "2026-10-23 21:09:53.96858+00"
+      }
+    ],
+    "block_placements_presentation": [
+      {
+        "id": "c667b4e3-92ef-4274-9ea3-fd2215a110a3",
+        "block_id": "a2f4770b-7964-4f3c-b816-c778b66ac15c",
+        "panel_id": "ec8f25ba-2b97-463d-ae0b-f5446ccb50b9",
+        "section_slug": "perfil",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4fbbacac-908c-40b0-a4c3-424ae83544ed",
+        "block_id": "a092fea1-754d-422b-a0aa-5e2502714a68",
+        "panel_id": "ec8f25ba-2b97-463d-ae0b-f5446ccb50b9",
+        "section_slug": "perfil",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "cef5da7c-ba43-44f7-8218-cfb4a1ac2327",
+        "block_id": "a2f4770b-7964-4f3c-b816-c778b66ac15c",
+        "panel_id": "ba35e4f9-eb6c-4623-a6f8-b6cfaddc5638",
+        "section_slug": "perfil",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "ec082ac4-989c-48d0-a0bf-434133813545",
+        "block_id": "a092fea1-754d-422b-a0aa-5e2502714a68",
+        "panel_id": "b995ce77-a470-4a47-b501-4cd44ce904ff",
+        "section_slug": "perfil",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "1ef56c7f-8984-4346-aa72-37e9b0ef52e2",
+        "block_id": "49fbe2d3-fe6d-459c-a298-35b6a9fe563d",
+        "panel_id": "49b543f7-e59e-469a-b328-911804fb5b67",
+        "section_slug": "sobre",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4f2cbe23-94d4-4c27-8754-a88ea910dbd3",
+        "block_id": "2410a612-17df-48fe-93a3-fd1c6504a200",
+        "panel_id": "49b543f7-e59e-469a-b328-911804fb5b67",
+        "section_slug": "sobre",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "58f13239-69f4-4de5-b647-23209ae56708",
+        "block_id": "49fbe2d3-fe6d-459c-a298-35b6a9fe563d",
+        "panel_id": "2d9d78d6-dc35-4851-b30c-6d31fbed6916",
+        "section_slug": "sobre",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "70419cd9-aa9e-433d-852d-890095912d50",
+        "block_id": "2410a612-17df-48fe-93a3-fd1c6504a200",
+        "panel_id": "1b3041e8-bdbe-4276-913b-821ceb74a7f8",
+        "section_slug": "sobre",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "431375ee-38d7-4bbe-82d6-cf0b31dbb4b9",
+        "block_id": "f7908ce3-dd45-4f55-b858-46c15fbda357",
+        "panel_id": "371c2137-4152-4922-9655-587588282479",
+        "section_slug": "resultados",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "85335949-31e2-4ede-a6b4-0569ee591e68",
+        "block_id": "ccb158ca-ee6a-4305-873d-8230a03de216",
+        "panel_id": "371c2137-4152-4922-9655-587588282479",
+        "section_slug": "resultados",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "ee348f00-f8f3-48c1-93bb-eb958cf01f01",
+        "block_id": "f7908ce3-dd45-4f55-b858-46c15fbda357",
+        "panel_id": "8954f4f1-136a-4874-be2e-80856f1cdce8",
+        "section_slug": "resultados",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "f2c5cbb8-99fc-4b8c-9e15-8acece0334bd",
+        "block_id": "ccb158ca-ee6a-4305-873d-8230a03de216",
+        "panel_id": "a717fd38-a350-4e6e-84b3-0154f49f513c",
+        "section_slug": "resultados",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "07bfbdce-54eb-46e4-8b78-f780b41b3f39",
+        "block_id": "f1511c92-aa9e-455c-8b91-448d6138ae63",
+        "panel_id": "83668efd-7a43-4a49-8e2f-1d07b79e14ee",
+        "section_slug": "competencias",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "919378e5-4a21-48ab-880c-dc15ff214d2f",
+        "block_id": "b1495f5a-d7a8-4d86-8305-cdb22f94acca",
+        "panel_id": "83668efd-7a43-4a49-8e2f-1d07b79e14ee",
+        "section_slug": "competencias",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "75fc49f4-69f6-4cf7-8b6e-8c27ad001a96",
+        "block_id": "f1511c92-aa9e-455c-8b91-448d6138ae63",
+        "panel_id": "39baa286-ffcd-4748-8502-56a30d95531c",
+        "section_slug": "competencias",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "6c54a0a3-c46d-4869-8da3-38d8308cbb0e",
+        "block_id": "b1495f5a-d7a8-4d86-8305-cdb22f94acca",
+        "panel_id": "d65b7fe5-33e3-4252-beb0-6da061c0d7e0",
+        "section_slug": "competencias",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "d17170ee-40cc-47f2-a263-c69ad168087f",
+        "block_id": "1bc36dc9-c301-4873-8c53-21c3e048737b",
+        "panel_id": "9cebc61c-4f34-42bb-a4f8-05b4a0293301",
+        "section_slug": "formacao",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "6706255d-d837-4ab9-aba1-2987227464dc",
+        "block_id": "418c8543-d8a6-4b48-8541-27feedf68cb6",
+        "panel_id": "9cebc61c-4f34-42bb-a4f8-05b4a0293301",
+        "section_slug": "formacao",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "9d29d39a-b327-4a3d-9143-1c22b64b8e79",
+        "block_id": "1bc36dc9-c301-4873-8c53-21c3e048737b",
+        "panel_id": "6903a28c-4a39-4d85-92a1-fc856de3f8dc",
+        "section_slug": "formacao",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "afd7c6f9-4790-43e3-a4ef-4d5ecc0b7138",
+        "block_id": "418c8543-d8a6-4b48-8541-27feedf68cb6",
+        "panel_id": "fcf6e9c9-1a59-4eaa-bbdf-d61e5d50306d",
+        "section_slug": "formacao",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "6b5fb0ed-47de-4e61-a36c-aab02a570034",
+        "block_id": "a38ceca7-4fe3-4b94-a5cf-4435f3c39a71",
+        "panel_id": "293e323b-5ddb-4021-b152-5f1d5932f9d8",
+        "section_slug": "invest-rs",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "3bf4b563-a8f8-4a17-b5ac-87640bb9f727",
+        "block_id": "222cc514-c860-4ec4-bc01-40a9084dc2e9",
+        "panel_id": "293e323b-5ddb-4021-b152-5f1d5932f9d8",
+        "section_slug": "invest-rs",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "64b34209-d2ee-4c26-992b-107ae72e2cfa",
+        "block_id": "a38ceca7-4fe3-4b94-a5cf-4435f3c39a71",
+        "panel_id": "df8dde15-6867-4821-8077-ebc7a3724c44",
+        "section_slug": "invest-rs",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "1fe09c7e-6b9d-47b5-a43b-4cadfebdb002",
+        "block_id": "222cc514-c860-4ec4-bc01-40a9084dc2e9",
+        "panel_id": "6935ca8f-2aea-4a82-9914-b5ef3a466000",
+        "section_slug": "invest-rs",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "dc173010-1335-4a48-a14f-a543917820a0",
+        "block_id": "d114003e-a362-4ec0-9f09-cfab47fd4fd4",
+        "panel_id": "56c37a7d-3baf-4324-a056-03bccfa9f476",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4f4b5dff-c4f0-4e5e-9089-17913af59bba",
+        "block_id": "9a95d195-be6c-4b25-a22b-27ae6de6993d",
+        "panel_id": "56c37a7d-3baf-4324-a056-03bccfa9f476",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "7d0c69fb-8162-4693-82eb-3cbf90cac9f2",
+        "block_id": "d114003e-a362-4ec0-9f09-cfab47fd4fd4",
+        "panel_id": "2aa5166d-e3bc-464e-aef7-63423d7474e6",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "ecb0aa14-d3f4-4b15-80b8-23418bd53371",
+        "block_id": "9a95d195-be6c-4b25-a22b-27ae6de6993d",
+        "panel_id": "f75eff32-4291-4eec-ad91-f1110819e4fd",
+        "section_slug": "prefeitura-sp",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "6dc7a645-1871-4bba-8bd1-7679ca1fd64e",
+        "block_id": "46948db2-1ecc-47ee-a262-e085d5b553d1",
+        "panel_id": "ee2264f9-d8e3-4f6e-a7c7-df35f564ee96",
+        "section_slug": "vale",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "5fdeead7-24f4-466f-ad1d-5b05da3655df",
+        "block_id": "08763d31-51f1-4ded-9e1c-346e035e1594",
+        "panel_id": "ee2264f9-d8e3-4f6e-a7c7-df35f564ee96",
+        "section_slug": "vale",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4c42bddc-8ff4-4f3a-8e2e-a9217d922d6d",
+        "block_id": "46948db2-1ecc-47ee-a262-e085d5b553d1",
+        "panel_id": "456005a1-ff6d-48c6-b6b2-054cd581f126",
+        "section_slug": "vale",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "be1aa8ce-c261-4366-8ae1-0a2f1ca116ac",
+        "block_id": "08763d31-51f1-4ded-9e1c-346e035e1594",
+        "panel_id": "d656a210-8d5d-4915-a0a8-f379d2db05b7",
+        "section_slug": "vale",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "eb8e6461-f35c-46e8-9e75-a1fd67e6cfe6",
+        "block_id": "50e2980c-c8bb-4056-9b45-c90e4691e763",
+        "panel_id": "2921739b-f442-4286-abba-2a3f92b9f0fc",
+        "section_slug": "globo-sportv",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "45791c4f-0339-4062-925a-a9a988a26c46",
+        "block_id": "de868897-1b8e-48f9-802e-c346b0e9caed",
+        "panel_id": "2921739b-f442-4286-abba-2a3f92b9f0fc",
+        "section_slug": "globo-sportv",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "b79d2019-4cf7-4c75-91c6-9a3fee80a3c4",
+        "block_id": "50e2980c-c8bb-4056-9b45-c90e4691e763",
+        "panel_id": "b44116eb-8c17-49cd-a104-803b96a5d042",
+        "section_slug": "globo-sportv",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "e36c1373-732b-4ed9-b2cb-c6308c8737bb",
+        "block_id": "de868897-1b8e-48f9-802e-c346b0e9caed",
+        "panel_id": "06c02419-94fc-491a-89a9-cb2337624aef",
+        "section_slug": "globo-sportv",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "73340537-7f8c-40b1-80c0-126b3adbf103",
+        "block_id": "f76cd26a-6ba8-4e35-a884-b9ad4ea726e0",
+        "panel_id": "55c48a56-1385-4d5d-b271-157bfc4d18a7",
+        "section_slug": "inpress",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "106ab137-4f72-436f-91ee-166cfce6ed9a",
+        "block_id": "0f677f0a-12a6-4038-b045-87feb4ed9da0",
+        "panel_id": "55c48a56-1385-4d5d-b271-157bfc4d18a7",
+        "section_slug": "inpress",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "badeefbb-ab54-4b9b-8926-9b658d4c2706",
+        "block_id": "f76cd26a-6ba8-4e35-a884-b9ad4ea726e0",
+        "panel_id": "72beb9f4-1267-48cd-8877-9933f401980f",
+        "section_slug": "inpress",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "a61b2292-101a-4bbe-97ef-4855b8aab9af",
+        "block_id": "0f677f0a-12a6-4038-b045-87feb4ed9da0",
+        "panel_id": "75bd147b-1317-4e72-88a1-758f73820d64",
+        "section_slug": "inpress",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "e3eadabd-61f8-4327-85cc-a85827c86079",
+        "block_id": "825eb267-5510-4f1c-ac0f-364a6c25fc64",
+        "panel_id": "037e1e05-1327-4ebd-ac31-6d757da52760",
+        "section_slug": "cdi",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "37bb4705-6231-42cd-9191-d69a791c8ca9",
+        "block_id": "712c86b5-4782-4edb-8698-b614de90104b",
+        "panel_id": "037e1e05-1327-4ebd-ac31-6d757da52760",
+        "section_slug": "cdi",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4b0ed394-8c43-4815-9fb2-8747bf2e4b41",
+        "block_id": "825eb267-5510-4f1c-ac0f-364a6c25fc64",
+        "panel_id": "c8db7b5a-8244-410f-90a5-c526ca709a2b",
+        "section_slug": "cdi",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "b7165507-5d94-49ee-a66b-df107c56240f",
+        "block_id": "712c86b5-4782-4edb-8698-b614de90104b",
+        "panel_id": "89e7b7e8-0b0d-4c2a-93d4-6b7e054f9470",
+        "section_slug": "cdi",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4f930f73-2af6-4976-918a-acf6d96c5bc2",
+        "block_id": "4b6b0baf-33a8-4f18-b5fe-2de06ff4d1bd",
+        "panel_id": "faa5244c-8101-40ca-8b0c-554cbd6014c4",
+        "section_slug": "ferramentas",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "a1efcc39-bb13-4afd-8f7d-ee67a9ec929b",
+        "block_id": "717c437f-871f-42ef-8c8e-f6183a2d13a2",
+        "panel_id": "faa5244c-8101-40ca-8b0c-554cbd6014c4",
+        "section_slug": "ferramentas",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "91a97ef2-18e1-43f8-aa9d-6c99cd96cbc5",
+        "block_id": "4b6b0baf-33a8-4f18-b5fe-2de06ff4d1bd",
+        "panel_id": "a297a632-cd28-4f4f-ab81-493375156426",
+        "section_slug": "ferramentas",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "97f8ab30-d010-4175-8e34-eb0d91eb73f0",
+        "block_id": "717c437f-871f-42ef-8c8e-f6183a2d13a2",
+        "panel_id": "40c18e06-9b3a-4695-a0ea-83ebd642c8a6",
+        "section_slug": "ferramentas",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "54989e21-0de0-426a-ad69-35c1d6606dc9",
+        "block_id": "1edf9da0-6ee4-41a6-ad57-ed95e608d416",
+        "panel_id": "74a96e7e-71f0-49f4-b129-d4fbeb5441a3",
+        "section_slug": "depoimentos",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "b88b193e-4e30-46d8-af0c-766cddb30153",
+        "block_id": "35a2fb96-d963-4302-aca1-40b7242285c0",
+        "panel_id": "74a96e7e-71f0-49f4-b129-d4fbeb5441a3",
+        "section_slug": "depoimentos",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "952eda57-646f-44fd-ba76-87b411248169",
+        "block_id": "1edf9da0-6ee4-41a6-ad57-ed95e608d416",
+        "panel_id": "e8aafb2d-4490-43c5-96cb-ed5886bd219c",
+        "section_slug": "depoimentos",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "aa2c8251-9b94-4783-96ca-10c865b250cd",
+        "block_id": "35a2fb96-d963-4302-aca1-40b7242285c0",
+        "panel_id": "39355b8d-c8c2-4e7c-9989-693c7fa6957d",
+        "section_slug": "depoimentos",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "92636898-db40-42f0-a1e2-bfb440de800b",
+        "block_id": "d9ee5efc-9c89-4782-8cc1-b692187abe7b",
+        "panel_id": "7f3dc789-ea1d-45cd-ae35-a4fbf5072375",
+        "section_slug": "contato",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "4a729a7b-038f-455d-be7e-bd0ca0d6b5fc",
+        "block_id": "2b337092-f48d-4229-bbeb-3b879c97ba22",
+        "panel_id": "7f3dc789-ea1d-45cd-ae35-a4fbf5072375",
+        "section_slug": "contato",
+        "breakpoint": "desktop",
+        "panel_key": "desktop",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "9c7048fa-beb8-4fc0-a395-6b15d14bc59c",
+        "block_id": "d9ee5efc-9c89-4782-8cc1-b692187abe7b",
+        "panel_id": "cc385fa0-6d07-41f6-84aa-096a98027c6e",
+        "section_slug": "contato",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-a",
+        "sort_order": 1,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      },
+      {
+        "id": "d4d884b3-e0c6-42bc-924d-14be734a8143",
+        "block_id": "2b337092-f48d-4229-bbeb-3b879c97ba22",
+        "panel_id": "48678786-98a9-4fc1-95ca-0cc8ebe3ef21",
+        "section_slug": "contato",
+        "breakpoint": "mobile",
+        "panel_key": "mobile-b",
+        "sort_order": 2,
+        "layout_variant": "default",
+        "style_config": {},
+        "motion_config": {
+          "once": true,
+          "delay": 0,
+          "preset": "fade-up",
+          "distance": 18,
+          "duration": 520
+        },
+        "is_visible": true
+      }
+    ],
+    "content_blocks_presentation": [
+      {
+        "id": "a2f4770b-7964-4f3c-b816-c778b66ac15c",
+        "section_id": "7d676233-b5d6-46bb-af76-52dbd4abeb44",
+        "section_slug": "perfil",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-11-07 01:16:53.945817+00",
+        "presentation_items": [
+          {
+            "hero": {
+              "mobileEditorial": {
+                "top": {
+                  "paddingY": 38,
+                  "textColor": "#FFFFFF",
+                  "background": "#171617",
+                  "fontFamily": "Big Shoulders Display",
+                  "accentColor": "#FF5414",
+                  "showSupport": true,
+                  "headlineSize": 82,
+                  "showHeadline": true,
+                  "supportColor": "#FFFFFF",
+                  "supportFontFamily": "Inter"
+                },
+                "bottom": {
+                  "nameSize": 48,
+                  "paddingY": 28,
+                  "showName": true,
+                  "showArrow": true,
+                  "showPhoto": true,
+                  "textColor": "#171617",
+                  "yearsSize": 64,
+                  "background": "#FAFAFA",
+                  "fontFamily": "Big Shoulders Display",
+                  "photoWidth": 45,
+                  "accentColor": "#FF5414",
+                  "showExperience": true,
+                  "descriptionColor": "#171617",
+                  "descriptionFontFamily": "Inter"
+                },
+                "middle": {
+                  "paddingY": 26,
+                  "badgeSize": 240,
+                  "showBadge": true,
+                  "textColor": "#171617",
+                  "background": "#FF5414",
+                  "fontFamily": "Big Shoulders Display"
+                },
+                "enabled": true,
+                "headline": "CONEXÕES\nAUTÊNTICAS.\nINOVAÇÃO.",
+                "badgeText": "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·",
+                "mobileAlt": "",
+                "mobileImage": "",
+                "mobileFraming": {
+                  "x": 50,
+                  "y": 50,
+                  "zoom": 1
+                }
+              }
+            },
+            "index": 0
+          }
+        ]
+      },
+      {
+        "id": "a092fea1-754d-422b-a0aa-5e2502714a68",
+        "section_id": "7d676233-b5d6-46bb-af76-52dbd4abeb44",
+        "section_slug": "perfil",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "49fbe2d3-fe6d-459c-a298-35b6a9fe563d",
+        "section_id": "5119424d-a03c-439b-9cd2-1024534e7f98",
+        "section_slug": "sobre",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-29 03:31:07.170379+00",
+        "presentation_items": []
+      },
+      {
+        "id": "2410a612-17df-48fe-93a3-fd1c6504a200",
+        "section_id": "5119424d-a03c-439b-9cd2-1024534e7f98",
+        "section_slug": "sobre",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-26 04:00:55.476301+00",
+        "presentation_items": []
+      },
+      {
+        "id": "f7908ce3-dd45-4f55-b858-46c15fbda357",
+        "section_id": "b4bc996d-54a4-4f9c-b358-57b2d60956a6",
+        "section_slug": "resultados",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-26 07:26:15.948889+00",
+        "presentation_items": []
+      },
+      {
+        "id": "ccb158ca-ee6a-4305-873d-8230a03de216",
+        "section_id": "b4bc996d-54a4-4f9c-b358-57b2d60956a6",
+        "section_slug": "resultados",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-26 04:32:42.80968+00",
+        "presentation_items": []
+      },
+      {
+        "id": "f1511c92-aa9e-455c-8b91-448d6138ae63",
+        "section_id": "e41e6eb4-6bb9-42d3-b9fb-1e672faf796f",
+        "section_slug": "competencias",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-23 21:09:53.96858+00",
+        "presentation_items": []
+      },
+      {
+        "id": "b1495f5a-d7a8-4d86-8305-cdb22f94acca",
+        "section_id": "e41e6eb4-6bb9-42d3-b9fb-1e672faf796f",
+        "section_slug": "competencias",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-23 21:09:53.96858+00",
+        "presentation_items": []
+      },
+      {
+        "id": "1bc36dc9-c301-4873-8c53-21c3e048737b",
+        "section_id": "681d92de-f777-4c01-82d6-041fb58f174c",
+        "section_slug": "formacao",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-23 21:09:53.96858+00",
+        "presentation_items": []
+      },
+      {
+        "id": "418c8543-d8a6-4b48-8541-27feedf68cb6",
+        "section_id": "681d92de-f777-4c01-82d6-041fb58f174c",
+        "section_slug": "formacao",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-23 21:09:53.96858+00",
+        "presentation_items": []
+      },
+      {
+        "id": "a38ceca7-4fe3-4b94-a5cf-4435f3c39a71",
+        "section_id": "ae5b2365-15df-4b82-957b-aed76adc7fe2",
+        "section_slug": "invest-rs",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-11-05 07:38:50.860821+00",
+        "presentation_items": []
+      },
+      {
+        "id": "222cc514-c860-4ec4-bc01-40a9084dc2e9",
+        "section_id": "ae5b2365-15df-4b82-957b-aed76adc7fe2",
+        "section_slug": "invest-rs",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "d114003e-a362-4ec0-9f09-cfab47fd4fd4",
+        "section_id": "32291cd7-2b3a-420c-96f7-1dce311744d6",
+        "section_slug": "prefeitura-sp",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-31 07:05:49.756784+00",
+        "presentation_items": []
+      },
+      {
+        "id": "9a95d195-be6c-4b25-a22b-27ae6de6993d",
+        "section_id": "32291cd7-2b3a-420c-96f7-1dce311744d6",
+        "section_slug": "prefeitura-sp",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "46948db2-1ecc-47ee-a262-e085d5b553d1",
+        "section_id": "2b6cf8b3-8b08-4708-939c-3ef1303bf7e4",
+        "section_slug": "vale",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-31 07:05:49.756784+00",
+        "presentation_items": []
+      },
+      {
+        "id": "08763d31-51f1-4ded-9e1c-346e035e1594",
+        "section_id": "2b6cf8b3-8b08-4708-939c-3ef1303bf7e4",
+        "section_slug": "vale",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "50e2980c-c8bb-4056-9b45-c90e4691e763",
+        "section_id": "54f327f4-1c63-4ea9-8b5d-e2fabf580edc",
+        "section_slug": "globo-sportv",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-31 07:05:49.756784+00",
+        "presentation_items": []
+      },
+      {
+        "id": "de868897-1b8e-48f9-802e-c346b0e9caed",
+        "section_id": "54f327f4-1c63-4ea9-8b5d-e2fabf580edc",
+        "section_slug": "globo-sportv",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "f76cd26a-6ba8-4e35-a884-b9ad4ea726e0",
+        "section_id": "da9658b8-f1b5-42bc-8964-7cd2111ce4ae",
+        "section_slug": "inpress",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-31 07:05:49.756784+00",
+        "presentation_items": []
+      },
+      {
+        "id": "0f677f0a-12a6-4038-b045-87feb4ed9da0",
+        "section_id": "da9658b8-f1b5-42bc-8964-7cd2111ce4ae",
+        "section_slug": "inpress",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "825eb267-5510-4f1c-ac0f-364a6c25fc64",
+        "section_id": "6139dbf3-8cc7-44eb-aeb9-736a106e9403",
+        "section_slug": "cdi",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-31 07:10:42.727233+00",
+        "presentation_items": []
+      },
+      {
+        "id": "712c86b5-4782-4edb-8698-b614de90104b",
+        "section_id": "6139dbf3-8cc7-44eb-aeb9-736a106e9403",
+        "section_slug": "cdi",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-31 06:28:02.572816+00",
+        "presentation_items": []
+      },
+      {
+        "id": "4b6b0baf-33a8-4f18-b5fe-2de06ff4d1bd",
+        "section_id": "b32075c9-b9fb-4f8e-9193-61e4de0c53c7",
+        "section_slug": "ferramentas",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-26 05:51:53.392927+00",
+        "presentation_items": []
+      },
+      {
+        "id": "717c437f-871f-42ef-8c8e-f6183a2d13a2",
+        "section_id": "b32075c9-b9fb-4f8e-9193-61e4de0c53c7",
+        "section_slug": "ferramentas",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-11-05 10:09:42.815276+00",
+        "presentation_items": []
+      },
+      {
+        "id": "1edf9da0-6ee4-41a6-ad57-ed95e608d416",
+        "section_id": "2aa2885d-7acf-4d58-a27f-801886172f36",
+        "section_slug": "depoimentos",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-28 21:34:28.852012+00",
+        "presentation_items": []
+      },
+      {
+        "id": "35a2fb96-d963-4302-aca1-40b7242285c0",
+        "section_id": "2aa2885d-7acf-4d58-a27f-801886172f36",
+        "section_slug": "depoimentos",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-28 21:34:28.852012+00",
+        "presentation_items": []
+      },
+      {
+        "id": "d9ee5efc-9c89-4782-8cc1-b692187abe7b",
+        "section_id": "c7ec1c53-d503-46a8-a1e6-5e21290cb813",
+        "section_slug": "contato",
+        "mobile_panel": "a",
+        "sort_order": 1,
+        "status": "published",
+        "updated_at": "2026-10-31 07:24:55.393309+00",
+        "presentation_items": []
+      },
+      {
+        "id": "2b337092-f48d-4229-bbeb-3b879c97ba22",
+        "section_id": "c7ec1c53-d503-46a8-a1e6-5e21290cb813",
+        "section_slug": "contato",
+        "mobile_panel": "b",
+        "sort_order": 2,
+        "status": "published",
+        "updated_at": "2026-10-23 21:09:53.96858+00",
+        "presentation_items": []
+      }
+    ]
+  }
+}

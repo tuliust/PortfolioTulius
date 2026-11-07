@@ -1,0 +1,1001 @@
+line,context,selector,property,value,scope,kind
+9,@layer base,:root,color,#171617,public_or_shared,hex
+9,@layer base,:root,background,#fafafa,public_or_shared,hex
+9,@layer base,:root,font-family,"'Inter', system-ui, sans-serif",public_or_shared,other
+17,,:root,--orange,#ff5414,public_or_shared,hex
+18,,:root,--ink,#171617,public_or_shared,hex
+18,,:root,--paper,#fafafa,public_or_shared,hex
+18,,:root,--cream,#f8f4f1,public_or_shared,hex
+18,,:root,--muted,#514742,public_or_shared,hex
+18,,:root,--orange-dark,#bc390c,public_or_shared,hex
+19,,:root,--font-heading,"'Big Shoulders Display', 'Arial Narrow', sans-serif",public_or_shared,other
+19,,:root,--font-body,"'Inter', system-ui, sans-serif",public_or_shared,other
+23,,.skip-link,background,var(--ink),unclassified,css-variable
+23,,.skip-link,color,var(--paper),unclassified,css-variable
+25,,.public-site,background,var(--paper),public_or_shared,css-variable
+25,,.public-site,color,var(--ink),public_or_shared,css-variable
+25,,.public-site,font-family,var(--font-body),public_or_shared,css-variable
+27,,.preview-banner,background,var(--ink),unclassified,css-variable
+27,,.preview-banner,color,white,unclassified,other
+27,,.preview-banner,font-size,.75rem,unclassified,other
+28,,.data-status,background,var(--paper),unclassified,css-variable
+28,,.data-status,font-size,.75rem,unclassified,other
+29,,.data-error,background,#fff1c9,unclassified,hex
+29,,.data-error,color,#5d4300,unclassified,hex
+29,,.data-error,font-size,.78rem,unclassified,other
+31,,.site-header,color,var(--ink),public_or_shared,css-variable
+33,,.brand-button,color,inherit,public_or_shared,other
+33,,.brand-button,background,transparent,public_or_shared,other
+33,,.brand-button,font-family,var(--font-display),public_or_shared,css-variable
+33,,.brand-button,font-weight,800,public_or_shared,other
+33,,.brand-button,font-size,1.1rem,public_or_shared,other
+33,,.brand-button,letter-spacing,-.03em,public_or_shared,other
+34,,.brand-button span,background,transparent,public_or_shared,other
+34,,.brand-button span,color,inherit,public_or_shared,other
+35,,.brand-button span:first-child,background,var(--orange),public_or_shared,css-variable
+35,,.brand-button span:first-child,color,var(--ink),public_or_shared,css-variable
+36,,".site-header.header-profile .brand-button span:last-child, .site-header.header-ink .brand-button span:last-child",color,var(--paper),public_or_shared,css-variable
+37,,".site-header.header-ink, .site-header.header-orange",color,var(--paper),public_or_shared,css-variable
+38,,.site-header.header-orange .brand-button span:first-child,background,var(--ink),public_or_shared,css-variable
+38,,.site-header.header-orange .brand-button span:first-child,color,var(--paper),public_or_shared,css-variable
+39,,".site-header.header-orange button:focus-visible, .site-header.header-ink button:focus-visible",outline-color,var(--paper),public_or_shared,css-variable
+40,,.menu-button,color,inherit,unclassified,other
+40,,.menu-button,background,transparent,unclassified,other
+40,,.menu-button,font-size,.75rem,unclassified,other
+40,,.menu-button,font-weight,700,unclassified,other
+40,,.menu-button,letter-spacing,.12em,unclassified,other
+41,,.nav-backdrop,background,"color-mix(in srgb, var(--ink) 55%, transparent)",public_or_shared,css-variable
+43,,.nav-drawer,background,var(--ink),public_or_shared,css-variable
+43,,.nav-drawer,color,var(--paper),public_or_shared,css-variable
+46,,".drawer-head p, .drawer-foot",font-size,.72rem,unclassified,other
+46,,".drawer-head p, .drawer-foot",text-transform,uppercase,unclassified,other
+46,,".drawer-head p, .drawer-foot",letter-spacing,.14em,unclassified,other
+47,,".icon-button, .order-buttons button",background,transparent,unclassified,other
+47,,".icon-button, .order-buttons button",color,inherit,unclassified,other
+49,,.nav-drawer li button,background,transparent,public_or_shared,other
+49,,.nav-drawer li button,color,inherit,public_or_shared,other
+49,,.nav-drawer li button,font-family,var(--font-display),public_or_shared,css-variable
+49,,.nav-drawer li button,font-size,"clamp(1.4rem, 3.65dvh, 2rem)",public_or_shared,clamp
+49,,.nav-drawer li button,line-height,1,public_or_shared,other
+49,,.nav-drawer li button,text-transform,uppercase,public_or_shared,other
+50,,.nav-drawer li button span,color,var(--orange),public_or_shared,css-variable
+50,,.nav-drawer li button span,font,600 .8rem 'Inter',public_or_shared,other
+53,,.nav-drawer li button.active,color,var(--orange),public_or_shared,css-variable
+54,,.drawer-foot,color,#aaa,unclassified,hex
+60,,.theme-paper,background,var(--paper),public_or_shared,css-variable
+60,,.theme-paper,color,var(--ink),public_or_shared,css-variable
+61,,.theme-cream,background,var(--cream),public_or_shared,css-variable
+61,,.theme-cream,color,var(--ink),public_or_shared,css-variable
+62,,.theme-ink,background,var(--ink),public_or_shared,css-variable
+62,,.theme-ink,color,var(--paper),public_or_shared,css-variable
+63,,.theme-orange,background,var(--orange),public_or_shared,css-variable
+63,,.theme-orange,color,var(--ink),public_or_shared,css-variable
+72,,.about-portrait::before,background,var(--paper),public_or_shared,css-variable
+89,,.about-statements .content-item h3,font-size,"clamp(1.25rem, 1.6vw, 1.85rem)",public_or_shared,clamp
+90,,.about-statements .content-item p,font-size,"clamp(.86rem, 1vw, 1rem)",public_or_shared,clamp
+92,,".section-heading > span, .panel-heading > span",color,var(--orange-dark),public_or_shared,css-variable
+92,,".section-heading > span, .panel-heading > span",font-size,.75rem,public_or_shared,other
+92,,".section-heading > span, .panel-heading > span",font-weight,700,public_or_shared,other
+92,,".section-heading > span, .panel-heading > span",letter-spacing,.15em,public_or_shared,other
+92,,".section-heading > span, .panel-heading > span",text-transform,uppercase,public_or_shared,other
+93,,".theme-ink .section-heading > span, .theme-ink .panel-heading > span",color,var(--orange),public_or_shared,css-variable
+94,,".section-heading h2, .panel-heading h2",font-family,var(--font-heading),public_or_shared,css-variable
+94,,".section-heading h2, .panel-heading h2",font-size,"clamp(3.2rem, 6vw, 7.8rem)",public_or_shared,clamp
+94,,".section-heading h2, .panel-heading h2",font-weight,800,public_or_shared,other
+94,,".section-heading h2, .panel-heading h2",line-height,.88,public_or_shared,other
+94,,".section-heading h2, .panel-heading h2",letter-spacing,-.045em,public_or_shared,other
+94,,".section-heading h2, .panel-heading h2",text-transform,uppercase,public_or_shared,other
+95,,.eyebrow,font-weight,700,unclassified,other
+95,,.eyebrow,text-transform,uppercase,unclassified,other
+95,,.eyebrow,line-height,1.25,unclassified,other
+96,,.section-intro,color,"color-mix(in srgb, currentColor 76%, transparent)",public_or_shared,other
+96,,.section-intro,font-size,"clamp(1rem, 1.2vw, 1.15rem)",public_or_shared,clamp
+96,,.section-intro,line-height,1.55,public_or_shared,other
+99,,.content-item,background,"var(--item-background, transparent)",public_or_shared,css-variable
+102,,.content-item h3,color,"var(--item-title-color, currentColor)",public_or_shared,css-variable
+102,,.content-item h3,font-family,var(--font-display),public_or_shared,css-variable
+102,,.content-item h3,font-size,"var(--item-desktop-title-size, clamp(1.25rem, 1.6vw, 1.75rem))",public_or_shared,clamp
+102,,.content-item h3,font-weight,750,public_or_shared,other
+102,,.content-item h3,line-height,1,public_or_shared,other
+102,,.content-item h3,text-transform,uppercase,public_or_shared,other
+103,,.content-item p,color,"var(--item-text-color, color-mix(in srgb, currentColor 78%, transparent))",public_or_shared,css-variable
+103,,.content-item p,font-size,"var(--item-desktop-text-size, clamp(.83rem, .9vw, 1rem))",public_or_shared,clamp
+103,,.content-item p,line-height,1.48,public_or_shared,other
+105,,.item-label,color,var(--orange-dark),unclassified,css-variable
+105,,.item-label,font-size,.72rem,unclassified,other
+105,,.item-label,font-weight,800,unclassified,other
+105,,.item-label,text-transform,uppercase,unclassified,other
+105,,.item-label,letter-spacing,.08em,unclassified,other
+106,,.theme-ink .item-label,color,var(--orange),public_or_shared,css-variable
+107,,".theme-orange .section-heading > span, .theme-orange .panel-heading > span, .theme-orange .item-label",color,var(--ink),public_or_shared,css-variable
+108,,.theme-orange .section-intro,color,var(--ink),public_or_shared,css-variable
+109,,.theme-orange .content-item p,color,"var(--item-text-color, var(--ink))",public_or_shared,css-variable
+110,,".area-grid .item-label, .profile-b-items .content-item:nth-child(-n+5) .item-label",color,var(--orange),public_or_shared,css-variable
+111,,.item-value,color,var(--orange-dark),unclassified,css-variable
+111,,.item-value,font-family,var(--font-display),unclassified,css-variable
+111,,.item-value,font-size,"clamp(2rem, 3vw, 4rem)",unclassified,clamp
+111,,.item-value,line-height,1,unclassified,other
+112,,.theme-ink .item-value,color,var(--orange),public_or_shared,css-variable
+113,,.theme-orange .item-value,color,var(--ink),public_or_shared,css-variable
+114,,.item-meta,color,var(--orange-dark) !important,unclassified,css-variable
+114,,.item-meta,font-weight,700,unclassified,other
+116,,".tags li, .draft-chip",font-size,.72rem,unclassified,other
+117,,.draft-chip,background,#ffe174,unclassified,hex
+117,,.draft-chip,color,#332800,unclassified,hex
+129,,.result-metric-icon,color,var(--orange-dark),unclassified,css-variable
+132,,.results-theme-list button,background,transparent,public_or_shared,other
+132,,.results-theme-list button,color,var(--ink),public_or_shared,css-variable
+132,,.results-theme-list button,font-family,var(--font-display),public_or_shared,css-variable
+132,,.results-theme-list button,text-transform,uppercase,public_or_shared,other
+132,,.results-theme-list button,font-size,"clamp(1.16rem, 1.45vw, 1.65rem)",public_or_shared,clamp
+132,,.results-theme-list button,font-weight,800,public_or_shared,other
+132,,.results-theme-list button,line-height,1.08,public_or_shared,other
+133,,".results-theme-list button:hover, .results-theme-list button:focus-visible",background,var(--ink),public_or_shared,css-variable
+133,,".results-theme-list button:hover, .results-theme-list button:focus-visible",color,var(--paper),public_or_shared,css-variable
+134,,.results-theme-list button.is-active,color,var(--orange-dark),public_or_shared,css-variable
+135,,".results-theme-list button.is-active:hover, .results-theme-list button.is-active:focus-visible",background,var(--ink),public_or_shared,css-variable
+135,,".results-theme-list button.is-active:hover, .results-theme-list button.is-active:focus-visible",color,var(--paper),public_or_shared,css-variable
+138,,.results-topic .results-axis,color,var(--orange-dark),public_or_shared,css-variable
+138,,.results-topic .results-axis,text-transform,uppercase,public_or_shared,other
+138,,.results-topic .results-axis,font-size,.7rem,public_or_shared,other
+138,,.results-topic .results-axis,letter-spacing,.12em,public_or_shared,other
+138,,.results-topic .results-axis,font-weight,800,public_or_shared,other
+139,,.results-topic h3,font-family,var(--font-display),public_or_shared,css-variable
+139,,.results-topic h3,font-size,"clamp(2rem, 3vw, 3.3rem)",public_or_shared,clamp
+139,,.results-topic h3,line-height,1,public_or_shared,other
+139,,.results-topic h3,text-transform,uppercase,public_or_shared,other
+140,,.results-topic .results-subtitle,font-size,"clamp(.95rem, 1.15vw, 1.15rem)",public_or_shared,clamp
+140,,.results-topic .results-subtitle,font-weight,600,public_or_shared,other
+142,,".results-topic .results-related strong, .results-inherited strong",font-size,.72rem,public_or_shared,other
+142,,".results-topic .results-related strong, .results-inherited strong",text-transform,uppercase,public_or_shared,other
+142,,".results-topic .results-related strong, .results-inherited strong",letter-spacing,.08em,public_or_shared,other
+143,,.results-topic .results-related p,font-size,.9rem,public_or_shared,other
+144,,.results-topic .results-summary,font-size,"clamp(.95rem, 1.08vw, 1.08rem)",public_or_shared,clamp
+144,,.results-topic .results-summary,line-height,1.5,public_or_shared,other
+146,,.results-inherited ul,font-size,.85rem,public_or_shared,other
+146,,.results-inherited ul,line-height,1.5,public_or_shared,other
+151,@media (max-width: 767px),.results-mobile-panel .results-theme-list button,font-size,"clamp(1.1rem, 4.8vw, 1.5rem)",public_or_shared,clamp
+164,,.contact-link,color,inherit,unclassified,other
+169,,.profile-sidebar,background,"var(--hero-panel-background, var(--ink))",public_or_shared,css-variable
+169,,.profile-sidebar,color,white,public_or_shared,other
+170,,.profile-portrait,background,"var(--hero-panel-background, var(--ink))",public_or_shared,css-variable
+172,,.years,color,white,unclassified,other
+173,,.years strong,color,"var(--item-title-color, var(--orange))",unclassified,css-variable
+173,,.years strong,font-family,var(--font-display),unclassified,css-variable
+173,,.years strong,font-size,"clamp(3.2rem, 4vw, 5.2rem)",unclassified,clamp
+173,,.years strong,line-height,.85,unclassified,other
+174,,.years span,color,"var(--item-text-color, white)",unclassified,css-variable
+174,,.years span,font-size,"clamp(.75rem, 1vw, 1rem)",unclassified,clamp
+174,,.years span,line-height,1.3,unclassified,other
+175,,.badge-360,background,"var(--hero-badge-background, var(--orange))",public_or_shared,css-variable
+175,,.badge-360,color,"var(--hero-badge-color, var(--ink))",public_or_shared,css-variable
+177,,.badge-360 text,font-family,var(--font-display),public_or_shared,css-variable
+177,,.badge-360 text,font-size,17px,public_or_shared,other
+177,,.badge-360 text,font-weight,800,public_or_shared,other
+177,,.badge-360 text,letter-spacing,2.5px,public_or_shared,other
+178,,.badge-360 > svg > path,fill,none,public_or_shared,other
+178,,.badge-360 > svg > path,stroke,currentColor,public_or_shared,other
+181,,.profile-intro,color,"var(--hero-intro-color, white)",public_or_shared,css-variable
+181,,.profile-intro,font-family,"Georgia, serif",public_or_shared,other
+181,,.profile-intro,font-size,"var(--hero-desktop-intro-size, clamp(.85rem, 1.05vw, 1.1rem))",public_or_shared,clamp
+181,,.profile-intro,font-style,italic,public_or_shared,other
+181,,.profile-intro,font-weight,700,public_or_shared,other
+181,,.profile-intro,line-height,1.3,public_or_shared,other
+185,,.profile-highlights .item-arrow,background,var(--orange),public_or_shared,css-variable
+185,,.profile-highlights .item-arrow,color,var(--ink),public_or_shared,css-variable
+187,,.profile-highlights .content-item h3,color,"var(--item-title-color, var(--orange))",public_or_shared,css-variable
+187,,.profile-highlights .content-item h3,font-family,var(--font-body),public_or_shared,css-variable
+187,,.profile-highlights .content-item h3,font-size,"var(--item-desktop-title-size, clamp(.72rem, .92vw, .92rem))",public_or_shared,clamp
+187,,.profile-highlights .content-item h3,font-weight,800,public_or_shared,other
+187,,.profile-highlights .content-item h3,line-height,1.15,public_or_shared,other
+188,,.profile-highlights .content-item p,color,"var(--item-text-color, white)",public_or_shared,css-variable
+188,,.profile-highlights .content-item p,font-size,"var(--item-desktop-text-size, clamp(.72rem, .85vw, .94rem))",public_or_shared,clamp
+188,,.profile-highlights .content-item p,line-height,1.3,public_or_shared,other
+190,,.profile-next-section,background,var(--paper),public_or_shared,css-variable
+190,,.profile-next-section,color,var(--ink),public_or_shared,css-variable
+191,,.profile-next-section:hover,background,var(--orange),public_or_shared,css-variable
+194,,.name-lockup,font-family,var(--font-display),unclassified,css-variable
+194,,.name-lockup,font-weight,900,unclassified,other
+194,,.name-lockup,font-size,"clamp(3.4rem, 5.6vw, 7rem)",unclassified,clamp
+194,,.name-lockup,line-height,.82,unclassified,other
+194,,.name-lockup,letter-spacing,-.055em,unclassified,other
+194,,.name-lockup,text-transform,uppercase,unclassified,other
+195,,.name-lockup span,background,var(--paper),unclassified,css-variable
+196,,.name-lockup span:first-child,background,var(--orange),unclassified,css-variable
+197,,.profile-role,font-size,"clamp(.75rem, 1vw, 1rem)",public_or_shared,clamp
+199,,.area-grid .content-item,background,var(--ink),public_or_shared,css-variable
+199,,.area-grid .content-item,color,white,public_or_shared,other
+200,,.area-grid .content-item h3,font-size,"clamp(1rem, 1.25vw, 1.4rem)",public_or_shared,clamp
+202,,".area-grid .area-card-link:hover, .area-grid .area-card-link:focus-visible, .profile-b-items .area-card-link:hover, .profile-b-items .area-card-link:focus-visible",background,var(--orange),public_or_shared,css-variable
+202,,".area-grid .area-card-link:hover, .area-grid .area-card-link:focus-visible, .profile-b-items .area-card-link:hover, .profile-b-items .area-card-link:focus-visible",color,var(--ink),public_or_shared,css-variable
+203,,".area-grid .area-card-link:hover .item-label, .area-grid .area-card-link:focus-visible .item-label, .profile-b-items .area-card-link:hover .item-label, .profile-b-items .area-card-link:focus-visible .item-label",color,var(--ink),public_or_shared,css-variable
+205,,.profile-main > h2,font,"800 clamp(1.3rem, 2vw, 2rem) var(--font-display)",public_or_shared,clamp
+205,,.profile-main > h2,text-transform,uppercase,public_or_shared,other
+208,,.career-grid .content-item h3,font-size,"clamp(1rem, 1.25vw, 1.35rem)",public_or_shared,clamp
+209,,.career-grid .content-item p,font-size,"clamp(.72rem, .75vw, .88rem)",public_or_shared,clamp
+218,,.not-found,background,var(--orange),unclassified,css-variable
+219,,.not-found p,text-transform,uppercase,unclassified,other
+219,,.not-found p,font-weight,700,unclassified,other
+219,,.not-found p,letter-spacing,.15em,unclassified,other
+220,,.not-found h1,font,"900 clamp(4rem, 10vw, 9rem)/.85 var(--font-display)",unclassified,clamp
+220,,.not-found h1,text-transform,uppercase,unclassified,other
+221,,.not-found a,color,inherit,unclassified,other
+221,,.not-found a,font-weight,700,unclassified,other
+224,,".login-page, .admin-loading",background,#ece9e4,admin,hex
+225,,.admin-back,color,#333,admin,hex
+226,,.login-card,background,white,admin,other
+227,,.admin-mark,background,#ff5414,admin,hex
+227,,.admin-mark,font,900 1.7rem var(--font-display),admin,css-variable
+228,,".login-card > p, .admin-header p, .card-heading p, .license-card > p",color,#8c3c1e,admin,hex
+228,,".login-card > p, .admin-header p, .card-heading p, .license-card > p",text-transform,uppercase,admin,other
+228,,".login-card > p, .admin-header p, .card-heading p, .license-card > p",letter-spacing,.12em,admin,other
+228,,".login-card > p, .admin-header p, .card-heading p, .license-card > p",font-size,.72rem,admin,other
+228,,".login-card > p, .admin-header p, .card-heading p, .license-card > p",font-weight,700,admin,other
+229,,.login-card h1,font,800 3rem/.9 var(--font-display),admin,css-variable
+229,,.login-card h1,text-transform,uppercase,admin,other
+230,,".login-card label, .field-grid label",color,#504a47,admin,hex
+230,,".login-card label, .field-grid label",font-size,.8rem,admin,other
+230,,".login-card label, .field-grid label",font-weight,600,admin,other
+231,,".login-card input, .field-grid input, .field-grid textarea, .field-grid select, .token-grid input:not([type=color])",background,white,admin,other
+231,,".login-card input, .field-grid input, .field-grid textarea, .field-grid select, .token-grid input:not([type=color])",color,#171617,admin,hex
+232,,.login-card small,color,#746e6a,admin,hex
+232,,.login-card small,line-height,1.5,admin,other
+233,,".primary-button, .secondary-button, .danger-button",background,#171617,unclassified,hex
+233,,".primary-button, .secondary-button, .danger-button",color,white,unclassified,other
+233,,".primary-button, .secondary-button, .danger-button",font-weight,700,unclassified,other
+234,,.secondary-button,background,white,unclassified,other
+234,,.secondary-button,color,#242120,unclassified,hex
+236,,.danger-button,background,#f3e5e1,unclassified,hex
+236,,.danger-button,color,#8c2717,unclassified,hex
+237,,.login-card .primary-button,background,#ff5414,admin,hex
+237,,.login-card .primary-button,color,#171617,admin,hex
+238,,".form-message, .admin-warning",background,#fff1c9,admin,hex
+238,,".form-message, .admin-warning",color,#6a4d00,admin,hex
+238,,".form-message, .admin-warning",font-size,.85rem,admin,other
+238,,".form-message, .admin-warning",line-height,1.45,admin,other
+239,,.admin-shell,background,#f4f2ef,admin,hex
+239,,.admin-shell,color,#242120,admin,hex
+240,,.admin-sidebar,background,#171617,admin,hex
+240,,.admin-sidebar,color,#f8f4f1,admin,hex
+241,,.admin-logo,color,inherit,admin,other
+241,,.admin-logo,line-height,1,admin,other
+242,,.admin-logo span,background,#ff5414,admin,hex
+242,,.admin-logo span,color,#171617,admin,hex
+242,,.admin-logo span,font,900 1.3rem var(--font-display),admin,css-variable
+244,,".admin-sidebar nav button, .logout-button",background,transparent,admin,other
+244,,".admin-sidebar nav button, .logout-button",color,#aaa5a2,admin,hex
+245,,".admin-sidebar nav button.active, .admin-sidebar nav button:hover",background,#ffffff12,admin,hex
+245,,".admin-sidebar nav button.active, .admin-sidebar nav button:hover",color,white,admin,other
+251,,.admin-header h1,font,"800 clamp(2.6rem, 5vw, 4.5rem)/.9 var(--font-display)",admin,clamp
+251,,.admin-header h1,text-transform,uppercase,admin,other
+252,,.admin-header span,color,#716b67,admin,hex
+255,,".admin-stats article, .admin-card",background,white,admin,other
+257,,.admin-stats article > span,color,#6d6763,admin,hex
+257,,.admin-stats article > span,font-size,.78rem,admin,other
+258,,.admin-stats strong,font,700 2.7rem var(--font-display),admin,css-variable
+258,,.admin-stats strong,text-transform,uppercase,admin,other
+259,,.admin-stats small,color,#8a8581,admin,hex
+262,,".card-heading h2, .license-card h2, .empty-state h2",font,700 1.8rem var(--font-display),unclassified,css-variable
+262,,".card-heading h2, .license-card h2, .empty-state h2",text-transform,uppercase,unclassified,other
+263,,.status-chip,background,#e5f2e7,unclassified,hex
+263,,.status-chip,color,#285d31,unclassified,hex
+263,,.status-chip,font-size,.72rem,unclassified,other
+266,,.check,background,#fff1c9,unclassified,hex
+266,,.check,color,#6a4d00,unclassified,hex
+266,,.check,font-weight,800,unclassified,other
+267,,.check.done,background,#e5f2e7,unclassified,hex
+267,,.check.done,color,#285d31,unclassified,hex
+268,,.check-list p,color,#716b67,unclassified,hex
+268,,.check-list p,font-size,.85rem,unclassified,other
+270,,.section-list,background,white,public_or_shared,other
+271,,.section-list button,background,white,public_or_shared,other
+272,,.section-list button > span,color,#c44718,public_or_shared,hex
+272,,.section-list button > span,font,700 1rem var(--font-display),public_or_shared,css-variable
+273,,.section-list button small,color,#8a8581,public_or_shared,hex
+274,,.section-list button.active,background,#171617,public_or_shared,hex
+274,,.section-list button.active,color,white,public_or_shared,other
+277,,.order-buttons button,border-color,#d7d2ce,unclassified,hex
+280,,.field-grid input:disabled,background,#eeeae7,unclassified,hex
+280,,.field-grid input:disabled,color,#8a8581,unclassified,hex
+284,,.save-message,color,#59655b,unclassified,hex
+284,,.save-message,font-size,.85rem,unclassified,other
+286,,.token-grid label,font-size,.8rem,admin,other
+288,,.token-grid input[type=color],background,transparent,admin,other
+291,,".license-card > div span, .license-card small",color,#716b67,unclassified,hex
+291,,".license-card > div span, .license-card small",font-size,.8rem,unclassified,other
+297,,.media-placeholder,background,#ece8e5,unclassified,hex
+297,,.media-placeholder,color,#716b67,unclassified,hex
+304,,.published-media-picker-label,font-size,.8rem,unclassified,other
+304,,.published-media-picker-label,color,#504a47,unclassified,hex
+305,,.published-media-current,background,#faf9f7,unclassified,hex
+305,,.published-media-current,font-size,.76rem,unclassified,other
+305,,.published-media-current,color,#504a47,unclassified,hex
+306,,.published-media-current img,background,#ece8e5,unclassified,hex
+307,,.published-media-current-note,color,#716b67,unclassified,hex
+307,,.published-media-current-note,font-size,.78rem,unclassified,other
+309,,.published-media-panel,background,#faf9f7,unclassified,hex
+310,,.published-media-panel > p,font-size,.78rem,unclassified,other
+310,,.published-media-panel > p,color,#504a47,unclassified,hex
+311,,.published-media-panel > label,font-size,.78rem,unclassified,other
+311,,.published-media-panel > label,font-weight,700,unclassified,other
+311,,.published-media-panel > label,color,#504a47,unclassified,hex
+314,,.published-media-option,background,white,unclassified,other
+314,,.published-media-option,color,#171617,unclassified,hex
+317,,.published-media-option img,background,#ece8e5,unclassified,hex
+318,,.published-media-option span,font-size,.72rem,unclassified,other
+318,,.published-media-option span,font-weight,700,unclassified,other
+319,,.published-media-option small,color,#8c3c1e,unclassified,hex
+322,,.navigation-editor > div > span:first-child,color,#c44718,unclassified,hex
+322,,.navigation-editor > div > span:first-child,font-weight,700,unclassified,other
+323,,.navigation-editor code,color,#716b67,unclassified,hex
+324,,.admin-note,color,#716b67,admin,hex
+324,,.admin-note,font-size,.8rem,admin,other
+325,,.embedded-preview iframe,background,white,unclassified,other
+326,,.studio-toolbar,background,white,admin,other
+327,,.studio-toolbar label,color,#504a47,admin,hex
+327,,.studio-toolbar label,font-size,.8rem,admin,other
+327,,.studio-toolbar label,font-weight,600,admin,other
+328,,".studio-toolbar select, .navigation-form input, .navigation-form select, .media-editor-grid input, .media-editor-grid textarea, .media-editor-grid select, .issue-row input",background,white,admin,other
+328,,".studio-toolbar select, .navigation-form input, .navigation-form select, .media-editor-grid input, .media-editor-grid textarea, .media-editor-grid select, .issue-row input",color,#171617,admin,hex
+331,,.block-item-editor,background,#f7f5f2,unclassified,hex
+334,,.motion-editor,background,#fbfaf8,unclassified,hex
+335,,.motion-editor legend,color,#8c3c1e,unclassified,hex
+335,,.motion-editor legend,font-size,.72rem,unclassified,other
+335,,.motion-editor legend,font-weight,700,unclassified,other
+335,,.motion-editor legend,text-transform,uppercase,unclassified,other
+335,,.motion-editor legend,letter-spacing,.1em,unclassified,other
+337,,.visual-config > summary,color,#8c3c1e,unclassified,hex
+337,,.visual-config > summary,font-size,.75rem,unclassified,other
+337,,.visual-config > summary,font-weight,800,unclassified,other
+337,,.visual-config > summary,letter-spacing,.08em,unclassified,other
+337,,.visual-config > summary,text-transform,uppercase,unclassified,other
+338,,.visual-config fieldset,background,white,unclassified,other
+339,,.visual-config legend,color,#716b67,unclassified,hex
+339,,.visual-config legend,font-size,.7rem,unclassified,other
+339,,.visual-config legend,font-weight,800,unclassified,other
+339,,.visual-config legend,letter-spacing,.08em,unclassified,other
+339,,.visual-config legend,text-transform,uppercase,unclassified,other
+343,,.collection-tabs button,background,white,admin,other
+344,,.collection-tabs button.active,background,#171617,admin,hex
+344,,.collection-tabs button.active,color,white,admin,other
+344,,.collection-tabs button.active,border-color,#171617,admin,hex
+346,,".navigation-form label, .media-editor-grid label",color,#504a47,unclassified,hex
+346,,".navigation-form label, .media-editor-grid label",font-size,.76rem,unclassified,other
+346,,".navigation-form label, .media-editor-grid label",font-weight,600,unclassified,other
+350,,.issue-row > span,color,#a13f1c,unclassified,hex
+350,,.issue-row > span,font-size,.72rem,unclassified,other
+350,,.issue-row > span,font-weight,700,unclassified,other
+350,,.issue-row > span,text-transform,uppercase,unclassified,other
+351,,.issue-row p,color,#716b67,unclassified,hex
+355,,".revision-list span, .revision-list code",color,#716b67,unclassified,hex
+355,,".revision-list span, .revision-list code",font-size,.72rem,unclassified,other
+356,,.revision-preview,background,#fbfaf8,unclassified,hex
+359,,.revision-preview summary,font-weight,700,unclassified,other
+360,,.revision-preview pre,background,white,unclassified,other
+360,,.revision-preview pre,font-size,.72rem,unclassified,other
+367,,.trajectory-format-controls button,background,white,unclassified,other
+368,,".trajectory-format-controls button:hover, .trajectory-format-controls button:focus-visible",border-color,var(--orange-dark),unclassified,css-variable
+369,,.trajectory-format-note,font-size,.78rem,unclassified,other
+369,,.trajectory-format-note,color,#514742,unclassified,hex
+370,,.trajectory-format-note.is-warning,font-weight,700,unclassified,other
+370,,.trajectory-format-note.is-warning,color,#a13f1c,unclassified,hex
+371,,.trajectory-format-hint,line-height,1.45,unclassified,other
+371,,.trajectory-format-hint,color,#716b67,unclassified,hex
+380,@media (min-width: 768px) and (max-width: 1100px),.about-heading h2,font-size,"clamp(2.8rem, 6vw, 5.2rem)",public_or_shared,clamp
+381,@media (min-width: 768px) and (max-width: 1100px),.about-heading .section-intro,font-size,"clamp(.85rem, 1.3vw, 1.05rem)",public_or_shared,clamp
+382,@media (min-width: 768px) and (max-width: 1100px),.about-statements .content-item h3,font-size,"clamp(1rem, 2.1vw, 1.45rem)",public_or_shared,clamp
+383,@media (min-width: 768px) and (max-width: 1100px),.about-statements .content-item p,font-size,"clamp(.78rem, 1.35vw, .95rem)",public_or_shared,clamp
+401,@media (max-width: 767px),.site-header,background,"color-mix(in srgb, var(--paper) 92%, transparent)",public_or_shared,css-variable
+402,@media (max-width: 767px),.site-header.header-profile .brand-button span:last-child,color,var(--ink),public_or_shared,css-variable
+403,@media (max-width: 767px),.site-header.header-orange,background,"color-mix(in srgb, var(--orange) 96%, transparent)",public_or_shared,css-variable
+403,@media (max-width: 767px),.site-header.header-orange,color,var(--paper),public_or_shared,css-variable
+404,@media (max-width: 767px),.site-header.header-ink,background,"color-mix(in srgb, var(--ink) 96%, transparent)",public_or_shared,css-variable
+404,@media (max-width: 767px),.site-header.header-ink,color,var(--paper),public_or_shared,css-variable
+405,@media (max-width: 767px),.brand-button,font-size,.85rem,public_or_shared,other
+407,@media (max-width: 767px),.section-count,font-size,.8rem,public_or_shared,other
+411,@media (max-width: 767px),.nav-drawer li button,font-size,"clamp(1.35rem, 6vw, 2rem)",public_or_shared,clamp
+418,@media (max-width: 767px),.panel-heading h2,font-size,"clamp(2.7rem, 14vw, 4.6rem)",public_or_shared,clamp
+419,@media (max-width: 767px),.panel-heading > p:not(.section-intro),font-weight,700,public_or_shared,other
+419,@media (max-width: 767px),.panel-heading > p:not(.section-intro),text-transform,uppercase,public_or_shared,other
+422,@media (max-width: 767px),.content-item h3,font-size,"var(--item-mobile-title-size, clamp(1.25rem, 6vw, 1.7rem))",public_or_shared,clamp
+423,@media (max-width: 767px),.content-item p,font-size,"var(--item-mobile-text-size, clamp(.9rem, 4vw, 1rem))",public_or_shared,clamp
+426,@media (max-width: 767px),.item-value,font-size,"clamp(2.3rem, 13vw, 4rem)",unclassified,clamp
+427,@media (max-width: 767px),.mobile-name,font,"900 clamp(2.35rem, 11.8vw, 4.6rem)/.83 var(--font-display)",public_or_shared,clamp
+427,@media (max-width: 767px),.mobile-name,letter-spacing,-.055em,public_or_shared,other
+427,@media (max-width: 767px),.mobile-name,text-transform,uppercase,public_or_shared,other
+428,@media (max-width: 767px),.mobile-name span,background,var(--paper),public_or_shared,css-variable
+429,@media (max-width: 767px),.mobile-name span:first-child,background,var(--orange),public_or_shared,css-variable
+430,@media (max-width: 767px),.mobile-role,background,var(--ink),public_or_shared,css-variable
+430,@media (max-width: 767px),.mobile-role,color,white,public_or_shared,other
+430,@media (max-width: 767px),.mobile-role,font-size,"clamp(.67rem, 2.9vw, .9rem)",public_or_shared,clamp
+430,@media (max-width: 767px),.mobile-role,line-height,1.4,public_or_shared,other
+431,@media (max-width: 767px),.mobile-profile-hero,background,"var(--hero-panel-background, var(--ink))",public_or_shared,css-variable
+431,@media (max-width: 767px),.mobile-profile-hero,color,white,public_or_shared,other
+434,@media (max-width: 767px),.mobile-profile-hero strong,color,"var(--item-title-color, var(--orange))",public_or_shared,css-variable
+434,@media (max-width: 767px),.mobile-profile-hero strong,font,"800 clamp(3rem, 15vw, 5rem)/.82 var(--font-display)",public_or_shared,clamp
+435,@media (max-width: 767px),.mobile-profile-hero p,color,"var(--item-text-color, white)",public_or_shared,css-variable
+435,@media (max-width: 767px),.mobile-profile-hero p,font-size,.85rem,public_or_shared,other
+435,@media (max-width: 767px),.mobile-profile-hero p,line-height,1.4,public_or_shared,other
+437,@media (max-width: 767px),.mobile-intro,font-family,"Georgia, serif",public_or_shared,other
+437,@media (max-width: 767px),.mobile-intro,font-size,"var(--hero-mobile-intro-size, .9rem)",public_or_shared,css-variable
+437,@media (max-width: 767px),.mobile-intro,font-style,italic,public_or_shared,other
+439,@media (max-width: 767px),.mobile-highlights > h2,font,700 1.5rem var(--font-display),public_or_shared,css-variable
+439,@media (max-width: 767px),.mobile-highlights > h2,text-transform,uppercase,public_or_shared,other
+439,@media (max-width: 767px),.mobile-highlights > h2,color,var(--muted),public_or_shared,css-variable
+442,@media (max-width: 767px),.mobile-highlights .item-arrow,background,var(--orange),public_or_shared,css-variable
+442,@media (max-width: 767px),.mobile-highlights .item-arrow,color,var(--ink),public_or_shared,css-variable
+444,@media (max-width: 767px),.mobile-highlights .content-item h3,color,"var(--item-title-color, var(--orange-dark))",public_or_shared,css-variable
+444,@media (max-width: 767px),.mobile-highlights .content-item h3,font,"700 var(--item-mobile-title-size, .78rem) Inter",public_or_shared,css-variable
+445,@media (max-width: 767px),.mobile-highlights .content-item p,color,"var(--item-text-color, color-mix(in srgb, currentColor 78%, transparent))",public_or_shared,css-variable
+445,@media (max-width: 767px),.mobile-highlights .content-item p,font-size,"var(--item-mobile-text-size, .82rem)",public_or_shared,css-variable
+446,@media (max-width: 767px),#perfil-b,background,var(--paper),unclassified,css-variable
+446,@media (max-width: 767px),#perfil-b,color,var(--ink),unclassified,css-variable
+447,@media (max-width: 767px),#perfil-b .panel-heading h2,font-size,"clamp(2.5rem, 11vw, 3.6rem)",public_or_shared,clamp
+449,@media (max-width: 767px),.profile-b-items .content-item:nth-child(-n+5),background,var(--ink),public_or_shared,css-variable
+449,@media (max-width: 767px),.profile-b-items .content-item:nth-child(-n+5),color,white,public_or_shared,other
+450,@media (max-width: 767px),".profile-b-items .content-item.area-card-link:nth-child(-n+5):hover, .profile-b-items .content-item.area-card-link:nth-child(-n+5):focus-visible",background,var(--orange),public_or_shared,css-variable
+450,@media (max-width: 767px),".profile-b-items .content-item.area-card-link:nth-child(-n+5):hover, .profile-b-items .content-item.area-card-link:nth-child(-n+5):focus-visible",color,var(--ink),public_or_shared,css-variable
+451,@media (max-width: 767px),".profile-b-items .content-item.area-card-link:nth-child(-n+5):hover .item-label, .profile-b-items .content-item.area-card-link:nth-child(-n+5):focus-visible .item-label",color,var(--ink),public_or_shared,css-variable
+454,@media (max-width: 767px),.profile-b-items .content-item:nth-child(-n+5) h3,font-size,"clamp(.8rem, 3.3vw, 1rem)",public_or_shared,clamp
+456,@media (max-width: 767px),.profile-b-items .content-item:nth-child(n+6) h3,font-size,1.15rem,public_or_shared,other
+457,@media (max-width: 767px),.profile-b-items .content-item:nth-child(n+6) p,font-size,.8rem,public_or_shared,other
+468,@media (max-width: 767px),.layout-contact .panel-b .item-value,font-size,"clamp(1.25rem, 6.4vw, 2.4rem)",public_or_shared,clamp
+476,@media (max-width: 767px),.admin-sidebar nav button,font-size,.68rem,admin,other
+494,@media (max-width: 360px),.mobile-name,font-size,"clamp(2.15rem, 11.2vw, 2.7rem)",public_or_shared,clamp
+505,@media (max-height: 760px) and (min-width: 768px) and (max-width: 1100px),.section-heading h2,font-size,"clamp(3rem, 5vw, 5.5rem)",public_or_shared,clamp
+507,@media (max-height: 760px) and (min-width: 768px) and (max-width: 1100px),.content-item p,font-size,.8rem,public_or_shared,other
+511,@media (max-height: 760px) and (min-width: 768px) and (max-width: 1100px),.years strong,font-size,"clamp(2.5rem, 4vw, 4.5rem)",unclassified,clamp
+512,@media (max-height: 760px) and (min-width: 768px) and (max-width: 1100px),.profile-intro,font-size,"clamp(.72rem, .9vw, .85rem)",public_or_shared,clamp
+514,@media (max-height: 760px) and (min-width: 768px) and (max-width: 1100px),.profile-highlights .content-item h3,font-size,"var(--item-desktop-title-size, clamp(.62rem, .7vw, .75rem))",public_or_shared,clamp
+515,@media (max-height: 760px) and (min-width: 768px) and (max-width: 1100px),.profile-highlights .content-item p,font-size,"var(--item-desktop-text-size, clamp(.63rem, .7vw, .75rem))",public_or_shared,clamp
+561,,#formacao.theme-ink,background,var(--ink),public_or_shared,css-variable
+561,,#formacao.theme-ink,color,var(--paper),public_or_shared,css-variable
+563,,"#formacao.theme-ink .item-meta, #formacao.theme-ink .content-item p, #formacao.theme-ink .section-intro, #formacao.theme-ink .panel-heading p",color,var(--paper),public_or_shared,css-variable
+565,,#formacao.theme-ink .item-meta,color,var(--paper) !important,public_or_shared,css-variable
+566,,#formacao.theme-ink .item-label,color,var(--orange),public_or_shared,css-variable
+569,,.experience-stack,background,var(--paper),public_or_shared,css-variable
+573,,.experience-index,background,var(--paper),public_or_shared,css-variable
+578,,.experience-index a,color,var(--ink),public_or_shared,css-variable
+579,,.experience-index a,font-size,"clamp(.55rem, .72vw, .78rem)",public_or_shared,clamp
+579,,.experience-index a,font-weight,700,public_or_shared,other
+580,,.experience-index a,line-height,1.2,public_or_shared,other
+580,,.experience-index a,text-transform,uppercase,public_or_shared,other
+584,,".experience-index a:hover, .experience-index a:focus-visible",background,#eee9e5,public_or_shared,hex
+585,,.experience-index a.is-active,border-color,var(--orange),public_or_shared,css-variable
+587,,.company-mark,background,#f1eeec,unclassified,hex
+587,,.company-mark,color,var(--ink),unclassified,css-variable
+592,,".experience-heading > .company-mark, .experience-index .company-mark-small",background,transparent,public_or_shared,other
+594,,.experience-monogram,font-family,var(--font-display),public_or_shared,css-variable
+594,,.experience-monogram,font-size,1.35rem,public_or_shared,other
+594,,.experience-monogram,font-weight,800,public_or_shared,other
+595,,.company-mark-small .experience-monogram,font-size,.85rem,public_or_shared,other
+597,,.experience-card,background,var(--paper),public_or_shared,css-variable
+598,,.experience-card,color,var(--ink),public_or_shared,css-variable
+608,,.experience-heading h2,font-family,var(--font-heading),public_or_shared,css-variable
+608,,.experience-heading h2,text-transform,uppercase,public_or_shared,other
+608,,.experience-heading h2,font-size,"clamp(3.2rem, 5vw, 6.8rem)",public_or_shared,clamp
+609,,.experience-heading h2,line-height,.9,public_or_shared,other
+609,,.experience-heading h2,letter-spacing,-.04em,public_or_shared,other
+611,,.experience-heading p,font-size,"clamp(.79rem, .95vw, 1rem)",public_or_shared,clamp
+611,,.experience-heading p,line-height,1.55,public_or_shared,other
+612,,.experience-heading .experience-eyebrow,font-weight,750,public_or_shared,other
+612,,.experience-heading .experience-eyebrow,color,var(--orange-dark),public_or_shared,css-variable
+613,,.experience-heading .experience-period,font-size,"clamp(.72rem, .8vw, .88rem)",public_or_shared,clamp
+613,,.experience-heading .experience-period,font-weight,600,public_or_shared,other
+613,,.experience-heading .experience-period,line-height,1.4,public_or_shared,other
+620,,.experience-competencies li,font-size,"clamp(.58rem, .64vw, .72rem)",public_or_shared,clamp
+620,,.experience-competencies li,line-height,1.35,public_or_shared,other
+621,,.experience-competencies li,font-weight,600,public_or_shared,other
+621,,.experience-competencies li,letter-spacing,.005em,public_or_shared,other
+621,,.experience-competencies li,color,inherit,public_or_shared,other
+622,,.experience-competencies li,background,transparent,public_or_shared,other
+628,,.experience-view-switch,background,var(--paper),public_or_shared,css-variable
+632,,.experience-view-switch button,background,transparent,public_or_shared,other
+632,,.experience-view-switch button,color,inherit,public_or_shared,other
+632,,.experience-view-switch button,font-family,var(--font-display),public_or_shared,css-variable
+632,,.experience-view-switch button,font-size,"clamp(.78rem, .9vw, 1rem)",public_or_shared,clamp
+633,,.experience-view-switch button,line-height,1.1,public_or_shared,other
+633,,.experience-view-switch button,font-weight,600,public_or_shared,other
+633,,.experience-view-switch button,text-transform,uppercase,public_or_shared,other
+637,,.experience-view-switch button.experience-view-trajectory,font-size,"clamp(.9rem, 1.05vw, 1.16rem)",public_or_shared,clamp
+639,,.experience-view-switch button:hover,color,var(--orange-dark),public_or_shared,css-variable
+641,,.experience-view-switch button.is-active,color,var(--orange-dark),public_or_shared,css-variable
+642,,.experience-view-switch button.is-active,font-size,"clamp(1.25rem, 1.6vw, 1.9rem)",public_or_shared,clamp
+646,,.experience-project .experience-project-heading,font-family,var(--font-display),public_or_shared,css-variable
+646,,.experience-project .experience-project-heading,font-size,"clamp(1.1rem, 1.3vw, 1.5rem)",public_or_shared,clamp
+646,,.experience-project .experience-project-heading,line-height,1.1,public_or_shared,other
+647,,.experience-project .experience-project-heading,text-transform,uppercase,public_or_shared,other
+648,,.experience-project p,font-size,"clamp(.74rem, .87vw, .95rem)",public_or_shared,clamp
+648,,.experience-project p,line-height,1.4,public_or_shared,other
+649,,.experience-value,font-size,1.3rem,public_or_shared,other
+649,,.experience-value,color,var(--orange-dark),public_or_shared,css-variable
+651,,.experience-full-body p,font-size,"clamp(.76rem, .86vw, .94rem)",public_or_shared,clamp
+651,,.experience-full-body p,line-height,1.55,public_or_shared,other
+653,,.experience-full-point strong,font-weight,800,public_or_shared,other
+654,,.experience-full-body em,font-style,italic,public_or_shared,other
+656,,.experience-card.theme-ink .experience-view-switch,background,var(--ink),public_or_shared,css-variable
+657,,.experience-card.theme-ink .experience-view-switch,border-color,#ffffff44,public_or_shared,hex
+660,,".experience-card.theme-ink .experience-view-switch button.is-active, .experience-card.theme-ink .experience-view-switch button:hover",color,var(--orange),public_or_shared,css-variable
+662,,.experience-media-frame,background,#e9e5e2,public_or_shared,hex
+665,,.experience-image-pending,background,"linear-gradient(145deg, #e8e5e2, #f3f1ef)",public_or_shared,hex
+666,,".experience-image-pending span, .experience-gallery-kicker",color,var(--orange-dark),public_or_shared,css-variable
+666,,".experience-image-pending span, .experience-gallery-kicker",font-size,.65rem,public_or_shared,other
+667,,".experience-image-pending span, .experience-gallery-kicker",letter-spacing,.12em,public_or_shared,other
+667,,".experience-image-pending span, .experience-gallery-kicker",font-weight,800,public_or_shared,other
+668,,.experience-image-pending strong,font,"800 clamp(1.8rem, 3vw, 3rem)/.94 var(--font-display)",public_or_shared,clamp
+668,,.experience-image-pending strong,text-transform,uppercase,public_or_shared,other
+669,,.experience-image-pending p,font-size,.78rem,public_or_shared,other
+669,,.experience-image-pending p,line-height,1.4,public_or_shared,other
+671,,.experience-gallery-footer h3,font-family,var(--font-display),public_or_shared,css-variable
+671,,.experience-gallery-footer h3,font-size,1.3rem,public_or_shared,other
+671,,.experience-gallery-footer h3,text-transform,uppercase,public_or_shared,other
+672,,.experience-gallery-footer p,font-size,.75rem,public_or_shared,other
+672,,.experience-gallery-footer p,line-height,1.35,public_or_shared,other
+673,,.experience-gallery-controls,font-size,.69rem,public_or_shared,other
+674,,.experience-gallery-controls button,background,transparent,public_or_shared,other
+675,,".experience-gallery-controls button:hover, .experience-gallery-controls button:focus-visible",color,var(--paper),public_or_shared,css-variable
+675,,".experience-gallery-controls button:hover, .experience-gallery-controls button:focus-visible",background,var(--ink),public_or_shared,css-variable
+677,,.experience-gallery-dots button,background,#bbb,public_or_shared,hex
+678,,.experience-gallery-dots button.is-active,background,var(--orange),public_or_shared,css-variable
+681,@media (min-width: 768px) and (max-width: 1100px),.experience-heading h2,font-size,"clamp(2.6rem, 5vw, 4.4rem)",public_or_shared,clamp
+691,@media (max-width: 767px),.experience-mobile-copy .experience-heading h2,font-size,"clamp(3.2rem, 12vw, 5.1rem)",public_or_shared,clamp
+692,@media (max-width: 767px),.experience-competencies li,font-size,.7rem,public_or_shared,other
+702,,#ferramentas,background,var(--ink),unclassified,css-variable
+702,,#ferramentas,color,var(--paper),unclassified,css-variable
+704,,"#ferramentas .content-item p, #ferramentas .section-intro, #ferramentas .panel-heading p",color,var(--paper),public_or_shared,css-variable
+705,,#ferramentas .content-item h3,color,var(--paper),public_or_shared,css-variable
+707,,"#ferramentas .desktop-content > div .content-item:nth-child(odd) h3, #ferramentas .mobile-items .content-item:nth-child(odd) h3",color,var(--orange),public_or_shared,css-variable
+711,,.tools-editorial > .section-heading h2,font-size,"clamp(3.2rem, 5.5vw, 7.2rem)",public_or_shared,clamp
+715,,.tools-editorial .content-item h3,font-size,"clamp(1.12rem, 1.45vw, 1.7rem)",public_or_shared,clamp
+716,,.tools-editorial .content-item p,font-size,"clamp(.8rem, .87vw, .95rem)",public_or_shared,clamp
+718,,.tools-icon-badge,color,white,public_or_shared,other
+718,,.tools-icon-badge,background,var(--orange),public_or_shared,css-variable
+730,,".career-grid .area-card-link:hover, .career-grid .area-card-link:focus-visible, .profile-b-items .content-item.area-card-link:nth-child(n+6):hover, .profile-b-items .content-item.area-card-link:nth-child(n+6):focus-visible",background,"color-mix(in srgb, var(--orange) 13%, var(--paper))",public_or_shared,css-variable
+740,,".career-grid .area-card-link:hover h3, .profile-b-items .content-item.area-card-link:nth-child(n+6):hover h3",color,var(--orange-dark),public_or_shared,css-variable
+746,,"#contato .contact-link:hover h3, #contato .contact-link:focus-visible h3, #contato .contact-link:hover .item-value, #contato .contact-link:focus-visible .item-value",color,var(--paper),unclassified,css-variable
+752,@media (max-width: 1100px) and (min-width: 768px),.tools-editorial > .section-heading h2,font-size,"clamp(3.7rem, 8vw, 6.4rem)",public_or_shared,clamp
+759,@media (max-width: 767px),#ferramentas .mobile-items .content-item h3,font-size,"clamp(1.2rem, 5.2vw, 1.6rem)",public_or_shared,clamp
+760,@media (max-width: 767px),#ferramentas .mobile-items .content-item p,font-size,.87rem,public_or_shared,other
+774,,.experience-project-meta,font-size,0.72rem,public_or_shared,other
+775,,.experience-project-meta,font-weight,750,public_or_shared,other
+776,,.experience-project-meta,letter-spacing,0.105em,public_or_shared,other
+777,,.experience-project-meta,line-height,1.35,public_or_shared,other
+778,,.experience-project-meta,text-transform,uppercase,public_or_shared,other
+779,,.experience-project-meta,color,#bc390c,public_or_shared,hex
+809,@media (min-width: 1101px),.public-site .brand-button,font-size,.825rem,public_or_shared,other
+813,@media (min-width: 1101px),.profile-role,font-size,"clamp(.69rem, .75vw, .75rem)",public_or_shared,clamp
+815,@media (min-width: 1101px),.area-grid .content-item h3,font-size,"clamp(.75rem, 1.1vw, 1.05rem)",public_or_shared,clamp
+816,@media (min-width: 1101px),.area-grid .item-label,font-size,.61rem,unclassified,other
+816,@media (min-width: 1101px),.area-grid .item-label,font-weight,800,unclassified,other
+816,@media (min-width: 1101px),.area-grid .item-label,letter-spacing,.01em,unclassified,other
+817,@media (min-width: 1101px),.profile-main > h2,font-size,"clamp(1rem, 1.5vw, 1.5rem)",public_or_shared,clamp
+820,@media (min-width: 1101px),.career-grid .content-item h3,font-size,"clamp(.78rem, .98vw, 1.08rem)",public_or_shared,clamp
+821,@media (min-width: 1101px),.career-grid .content-item p,font-size,"clamp(.72rem, .735vw, .82rem)",public_or_shared,clamp
+825,@media (min-width: 1101px),.years span,font-size,"clamp(.69rem, .75vw, .75rem)",unclassified,clamp
+834,@media (min-width: 1101px),.profile-intro,font-size,"clamp(.75rem, calc(var(--hero-desktop-intro-size, 1rem) * .79), .95rem)",public_or_shared,clamp
+844,@media (min-width: 1101px),.profile-highlights .content-item h3,font-size,"clamp(.68rem, calc(var(--item-desktop-title-size, .85rem) * .77), .82rem)",public_or_shared,clamp
+847,@media (min-width: 1101px),.profile-highlights .content-item p,font-size,"clamp(.72rem, calc(var(--item-desktop-text-size, .84rem) * .79), .89rem)",public_or_shared,clamp
+856,@media (min-width: 1101px),.desktop-editorial .section-intro,font-size,"clamp(.83rem, .9vw, .98rem)",public_or_shared,clamp
+860,@media (min-width: 1101px),.desktop-editorial .desktop-content .content-item h3,font-size,"var(--item-desktop-title-size, clamp(.94rem, 1.2vw, 1.32rem))",public_or_shared,clamp
+863,@media (min-width: 1101px),.desktop-editorial .desktop-content .content-item p,font-size,"var(--item-desktop-text-size, clamp(.75rem, .77vw, .84rem))",public_or_shared,clamp
+875,,.testimonials-editorial > .section-heading h2,font-size,"clamp(3.5rem, 5.2vw, 6.8rem)",public_or_shared,clamp
+901,,.testimonial-card,background,transparent,unclassified,other
+902,,.testimonial-card,color,var(--ink),unclassified,css-variable
+907,,".testimonial-card:hover, .testimonial-card:focus-visible",border-color,var(--orange-dark),unclassified,css-variable
+907,,".testimonial-card:hover, .testimonial-card:focus-visible",background,#ff54140d,unclassified,hex
+912,,.testimonial-person h3,font,"800 clamp(1.1rem, 1.4vw, 1.6rem)/1 var(--font-display)",unclassified,clamp
+912,,.testimonial-person h3,text-transform,uppercase,unclassified,other
+913,,.testimonial-person span,color,var(--orange-dark),unclassified,css-variable
+913,,.testimonial-person span,font-size,"clamp(.6rem, .65vw, .8rem)",unclassified,clamp
+913,,.testimonial-person span,font-weight,700,unclassified,other
+913,,.testimonial-person span,line-height,1.35,unclassified,other
+920,,.testimonial-quote,font-size,"clamp(.68rem, .76vw, .88rem)",unclassified,clamp
+921,,.testimonial-quote,line-height,1.45,unclassified,other
+925,,.testimonial-action,font-size,.65rem,unclassified,other
+925,,.testimonial-action,font-weight,800,unclassified,other
+925,,.testimonial-action,text-transform,uppercase,unclassified,other
+925,,.testimonial-action,letter-spacing,.06em,unclassified,other
+925,,.testimonial-action,color,var(--orange-dark),unclassified,css-variable
+976,,.contact-links .contact-link .item-value,font-size,"clamp(1.7rem, 2.8vw, 3rem)",unclassified,clamp
+977,,.contact-footer,font-size,"clamp(.75rem, .8vw, .95rem)",unclassified,clamp
+985,,.admin-hidden-label,color,#a7431e,admin,hex
+986,,.admin-visibility-toggle,font-weight,700,admin,other
+993,@media (min-width: 768px) and (max-width: 1200px),.contact-links .contact-link .item-value,font-size,"clamp(1.35rem, 2.6vw, 2.4rem)",unclassified,clamp
+1006,@media (max-width: 767px),.contact-footer,font-size,.8rem,unclassified,other
+1013,,.admin-toast,background,#171617,admin,hex
+1013,,.admin-toast,color,white,admin,other
+1013,,.admin-toast,font-size,.85rem,admin,other
+1015,,.admin-toast button,background,transparent,admin,other
+1015,,.admin-toast button,color,white,admin,other
+1015,,.admin-toast button,font-size,1.4rem,admin,other
+1016,,.published-media-guidance,font-size,.75rem,unclassified,other
+1016,,.published-media-guidance,color,#746e6a,unclassified,hex
+1017,,.media-frame-overlay,background,#171617cc,unclassified,hex
+1018,,.media-frame-dialog,background,#fafafa,unclassified,hex
+1018,,.media-frame-dialog,color,#171617,unclassified,hex
+1020,,.media-frame-dialog header h3,font,800 1.9rem var(--font-display),unclassified,css-variable
+1020,,.media-frame-dialog header h3,text-transform,uppercase,unclassified,other
+1021,,".media-frame-dialog header p, .media-frame-dialog small",font-size,.8rem,unclassified,other
+1021,,".media-frame-dialog header p, .media-frame-dialog small",color,#625c57,unclassified,hex
+1022,,.media-frame-dialog header button,background,white,unclassified,other
+1022,,.media-frame-dialog header button,font-size,1.5rem,unclassified,other
+1023,,.media-frame-stage,background,#dfdad6,unclassified,hex
+1026,,.media-frame-controls label,font-size,.8rem,unclassified,other
+1026,,.media-frame-controls label,font-weight,700,unclassified,other
+1029,,.media-frame-zoom span,font-size,.8rem,unclassified,other
+1029,,.media-frame-zoom span,font-weight,700,unclassified,other
+1030,,.media-frame-zoom button,background,white,unclassified,other
+1035,,.media-library-card,background,white,admin,other
+1037,,.media-library-card strong,font-size,.82rem,admin,other
+1043,,.media-library-publication,font-size,.8rem,admin,other
+1044,,.media-library-publication > span,font-weight,700,admin,other
+1045,,.media-library-publication > strong,font-size,.84rem,admin,other
+1046,,.media-library-publication > small,color,#716b67,admin,hex
+1046,,.media-library-publication > small,line-height,1.4,admin,other
+1047,,.media-library-detail > label,font-size,.8rem,admin,other
+1047,,.media-library-detail > label,font-weight,700,admin,other
+1048,,.media-library-detail input,background,white,admin,other
+1048,,.media-library-detail input,color,var(--ink),admin,css-variable
+1065,,.experience-card.theme-cream,background,var(--cream),public_or_shared,css-variable
+1065,,.experience-card.theme-cream,color,var(--ink),public_or_shared,css-variable
+1066,,.experience-card.theme-ink,background,var(--ink),public_or_shared,css-variable
+1066,,.experience-card.theme-ink,color,var(--paper),public_or_shared,css-variable
+1067,,.experience-card.theme-orange,background,var(--orange),public_or_shared,css-variable
+1067,,.experience-card.theme-orange,color,var(--ink),public_or_shared,css-variable
+1068,,.experience-card.theme-ink .experience-project,border-color,#ffffff44,public_or_shared,hex
+1071,,".experience-card.theme-ink .experience-eyebrow, .experience-card.theme-ink .experience-value, .experience-card.theme-ink .experience-gallery-kicker",color,var(--orange),public_or_shared,css-variable
+1078,,.site-editor-heading,background,white,admin,other
+1081,,.site-editor-heading .site-editor-tabs button,font-size,.8rem,admin,other
+1082,,.site-editor-heading p,color,#8c3c1e,admin,hex
+1082,,.site-editor-heading p,text-transform,uppercase,admin,other
+1082,,.site-editor-heading p,letter-spacing,.12em,admin,other
+1082,,.site-editor-heading p,font-size,.72rem,admin,other
+1082,,.site-editor-heading p,font-weight,700,admin,other
+1083,,.site-editor-heading h2,font,"800 clamp(1.6rem, 3vw, 2.5rem)/1 var(--font-display)",admin,clamp
+1083,,.site-editor-heading h2,text-transform,uppercase,admin,other
+1084,,.site-editor-heading span,color,#716b67,admin,hex
+1084,,.site-editor-heading span,font-size,.83rem,admin,other
+1086,,.site-editor-tabs button,background,white,admin,other
+1086,,.site-editor-tabs button,color,#171617,admin,hex
+1086,,.site-editor-tabs button,font-weight,700,admin,other
+1087,,.site-editor-tabs button.active,color,white,admin,other
+1087,,.site-editor-tabs button.active,background,#171617,admin,hex
+1087,,.site-editor-tabs button.active,border-color,#171617,admin,hex
+1091,,".site-editor-actions small, .site-editor-source small",color,#716b67,admin,hex
+1092,,".site-editor-note, .site-editor-unsaved",background,white,admin,other
+1092,,".site-editor-note, .site-editor-unsaved",color,#514742,admin,hex
+1092,,".site-editor-note, .site-editor-unsaved",line-height,1.5,admin,other
+1097,,.studio-block-picker button,background,white,admin,other
+1098,,.studio-block-picker button.active,background,#171617,admin,hex
+1098,,.studio-block-picker button.active,color,white,admin,other
+1099,,.studio-block-picker button > span,color,#c44718,admin,hex
+1099,,.studio-block-picker button > span,font,700 1rem var(--font-display),admin,css-variable
+1100,,.studio-block-picker button small,color,#716b67,admin,hex
+1101,,.studio-block-picker button.active small,color,#ccc5c0,admin,hex
+1102,,.site-editor-source,background,#faf7f4,admin,hex
+1105,,.site-editor-advanced > summary,font-weight,700,admin,other
+1121,,.block-item-toggle,background,transparent,unclassified,other
+1121,,.block-item-toggle,color,inherit,unclassified,other
+1124,,.block-item-toggle-label small,color,#716b67,unclassified,hex
+1124,,.block-item-toggle-label small,font-size,.76rem,unclassified,other
+1124,,.block-item-toggle-label small,font-weight,500,unclassified,other
+1128,,.admin-info-trigger,background,white,admin,other
+1128,,.admin-info-trigger,color,#504a47,admin,hex
+1129,,".admin-info-trigger:hover, .admin-info-trigger[aria-expanded=""true""]",background,#171617,admin,hex
+1129,,".admin-info-trigger:hover, .admin-info-trigger[aria-expanded=""true""]",border-color,#171617,admin,hex
+1129,,".admin-info-trigger:hover, .admin-info-trigger[aria-expanded=""true""]",color,white,admin,other
+1130,,.admin-info-tooltip,color,white,admin,other
+1130,,.admin-info-tooltip,background,#171617,admin,hex
+1130,,.admin-info-tooltip,font-size,.76rem,admin,other
+1130,,.admin-info-tooltip,font-weight,400,admin,other
+1130,,.admin-info-tooltip,line-height,1.5,admin,other
+1141,,.site-editor-experience-picker,background,white,admin,other
+1142,,.site-editor-experience-picker h3,font-size,.9rem,admin,other
+1142,,.site-editor-experience-picker h3,font-weight,800,admin,other
+1144,,.site-editor-experience-options button,color,#171617,admin,hex
+1144,,.site-editor-experience-options button,background,#fff,admin,hex
+1146,,.site-editor-experience-options button strong,font-size,.83rem,admin,other
+1147,,.site-editor-experience-options button small,font-size,.7rem,admin,other
+1147,,.site-editor-experience-options button small,line-height,1.35,admin,other
+1147,,.site-editor-experience-options button small,color,#716b67,admin,hex
+1148,,.site-editor-experience-options button.active,background,#171617,admin,hex
+1148,,.site-editor-experience-options button.active,border-color,#171617,admin,hex
+1148,,.site-editor-experience-options button.active,color,white,admin,other
+1149,,.site-editor-experience-options button.active small,color,#d4cbc5,admin,hex
+1151,,.site-editor-experience-current,font-size,.78rem,admin,other
+1151,,.site-editor-experience-current,line-height,1.5,admin,other
+1151,,.site-editor-experience-current,color,#605954,admin,hex
+1154,,.admin-confirm-overlay,background,#171617ad,admin,hex
+1155,,.admin-confirm-dialog,background,#f8f4f1,admin,hex
+1155,,.admin-confirm-dialog,color,#171617,admin,hex
+1156,,.admin-confirm-eyebrow,color,#bc390c,admin,hex
+1156,,.admin-confirm-eyebrow,font-weight,800,admin,other
+1156,,.admin-confirm-eyebrow,letter-spacing,.12em,admin,other
+1156,,.admin-confirm-eyebrow,font-size,.72rem,admin,other
+1157,,.admin-confirm-dialog h2,font,"800 clamp(1.6rem,4vw,2.5rem)/1.04 var(--font-display)",admin,clamp
+1157,,.admin-confirm-dialog h2,text-transform,uppercase,admin,other
+1158,,.admin-confirm-dialog p,color,#514742,admin,hex
+1158,,.admin-confirm-dialog p,font-size,.95rem,admin,other
+1158,,.admin-confirm-dialog p,line-height,1.5,admin,other
+1165,,.admin-confirm-error,color,#9e2a12 !important,admin,hex
+1165,,.admin-confirm-error,font-weight,700,admin,other
+1169,,".site-editor-preview-controls button, .site-editor-contextual-sources button",background,white,admin,other
+1169,,".site-editor-preview-controls button, .site-editor-contextual-sources button",color,#171617,admin,hex
+1170,,".site-editor-preview-controls button.active, .site-editor-contextual-sources button.active",background,#171617,admin,hex
+1170,,".site-editor-preview-controls button.active, .site-editor-contextual-sources button.active",color,white,admin,other
+1170,,".site-editor-preview-controls button.active, .site-editor-contextual-sources button.active",border-color,#171617,admin,hex
+1174,,.site-editor-preview-frame iframe,background,white,admin,other
+1176,,.site-editor-responsive-preview > small,color,#716b67,admin,hex
+1177,,.site-editor-contextual-sources,background,#f8f4f1,admin,hex
+1195,@media (max-width: 1100px),.admin-logo strong,font-size,.8rem,admin,other
+1195,@media (max-width: 1100px),.admin-logo strong,line-height,1,admin,other
+1205,@media (max-width: 1100px),.admin-sidebar nav button.active,border-color,#ffffff44,admin,hex
+1209,@media (max-width: 1100px),.admin-header h1,font-size,"clamp(2.3rem, 6vw, 3.8rem)",admin,clamp
+1224,@media (max-width: 1100px),.site-editor-heading h2,font-size,"clamp(1.7rem, 4vw, 2.6rem)",admin,clamp
+1236,@media (max-width: 767px),.admin-header h1,font-size,"clamp(2.3rem, 9vw, 3.3rem)",admin,clamp
+1278,@media (max-width: 380px),.admin-header h1,font-size,2.3rem,admin,other
+1298,@media (max-width: 767px),".admin-main input:not([type=""checkbox""]):not([type=""radio""]), .admin-main select, .admin-main textarea",font-size,16px,admin,other
+1301,,.visual-icon-library,background,#faf8f6,unclassified,hex
+1303,,.visual-icon-library h4,color,#8f310f,unclassified,hex
+1303,,.visual-icon-library h4,font-size,.78rem,unclassified,other
+1303,,.visual-icon-library h4,letter-spacing,.05em,unclassified,other
+1305,,.visual-icon-grid button,background,white,unclassified,other
+1305,,.visual-icon-grid button,color,#1b1919,unclassified,hex
+1306,,.visual-icon-grid button.active,background,#171617,unclassified,hex
+1306,,.visual-icon-grid button.active,border-color,#171617,unclassified,hex
+1306,,.visual-icon-grid button.active,color,white,unclassified,other
+1314,,.admin-floating-save,background,#171617,admin,hex
+1315,,.admin-floating-save,color,#fff,admin,hex
+1317,,.admin-floating-save > span,font-size,.76rem,admin,other
+1317,,.admin-floating-save > span,color,#e3dfda,admin,hex
+1319,,.admin-floating-save button:disabled,background,#626060,admin,hex
+1322,,.site-editor-consolidated-heading h3,font,800 1.55rem var(--font-display),admin,css-variable
+1322,,.site-editor-consolidated-heading h3,text-transform,uppercase,admin,other
+1323,,.site-editor-consolidated-heading p,color,#716b67,admin,hex
+1323,,.site-editor-consolidated-heading p,font-size,.82rem,admin,other
+1325,,.media-library-frame-control small,color,#716b67,admin,hex
+1335,,.admin-image-target-switch > span,font-weight,750,admin,other
+1335,,.admin-image-target-switch > span,font-size,.8rem,admin,other
+1336,,.admin-image-target-switch button,background,white,admin,other
+1337,,.admin-image-target-switch button.active,background,#171617,admin,hex
+1337,,.admin-image-target-switch button.active,color,white,admin,other
+1337,,.admin-image-target-switch button.active,border-color,#171617,admin,hex
+1365,,.visual-icon-library,background,transparent,unclassified,other
+1366,,.visual-icon-trigger,background,#faf8f6,unclassified,hex
+1366,,.visual-icon-trigger,color,#171617,unclassified,hex
+1367,,.visual-icon-trigger > span,font-size,.78rem,unclassified,other
+1367,,.visual-icon-trigger > span,font-weight,700,unclassified,other
+1368,,".visual-icon-trigger[aria-expanded=""true""]",border-color,#bc390c,unclassified,hex
+1371,,.visual-icon-popover,background,#faf8f6,unclassified,hex
+1373,,.visual-icon-popover h4,color,#8f310f,unclassified,hex
+1373,,.visual-icon-popover h4,font-size,.78rem,unclassified,other
+1373,,.visual-icon-popover h4,letter-spacing,.05em,unclassified,other
+1380,,.published-media-dialog-tools > label:first-child,font-size,.8rem,unclassified,other
+1380,,.published-media-dialog-tools > label:first-child,font-weight,700,unclassified,other
+1385,,.published-media-dialog-status,background,#fff1c9,unclassified,hex
+1385,,.published-media-dialog-status,color,#6a4d00,unclassified,hex
+1385,,.published-media-dialog-status,font-size,.8rem,unclassified,other
+1388,,.published-media-private > h4,font-size,.9rem,unclassified,other
+1388,,.published-media-private > h4,font-weight,800,unclassified,other
+1389,,.published-media-private > p,font-size,.8rem,unclassified,other
+1389,,.published-media-private > p,color,#625c57,unclassified,hex
+1391,,.published-media-private > div span,font-size,.78rem,unclassified,other
+1414,,.experience-project-choice,background,transparent,public_or_shared,other
+1414,,.experience-project-choice,color,inherit,public_or_shared,other
+1417,,".experience-project-choice:hover .experience-project-heading, .experience-project-choice:focus-visible .experience-project-heading, .experience-project.is-active .experience-project-heading",color,var(--orange-dark),public_or_shared,css-variable
+1419,,.experience-project.is-active .experience-project-choice,color,inherit,public_or_shared,other
+1422,,.experience-extra-metrics span,font-size,.68rem,public_or_shared,other
+1422,,.experience-extra-metrics span,line-height,1.4,public_or_shared,other
+1423,,.experience-extra-metrics strong,font-size,.9rem,public_or_shared,other
+1423,,.experience-extra-metrics strong,color,var(--orange-dark),public_or_shared,css-variable
+1426,,".experience-card.theme-ink .experience-project-choice:hover .experience-project-heading, .experience-card.theme-ink .experience-project-choice:focus-visible .experience-project-heading, .experience-card.theme-ink .experience-project.is-active .experience-project-heading",color,var(--orange),public_or_shared,css-variable
+1436,,.experience-inline-trajectory-note,font-size,.8rem,public_or_shared,other
+1436,,.experience-inline-trajectory-note,color,#625b55,public_or_shared,hex
+1436,,.experience-inline-trajectory-note,line-height,1.5,public_or_shared,other
+1441,@media (max-width: 767px),:root,--mobile-heading-size,"clamp(2.9rem, 12vw, 3.8rem)",public_or_shared,clamp
+1444,@media (max-width: 767px),".public-site .panel-heading h2, .public-site #perfil-b .panel-heading h2",font-size,var(--mobile-heading-size),public_or_shared,css-variable
+1445,@media (max-width: 767px),".public-site .panel-heading h2, .public-site #perfil-b .panel-heading h2",line-height,.92,public_or_shared,other
+1446,@media (max-width: 767px),".public-site .panel-heading h2, .public-site #perfil-b .panel-heading h2",letter-spacing,-.035em,public_or_shared,other
+1451,@media (max-width: 767px),.public-site .mobile-panel-subheading,font,"700 clamp(1.35rem, 6vw, 1.9rem)/1.05 var(--font-heading)",public_or_shared,clamp
+1452,@media (max-width: 767px),.public-site .mobile-panel-subheading,text-transform,uppercase,public_or_shared,other
+1453,@media (max-width: 767px),.public-site .mobile-panel-subheading,letter-spacing,-.02em,public_or_shared,other
+1460,@media (max-width: 767px),.public-site .mobile-items .content-item h3,font-size,"var(--item-mobile-title-size, clamp(1.2rem, 5.2vw, 1.65rem))",public_or_shared,clamp
+1461,@media (max-width: 767px),.public-site .mobile-items .content-item h3,line-height,1.12,public_or_shared,other
+1471,@media (max-width: 767px),#perfil-a .mobile-name,font-size,"clamp(2.6rem, 10.5vw, 4rem)",public_or_shared,clamp
+1472,@media (max-width: 767px),#perfil-a .mobile-name,line-height,.95,public_or_shared,other
+1473,@media (max-width: 767px),#perfil-a .mobile-name,letter-spacing,-.045em,public_or_shared,other
+1482,@media (max-width: 767px),#perfil-a .mobile-role,font-size,"clamp(.83rem, 3.5vw, 1rem)",public_or_shared,clamp
+1482,@media (max-width: 767px),#perfil-a .mobile-role,line-height,1.45,public_or_shared,other
+1516,@media (max-width: 767px),#perfil-a .mobile-profile-hero strong,font-size,"clamp(2.7rem, 13vw, 4.35rem)",public_or_shared,clamp
+1517,@media (max-width: 767px),#perfil-a .mobile-profile-hero strong,line-height,.86,public_or_shared,other
+1521,@media (max-width: 767px),#perfil-a .mobile-profile-hero p,font-size,"clamp(.82rem, 3.6vw, .96rem)",public_or_shared,clamp
+1530,@media (max-width: 767px),#perfil-a .mobile-intro,font-size,"clamp(.85rem, 3.5vw, 1rem)",public_or_shared,clamp
+1542,@media (max-width: 767px),#sobre .panel-heading .section-intro,font-size,"clamp(1rem, 4vw, 1.2rem)",public_or_shared,clamp
+1542,@media (max-width: 767px),#sobre .panel-heading .section-intro,line-height,1.5,public_or_shared,other
+1569,@media (max-width: 767px),#ferramentas .mobile-items .content-item h3,font-size,"clamp(1.1rem, 4.6vw, 1.5rem)",public_or_shared,clamp
+1586,@media (max-width: 767px),#depoimentos .testimonial-card .testimonial-quote,font-size,"clamp(.83rem, 3.6vw, .95rem)",unclassified,clamp
+1587,@media (max-width: 767px),#depoimentos .testimonial-card .testimonial-quote,line-height,1.45,unclassified,other
+1597,@media (max-width: 767px),#depoimentos .testimonial-person h3,font-size,"clamp(1.25rem, 5.5vw, 1.7rem)",unclassified,clamp
+1598,@media (max-width: 767px),#depoimentos .testimonial-person span,font-size,"clamp(.73rem, 3vw, .85rem)",unclassified,clamp
+1640,@media (max-width: 360px),#perfil-a .mobile-name,font-size,"clamp(2.3rem, 10.3vw, 3rem)",public_or_shared,clamp
+1651,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-identity,background,var(--paper),public_or_shared,css-variable
+1652,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-identity,color,var(--ink),public_or_shared,css-variable
+1656,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-kicker,font-size,"clamp(.68rem, 2.55vw, .83rem)",public_or_shared,clamp
+1656,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-kicker,line-height,1.4,public_or_shared,other
+1657,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-kicker,text-transform,uppercase,public_or_shared,other
+1664,@media (max-width: 767px),.public-site #perfil-a .mobile-name,line-height,.92,public_or_shared,other
+1664,@media (max-width: 767px),.public-site #perfil-a .mobile-name,letter-spacing,-.042em,public_or_shared,other
+1668,@media (max-width: 767px),.public-site #perfil-a .mobile-name span:first-child,background,var(--orange),public_or_shared,css-variable
+1668,@media (max-width: 767px),.public-site #perfil-a .mobile-name span:first-child,font-size,"clamp(4.45rem, 23vw, 7.4rem)",public_or_shared,clamp
+1671,@media (max-width: 767px),.public-site #perfil-a .mobile-name span:last-child,background,transparent,public_or_shared,other
+1671,@media (max-width: 767px),.public-site #perfil-a .mobile-name span:last-child,font-size,"clamp(2.3rem, 10.35vw, 4.2rem)",public_or_shared,clamp
+1671,@media (max-width: 767px),.public-site #perfil-a .mobile-name span:last-child,letter-spacing,-.04em,public_or_shared,other
+1676,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-stage,background,"var(--hero-panel-background, var(--ink))",public_or_shared,css-variable
+1677,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-stage,color,var(--paper),public_or_shared,css-variable
+1682,@media (max-width: 767px),.public-site #perfil-a .mobile-profile-hero,background,transparent,public_or_shared,other
+1699,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-years strong,color,"var(--item-title-color, var(--orange))",public_or_shared,css-variable
+1699,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-years strong,font,"800 clamp(2.65rem, 12.5vw, 4.7rem)/.86 var(--font-display)",public_or_shared,clamp
+1703,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-years p,color,"var(--item-text-color, var(--paper))",public_or_shared,css-variable
+1703,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-years p,font-size,"clamp(.76rem, 3.25vw, .92rem)",public_or_shared,clamp
+1704,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-years p,line-height,1.4,public_or_shared,other
+1712,@media (max-width: 767px),.public-site #perfil-a .mobile-intro,color,"var(--hero-intro-color, var(--paper))",public_or_shared,css-variable
+1713,@media (max-width: 767px),.public-site #perfil-a .mobile-intro,font,"italic 700 clamp(1.1rem, 4.7vw, 1.5rem)/1.2 Georgia, serif",public_or_shared,clamp
+1720,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-next,color,var(--paper),public_or_shared,css-variable
+1723,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-next:focus-visible,outline-color,var(--orange),public_or_shared,css-variable
+1726,@media (max-width: 767px),.public-site #perfil-b.mobile-panel,background,var(--paper),public_or_shared,css-variable
+1727,@media (max-width: 767px),.public-site #perfil-b.mobile-panel,color,var(--ink),public_or_shared,css-variable
+1734,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-block-heading h2,font,"800 clamp(2rem, 9.2vw, 3.1rem)/.96 var(--font-heading)",public_or_shared,clamp
+1734,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-block-heading h2,letter-spacing,-.035em,public_or_shared,other
+1735,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-block-heading h2,text-transform,uppercase,public_or_shared,other
+1750,@media (max-width: 767px),".public-site #perfil-b .profile-mobile-area-list li > a, .public-site #perfil-b .profile-mobile-area-list li > div",color,inherit,public_or_shared,other
+1755,@media (max-width: 767px),".public-site #perfil-b .profile-mobile-area-list li > a:hover, .public-site #perfil-b .profile-mobile-area-list li > a:focus-visible, .public-site #perfil-b .profile-mobile-career-list li > a:hover, .public-site #perfil-b .profile-mobile-career-list li > a:focus-visible",color,var(--orange-dark),public_or_shared,css-variable
+1756,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-area-number,color,var(--orange-dark),public_or_shared,css-variable
+1757,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-area-number,font-size,.81rem,public_or_shared,other
+1757,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-area-number,font-weight,800,public_or_shared,other
+1761,@media (max-width: 767px),".public-site #perfil-b .profile-mobile-area-list strong, .public-site #perfil-b .profile-mobile-career-list strong",color,"var(--item-title-color, inherit)",public_or_shared,css-variable
+1761,@media (max-width: 767px),".public-site #perfil-b .profile-mobile-area-list strong, .public-site #perfil-b .profile-mobile-career-list strong",font,"800 clamp(1.17rem, 5.3vw, 1.52rem)/1.02 var(--font-heading)",public_or_shared,clamp
+1762,@media (max-width: 767px),".public-site #perfil-b .profile-mobile-area-list strong, .public-site #perfil-b .profile-mobile-career-list strong",text-transform,uppercase,public_or_shared,other
+1769,@media (max-width: 767px),".public-site #perfil-b .profile-mobile-career-list li > a, .public-site #perfil-b .profile-mobile-career-list li > div",color,inherit,public_or_shared,other
+1772,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-career-list li span,color,"var(--item-text-color, var(--orange-dark))",public_or_shared,css-variable
+1772,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-career-list li span,font-size,"clamp(.72rem, 3vw, .83rem)",public_or_shared,clamp
+1773,@media (max-width: 767px),.public-site #perfil-b .profile-mobile-career-list li span,line-height,1.25,public_or_shared,other
+1777,@media (max-width: 360px),.public-site #perfil-a .mobile-name span:first-child,font-size,22vw,public_or_shared,other
+1778,@media (max-width: 360px),.public-site #perfil-a .mobile-name span:last-child,font-size,9.7vw,public_or_shared,other
+1779,@media (max-width: 360px),.public-site #perfil-a .profile-mobile-years strong,font-size,"clamp(2.4rem, 12vw, 3.5rem)",public_or_shared,clamp
+1787,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-positioning,font-size,"clamp(.82rem, 3.05vw, .95rem)",public_or_shared,clamp
+1788,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-positioning,line-height,1.42,public_or_shared,other
+1789,@media (max-width: 767px),.public-site #perfil-a .profile-mobile-positioning,color,var(--ink),public_or_shared,css-variable
+1799,@media (max-width: 767px),.public-site #sobre .about-mobile-panel,background,var(--orange),public_or_shared,css-variable
+1800,@media (max-width: 767px),.public-site #sobre .about-mobile-panel,color,var(--ink),public_or_shared,css-variable
+1807,@media (max-width: 767px),.public-site #sobre .about-mobile-copy h2,font,"900 clamp(5rem, 25vw, 8rem)/.87 var(--font-heading)",public_or_shared,clamp
+1808,@media (max-width: 767px),.public-site #sobre .about-mobile-copy h2,letter-spacing,-.05em,public_or_shared,other
+1809,@media (max-width: 767px),.public-site #sobre .about-mobile-copy h2,text-transform,uppercase,public_or_shared,other
+1813,@media (max-width: 767px),.public-site #sobre .about-mobile-eyebrow,font-size,"clamp(.95rem, 4.2vw, 1.2rem)",public_or_shared,clamp
+1814,@media (max-width: 767px),.public-site #sobre .about-mobile-eyebrow,font-weight,800,public_or_shared,other
+1815,@media (max-width: 767px),.public-site #sobre .about-mobile-eyebrow,text-transform,uppercase,public_or_shared,other
+1816,@media (max-width: 767px),.public-site #sobre .about-mobile-eyebrow,line-height,1.15,public_or_shared,other
+1820,@media (max-width: 767px),.public-site #sobre .about-mobile-description,font-size,"clamp(1rem, 4.15vw, 1.2rem)",public_or_shared,clamp
+1821,@media (max-width: 767px),.public-site #sobre .about-mobile-description,line-height,1.48,public_or_shared,other
+1847,@media (max-width: 767px),.public-site #sobre .about-mobile-continuation,background,var(--ink),public_or_shared,css-variable
+1848,@media (max-width: 767px),.public-site #sobre .about-mobile-continuation,color,var(--paper),public_or_shared,css-variable
+1861,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item,background,transparent,public_or_shared,other
+1865,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item h3,color,var(--orange),public_or_shared,css-variable
+1866,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item h3,font,"800 var(--item-mobile-title-size, clamp(1.55rem, 6.1vw, 2.05rem))/1.03 var(--font-heading)",public_or_shared,clamp
+1867,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item h3,text-transform,uppercase,public_or_shared,other
+1871,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item p,font-size,"var(--item-mobile-text-size, clamp(.95rem, 3.8vw, 1.05rem))",public_or_shared,clamp
+1872,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item p,line-height,1.48,public_or_shared,other
+1873,@media (max-width: 767px),.public-site #sobre .about-mobile-differences .content-item p,color,var(--paper),public_or_shared,css-variable
+1886,@media (max-width: 767px),.public-site #resultados-a .panel-heading h2,font-size,"clamp(2.55rem, 11.2vw, 3.7rem)",public_or_shared,clamp
+1887,@media (max-width: 767px),.public-site #resultados-a .panel-heading h2,line-height,.88,public_or_shared,other
+1888,@media (max-width: 767px),.public-site #resultados-a .panel-heading h2,letter-spacing,-.035em,public_or_shared,other
+1893,@media (max-width: 767px),.public-site #resultados-a .panel-heading .section-intro,font-size,"clamp(.87rem, 3.5vw, 1rem)",public_or_shared,clamp
+1894,@media (max-width: 767px),.public-site #resultados-a .panel-heading .section-intro,line-height,1.38,public_or_shared,other
+1905,@media (max-width: 767px),.public-site #resultados-a .results-mobile-selector,background,var(--paper),public_or_shared,css-variable
+1906,@media (max-width: 767px),.public-site #resultados-a .results-mobile-selector,color,var(--orange-dark),public_or_shared,css-variable
+1907,@media (max-width: 767px),.public-site #resultados-a .results-mobile-selector,font,"800 clamp(1.1rem, 5vw, 1.4rem)/1.12 var(--font-heading)",public_or_shared,clamp
+1908,@media (max-width: 767px),.public-site #resultados-a .results-mobile-selector,text-transform,uppercase,public_or_shared,other
+1925,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item,background,transparent,public_or_shared,other
+1938,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .item-value,font,"800 clamp(1.65rem, 8vw, 2.6rem)/.96 var(--font-heading)",public_or_shared,clamp
+1939,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .item-value,color,var(--orange-dark),public_or_shared,css-variable
+1940,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .item-value,letter-spacing,-.025em,public_or_shared,other
+1944,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item:nth-child(2) .item-value,font-size,"clamp(1.38rem, 6.2vw, 2.2rem)",public_or_shared,clamp
+1945,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item:nth-child(2) .item-value,letter-spacing,-.04em,public_or_shared,other
+1949,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item h3,font,"800 var(--item-mobile-title-size, clamp(1.15rem, 4.8vw, 1.55rem))/1.02 var(--font-heading)",public_or_shared,clamp
+1950,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item h3,text-transform,uppercase,public_or_shared,other
+1955,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item p,font-size,"var(--item-mobile-text-size, clamp(.75rem, 3vw, .88rem))",public_or_shared,clamp
+1956,@media (max-width: 767px),.public-site #resultados-a .results-metrics-grid .content-item p,line-height,1.35,public_or_shared,other
+1980,@media (max-width: 767px),.public-site #formacao-b .mobile-panel-subheading,font-size,"clamp(1.1rem, 5vw, 1.45rem)",public_or_shared,clamp
+1981,@media (max-width: 767px),.public-site #formacao-b .mobile-panel-subheading,line-height,1.08,public_or_shared,other
+1992,@media (max-width: 767px),.public-site #formacao .mobile-items .content-item h3,font-size,"var(--item-mobile-title-size, clamp(1.15rem, 4.85vw, 1.5rem))",public_or_shared,clamp
+1993,@media (max-width: 767px),.public-site #formacao .mobile-items .content-item h3,line-height,1.08,public_or_shared,other
+1996,@media (max-width: 767px),.public-site #formacao .mobile-items .content-item p,line-height,1.35,public_or_shared,other
+2058,@media (max-width: 767px),.public-site #ferramentas .mobile-items .content-item h3,font-size,"var(--item-mobile-title-size, clamp(1.15rem, 5vw, 1.48rem))",public_or_shared,clamp
+2059,@media (max-width: 767px),.public-site #ferramentas .mobile-items .content-item h3,line-height,1.05,public_or_shared,other
+2062,@media (max-width: 767px),.public-site #ferramentas .mobile-items .content-item p,font-size,"var(--item-mobile-text-size, clamp(.8rem, 3.25vw, .9rem))",public_or_shared,clamp
+2063,@media (max-width: 767px),.public-site #ferramentas .mobile-items .content-item p,line-height,1.33,public_or_shared,other
+2121,@media (max-width: 767px),.public-site .experience-stack > .experience-index,background,var(--paper),public_or_shared,css-variable
+2124,@media (max-width: 767px),.public-site .experience-stack > .experience-index.is-stuck,background,var(--orange),public_or_shared,css-variable
+2131,@media (max-width: 767px),".public-site .experience-index.is-stuck a:hover, .public-site .experience-index.is-stuck a:focus-visible",background,"color-mix(in srgb, var(--ink) 12%, var(--orange))",public_or_shared,css-variable
+2163,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy,background,var(--paper),public_or_shared,css-variable
+2164,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy,color,inherit,public_or_shared,other
+2169,@media (max-width: 767px),.public-site .experience-card.theme-ink .experience-mobile-copy,background,var(--ink),public_or_shared,css-variable
+2172,@media (max-width: 767px),.public-site .experience-card.theme-orange .experience-mobile-copy,background,var(--orange),public_or_shared,css-variable
+2175,@media (max-width: 767px),.public-site .experience-card.theme-cream .experience-mobile-copy,background,var(--cream),public_or_shared,css-variable
+2179,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading h2,font-size,"clamp(2.5rem, 10vw, 3.65rem)",public_or_shared,clamp
+2180,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading h2,line-height,.9,public_or_shared,other
+2185,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading p,font-size,"clamp(.72rem, 2.95vw, .83rem)",public_or_shared,clamp
+2186,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading p,line-height,1.34,public_or_shared,other
+2190,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading .experience-eyebrow,font-size,"clamp(.78rem, 3.15vw, .9rem)",public_or_shared,clamp
+2191,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading .experience-eyebrow,line-height,1.3,public_or_shared,other
+2194,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading .experience-period,font-size,"clamp(.68rem, 2.75vw, .79rem)",public_or_shared,clamp
+2195,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-heading .experience-period,font-weight,600,public_or_shared,other
+2203,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-competencies li,font-size,"clamp(.57rem, 2.45vw, .67rem)",public_or_shared,clamp
+2204,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-competencies li,line-height,1.24,public_or_shared,other
+2214,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-view-switch,background,inherit,public_or_shared,other
+2215,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-view-switch,border-color,var(--line),public_or_shared,css-variable
+2223,@media (max-width: 767px),".public-site .experience-card .experience-mobile-copy .experience-view-switch button, .public-site .experience-card .experience-mobile-copy .experience-view-switch button.is-active",font-size,"clamp(1rem, 4.25vw, 1.4rem)",public_or_shared,clamp
+2224,@media (max-width: 767px),".public-site .experience-card .experience-mobile-copy .experience-view-switch button, .public-site .experience-card .experience-mobile-copy .experience-view-switch button.is-active",line-height,1,public_or_shared,other
+2231,@media (max-width: 767px),.public-site .experience-card .experience-mobile-copy .experience-view-switch button:last-child,font-size,"clamp(1.05rem, 4.4vw, 1.45rem)",public_or_shared,clamp
+2241,@media (max-width: 767px),.public-site .experience-card .experience-mobile-gallery,background,inherit,public_or_shared,other
+2265,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title > span,font-size,.82rem,public_or_shared,other
+2266,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title > span,font-weight,800,public_or_shared,other
+2267,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title > span,color,var(--orange-dark),public_or_shared,css-variable
+2270,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title > span:last-child,color,inherit,public_or_shared,other
+2272,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title > span:last-child,font-size,1.25rem,public_or_shared,other
+2277,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title .experience-project-heading,font-size,"clamp(1.2rem, 5.25vw, 1.6rem)",public_or_shared,clamp
+2278,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-title .experience-project-heading,line-height,1.08,public_or_shared,other
+2287,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-detail p,font-size,"clamp(.84rem, 3.25vw, .96rem)",public_or_shared,clamp
+2288,@media (max-width: 767px),.public-site .experience-card .experience-mobile-project-detail p,line-height,1.48,public_or_shared,other
+2310,@media (max-width: 767px),.public-site .experience-card .experience-mobile-gallery .experience-full-body p,font-size,"clamp(.88rem, 3.3vw, 1rem)",public_or_shared,clamp
+2311,@media (max-width: 767px),.public-site .experience-card .experience-mobile-gallery .experience-full-body p,line-height,1.53,public_or_shared,other
+2317,@media (max-width: 767px),".public-site .experience-card.theme-ink .experience-mobile-project-title > span:first-child, .public-site .experience-card.theme-ink .experience-mobile-body .experience-project.is-active .experience-project-heading",color,var(--orange),public_or_shared,css-variable
+2341,,.media-library-detail textarea,background,#fff,admin,hex
+2342,,.media-library-detail textarea,color,#171617,admin,hex
+2360,,.media-library-remove,background,#fff,admin,hex
+2361,,.media-library-remove,color,#171617,admin,hex
+2366,,".media-library-remove:hover, .media-library-remove:focus-visible",background,#171617,admin,hex
+2367,,".media-library-remove:hover, .media-library-remove:focus-visible",color,#fff,admin,hex
+2386,,.admin-field-label,font-size,inherit,admin,other
+2386,,.admin-field-label,font-weight,inherit,admin,other
+2387,,.editor-readonly-status,color,#504a47,unclassified,hex
+2387,,.editor-readonly-status,font-size,.78rem,unclassified,other
+2388,,.editor-readonly-status strong,font-size,.88rem,unclassified,other
+2389,,.editor-readonly-status span,color,#716b67,unclassified,hex
+2389,,.editor-readonly-status span,font-weight,400,unclassified,other
+2399,@media (max-width: 767px),.public-site #perfil-a.editorial360-mobile,background,var(--ink),public_or_shared,css-variable
+2402,@media (max-width: 767px),.site-header.header-profile-editorial,background,var(--ink),public_or_shared,css-variable
+2403,@media (max-width: 767px),.site-header.header-profile-editorial,color,var(--paper),public_or_shared,css-variable
+2407,@media (max-width: 767px),.site-header.header-profile-editorial .brand-button span:last-child,color,var(--paper),public_or_shared,css-variable
+2410,@media (max-width: 767px),.site-header.header-profile-editorial .menu-button,color,var(--paper),public_or_shared,css-variable
+2426,@media (max-width: 767px),.mobile360-headline,color,"var(--mobile360-headline-color, #fff)",public_or_shared,css-variable
+2427,@media (max-width: 767px),.mobile360-headline,font-family,"var(--mobile360-top-font, var(--font-display))",public_or_shared,css-variable
+2428,@media (max-width: 767px),.mobile360-headline,font-size,"clamp(2.35rem, 13.8vw, var(--mobile360-headline-size, 82px))",public_or_shared,clamp
+2429,@media (max-width: 767px),.mobile360-headline,font-weight,900,public_or_shared,other
+2430,@media (max-width: 767px),.mobile360-headline,line-height,.92,public_or_shared,other
+2431,@media (max-width: 767px),.mobile360-headline,letter-spacing,-.025em,public_or_shared,other
+2432,@media (max-width: 767px),.mobile360-headline,text-transform,uppercase,public_or_shared,other
+2440,@media (max-width: 767px),.mobile360-headline-accent,color,"var(--mobile360-headline-accent, var(--orange))",public_or_shared,css-variable
+2445,@media (max-width: 767px),.mobile360-support,color,"var(--mobile360-support-color, white)",public_or_shared,css-variable
+2446,@media (max-width: 767px),.mobile360-support,font,"400 clamp(.95rem, 3.5vw, 1.18rem)/1.43 var(--mobile360-support-font, Inter), sans-serif",public_or_shared,clamp
+2463,@media (max-width: 767px),.mobile360-middle .badge-360,color,"var(--hero-badge-color, var(--ink))",public_or_shared,css-variable
+2464,@media (max-width: 767px),.mobile360-middle .badge-360,background,transparent,public_or_shared,other
+2467,@media (max-width: 767px),.mobile360-middle .badge-360 text,font-family,"var(--mobile360-badge-font, var(--font-display))",public_or_shared,css-variable
+2487,@media (max-width: 767px),.mobile360-photo,background,var(--ink),public_or_shared,css-variable
+2507,@media (max-width: 767px),.mobile360-bottom-copy,font-family,"var(--mobile360-bottom-font, var(--font-display))",public_or_shared,css-variable
+2514,@media (max-width: 767px),.mobile360-person-name,font-size,"clamp(1.35rem, 5.9vw, var(--mobile360-name-size, 48px))",public_or_shared,clamp
+2515,@media (max-width: 767px),.mobile360-person-name,font-weight,900,public_or_shared,other
+2516,@media (max-width: 767px),.mobile360-person-name,line-height,.93,public_or_shared,other
+2517,@media (max-width: 767px),.mobile360-person-name,letter-spacing,-.025em,public_or_shared,other
+2518,@media (max-width: 767px),.mobile360-person-name,text-transform,uppercase,public_or_shared,other
+2523,@media (max-width: 767px),.mobile360-person-name > span,background,"var(--mobile360-bottom-accent, var(--orange))",public_or_shared,css-variable
+2524,@media (max-width: 767px),.mobile360-person-name > span,color,var(--ink),public_or_shared,css-variable
+2528,@media (max-width: 767px),.mobile360-person-name > strong,font-weight,inherit,public_or_shared,other
+2529,@media (max-width: 767px),.mobile360-person-name > strong,color,"var(--mobile360-bottom-text, var(--ink))",public_or_shared,css-variable
+2537,@media (max-width: 767px),.mobile360-experience > strong,color,"var(--mobile360-bottom-accent, var(--orange))",public_or_shared,css-variable
+2538,@media (max-width: 767px),.mobile360-experience > strong,font-size,"clamp(2.3rem, 10.7vw, var(--mobile360-years-size, 64px))",public_or_shared,clamp
+2539,@media (max-width: 767px),.mobile360-experience > strong,font-weight,800,public_or_shared,other
+2540,@media (max-width: 767px),.mobile360-experience > strong,line-height,.93,public_or_shared,other
+2545,@media (max-width: 767px),.mobile360-experience > p,color,"var(--mobile360-description-color, var(--ink))",public_or_shared,css-variable
+2546,@media (max-width: 767px),.mobile360-experience > p,font,"400 clamp(.8rem, 3.15vw, 1rem)/1.4 var(--mobile360-description-font, Inter), sans-serif",public_or_shared,clamp
+2557,@media (max-width: 767px),.mobile360-down,color,"var(--mobile360-bottom-text, var(--ink))",public_or_shared,css-variable
+2563,@media (max-width: 767px),".mobile360-down:hover, .mobile360-down:focus-visible",background,"var(--mobile360-bottom-accent, var(--orange))",public_or_shared,css-variable

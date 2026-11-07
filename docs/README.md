@@ -1,6 +1,10 @@
 # Documentação técnica — PortfolioTulius
 
-**Índice vigente em 05/11/2026.** Esta página distingue documentação **operacional**, **especificações de origem** e **evidências históricas**. Cada commit tem data e escopo; jamais interpretar um snapshot antigo como status corrente de `main`. A versão anterior deste índice está [arquivada](historico/INDICE_DOCUMENTACAO_ANTES_REORGANIZACAO_2026-11-05.md).
+**Índice revisado em 07/11/2026.** A revisão adiciona documentação da nova frente de padronização do CMS, sem mudar a hierarquia dos estados e evidências datados de 05/11/2026.
+
+> **Frente atual — somente Etapa 1 executada em 07/11/2026:** [Plano completo de padronização do CMS](PLANO_PADRONIZACAO_CMS_2026-11-07.md) · [Inventário de fontes, cores, tamanhos e dados de apresentação](INVENTARIO_ESTILOS_BASELINE_2026-11-07.md) · [Snapshot de estilos do Supabase](baselines/2026-11-07/cms-estilos-supabase.json) · [Declarações CSS indexadas](baselines/2026-11-07/css-declaracoes-de-estilo.csv) · [Referências visuais do SHA funcional anterior](baselines/2026-11-07/REFERENCIAS_VISUAIS.md). **Etapas 2–5 não iniciadas; nenhuma mudança de interface ou banco autorizada nesta etapa.**
+
+**Referência documental original em 05/11/2026.** Esta página distingue documentação **operacional**, **especificações de origem** e **evidências históricas**. Cada commit tem data e escopo; jamais interpretar um snapshot antigo como status corrente de `main`. A versão anterior deste índice está [arquivada](historico/INDICE_DOCUMENTACAO_ANTES_REORGANIZACAO_2026-11-05.md).
 
 > **Novo escopo de 06/11/2026:** [Perfil Editorial 360° — mobile](PERFIL_EDITORIAL_360_MOBILE_2026-11-06.md). A documentação anterior preserva o aceite e as evidências datadas de 05/11; esse novo pedido é restrito à abertura mobile.
 
