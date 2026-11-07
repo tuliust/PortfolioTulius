@@ -1,0 +1,157 @@
+.identity-catalog {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.identity-catalog-intro {
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--orange);
+  background: #ffffff;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.identity-catalog-intro p,
+.identity-explanation {
+  margin: 0;
+}
+
+.identity-color-grid,
+.identity-font-grid,
+.identity-type-list {
+  display: grid;
+  gap: .85rem;
+}
+
+.identity-color-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.identity-color-row,
+.identity-font-row {
+  display: grid;
+  gap: .7rem;
+  padding: .8rem;
+  border: 1px solid #eae5e1;
+  background: #fff;
+}
+
+.identity-color-row {
+  grid-template-columns: 2.5rem minmax(0, 1fr) minmax(9.5rem, .8fr);
+  align-items: end;
+}
+
+.identity-catalog label {
+  display: grid;
+  gap: .4rem;
+  min-width: 0;
+}
+
+.identity-catalog input:not([type='color']),
+.identity-catalog select {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+}
+
+.identity-swatch {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  align-self: end;
+}
+
+.identity-color-value > span {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  min-width: 0;
+}
+
+.identity-color-value input[type='color'] {
+  flex: 0 0 2.15rem;
+  width: 2.15rem;
+  height: 2.5rem;
+  padding: .1rem;
+}
+
+.identity-font-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.identity-font-preview {
+  padding: .75rem;
+  background: var(--paper);
+  font-size: 1.55rem;
+}
+
+.identity-explanation {
+  margin-bottom: 1rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.identity-type-style {
+  min-width: 0;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid #e7e1dd;
+  background: #fff;
+}
+
+.identity-type-style legend {
+  padding-inline: .25rem;
+  font-weight: 700;
+}
+
+.identity-type-fields {
+  display: grid;
+  gap: .8rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.identity-style-name {
+  grid-column: span 2;
+}
+
+.identity-type-baseline {
+  display: grid;
+  gap: .3rem;
+  margin-top: .85rem;
+  color: var(--muted);
+}
+
+.identity-type-baseline code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  .identity-color-grid,
+  .identity-font-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .identity-type-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .identity-color-row {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+
+  .identity-color-value {
+    grid-column: 2;
+  }
+
+  .identity-type-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .identity-style-name {
+    grid-column: auto;
+  }
+}

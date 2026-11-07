@@ -45,12 +45,12 @@ describe("identidade administrativa com design_tokens vazio", () => {
     )
   })
 
-  it("o editor usa o baseline também quando a consulta retorna zero registros", () => {
+  it("o editor carrega a biblioteca completa e preserva o baseline vazio", () => {
     const source = readFileSync(
-      new URL("../components/admin/AdminApp.tsx", import.meta.url),
+      new URL("../components/admin/IdentityCatalogEditor.tsx", import.meta.url),
       "utf8",
     )
-    expect(source).toContain("hydrateDesignTokens(tokens, extraTokens, data ?? [])")
+    expect(source).toContain("identityCatalogFromRows((data ?? []) as IdentityTokenRow[])")
     expect(source).not.toContain("if (!data?.length) return")
   })
 })
@@ -75,7 +75,11 @@ describe("identidade ao descartar e voltar de outro módulo", () => {
     expect(app).toContain('if (next === "design") setDesignEntrySession((session) => session + 1)')
     expect(app).toContain("key={designEntrySession}")
     expect(app).toContain("entrySession={designEntrySession}")
-    expect(app).toContain('autoComplete="off"')
-    expect(app).toContain("name={`identity-color-${entrySession}-${key}`}")
+    const editor = readFileSync(
+      new URL("../components/admin/IdentityCatalogEditor.tsx", import.meta.url),
+      "utf8",
+    )
+    expect(editor).toContain('autoComplete="off"')
+    expect(editor).toContain("name={`identity-color-${entrySession}-${key}`}")
   })
 })

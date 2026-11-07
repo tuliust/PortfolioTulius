@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, Navigate, useBlocker, useNavigate } from "react-router"
-import { defaultTokens } from "../../content/defaultTokens"
 import { isCollectionSource } from "../../lib/collections"
-import { hydrateDesignTokens } from "../../lib/design-tokens"
 import { isAdmin, supabase } from "../../lib/supabase"
 import { PublicSite } from "../public/PublicSite"
 import {
@@ -19,6 +17,7 @@ import {
   AdminConfirmationHost,
 } from "./AdminConfirmationHost"
 import { FloatingSaveButton } from "./FloatingSaveButton"
+import { IdentityCatalogEditor } from "./IdentityCatalogEditor"
 import { AdminInfoTip } from "./InfoTip"
 import {
   CollectionsStudio,
@@ -856,169 +855,13 @@ function DesignEditor({
   onDirtyChange?: (dirty: boolean) => void
   entrySession: number
 }) {
-  const [tokens, setTokens] = useState({
-    orange: defaultTokens.orange,
-    ink: defaultTokens.ink,
-    paper: defaultTokens.paper,
-    cream: defaultTokens.cream,
-    muted: defaultTokens.muted,
-    orangeDark: defaultTokens.orangeDark,
-  })
-  const [extraTokens, setExtraTokens] = useState<Record<string, string>>({
-    "font.heading": "Big Shoulders Display",
-    "font.body": "Inter",
-    "layout.container": "1680",
-    "space.section": "64",
-    "radius.card": "4",
-    "motion.duration": "520",
-  })
-  const [message, setMessage] = useState("")
-  const [savedDesign, setSavedDesign] = useState("")
-  const designDirty = Boolean(
-    savedDesign && JSON.stringify({ tokens, extraTokens }) !== savedDesign,
-  )
-  useEffect(() => onDirtyChange?.(designDirty), [designDirty, onDirtyChange])
-  useEffect(() => {
-    supabase
-      ?.from("design_tokens")
-      .select("token_key,token_value")
-      .then(({ data, error }) => {
-        if (error) {
-          setMessage("Não foi possível carregar os tokens: " + error.message)
-          return
-        }
-        // An empty design_tokens table is valid: the default palette is the
-        // saved baseline, so editing it must enable Save and discard warnings.
-        const initial = hydrateDesignTokens(tokens, extraTokens, data ?? [])
-        setTokens(initial.tokens)
-        setExtraTokens(initial.extraTokens)
-        setSavedDesign(initial.savedDesign)
-      })
-  }, [])
-  async function save(): Promise<boolean> {
-    if (!supabase) return false
-    setMessage("Salvando…")
-    const rows = Object.entries(tokens).map(([key, value]) => ({
-      token_key: `color.${key}`,
-      token_value: value,
-      value_type: "color",
-      scope: "global",
-      status: "published",
-    }))
-    rows.push(
-      ...Object.entries(extraTokens).map(([key, value]) => ({
-        token_key: key,
-        token_value: value,
-        value_type: key.startsWith("font.")
-          ? "font"
-          : key.startsWith("motion.")
-            ? "motion"
-            : key.startsWith("radius.")
-              ? "radius"
-              : key.startsWith("space.")
-                ? "space"
-                : "size",
-        scope: "global",
-        status: "published",
-      })),
-    )
-    const { error } = await supabase.from("design_tokens").upsert(rows, { onConflict: "token_key" })
-    setMessage(error ? error.message : "Tokens publicados.")
-    if (!error) setSavedDesign(JSON.stringify({ tokens, extraTokens }))
-    return !error
-  }
-  useEffect(() => registerAdminSaveAction(save), [save])
   return (
     <>
       <AdminHeader
         title="Identidade"
-        subtitle="Tokens seguros e famílias tipográficas autorizadas"
-        action={
-          <FloatingSaveButton enabled={designDirty} onClick={save} label="Salvar identidade" />
-        }
+        subtitle="Cores, famílias e estilos tipográficos nomeados"
       />
-      <section className="admin-card">
-        <div className="card-heading">
-          <div>
-            <p>Paleta global</p>
-            <h2>Cores da marca</h2>
-          </div>
-        </div>
-        <div className="token-grid">
-          {Object.entries(tokens).map(([key, value]) => (
-            <label key={key}>
-              <span className="color-preview" style={{ background: value }} />
-              <span>{key}</span>
-              <input
-                type="color"
-                value={value}
-                onChange={(e) => setTokens({ ...tokens, [key]: e.target.value })}
-              />
-              <input
-                autoComplete="off"
-                name={`identity-color-${entrySession}-${key}`}
-                value={value}
-                onChange={(e) => setTokens({ ...tokens, [key]: e.target.value })}
-              />
-            </label>
-          ))}
-        </div>
-        <AdminNotice message={message} />
-      </section>
-      <section className="admin-card license-card">
-        <p>Escala e movimento</p>
-        <h2>Tokens de layout</h2>
-        <div className="field-grid">
-          {Object.entries(extraTokens).map(([key, value]) => (
-            <label key={key}>
-              {key}
-              {key.startsWith("font.") ? (
-                <select
-                  value={value}
-                  onChange={(event) =>
-                    setExtraTokens({
-                      ...extraTokens,
-                      [key]: event.target.value,
-                    })
-                  }
-                >
-                  <option>Inter</option>
-                  <option>Big Shoulders Display</option>
-                </select>
-              ) : (
-                <input
-                  type="number"
-                  min="0"
-                  max={key.startsWith("motion.") ? "1200" : "2000"}
-                  value={value}
-                  onChange={(event) =>
-                    setExtraTokens({
-                      ...extraTokens,
-                      [key]: event.target.value,
-                    })
-                  }
-                />
-              )}
-            </label>
-          ))}
-        </div>
-      </section>
-      <section className="admin-card license-card">
-        <p>Tipografia</p>
-        <h2>Fontes autorizadas</h2>
-        <div>
-          <strong>Big Shoulders Display</strong>
-          <span>Google Fonts · títulos e numerais</span>
-        </div>
-        <div>
-          <strong>Inter</strong>
-          <span>Google Fonts · textos e interface</span>
-        </div>
-        <small>
-          Neue Montreal permanece em fallback Inter até confirmação da licença web. Heading Now
-          Trial não é distribuída.
-        </small>
-      </section>
+      <IdentityCatalogEditor onDirtyChange={onDirtyChange} entrySession={entrySession} />
     </>
   )
 }
