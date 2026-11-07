@@ -240,19 +240,19 @@ try {
   await page.evaluate(() =>
     document.querySelector(".hero-section-specific .hero-visual-picker-trigger")?.click())
   await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
-  const swatchCount = await page.$eval(".hero-swatch-grid button", (buttons) => buttons.length)
+  const swatchCount = await page.evaluate(() => document.querySelectorAll(".hero-swatch-grid button").length)
   console.log("P5_HERO_PALETTE " + JSON.stringify({
     swatchCount,
-    choices: await page.$eval(".hero-swatch-grid button", (nodes) =>
-      nodes.map((node) => node.getAttribute("aria-label"))),
+    choices: await page.evaluate(() => [...document.querySelectorAll(".hero-swatch-grid button")]
+      .map((node) => node.getAttribute("aria-label"))),
   }))
   assert(swatchCount >= 7, "Paleta visual incompleta.")
   await page.keyboard.press("Escape")
   await page.evaluate(() =>
     document.querySelector(".hero-icon-picker-anchor .hero-visual-picker-trigger")?.click())
   await page.waitForSelector(".hero-icon-popover .hero-icon-grid button", { timeout: 10000 })
-  const iconGroups = await page.$eval(".hero-icon-popover h4", (nodes) =>
-    nodes.map((node) => node.textContent?.trim()))
+  const iconGroups = await page.evaluate(() => [...document.querySelectorAll(".hero-icon-popover h4")]
+    .map((node) => node.textContent?.trim()))
   assert(iconGroups.includes("Resultados") && iconGroups.includes("Digital") &&
     iconGroups.includes("Navegação e controles"), "Ícones não agrupados.")
   await page.keyboard.press("Escape")
