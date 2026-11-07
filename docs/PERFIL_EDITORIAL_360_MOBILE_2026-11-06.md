@@ -32,3 +32,7 @@ Os valores padrão ficam em `src/lib/mobile-profile-editorial.ts`; as famílias 
 - Verificar `pnpm check`, prévia desktop/mobile, largura 320/360/390/430 px, rolagem, selo, fontes, botão `#perfil-b`, seleção e remoção da fotografia exclusiva, persistência e recuperação pelo CMS. Um CI bem-sucedido não substitui teste visual nem fluxo de gravação com JWT real.
 
 **Situação das provas:** implementação e configuração inicial sob execução em 06/11/2026. Não interpretar este documento como laudo de homologação até o relatório do SHA e dos testes correspondentes.
+
+## Leitura da auditoria P3 no novo layout
+
+O gate de conteúdo de LCP aceita, no mobile, elementos da própria abertura editorial (retrato móvel, título grande ou inscrição SVG do selo), pois a nova hierarquia altera o elemento elegível a maior conteúdo. No desktop, mantém a regra de retrato. A meta sintética de LCP mobile **não** é relaxada: mediana de três amostras ≤3,5 s, acessibilidade/SEO e CLS preservados. A execução P3 do commit `b027bec` identificou 6/6 tamanhos mobile da abertura sem overflow, porém registrou falhas em critérios da seção Experiências e em outras verificações anteriores ao novo escopo. Não tratar essa auditoria como aprovada nem atribuir as falhas de Experiências ao Perfil sem investigação separada.

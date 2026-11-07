@@ -34,10 +34,10 @@ for (const device of ["mobile", "desktop"]) {
   if (reports.length !== names.length) continue
   const performance = median(reports.map((r) => r.categories?.performance?.score))
   const lcpMs = median(reports.map((r) => r.audits?.["largest-contentful-paint"]?.numericValue))
-  // Require the actual hero portrait as LCP in every run. Its URL is CMS-
-  // controlled: a newly published image can be a Supabase Storage PNG, not
-  // the older bundled JPEG. Do not mistake that legitimate edit for an empty
-  // page, but never accept a headline/text or an unrelated image as the LCP.
+  // LCP must belong to an approved, visible first-section element. Desktop
+  // retains its portrait requirement. The independently authorized mobile
+  // Editorial 360 variant can legitimately have its SVG seal inscription or
+  // large editorial headline as LCP; no unrelated image/text is accepted.
   const portraitHost = device === "mobile" ? "mobile-profile-hero" : "profile-portrait"
   const containsPortrait = (value) => {
     if (!value || typeof value !== "object") return false
@@ -50,6 +50,18 @@ for (const device of ["mobile", "desktop"]) {
       const snippet = typeof value.snippet === "string" ? value.snippet : ""
       if (/<img\b/.test(snippet) && /\bsrc=["'](?:\/|https:\/\/)/.test(snippet)) return true
     }
+    if (device === "mobile" && typeof value.selector === "string") {
+      const selector = value.selector
+      const snippet = typeof value.snippet === "string" ? value.snippet : ""
+      const editorialSeal = selector.includes("mobile360-middle > div.badge-360 > svg > text") &&
+        /^<text(?:\s|>)/.test(snippet)
+      const editorialHeadline = selector.includes("mobile360-top > h1.mobile360-headline") &&
+        /^<(?:h1|span)(?:\s|>)/.test(snippet)
+      const editorialPortrait = selector.includes("mobile360-photo > ") &&
+        /(?:^| > )img$/.test(selector) &&
+        /<img\b/.test(snippet) && /\bsrc=["'](?:\/|https:\/\/)/.test(snippet)
+      if (editorialSeal || editorialHeadline || editorialPortrait) return true
+    }
     return Object.values(value).some(containsPortrait)
   }
   const lcpContentPresent = reports.every((report) => {
@@ -61,9 +73,10 @@ for (const device of ["mobile", "desktop"]) {
     ].some(containsPortrait)
   })
   console.log("P6_LCP_CONTENT_GATE " + JSON.stringify({
-    device, result: lcpContentPresent ? "PASS" : "FAIL", expected: "approved_profile_portrait",
+    device, result: lcpContentPresent ? "PASS" : "FAIL",
+    expected: device === "mobile" ? "approved_mobile_profile_content" : "approved_profile_portrait",
   }))
-  if (!lcpContentPresent) errors.push(device + ": expected published profile portrait missing from LCP")
+  if (!lcpContentPresent) errors.push(device + ": approved first-section LCP content not found")
   const cls = Math.max(...reports.map((r) => r.audits?.["cumulative-layout-shift"]?.numericValue ?? Infinity))
   if (performance === null || performance < bounds[device].performance)
     errors.push(device + ": median performance below budget")
