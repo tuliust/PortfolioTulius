@@ -133,11 +133,32 @@ try {
   blockBefore = structuredClone(block)
   const json = structuredClone(block.content_json)
   json.items[0].text = "Edição fictícia " + suffix
+  json.items[0].fieldFormats = {
+    title: {
+      styleToken: "typography.profile-main",
+      fontToken: "font.heading",
+      colorToken: "color.orange",
+      desktopSize: 112,
+      mobileSize: 48,
+    },
+  }
+  json.items[0].hero = {
+    ...(json.items[0].hero ?? {}),
+    rootBackground: "transparent",
+    badgeIcon: "arrow",
+    fieldFormats: { intro: { styleToken: "typography.support-text" } },
+  }
   await atomicSave(block, json)
   const blockReloaded = await reReadBlock()
-  must(blockReloaded.content_json.items[0].text === "Edição fictícia " + suffix,
+  const savedHero = blockReloaded.content_json.items[0]
+  must(savedHero.text === "Edição fictícia " + suffix &&
+    savedHero.fieldFormats?.title?.colorToken === "color.orange" &&
+    savedHero.fieldFormats?.title?.desktopSize === 112 &&
+    savedHero.hero?.rootBackground === "transparent" &&
+    savedHero.hero?.fieldFormats?.intro?.styleToken === "typography.support-text",
     "P5_LOCAL_BLOCK_RELOAD")
-  check("ATOMIC_BLOCK_SAVE_RELOAD", { rpc: "save_content_block_atomic", jsonb: true })
+  check("ATOMIC_BLOCK_SAVE_RELOAD", { rpc: "save_content_block_atomic", jsonb: true,
+    heroFormats: true })
 
   const createdOther = await service.auth.admin.createUser({
     email: nonAdminEmail, password, email_confirm: true,

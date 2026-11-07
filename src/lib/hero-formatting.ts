@@ -37,7 +37,7 @@ function styleName(format?: HeroTextFormat): string | undefined {
 }
 
 export function heroSizeClass(format?: HeroTextFormat): string | undefined {
-  return styleName(format) || format?.desktopSize != null || format?.mobileSize != null
+  return styleName(format) || size(format?.desktopSize) || size(format?.mobileSize)
     ? "hero-formatted-size"
     : undefined
 }
