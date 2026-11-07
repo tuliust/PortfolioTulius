@@ -29,8 +29,9 @@ const assert = (condition, message) => {
 const waitFor = async (page, predicate, arg, timeout = 18000) =>
   page.waitForFunction(predicate, { timeout }, arg)
 const requestModule = async (page, label) => {
-  const found = await page.$eval(".admin-sidebar nav button", (nodes, name) => {
-    const node = nodes.find((item) => item.textContent?.trim() === name)
+  const found = await page.evaluate((name) => {
+    const node = [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((item) => item.textContent?.trim() === name)
     if (!node) return false
     node.click()
     return true
