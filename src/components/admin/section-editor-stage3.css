@@ -183,10 +183,19 @@
 }
 
 .site-editor-element-group {
-  margin: 0 0 .85rem;
-  padding: .75rem .9rem;
+  margin: 0 0 0.85rem;
+  padding: 0.75rem 0.9rem;
   border-left: 3px solid var(--orange, #ff5414);
   background: #faf8f6;
 }
-.site-editor-element-group h3 { margin: 0; color: #171617; font: 800 1.3rem/1.15 var(--font-display, sans-serif); text-transform: uppercase; }
-.site-editor-element-group p { margin: .2rem 0 0; color: #706962; font: 400 .78rem/1.4 var(--font-body, sans-serif); }
+.site-editor-element-group h3 {
+  margin: 0;
+  color: #171617;
+  font: 800 1.3rem/1.15 var(--font-display, sans-serif);
+  text-transform: uppercase;
+}
+.site-editor-element-group p {
+  margin: 0.2rem 0 0;
+  color: #706962;
+  font: 400 0.78rem/1.4 var(--font-body, sans-serif);
+}

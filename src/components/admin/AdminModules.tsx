@@ -682,7 +682,11 @@ export function ContentStudio({
     experienceSlug === "perfil" && JSON.stringify(heroCopy) !== JSON.stringify(heroCopySaved)
   const visualAreas = adminVisualAreas(experienceSlug)
   const activeVisualArea = editorArea?.id ?? visualArea
-  const sectionGroup = sectionElementGroup(experienceSlug, activeVisualArea, draft?.mobile_panel ?? "a")
+  const sectionGroup = sectionElementGroup(
+    experienceSlug,
+    activeVisualArea,
+    draft?.mobile_panel ?? "a",
+  )
   const hasCareerTrajectory = [
     "invest-rs",
     "prefeitura-sp",
