@@ -224,7 +224,7 @@ try {
     "Transição alterada em rascunho foi persistida.")
   report("TRANSITION_DISCARD", { options: transitions.length, recoveredOriginal: true })
 
-  await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+  await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 })
   await page.waitForSelector(".studio-block-picker button", { timeout: 15000 })
   const mobile = await page.evaluate(() => ({
     horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 2,
