@@ -53,9 +53,11 @@ function toSection(
 ): PortfolioSection {
   const blocks = resolveCollectionBlocks(row.content_blocks ?? [], collectionItems)
   const composition = composeSectionPlacements(row.id, blocks, panels, placements, includeDrafts)
-  const storedAnchor = row.content_blocks
-    ?.find((block) => block.mobile_panel === "a" && (includeDrafts ? block.status !== "archived" : block.status === "published"))
-    ?.content_json?.editorAnchor
+  const storedAnchor = row.content_blocks?.find(
+    (block) =>
+      block.mobile_panel === "a" &&
+      (includeDrafts ? block.status !== "archived" : block.status === "published"),
+  )?.content_json?.editorAnchor
   return {
     id: row.id,
     slug: row.slug,

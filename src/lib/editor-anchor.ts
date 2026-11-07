@@ -7,11 +7,7 @@ export function normalizeEditorAnchor(value: string): string {
 }
 
 export function validEditorAnchor(value: string): boolean {
-  return (
-    value.length > 0 &&
-    value.length <= 64 &&
-    /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(value)
-  )
+  return value.length > 0 && value.length <= 64 && /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(value)
 }
 
 export function editorAnchorError(

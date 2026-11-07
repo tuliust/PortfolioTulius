@@ -45,9 +45,14 @@ export function HeroLeftEditor({
 
   return (
     <div className="hero-left-editor">
-      <HeroItemFields item={item} index={0} panel="a" catalog={catalog}
+      <HeroItemFields
+        item={item}
+        index={0}
+        panel="a"
+        catalog={catalog}
         onUpdate={(patch) => onUpdateItem(0, patch)}
-        onFormat={(key, next) => onFormat(0, key, next)} />
+        onFormat={(key, next) => onFormat(0, key, next)}
+      />
 
       <fieldset className="hero-left-group" aria-label="Selo">
         <legend>Selo</legend>
@@ -55,22 +60,41 @@ export function HeroLeftEditor({
           <label className="field-wide">
             <span className="hero-field-label">
               Texto giratório
-              <HeroFormattingButton label="texto giratório do selo"
+              <HeroFormattingButton
+                label="texto giratório do selo"
                 value={hero?.fieldFormats?.badgeText}
-                onChange={(next) => onHeroFormat("badgeText", next)} catalog={catalog} />
+                onChange={(next) => onHeroFormat("badgeText", next)}
+                catalog={catalog}
+              />
             </span>
-            <input value={hero?.badgeText ?? "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"}
-              onChange={(event) => onUpdateHero({ badgeText: event.target.value })} />
+            <input
+              value={hero?.badgeText ?? "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"}
+              onChange={(event) => onUpdateHero({ badgeText: event.target.value })}
+            />
           </label>
-          <HeroIconPicker label="Ícone central" value={hero?.badgeIcon ?? "arrow"}
-            onChange={(badgeIcon) => onUpdateHero({ badgeIcon })} />
-          <HeroColorPicker label="Fundo do selo" value={hero?.badgeBackground ?? "#FF5414"}
-            onChange={(badgeBackground) => onUpdateHero({ badgeBackground })} catalog={catalog} />
-          <HeroColorPicker label="Cor do selo" value={hero?.badgeColor ?? "#171617"}
-            onChange={(badgeColor) => onUpdateHero({ badgeColor })} catalog={catalog} />
+          <HeroIconPicker
+            label="Ícone central"
+            value={hero?.badgeIcon ?? "arrow"}
+            onChange={(badgeIcon) => onUpdateHero({ badgeIcon })}
+          />
+          <HeroColorPicker
+            label="Fundo do selo"
+            value={hero?.badgeBackground ?? "#FF5414"}
+            onChange={(badgeBackground) => onUpdateHero({ badgeBackground })}
+            catalog={catalog}
+          />
+          <HeroColorPicker
+            label="Cor do selo"
+            value={hero?.badgeColor ?? "#171617"}
+            onChange={(badgeColor) => onUpdateHero({ badgeColor })}
+            catalog={catalog}
+          />
           <label className="toggle-field field-wide">
-            <input type="checkbox" checked={hero?.badgeVisible !== false}
-              onChange={(event) => onUpdateHero({ badgeVisible: event.target.checked })} />
+            <input
+              type="checkbox"
+              checked={hero?.badgeVisible !== false}
+              onChange={(event) => onUpdateHero({ badgeVisible: event.target.checked })}
+            />
             Exibir selo
           </label>
         </div>
@@ -80,29 +104,54 @@ export function HeroLeftEditor({
         <legend>Apresentação</legend>
         <div className="field-grid">
           <div className="field-wide">
-            <PublishedMediaPicker label="Foto" guidanceAsInfo iconOnlyActions
+            <PublishedMediaPicker
+              label="Foto"
+              guidanceAsInfo
+              iconOnlyActions
               allowFraming={false}
               guidance="Retrato vertical 3:4; sugestão 900 × 1200 px."
-              ratio="3 / 4" value={item.image ?? ""} framing={item.mediaFraming}
+              ratio="3 / 4"
+              value={item.image ?? ""}
+              framing={item.mediaFraming}
               onFramingChange={(mediaFraming) => onUpdateItem(0, { mediaFraming })}
-              onChange={(image, alt) => onUpdateItem(0, { image, alt })} />
+              onChange={(image, alt) => onUpdateItem(0, { image, alt })}
+            />
           </div>
-          <HeroColorPicker label="Fundo da seção (Hero)" allowTransparent
+          <HeroColorPicker
+            label="Fundo da seção (Hero)"
+            allowTransparent
             value={hero?.rootBackground ?? "transparent"}
-            onChange={(rootBackground) => onUpdateHero({ rootBackground })} catalog={catalog} />
-          <HeroColorPicker label="Fundo da Esquerda"
+            onChange={(rootBackground) => onUpdateHero({ rootBackground })}
+            catalog={catalog}
+          />
+          <HeroColorPicker
+            label="Fundo da Esquerda"
             value={hero?.panelBackground ?? "#171617"}
-            onChange={(panelBackground) => onUpdateHero({ panelBackground })} catalog={catalog} />
+            onChange={(panelBackground) => onUpdateHero({ panelBackground })}
+            catalog={catalog}
+          />
           <label className="field-wide">
             <span className="hero-field-label">
               Frase editorial
-              <HeroFormattingButton label="frase editorial" value={hero?.fieldFormats?.intro}
-                onChange={(next) => onHeroFormat("intro", next)} catalog={catalog} />
+              <HeroFormattingButton
+                label="frase editorial"
+                value={hero?.fieldFormats?.intro}
+                onChange={(next) => onHeroFormat("intro", next)}
+                catalog={catalog}
+              />
             </span>
-            <textarea rows={3} value={intro} onChange={(event) => onIntroChange(event.target.value)} />
+            <textarea
+              rows={3}
+              value={intro}
+              onChange={(event) => onIntroChange(event.target.value)}
+            />
           </label>
-          <HeroColorPicker label="Cor da frase" value={hero?.introColor ?? "#FFFFFF"}
-            onChange={(introColor) => onUpdateHero({ introColor })} catalog={catalog} />
+          <HeroColorPicker
+            label="Cor da frase"
+            value={hero?.introColor ?? "#FFFFFF"}
+            onChange={(introColor) => onUpdateHero({ introColor })}
+            catalog={catalog}
+          />
         </div>
         {mobileSettings && (
           <details className="hero-left-mobile-details">
@@ -112,8 +161,14 @@ export function HeroLeftEditor({
         )}
       </fieldset>
 
-      <HeroHighlightsEditor items={items} catalog={catalog} onUpdate={onUpdateItem}
-        onFormat={onFormat} onMove={onMove} onRemove={onRemove} />
+      <HeroHighlightsEditor
+        items={items}
+        catalog={catalog}
+        onUpdate={onUpdateItem}
+        onFormat={onFormat}
+        onMove={onMove}
+        onRemove={onRemove}
+      />
     </div>
   )
 }

@@ -20,7 +20,16 @@ describe("Hero — âncora editorial separada do slug interno", () => {
   })
 
   it("não permite caracteres de hash malformados, espaços nem valores vazios", () => {
-    for (const value of ["", "a b", "#perfil", "meu--perfil", "_interno", "área", "x/other", "a".repeat(65)]) {
+    for (const value of [
+      "",
+      "a b",
+      "#perfil",
+      "meu--perfil",
+      "_interno",
+      "área",
+      "x/other",
+      "a".repeat(65),
+    ]) {
       expect(validEditorAnchor(value)).toBe(false)
       expect(publicEditorAnchor(value, "perfil")).toBeUndefined()
     }

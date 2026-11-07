@@ -325,10 +325,9 @@ function SectionsEditor({
       const warning = editorAnchorError(
         anchor,
         draft.slug,
-        sections.filter((entry) => entry.id !== draft.id).flatMap((entry) => [
-          entry.slug,
-          entry.editor_anchor ?? entry.slug,
-        ]),
+        sections
+          .filter((entry) => entry.id !== draft.id)
+          .flatMap((entry) => [entry.slug, entry.editor_anchor ?? entry.slug]),
       )
       if (warning) {
         setMessage(warning)
@@ -517,14 +516,12 @@ function SectionsEditor({
               <label>
                 Âncora
                 <input
-                  value={draft.slug === "perfil" ? draft.editor_anchor ?? draft.slug : draft.slug}
+                  value={draft.slug === "perfil" ? (draft.editor_anchor ?? draft.slug) : draft.slug}
                   disabled={draft.slug !== "perfil"}
                   maxLength={64}
                   spellCheck={false}
                   aria-describedby={draft.slug === "perfil" ? "hero-anchor-help" : undefined}
-                  onChange={(event) =>
-                    setDraft({ ...draft, editor_anchor: event.target.value })
-                  }
+                  onChange={(event) => setDraft({ ...draft, editor_anchor: event.target.value })}
                 />
                 {draft.slug === "perfil" && (
                   <small id="hero-anchor-help">
@@ -724,7 +721,7 @@ function SiteEditor({
                   <p>
                     {selectedIsExperience
                       ? `GRUPO EDITORIAL · ${experienceSections.length} TRABALHOS`
-                      : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug === "perfil" ? selected.editor_anchor ?? selected.slug : selected.slug}`}
+                      : `SEÇÃO ${String(selected.sort_order).padStart(2, "0")} · #${selected.slug === "perfil" ? (selected.editor_anchor ?? selected.slug) : selected.slug}`}
                   </p>
                   <h2>
                     {selectedIsExperience
@@ -741,12 +738,18 @@ function SiteEditor({
                 </div>
               </div>
               {selected.slug === "perfil" && (
-                <nav className="hero-editor-tabs" role="tablist" aria-label="Áreas de edição do Hero">
-                  {([
-                    ["section", "Seção", "Configurações gerais"],
-                    ["left", "Esquerda", "Elementos da área esquerda"],
-                    ["right", "Direita", "Elementos da área direita"],
-                  ] as const).map(([value, label, description]) => (
+                <nav
+                  className="hero-editor-tabs"
+                  role="tablist"
+                  aria-label="Áreas de edição do Hero"
+                >
+                  {(
+                    [
+                      ["section", "Seção", "Configurações gerais"],
+                      ["left", "Esquerda", "Elementos da área esquerda"],
+                      ["right", "Direita", "Elementos da área direita"],
+                    ] as const
+                  ).map(([value, label, description]) => (
                     <button
                       type="button"
                       role="tab"
@@ -806,13 +809,22 @@ function SiteEditor({
                   className="site-editor-consolidated"
                   id={selected.slug === "perfil" ? "hero-editor-active-panel" : undefined}
                   role={selected.slug === "perfil" ? "tabpanel" : undefined}
-                  aria-label={selected.slug === "perfil" ? (
-                    heroMode === "section" ? "Seção" : heroMode === "left" ? "Esquerda" : "Direita"
-                  ) : undefined}
+                  aria-label={
+                    selected.slug === "perfil"
+                      ? heroMode === "section"
+                        ? "Seção"
+                        : heroMode === "left"
+                          ? "Esquerda"
+                          : "Direita"
+                      : undefined
+                  }
                 >
                   {(selected.slug !== "perfil" || heroMode === "section") && (
                     <>
-                      <div className="site-editor-consolidated-heading" id="site-editor-section-details">
+                      <div
+                        className="site-editor-consolidated-heading"
+                        id="site-editor-section-details"
+                      >
                         <h3>Informações da seção</h3>
                         <p>Título, âncora, transição e publicação.</p>
                       </div>
@@ -829,15 +841,24 @@ function SiteEditor({
                   {(selected.slug !== "perfil" || heroMode !== "section") && (
                     <>
                       <div className="site-editor-consolidated-heading">
-                        <h3>{selected.slug === "perfil" ? (
-                          heroMode === "left" ? "Esquerda" : "Direita"
-                        ) : "Conteúdo"}</h3>
-                        <p>{selected.slug === "perfil"
-                          ? "Edite os elementos da área selecionada."
-                          : "Textos, imagens e itens da seção."}</p>
+                        <h3>
+                          {selected.slug === "perfil"
+                            ? heroMode === "left"
+                              ? "Esquerda"
+                              : "Direita"
+                            : "Conteúdo"}
+                        </h3>
+                        <p>
+                          {selected.slug === "perfil"
+                            ? "Edite os elementos da área selecionada."
+                            : "Textos, imagens e itens da seção."}
+                        </p>
                       </div>
                       {selected.slug === "depoimentos" && (
-                        <section aria-label="Gerenciar depoimentos" className="site-editor-testimonials">
+                        <section
+                          aria-label="Gerenciar depoimentos"
+                          className="site-editor-testimonials"
+                        >
                           <div className="site-editor-consolidated-heading">
                             <h3>Gerenciar depoimentos</h3>
                             <p>
@@ -859,7 +880,11 @@ function SiteEditor({
                         key={selected.id + "-content-" + heroMode}
                         sections={sections}
                         sectionIdOverride={selected.id}
-                        heroArea={selected.slug === "perfil" && heroMode !== "section" ? heroMode : undefined}
+                        heroArea={
+                          selected.slug === "perfil" && heroMode !== "section"
+                            ? heroMode
+                            : undefined
+                        }
                         embedded
                         onDirtyChange={setContentDirty}
                         onSaved={reload}

@@ -1,13 +1,67 @@
-.hero-left-editor { display: grid; gap: 1rem; min-width: 0; }
-.hero-left-editor > fieldset { min-width: 0; margin: 0; }
-.hero-left-group { padding: 1rem; border: 1px solid #ded8d3; background: #fff; }
-.hero-left-group > legend { padding: 0 .4rem; color: #171617; font: 800 1.4rem/1.15 var(--font-display, sans-serif); text-transform: uppercase; }
-.hero-left-group .field-grid { margin: 0; }
-.hero-left-group label { min-width: 0; display: grid; align-content: start; gap: .35rem; font: 650 .8rem/1.45 var(--font-body, sans-serif); color: #514742; }
-.hero-left-group input:not([type="checkbox"]), .hero-left-group textarea { min-width: 0; width: 100%; border: 1px solid #d7d2ce; background: white; color: #171617; padding: .7rem; font: 500 .83rem/1.5 var(--font-body, sans-serif); }
-.hero-left-group .toggle-field { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
-.hero-left-group .toggle-field input { width: 1rem; height: 1rem; }
-.hero-left-mobile-details { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid #ded8d3; }
-.hero-left-mobile-details > summary { cursor: pointer; font: 700 .85rem/1.3 var(--font-body, sans-serif); }
-.hero-left-mobile-details > :not(summary) { margin-top: .9rem; }
-.hero-left-editor :is(button, summary, input, textarea):focus-visible { outline: 2px solid #ff5414; outline-offset: 2px; }
+.hero-left-editor {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+.hero-left-editor > fieldset {
+  min-width: 0;
+  margin: 0;
+}
+.hero-left-group {
+  padding: 1rem;
+  border: 1px solid #ded8d3;
+  background: #fff;
+}
+.hero-left-group > legend {
+  padding: 0 0.4rem;
+  color: #171617;
+  font: 800 1.4rem/1.15 var(--font-display, sans-serif);
+  text-transform: uppercase;
+}
+.hero-left-group .field-grid {
+  margin: 0;
+}
+.hero-left-group label {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+  font: 650 0.8rem/1.45 var(--font-body, sans-serif);
+  color: #514742;
+}
+.hero-left-group input:not([type="checkbox"]),
+.hero-left-group textarea {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid #d7d2ce;
+  background: white;
+  color: #171617;
+  padding: 0.7rem;
+  font: 500 0.83rem/1.5 var(--font-body, sans-serif);
+}
+.hero-left-group .toggle-field {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.hero-left-group .toggle-field input {
+  width: 1rem;
+  height: 1rem;
+}
+.hero-left-mobile-details {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ded8d3;
+}
+.hero-left-mobile-details > summary {
+  cursor: pointer;
+  font: 700 0.85rem/1.3 var(--font-body, sans-serif);
+}
+.hero-left-mobile-details > :not(summary) {
+  margin-top: 0.9rem;
+}
+.hero-left-editor :is(button, summary, input, textarea):focus-visible {
+  outline: 2px solid #ff5414;
+  outline-offset: 2px;
+}

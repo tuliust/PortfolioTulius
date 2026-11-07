@@ -1934,929 +1934,966 @@ export function ContentStudio({
                       onHeroFormat={(key, next) => updateHeroFormat(0, key, next)}
                       onMove={moveItem}
                       onRemove={(index) => void removeItem(index)}
-                      mobileSettings={draft.content_json.items?.[0] ? (
-                        <>
-                          <div className="responsive-style-grid">
-                            {(["desktop", "mobile"] as const).map((device) => (
-                              <DeviceStyleEditor
-                                key={device} device={device}
-                                value={draft.content_json.items?.[0]?.[device]}
-                                onChange={(patch) => updateDeviceStyle(0, device, patch)}
-                              />
-                            ))}
-                            {(["desktop", "mobile"] as const).map((device) => (
-                              <HeroDeviceEditor
-                                key={device} device={device}
-                                value={draft.content_json.items?.[0]?.hero?.[device]}
-                                onChange={(patch) => updateHeroDevice(0, device, patch)}
-                              />
-                            ))}
-                          </div>
-                          <ProfileMobileEditorialEditor
-                            value={draft.content_json.items[0].hero?.mobileEditorial}
-                            onChange={(mobileEditorial) => updateHero(0, { mobileEditorial })}
-                          />
-                        </>
-                      ) : undefined}
+                      mobileSettings={
+                        draft.content_json.items?.[0] ? (
+                          <>
+                            <div className="responsive-style-grid">
+                              {(["desktop", "mobile"] as const).map((device) => (
+                                <DeviceStyleEditor
+                                  key={device}
+                                  device={device}
+                                  value={draft.content_json.items?.[0]?.[device]}
+                                  onChange={(patch) => updateDeviceStyle(0, device, patch)}
+                                />
+                              ))}
+                              {(["desktop", "mobile"] as const).map((device) => (
+                                <HeroDeviceEditor
+                                  key={device}
+                                  device={device}
+                                  value={draft.content_json.items?.[0]?.hero?.[device]}
+                                  onChange={(patch) => updateHeroDevice(0, device, patch)}
+                                />
+                              ))}
+                            </div>
+                            <ProfileMobileEditorialEditor
+                              value={draft.content_json.items[0].hero?.mobileEditorial}
+                              onChange={(mobileEditorial) => updateHero(0, { mobileEditorial })}
+                            />
+                          </>
+                        ) : undefined
+                      }
                     />
                   ) : (
                     <>
-
-                  {sections.find((entry) => entry.id === draft.section_id)?.slug === "sobre" &&
-                    draft.mobile_panel === "b" && (
-                      <div className="block-item-help">
-                        <AdminInfoTip
-                          label="Textos da seção 02 — coluna direita"
-                          description="Cada item corresponde a um título e texto. Use as setas de ordenação e Remover item para organizar os itens existentes. O primeiro item também aparece junto à foto no painel A mobile. Use Salvar para confirmar suas edições no bloco."
-                        />
-                      </div>
-                    )}
-                  {(draft.content_json.items ?? []).map((item, index) =>
-                    experienceSlug === "perfil" &&
-                    draft.mobile_panel === "a" &&
-                    index > 0 ? null : (
-                      <article className="block-item-editor" key={index}>
-                        <div className="block-item-head">
-                          <button
-                            type="button"
-                            className="block-item-toggle"
-                            aria-expanded={expandedItemIndex === index}
-                            aria-controls={`block-item-fields-${draft.id}-${index}`}
-                            onClick={() =>
-                              setExpandedItemIndex((current) => nextExpandedItem(current, index))
-                            }
-                          >
-                            <Icon name={expandedItemIndex === index ? "up" : "down"} size={17} />
-                            <span className="block-item-toggle-label">
-                              <strong>
-                                Item {String(index + 1).padStart(2, "0")}
-                                {item.isHidden === true && (
-                                  <span className="admin-hidden-label"> · Ocultado</span>
-                                )}
-                              </strong>
-                              <small>{item.title?.trim() || "Sem título"}</small>
-                            </span>
-                          </button>
-                          <div className="order-buttons">
-                            <button
-                              onClick={() => moveItem(index, -1)}
-                              aria-label="Mover item para cima"
-                            >
-                              <Icon name="up" size={17} />
-                            </button>
-                            <button
-                              onClick={() => moveItem(index, 1)}
-                              aria-label="Mover item para baixo"
-                            >
-                              <Icon name="down" size={17} />
-                            </button>
-                            <button onClick={() => removeItem(index)} aria-label="Remover item">
-                              <Icon name="close" size={17} />
-                            </button>
-                          </div>
-                        </div>
-                        {expandedItemIndex === index && (
-                          <div
-                            className="block-item-body"
-                            id={`block-item-fields-${draft.id}-${index}`}
-                          >
-                            {[
-                              "invest-rs",
-                              "prefeitura-sp",
-                              "vale",
-                              "globo-sportv",
-                              "inpress",
-                              "cdi",
-                            ].includes(
-                              sections.find((entry) => entry.id === draft.section_id)?.slug ?? "",
-                            ) && (
-                              <label className="toggle-field admin-visibility-toggle">
-                                <input
-                                  type="checkbox"
-                                  checked={item.isHidden !== true}
-                                  onChange={(event) =>
-                                    updateItem(index, { isHidden: !event.target.checked })
-                                  }
-                                />
-                                Exibir este item em Projetos e realizações (desmarcado = ocultado,
-                                sem excluir)
-                              </label>
-                            )}
-                            {experienceSlug === "perfil" && index === 0 && (
-                              <fieldset className="hero-section-specific">
-                                <legend>
-                                  Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}
-                                </legend>
-                                {draft.mobile_panel === "a" ? (
-                                  <div className="field-grid">
-                                    <HeroColorPicker
-                                      label="Cor do BG do Hero"
-                                      value={item.hero?.rootBackground ?? "transparent"}
-                                      onChange={(rootBackground) =>
-                                        updateHero(index, { rootBackground })
-                                      }
-                                      catalog={identityOptions}
-                                      allowTransparent
-                                    />
-                                    <HeroColorPicker
-                                      label="Cor do BG · Esquerda"
-                                      value={item.hero?.panelBackground ?? "#171617"}
-                                      onChange={(panelBackground) =>
-                                        updateHero(index, { panelBackground })
-                                      }
-                                      catalog={identityOptions}
-                                    />
-                                    <label className="field-wide">
-                                      <span className="hero-field-label">
-                                        Frase editorial
-                                        <HeroFormattingButton
-                                          label="frase editorial"
-                                          value={item.hero?.fieldFormats?.intro}
-                                          onChange={(next) =>
-                                            updateHeroFormat(index, "intro", next)
-                                          }
-                                          catalog={identityOptions}
-                                        />
-                                      </span>
-                                      <textarea
-                                        rows={3}
-                                        value={heroCopy.intro}
-                                        onChange={(event) =>
-                                          setHeroCopy((current) => ({
-                                            ...current,
-                                            intro: event.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </label>
-                                    <label className="field-wide">
-                                      <span className="hero-field-label">
-                                        Círculo · texto giratório
-                                        <HeroFormattingButton
-                                          label="texto giratório"
-                                          value={item.hero?.fieldFormats?.badgeText}
-                                          onChange={(next) =>
-                                            updateHeroFormat(index, "badgeText", next)
-                                          }
-                                          catalog={identityOptions}
-                                        />
-                                      </span>
-                                      <input
-                                        value={
-                                          item.hero?.badgeText ??
-                                          "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
-                                        }
-                                        onChange={(event) =>
-                                          updateHero(index, { badgeText: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <HeroIconPicker
-                                      label="Círculo · ícone central"
-                                      value={item.hero?.badgeIcon ?? "arrow"}
-                                      onChange={(badgeIcon) => updateHero(index, { badgeIcon })}
-                                    />
-                                  </div>
-                                ) : (
-                                  <div className="field-grid">
-                                    <label className="field-wide">
-                                      <span className="hero-field-label">
-                                        Título principal
-                                        <HeroFormattingButton
-                                          label="título principal"
-                                          value={item.hero?.fieldFormats?.title}
-                                          onChange={(next) =>
-                                            updateHeroFormat(index, "title", next)
-                                          }
-                                          catalog={identityOptions}
-                                        />
-                                      </span>
-                                      <input
-                                        value={heroCopy.title}
-                                        onChange={(event) =>
-                                          setHeroCopy((current) => ({
-                                            ...current,
-                                            title: event.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </label>
-                                    <label className="field-wide">
-                                      <span className="hero-field-label">
-                                        Descritivo
-                                        <HeroFormattingButton
-                                          label="descritivo"
-                                          value={item.hero?.fieldFormats?.role}
-                                          onChange={(next) => updateHeroFormat(index, "role", next)}
-                                          catalog={identityOptions}
-                                        />
-                                      </span>
-                                      <input
-                                        value={heroCopy.eyebrow}
-                                        onChange={(event) =>
-                                          setHeroCopy((current) => ({
-                                            ...current,
-                                            eyebrow: event.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </label>
-                                    <label className="field-wide">
-                                      <span className="hero-field-label">
-                                        Título secundário
-                                        <HeroFormattingButton
-                                          label="título secundário"
-                                          value={item.hero?.fieldFormats?.secondaryTitle}
-                                          onChange={(next) =>
-                                            updateHeroFormat(index, "secondaryTitle", next)
-                                          }
-                                          catalog={identityOptions}
-                                        />
-                                      </span>
-                                      <input
-                                        value={item.hero?.secondaryTitle ?? "Experiência e atuação"}
-                                        onChange={(event) =>
-                                          updateHero(index, { secondaryTitle: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <HeroIconPicker
-                                      label="Botão inferior · ícone"
-                                      value={item.hero?.nextIcon ?? "down"}
-                                      onChange={(nextIcon) => updateHero(index, { nextIcon })}
-                                    />
-                                    <HeroColorPicker
-                                      label="Botão inferior · cor do ícone"
-                                      value={item.hero?.nextColor ?? ""}
-                                      allowDefault
-                                      onChange={(nextColor) => updateHero(index, { nextColor })}
-                                      catalog={identityOptions}
-                                    />
-                                    <HeroColorPicker
-                                      label="Botão inferior · cor do BG"
-                                      value={item.hero?.nextBackground ?? ""}
-                                      allowDefault
-                                      allowTransparent
-                                      onChange={(nextBackground) =>
-                                        updateHero(index, { nextBackground })
-                                      }
-                                      catalog={identityOptions}
-                                    />
-                                    <label>
-                                      Botão inferior · âncora
-                                      <select
-                                        value={item.hero?.nextTarget ?? ""}
-                                        onChange={(event) =>
-                                          updateHero(index, { nextTarget: event.target.value })
-                                        }
-                                      >
-                                        <option value="">Próxima seção publicada</option>
-                                        {sections
-                                          .filter((entry) => entry.slug !== "perfil")
-                                          .map((entry) => (
-                                            <option key={entry.id} value={entry.slug}>
-                                              {entry.title} (#{entry.slug})
-                                            </option>
-                                          ))}
-                                      </select>
-                                    </label>
-                                  </div>
-                                )}
-                              </fieldset>
-                            )}
-                            <div className="field-grid">
-                              {experienceSlug === "perfil" ? (
-                                <HeroItemFields
-                                  item={item}
-                                  index={index}
-                                  panel={draft.mobile_panel}
-                                  catalog={identityOptions}
-                                  onUpdate={(patch) => updateItem(index, patch)}
-                                  onFormat={(key, next) => updateFieldFormat(index, key, next)}
-                                />
-                              ) : (
-                                <>
-                                  <label>
-                                    <span className="hero-field-label">
-                                      {experienceSlug === "perfil"
-                                        ? draft.mobile_panel === "a"
-                                          ? index === 0
-                                            ? "Mensagem principal · texto grande"
-                                            : "Destaque · título"
-                                          : index < 5
-                                            ? "Botão principal · título"
-                                            : "Item · título"
-                                        : "Título"}
-                                      {experienceSlug === "perfil" && (
-                                        <HeroFormattingButton
-                                          label="título do item"
-                                          value={item.fieldFormats?.title}
-                                          onChange={(next) =>
-                                            updateFieldFormat(index, "title", next)
-                                          }
-                                          catalog={identityOptions}
-                                        />
-                                      )}
-                                    </span>
-                                    <input
-                                      value={item.title}
-                                      onChange={(event) =>
-                                        updateItem(index, { title: event.target.value })
-                                      }
-                                    />
-                                  </label>
-                                  <label>
-                                    <span className="hero-field-label">
-                                      {experienceSlug === "perfil" &&
-                                      draft.mobile_panel === "b" &&
-                                      index < 5
-                                        ? "Linha superior / número"
-                                        : "Rótulo / número"}
-                                      {experienceSlug === "perfil" &&
-                                        draft.mobile_panel === "b" &&
-                                        index < 5 && (
-                                          <HeroFormattingButton
-                                            label="linha superior"
-                                            value={item.fieldFormats?.label}
-                                            onChange={(next) =>
-                                              updateFieldFormat(index, "label", next)
-                                            }
-                                            catalog={identityOptions}
-                                          />
-                                        )}
-                                    </span>
-                                    <input
-                                      value={item.label ?? ""}
-                                      onChange={(event) =>
-                                        updateItem(index, { label: event.target.value })
-                                      }
-                                    />
-                                  </label>
-                                  <label className="field-wide">
-                                    <span className="hero-field-label">
-                                      {experienceSlug === "perfil"
-                                        ? draft.mobile_panel === "a"
-                                          ? index === 0
-                                            ? "Mensagem principal · texto pequeno"
-                                            : "Destaque · subtítulo"
-                                          : index >= 5
-                                            ? "Descrição do item"
-                                            : "Texto"
-                                        : "Texto"}
-                                      {experienceSlug === "perfil" && (
-                                        <HeroFormattingButton
-                                          label="texto do item"
-                                          value={item.fieldFormats?.text}
-                                          onChange={(next) =>
-                                            updateFieldFormat(index, "text", next)
-                                          }
-                                          catalog={identityOptions}
-                                        />
-                                      )}
-                                    </span>
-                                    <textarea
-                                      value={item.text ?? ""}
-                                      onChange={(event) =>
-                                        updateItem(index, { text: event.target.value })
-                                      }
-                                    />
-                                  </label>
-                                  <label>
-                                    <span className="admin-field-with-info">
-                                      Valor/métrica
-                                      <AdminInfoTip
-                                        label="Valor/métrica"
-                                        description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
-                                      />
-                                    </span>
-                                    <input
-                                      value={item.value ?? ""}
-                                      onChange={(event) =>
-                                        updateItem(index, { value: event.target.value })
-                                      }
-                                    />
-                                  </label>
-                                  <label>
-                                    <span className="admin-field-with-info">
-                                      {experienceSlug === "perfil" &&
-                                      draft.mobile_panel === "b" &&
-                                      index >= 5
-                                        ? "Subtítulo do item"
-                                        : "Metadado/URL"}
-                                      {experienceSlug === "perfil" &&
-                                        draft.mobile_panel === "b" &&
-                                        index >= 5 && (
-                                          <HeroFormattingButton
-                                            label="subtítulo do item"
-                                            value={item.fieldFormats?.meta}
-                                            onChange={(next) =>
-                                              updateFieldFormat(index, "meta", next)
-                                            }
-                                            catalog={identityOptions}
-                                          />
-                                        )}
-                                      <AdminInfoTip
-                                        label="Metadado/URL"
-                                        description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
-                                      />
-                                    </span>
-                                    <input
-                                      value={item.meta ?? ""}
-                                      onChange={(event) =>
-                                        updateItem(index, { meta: event.target.value })
-                                      }
-                                    />
-                                  </label>
-                                </>
-                              )}
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "resultados" &&
-                                draft.mobile_panel === "a" && (
-                                  <div className="field-wide">
-                                    <VisualIconLibrary
-                                      value={item.metricIcon ?? "chart"}
-                                      onChange={(metricIcon) => updateItem(index, { metricIcon })}
-                                    />
-                                    <fieldset>
-                                      <legend>Exibir este indicador nos temas</legend>
-                                      {(
-                                        blocks.find(
-                                          (entry) =>
-                                            entry.section_id === draft.section_id &&
-                                            entry.mobile_panel === "b",
-                                        )?.content_json.items ?? []
-                                      ).map((theme, themeIndex) => {
-                                        const key =
-                                          theme.themeKey ||
-                                          [
-                                            "corporativa",
-                                            "projetos",
-                                            "eventos",
-                                            "marketing",
-                                            "imprensa",
-                                          ][themeIndex] ||
-                                          `tema-${themeIndex + 1}`
-                                        return (
-                                          <label key={key} className="toggle-field">
-                                            <input
-                                              type="checkbox"
-                                              checked={(item.relatedThemeKeys ?? []).includes(key)}
-                                              onChange={(event) => {
-                                                const selected = item.relatedThemeKeys ?? []
-                                                updateItem(index, {
-                                                  relatedThemeKeys: event.target.checked
-                                                    ? [...selected, key]
-                                                    : selected.filter((value) => value !== key),
-                                                })
-                                              }}
-                                            />
-                                            {theme.title}
-                                          </label>
-                                        )
-                                      })}
-                                    </fieldset>
-                                  </div>
-                                )}
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "resultados" &&
-                                draft.mobile_panel === "b" && (
-                                  <div className="field-wide">
-                                    <label>
-                                      Identificador do tema (para os links da abertura)
-                                      <input
-                                        value={item.themeKey ?? ""}
-                                        onChange={(event) =>
-                                          updateItem(index, { themeKey: event.target.value })
-                                        }
-                                        placeholder="corporativa, projetos, eventos, marketing ou imprensa"
-                                      />
-                                    </label>
-                                    <label>
-                                      Eixo central
-                                      <input
-                                        value={item.themeAxis ?? ""}
-                                        onChange={(event) =>
-                                          updateItem(index, { themeAxis: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <label>
-                                      Título do conteúdo central
-                                      <input
-                                        value={item.themeTitle ?? ""}
-                                        onChange={(event) =>
-                                          updateItem(index, { themeTitle: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <label>
-                                      Subtítulo do conteúdo central
-                                      <textarea
-                                        value={item.themeSubtitle ?? ""}
-                                        onChange={(event) =>
-                                          updateItem(index, { themeSubtitle: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <label>
-                                      Temas relacionados
-                                      <textarea
-                                        value={item.themeTopics ?? ""}
-                                        onChange={(event) =>
-                                          updateItem(index, { themeTopics: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <label>
-                                      Texto curto
-                                      <textarea
-                                        value={item.themeSummary ?? ""}
-                                        onChange={(event) =>
-                                          updateItem(index, { themeSummary: event.target.value })
-                                        }
-                                      />
-                                    </label>
-                                    <label>
-                                      Conteúdo reaproveitado da antiga seção 04 (uma linha por item)
-                                      <textarea
-                                        value={(item.inheritedHighlights ?? []).join("\n")}
-                                        onChange={(event) =>
-                                          updateItem(index, {
-                                            inheritedHighlights: event.target.value
-                                              .split("\n")
-                                              .map((value) => value.trim())
-                                              .filter(Boolean),
-                                          })
-                                        }
-                                      />
-                                    </label>
-                                  </div>
-                                )}
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "perfil" &&
-                                draft.mobile_panel === "b" &&
-                                index < 5 && (
-                                  <>
-                                    <label className="field-wide">
-                                      Destino do card (seção interna)
-                                      <select
-                                        value={item.targetSlug ?? "resultados"}
-                                        onChange={(event) =>
-                                          updateItem(index, { targetSlug: event.target.value })
-                                        }
-                                      >
-                                        {sections
-                                          .filter((entry) => entry.slug !== "perfil")
-                                          .map((entry) => (
-                                            <option key={entry.id} value={entry.slug}>
-                                              {entry.title} (#{entry.slug})
-                                            </option>
-                                          ))}
-                                      </select>
-                                      <small>
-                                        Padrão: seção 03. O clique funciona em toda a área do card.
-                                      </small>
-                                    </label>
-                                    <label className="field-wide">
-                                      Tema selecionado na seção 03
-                                      <select
-                                        value={
-                                          item.themeKey ||
-                                          [
-                                            "corporativa",
-                                            "projetos",
-                                            "eventos",
-                                            "marketing",
-                                            "imprensa",
-                                          ][index]
-                                        }
-                                        onChange={(event) =>
-                                          updateItem(index, { themeKey: event.target.value })
-                                        }
-                                      >
-                                        <option value="corporativa">Comunicação Corporativa</option>
-                                        <option value="projetos">
-                                          Gestão e execução de projetos
-                                        </option>
-                                        <option value="eventos">
-                                          Relações Públicas e Gestão de Eventos
-                                        </option>
-                                        <option value="marketing">
-                                          Marketing Digital, Branding e Performance
-                                        </option>
-                                        <option value="imprensa">Imprensa e Influenciadores</option>
-                                      </select>
-                                    </label>
-                                  </>
-                                )}
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "perfil" &&
-                                draft.mobile_panel === "b" &&
-                                index >= 5 &&
-                                index < 11 && (
-                                  <label className="field-wide">
-                                    Empresa de destino (card clicável)
-                                    <select
-                                      value={item.targetSlug ?? ""}
-                                      onChange={(event) =>
-                                        updateItem(index, { targetSlug: event.target.value })
-                                      }
-                                    >
-                                      <option value="">Sem link</option>
-                                      {sections
-                                        .filter((entry) =>
-                                          [
-                                            "invest-rs",
-                                            "prefeitura-sp",
-                                            "vale",
-                                            "globo-sportv",
-                                            "inpress",
-                                            "cdi",
-                                          ].includes(entry.slug),
-                                        )
-                                        .map((entry) => (
-                                          <option key={entry.id} value={entry.slug}>
-                                            {entry.title}
-                                          </option>
-                                        ))}
-                                    </select>
-                                    <small>
-                                      O card inteiro direciona para a seção da empresa, incluindo no
-                                      mobile.
-                                    </small>
-                                  </label>
-                                )}
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "ferramentas" && (
-                                <div className="field-wide">
-                                  <PlatformIconLibrary
-                                    selected={item.toolIcons ?? []}
-                                    onChange={(toolIcons) => updateItem(index, { toolIcons })}
-                                  />
-                                </div>
-                              )}
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "sobre" &&
-                                draft.mobile_panel === "a" &&
-                                index === 0 && (
-                                  <div
-                                    className="field-wide admin-image-target-switch"
-                                    role="group"
-                                    aria-label="Destino da imagem"
-                                  >
-                                    <span>Destino da imagem</span>
-                                    <button
-                                      type="button"
-                                      className={aboutImageTarget === "mobile" ? "active" : ""}
-                                      aria-pressed={aboutImageTarget === "mobile"}
-                                      onClick={() => setAboutImageTarget("mobile")}
-                                    >
-                                      Mobile
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className={aboutImageTarget === "desktop" ? "active" : ""}
-                                      aria-pressed={aboutImageTarget === "desktop"}
-                                      onClick={() => setAboutImageTarget("desktop")}
-                                    >
-                                      Desktop
-                                    </button>
-                                  </div>
-                                )}
-                              <PublishedMediaPicker
-                                label={
-                                  experienceSlug === "perfil" &&
-                                  draft.mobile_panel === "a" &&
-                                  index === 0
-                                    ? "Foto"
-                                    : "Imagem do item"
-                                }
-                                guidanceAsInfo
-                                iconOnlyActions
-                                allowFraming={false}
-                                guidance={
-                                  ["perfil", "contato", "sobre"].includes(
-                                    sections.find((entry) => entry.id === draft.section_id)?.slug ??
-                                      "",
-                                  )
-                                    ? "Retrato vertical 3:4; sugestão 900 × 1200 px."
-                                    : "Miniatura editorial 1:1; sugestão 600 × 600 px."
-                                }
-                                ratio={
-                                  ["perfil", "contato", "sobre"].includes(
-                                    sections.find((entry) => entry.id === draft.section_id)?.slug ??
-                                      "",
-                                  )
-                                    ? "3 / 4"
-                                    : "1 / 1"
-                                }
-                                framing={
-                                  aboutImageTarget === "desktop" &&
-                                  sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                    "sobre" &&
-                                  draft.mobile_panel === "a" &&
-                                  index === 0
-                                    ? item.aboutDesktopFraming
-                                    : item.mediaFraming
-                                }
-                                onFramingChange={(framing) => {
-                                  if (
-                                    aboutImageTarget === "desktop" &&
-                                    sections.find((entry) => entry.id === draft.section_id)
-                                      ?.slug === "sobre" &&
-                                    draft.mobile_panel === "a" &&
-                                    index === 0
-                                  ) {
-                                    updateItem(index, { aboutDesktopFraming: framing })
-                                  } else updateItem(index, { mediaFraming: framing })
-                                }}
-                                value={
-                                  aboutImageTarget === "desktop" &&
-                                  sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                    "sobre" &&
-                                  draft.mobile_panel === "a" &&
-                                  index === 0
-                                    ? (item.aboutDesktopImage ?? "")
-                                    : (item.image ?? "")
-                                }
-                                onChange={(image, alt) => {
-                                  if (
-                                    aboutImageTarget === "desktop" &&
-                                    sections.find((entry) => entry.id === draft.section_id)
-                                      ?.slug === "sobre" &&
-                                    draft.mobile_panel === "a" &&
-                                    index === 0
-                                  ) {
-                                    updateItem(index, {
-                                      aboutDesktopImage: image,
-                                      aboutDesktopAlt: alt,
-                                    })
-                                  } else updateItem(index, { image, alt })
-                                }}
-                              />
-                              {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                                "sobre" &&
-                                draft.mobile_panel === "a" &&
-                                index === 0 && (
-                                  <small className="field-wide">
-                                    As imagens mobile e desktop são preservadas separadamente. Se
-                                    desktop estiver vazio, a seção utiliza
-                                    /media/tulius-contact.jpg.
-                                  </small>
-                                )}
-                            </div>
-                            <details className="visual-config">
-                              <summary>Estilo, visibilidade e responsividade</summary>
-                              <fieldset>
-                                <legend>Compartilhado entre desktop e mobile</legend>
-                                <div className="field-grid compact-grid">
-                                  <fieldset className="visual-icon-library">
-                                    <legend>Ícone do card</legend>
-                                    <div className="visual-icon-grid">
-                                      <button
-                                        type="button"
-                                        aria-label="Sem ícone"
-                                        aria-pressed={item.icon !== "arrow"}
-                                        className={item.icon !== "arrow" ? "active" : ""}
-                                        onClick={() => updateItem(index, { icon: "none" })}
-                                      >
-                                        —
-                                      </button>
-                                      <button
-                                        type="button"
-                                        aria-label="Seta diagonal"
-                                        aria-pressed={item.icon === "arrow"}
-                                        className={item.icon === "arrow" ? "active" : ""}
-                                        onClick={() => updateItem(index, { icon: "arrow" })}
-                                      >
-                                        <Icon name="arrow" size={24} />
-                                      </button>
-                                    </div>
-                                  </fieldset>
-                                  <ColorField
-                                    label="Cor do título"
-                                    value={item.titleColor}
-                                    fallback="#FF5414"
-                                    onChange={(titleColor) => updateItem(index, { titleColor })}
-                                  />
-                                  <ColorField
-                                    label="Cor da descrição"
-                                    value={item.textColor}
-                                    fallback="#FFFFFF"
-                                    onChange={(textColor) => updateItem(index, { textColor })}
-                                  />
-                                  <ColorField
-                                    label="Cor de fundo"
-                                    value={item.backgroundColor}
-                                    fallback="#171617"
-                                    onChange={(backgroundColor) =>
-                                      updateItem(index, { backgroundColor })
-                                    }
-                                  />
-                                </div>
-                              </fieldset>
-                              <div className="responsive-style-grid">
-                                {(["desktop", "mobile"] as const).map((device) => (
-                                  <DeviceStyleEditor
-                                    key={device}
-                                    device={device}
-                                    value={item[device]}
-                                    onChange={(patch) => updateDeviceStyle(index, device, patch)}
-                                  />
-                                ))}
-                              </div>
-                              {item.image && (
-                                <fieldset>
-                                  <legend>Fotografia e selo da abertura</legend>
-                                  <div className="field-grid compact-grid">
-                                    <label className="field-wide">
-                                      Texto do selo circular
-                                      <input
-                                        value={
-                                          item.hero?.badgeText ??
-                                          "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
-                                        }
-                                        onChange={(event) =>
-                                          updateHero(index, {
-                                            badgeText: event.target.value,
-                                          })
-                                        }
-                                      />
-                                    </label>
-                                    <label className="toggle-field">
-                                      <input
-                                        type="checkbox"
-                                        checked={item.hero?.badgeVisible !== false}
-                                        onChange={(event) =>
-                                          updateHero(index, {
-                                            badgeVisible: event.target.checked,
-                                          })
-                                        }
-                                      />
-                                      Exibir selo
-                                    </label>
-                                    <ColorField
-                                      label="Fundo da coluna"
-                                      value={item.hero?.panelBackground}
-                                      fallback="#171617"
-                                      onChange={(panelBackground) =>
-                                        updateHero(index, { panelBackground })
-                                      }
-                                    />
-                                    <ColorField
-                                      label="Fundo do selo"
-                                      value={item.hero?.badgeBackground}
-                                      fallback="#FF5414"
-                                      onChange={(badgeBackground) =>
-                                        updateHero(index, { badgeBackground })
-                                      }
-                                    />
-                                    <ColorField
-                                      label="Traço do selo"
-                                      value={item.hero?.badgeColor}
-                                      fallback="#171617"
-                                      onChange={(badgeColor) => updateHero(index, { badgeColor })}
-                                    />
-                                    <ColorField
-                                      label="Cor da frase"
-                                      value={item.hero?.introColor}
-                                      fallback="#FFFFFF"
-                                      onChange={(introColor) => updateHero(index, { introColor })}
-                                    />
-                                  </div>
-                                  <div className="responsive-style-grid">
-                                    <HeroDeviceEditor
-                                      device="desktop"
-                                      value={item.hero?.desktop}
-                                      onChange={(patch) =>
-                                        updateHeroDevice(index, "desktop", patch)
-                                      }
-                                    />
-                                    <HeroDeviceEditor
-                                      device="mobile"
-                                      value={item.hero?.mobile}
-                                      onChange={(patch) => updateHeroDevice(index, "mobile", patch)}
-                                    />
-                                  </div>
-                                </fieldset>
-                              )}
-                            </details>
-                            {sections.find((entry) => entry.id === draft.section_id)?.slug ===
-                              "perfil" &&
-                              draft.mobile_panel === "a" &&
-                              index === 0 && (
-                                <ProfileMobileEditorialEditor
-                                  value={item.hero?.mobileEditorial}
-                                  onChange={(mobileEditorial) =>
-                                    updateHero(index, { mobileEditorial })
-                                  }
-                                />
-                              )}
+                      {sections.find((entry) => entry.id === draft.section_id)?.slug === "sobre" &&
+                        draft.mobile_panel === "b" && (
+                          <div className="block-item-help">
+                            <AdminInfoTip
+                              label="Textos da seção 02 — coluna direita"
+                              description="Cada item corresponde a um título e texto. Use as setas de ordenação e Remover item para organizar os itens existentes. O primeiro item também aparece junto à foto no painel A mobile. Use Salvar para confirmar suas edições no bloco."
+                            />
                           </div>
                         )}
-                      </article>
-                    ),
-                  )}
+                      {(draft.content_json.items ?? []).map((item, index) =>
+                        experienceSlug === "perfil" &&
+                        draft.mobile_panel === "a" &&
+                        index > 0 ? null : (
+                          <article className="block-item-editor" key={index}>
+                            <div className="block-item-head">
+                              <button
+                                type="button"
+                                className="block-item-toggle"
+                                aria-expanded={expandedItemIndex === index}
+                                aria-controls={`block-item-fields-${draft.id}-${index}`}
+                                onClick={() =>
+                                  setExpandedItemIndex((current) =>
+                                    nextExpandedItem(current, index),
+                                  )
+                                }
+                              >
+                                <Icon
+                                  name={expandedItemIndex === index ? "up" : "down"}
+                                  size={17}
+                                />
+                                <span className="block-item-toggle-label">
+                                  <strong>
+                                    Item {String(index + 1).padStart(2, "0")}
+                                    {item.isHidden === true && (
+                                      <span className="admin-hidden-label"> · Ocultado</span>
+                                    )}
+                                  </strong>
+                                  <small>{item.title?.trim() || "Sem título"}</small>
+                                </span>
+                              </button>
+                              <div className="order-buttons">
+                                <button
+                                  onClick={() => moveItem(index, -1)}
+                                  aria-label="Mover item para cima"
+                                >
+                                  <Icon name="up" size={17} />
+                                </button>
+                                <button
+                                  onClick={() => moveItem(index, 1)}
+                                  aria-label="Mover item para baixo"
+                                >
+                                  <Icon name="down" size={17} />
+                                </button>
+                                <button onClick={() => removeItem(index)} aria-label="Remover item">
+                                  <Icon name="close" size={17} />
+                                </button>
+                              </div>
+                            </div>
+                            {expandedItemIndex === index && (
+                              <div
+                                className="block-item-body"
+                                id={`block-item-fields-${draft.id}-${index}`}
+                              >
+                                {[
+                                  "invest-rs",
+                                  "prefeitura-sp",
+                                  "vale",
+                                  "globo-sportv",
+                                  "inpress",
+                                  "cdi",
+                                ].includes(
+                                  sections.find((entry) => entry.id === draft.section_id)?.slug ??
+                                    "",
+                                ) && (
+                                  <label className="toggle-field admin-visibility-toggle">
+                                    <input
+                                      type="checkbox"
+                                      checked={item.isHidden !== true}
+                                      onChange={(event) =>
+                                        updateItem(index, { isHidden: !event.target.checked })
+                                      }
+                                    />
+                                    Exibir este item em Projetos e realizações (desmarcado =
+                                    ocultado, sem excluir)
+                                  </label>
+                                )}
+                                {experienceSlug === "perfil" && index === 0 && (
+                                  <fieldset className="hero-section-specific">
+                                    <legend>
+                                      Hero · {draft.mobile_panel === "a" ? "Esquerda" : "Direita"}
+                                    </legend>
+                                    {draft.mobile_panel === "a" ? (
+                                      <div className="field-grid">
+                                        <HeroColorPicker
+                                          label="Cor do BG do Hero"
+                                          value={item.hero?.rootBackground ?? "transparent"}
+                                          onChange={(rootBackground) =>
+                                            updateHero(index, { rootBackground })
+                                          }
+                                          catalog={identityOptions}
+                                          allowTransparent
+                                        />
+                                        <HeroColorPicker
+                                          label="Cor do BG · Esquerda"
+                                          value={item.hero?.panelBackground ?? "#171617"}
+                                          onChange={(panelBackground) =>
+                                            updateHero(index, { panelBackground })
+                                          }
+                                          catalog={identityOptions}
+                                        />
+                                        <label className="field-wide">
+                                          <span className="hero-field-label">
+                                            Frase editorial
+                                            <HeroFormattingButton
+                                              label="frase editorial"
+                                              value={item.hero?.fieldFormats?.intro}
+                                              onChange={(next) =>
+                                                updateHeroFormat(index, "intro", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          </span>
+                                          <textarea
+                                            rows={3}
+                                            value={heroCopy.intro}
+                                            onChange={(event) =>
+                                              setHeroCopy((current) => ({
+                                                ...current,
+                                                intro: event.target.value,
+                                              }))
+                                            }
+                                          />
+                                        </label>
+                                        <label className="field-wide">
+                                          <span className="hero-field-label">
+                                            Círculo · texto giratório
+                                            <HeroFormattingButton
+                                              label="texto giratório"
+                                              value={item.hero?.fieldFormats?.badgeText}
+                                              onChange={(next) =>
+                                                updateHeroFormat(index, "badgeText", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          </span>
+                                          <input
+                                            value={
+                                              item.hero?.badgeText ??
+                                              "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
+                                            }
+                                            onChange={(event) =>
+                                              updateHero(index, { badgeText: event.target.value })
+                                            }
+                                          />
+                                        </label>
+                                        <HeroIconPicker
+                                          label="Círculo · ícone central"
+                                          value={item.hero?.badgeIcon ?? "arrow"}
+                                          onChange={(badgeIcon) => updateHero(index, { badgeIcon })}
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="field-grid">
+                                        <label className="field-wide">
+                                          <span className="hero-field-label">
+                                            Título principal
+                                            <HeroFormattingButton
+                                              label="título principal"
+                                              value={item.hero?.fieldFormats?.title}
+                                              onChange={(next) =>
+                                                updateHeroFormat(index, "title", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          </span>
+                                          <input
+                                            value={heroCopy.title}
+                                            onChange={(event) =>
+                                              setHeroCopy((current) => ({
+                                                ...current,
+                                                title: event.target.value,
+                                              }))
+                                            }
+                                          />
+                                        </label>
+                                        <label className="field-wide">
+                                          <span className="hero-field-label">
+                                            Descritivo
+                                            <HeroFormattingButton
+                                              label="descritivo"
+                                              value={item.hero?.fieldFormats?.role}
+                                              onChange={(next) =>
+                                                updateHeroFormat(index, "role", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          </span>
+                                          <input
+                                            value={heroCopy.eyebrow}
+                                            onChange={(event) =>
+                                              setHeroCopy((current) => ({
+                                                ...current,
+                                                eyebrow: event.target.value,
+                                              }))
+                                            }
+                                          />
+                                        </label>
+                                        <label className="field-wide">
+                                          <span className="hero-field-label">
+                                            Título secundário
+                                            <HeroFormattingButton
+                                              label="título secundário"
+                                              value={item.hero?.fieldFormats?.secondaryTitle}
+                                              onChange={(next) =>
+                                                updateHeroFormat(index, "secondaryTitle", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          </span>
+                                          <input
+                                            value={
+                                              item.hero?.secondaryTitle ?? "Experiência e atuação"
+                                            }
+                                            onChange={(event) =>
+                                              updateHero(index, {
+                                                secondaryTitle: event.target.value,
+                                              })
+                                            }
+                                          />
+                                        </label>
+                                        <HeroIconPicker
+                                          label="Botão inferior · ícone"
+                                          value={item.hero?.nextIcon ?? "down"}
+                                          onChange={(nextIcon) => updateHero(index, { nextIcon })}
+                                        />
+                                        <HeroColorPicker
+                                          label="Botão inferior · cor do ícone"
+                                          value={item.hero?.nextColor ?? ""}
+                                          allowDefault
+                                          onChange={(nextColor) => updateHero(index, { nextColor })}
+                                          catalog={identityOptions}
+                                        />
+                                        <HeroColorPicker
+                                          label="Botão inferior · cor do BG"
+                                          value={item.hero?.nextBackground ?? ""}
+                                          allowDefault
+                                          allowTransparent
+                                          onChange={(nextBackground) =>
+                                            updateHero(index, { nextBackground })
+                                          }
+                                          catalog={identityOptions}
+                                        />
+                                        <label>
+                                          Botão inferior · âncora
+                                          <select
+                                            value={item.hero?.nextTarget ?? ""}
+                                            onChange={(event) =>
+                                              updateHero(index, { nextTarget: event.target.value })
+                                            }
+                                          >
+                                            <option value="">Próxima seção publicada</option>
+                                            {sections
+                                              .filter((entry) => entry.slug !== "perfil")
+                                              .map((entry) => (
+                                                <option key={entry.id} value={entry.slug}>
+                                                  {entry.title} (#{entry.slug})
+                                                </option>
+                                              ))}
+                                          </select>
+                                        </label>
+                                      </div>
+                                    )}
+                                  </fieldset>
+                                )}
+                                <div className="field-grid">
+                                  {experienceSlug === "perfil" ? (
+                                    <HeroItemFields
+                                      item={item}
+                                      index={index}
+                                      panel={draft.mobile_panel}
+                                      catalog={identityOptions}
+                                      onUpdate={(patch) => updateItem(index, patch)}
+                                      onFormat={(key, next) => updateFieldFormat(index, key, next)}
+                                    />
+                                  ) : (
+                                    <>
+                                      <label>
+                                        <span className="hero-field-label">
+                                          {experienceSlug === "perfil"
+                                            ? draft.mobile_panel === "a"
+                                              ? index === 0
+                                                ? "Mensagem principal · texto grande"
+                                                : "Destaque · título"
+                                              : index < 5
+                                                ? "Botão principal · título"
+                                                : "Item · título"
+                                            : "Título"}
+                                          {experienceSlug === "perfil" && (
+                                            <HeroFormattingButton
+                                              label="título do item"
+                                              value={item.fieldFormats?.title}
+                                              onChange={(next) =>
+                                                updateFieldFormat(index, "title", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          )}
+                                        </span>
+                                        <input
+                                          value={item.title}
+                                          onChange={(event) =>
+                                            updateItem(index, { title: event.target.value })
+                                          }
+                                        />
+                                      </label>
+                                      <label>
+                                        <span className="hero-field-label">
+                                          {experienceSlug === "perfil" &&
+                                          draft.mobile_panel === "b" &&
+                                          index < 5
+                                            ? "Linha superior / número"
+                                            : "Rótulo / número"}
+                                          {experienceSlug === "perfil" &&
+                                            draft.mobile_panel === "b" &&
+                                            index < 5 && (
+                                              <HeroFormattingButton
+                                                label="linha superior"
+                                                value={item.fieldFormats?.label}
+                                                onChange={(next) =>
+                                                  updateFieldFormat(index, "label", next)
+                                                }
+                                                catalog={identityOptions}
+                                              />
+                                            )}
+                                        </span>
+                                        <input
+                                          value={item.label ?? ""}
+                                          onChange={(event) =>
+                                            updateItem(index, { label: event.target.value })
+                                          }
+                                        />
+                                      </label>
+                                      <label className="field-wide">
+                                        <span className="hero-field-label">
+                                          {experienceSlug === "perfil"
+                                            ? draft.mobile_panel === "a"
+                                              ? index === 0
+                                                ? "Mensagem principal · texto pequeno"
+                                                : "Destaque · subtítulo"
+                                              : index >= 5
+                                                ? "Descrição do item"
+                                                : "Texto"
+                                            : "Texto"}
+                                          {experienceSlug === "perfil" && (
+                                            <HeroFormattingButton
+                                              label="texto do item"
+                                              value={item.fieldFormats?.text}
+                                              onChange={(next) =>
+                                                updateFieldFormat(index, "text", next)
+                                              }
+                                              catalog={identityOptions}
+                                            />
+                                          )}
+                                        </span>
+                                        <textarea
+                                          value={item.text ?? ""}
+                                          onChange={(event) =>
+                                            updateItem(index, { text: event.target.value })
+                                          }
+                                        />
+                                      </label>
+                                      <label>
+                                        <span className="admin-field-with-info">
+                                          Valor/métrica
+                                          <AdminInfoTip
+                                            label="Valor/métrica"
+                                            description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
+                                          />
+                                        </span>
+                                        <input
+                                          value={item.value ?? ""}
+                                          onChange={(event) =>
+                                            updateItem(index, { value: event.target.value })
+                                          }
+                                        />
+                                      </label>
+                                      <label>
+                                        <span className="admin-field-with-info">
+                                          {experienceSlug === "perfil" &&
+                                          draft.mobile_panel === "b" &&
+                                          index >= 5
+                                            ? "Subtítulo do item"
+                                            : "Metadado/URL"}
+                                          {experienceSlug === "perfil" &&
+                                            draft.mobile_panel === "b" &&
+                                            index >= 5 && (
+                                              <HeroFormattingButton
+                                                label="subtítulo do item"
+                                                value={item.fieldFormats?.meta}
+                                                onChange={(next) =>
+                                                  updateFieldFormat(index, "meta", next)
+                                                }
+                                                catalog={identityOptions}
+                                              />
+                                            )}
+                                          <AdminInfoTip
+                                            label="Metadado/URL"
+                                            description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
+                                          />
+                                        </span>
+                                        <input
+                                          value={item.meta ?? ""}
+                                          onChange={(event) =>
+                                            updateItem(index, { meta: event.target.value })
+                                          }
+                                        />
+                                      </label>
+                                    </>
+                                  )}
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "resultados" &&
+                                    draft.mobile_panel === "a" && (
+                                      <div className="field-wide">
+                                        <VisualIconLibrary
+                                          value={item.metricIcon ?? "chart"}
+                                          onChange={(metricIcon) =>
+                                            updateItem(index, { metricIcon })
+                                          }
+                                        />
+                                        <fieldset>
+                                          <legend>Exibir este indicador nos temas</legend>
+                                          {(
+                                            blocks.find(
+                                              (entry) =>
+                                                entry.section_id === draft.section_id &&
+                                                entry.mobile_panel === "b",
+                                            )?.content_json.items ?? []
+                                          ).map((theme, themeIndex) => {
+                                            const key =
+                                              theme.themeKey ||
+                                              [
+                                                "corporativa",
+                                                "projetos",
+                                                "eventos",
+                                                "marketing",
+                                                "imprensa",
+                                              ][themeIndex] ||
+                                              `tema-${themeIndex + 1}`
+                                            return (
+                                              <label key={key} className="toggle-field">
+                                                <input
+                                                  type="checkbox"
+                                                  checked={(item.relatedThemeKeys ?? []).includes(
+                                                    key,
+                                                  )}
+                                                  onChange={(event) => {
+                                                    const selected = item.relatedThemeKeys ?? []
+                                                    updateItem(index, {
+                                                      relatedThemeKeys: event.target.checked
+                                                        ? [...selected, key]
+                                                        : selected.filter((value) => value !== key),
+                                                    })
+                                                  }}
+                                                />
+                                                {theme.title}
+                                              </label>
+                                            )
+                                          })}
+                                        </fieldset>
+                                      </div>
+                                    )}
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "resultados" &&
+                                    draft.mobile_panel === "b" && (
+                                      <div className="field-wide">
+                                        <label>
+                                          Identificador do tema (para os links da abertura)
+                                          <input
+                                            value={item.themeKey ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { themeKey: event.target.value })
+                                            }
+                                            placeholder="corporativa, projetos, eventos, marketing ou imprensa"
+                                          />
+                                        </label>
+                                        <label>
+                                          Eixo central
+                                          <input
+                                            value={item.themeAxis ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { themeAxis: event.target.value })
+                                            }
+                                          />
+                                        </label>
+                                        <label>
+                                          Título do conteúdo central
+                                          <input
+                                            value={item.themeTitle ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { themeTitle: event.target.value })
+                                            }
+                                          />
+                                        </label>
+                                        <label>
+                                          Subtítulo do conteúdo central
+                                          <textarea
+                                            value={item.themeSubtitle ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, {
+                                                themeSubtitle: event.target.value,
+                                              })
+                                            }
+                                          />
+                                        </label>
+                                        <label>
+                                          Temas relacionados
+                                          <textarea
+                                            value={item.themeTopics ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { themeTopics: event.target.value })
+                                            }
+                                          />
+                                        </label>
+                                        <label>
+                                          Texto curto
+                                          <textarea
+                                            value={item.themeSummary ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, {
+                                                themeSummary: event.target.value,
+                                              })
+                                            }
+                                          />
+                                        </label>
+                                        <label>
+                                          Conteúdo reaproveitado da antiga seção 04 (uma linha por
+                                          item)
+                                          <textarea
+                                            value={(item.inheritedHighlights ?? []).join("\n")}
+                                            onChange={(event) =>
+                                              updateItem(index, {
+                                                inheritedHighlights: event.target.value
+                                                  .split("\n")
+                                                  .map((value) => value.trim())
+                                                  .filter(Boolean),
+                                              })
+                                            }
+                                          />
+                                        </label>
+                                      </div>
+                                    )}
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "perfil" &&
+                                    draft.mobile_panel === "b" &&
+                                    index < 5 && (
+                                      <>
+                                        <label className="field-wide">
+                                          Destino do card (seção interna)
+                                          <select
+                                            value={item.targetSlug ?? "resultados"}
+                                            onChange={(event) =>
+                                              updateItem(index, { targetSlug: event.target.value })
+                                            }
+                                          >
+                                            {sections
+                                              .filter((entry) => entry.slug !== "perfil")
+                                              .map((entry) => (
+                                                <option key={entry.id} value={entry.slug}>
+                                                  {entry.title} (#{entry.slug})
+                                                </option>
+                                              ))}
+                                          </select>
+                                          <small>
+                                            Padrão: seção 03. O clique funciona em toda a área do
+                                            card.
+                                          </small>
+                                        </label>
+                                        <label className="field-wide">
+                                          Tema selecionado na seção 03
+                                          <select
+                                            value={
+                                              item.themeKey ||
+                                              [
+                                                "corporativa",
+                                                "projetos",
+                                                "eventos",
+                                                "marketing",
+                                                "imprensa",
+                                              ][index]
+                                            }
+                                            onChange={(event) =>
+                                              updateItem(index, { themeKey: event.target.value })
+                                            }
+                                          >
+                                            <option value="corporativa">
+                                              Comunicação Corporativa
+                                            </option>
+                                            <option value="projetos">
+                                              Gestão e execução de projetos
+                                            </option>
+                                            <option value="eventos">
+                                              Relações Públicas e Gestão de Eventos
+                                            </option>
+                                            <option value="marketing">
+                                              Marketing Digital, Branding e Performance
+                                            </option>
+                                            <option value="imprensa">
+                                              Imprensa e Influenciadores
+                                            </option>
+                                          </select>
+                                        </label>
+                                      </>
+                                    )}
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "perfil" &&
+                                    draft.mobile_panel === "b" &&
+                                    index >= 5 &&
+                                    index < 11 && (
+                                      <label className="field-wide">
+                                        Empresa de destino (card clicável)
+                                        <select
+                                          value={item.targetSlug ?? ""}
+                                          onChange={(event) =>
+                                            updateItem(index, { targetSlug: event.target.value })
+                                          }
+                                        >
+                                          <option value="">Sem link</option>
+                                          {sections
+                                            .filter((entry) =>
+                                              [
+                                                "invest-rs",
+                                                "prefeitura-sp",
+                                                "vale",
+                                                "globo-sportv",
+                                                "inpress",
+                                                "cdi",
+                                              ].includes(entry.slug),
+                                            )
+                                            .map((entry) => (
+                                              <option key={entry.id} value={entry.slug}>
+                                                {entry.title}
+                                              </option>
+                                            ))}
+                                        </select>
+                                        <small>
+                                          O card inteiro direciona para a seção da empresa,
+                                          incluindo no mobile.
+                                        </small>
+                                      </label>
+                                    )}
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "ferramentas" && (
+                                    <div className="field-wide">
+                                      <PlatformIconLibrary
+                                        selected={item.toolIcons ?? []}
+                                        onChange={(toolIcons) => updateItem(index, { toolIcons })}
+                                      />
+                                    </div>
+                                  )}
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "sobre" &&
+                                    draft.mobile_panel === "a" &&
+                                    index === 0 && (
+                                      <div
+                                        className="field-wide admin-image-target-switch"
+                                        role="group"
+                                        aria-label="Destino da imagem"
+                                      >
+                                        <span>Destino da imagem</span>
+                                        <button
+                                          type="button"
+                                          className={aboutImageTarget === "mobile" ? "active" : ""}
+                                          aria-pressed={aboutImageTarget === "mobile"}
+                                          onClick={() => setAboutImageTarget("mobile")}
+                                        >
+                                          Mobile
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className={aboutImageTarget === "desktop" ? "active" : ""}
+                                          aria-pressed={aboutImageTarget === "desktop"}
+                                          onClick={() => setAboutImageTarget("desktop")}
+                                        >
+                                          Desktop
+                                        </button>
+                                      </div>
+                                    )}
+                                  <PublishedMediaPicker
+                                    label={
+                                      experienceSlug === "perfil" &&
+                                      draft.mobile_panel === "a" &&
+                                      index === 0
+                                        ? "Foto"
+                                        : "Imagem do item"
+                                    }
+                                    guidanceAsInfo
+                                    iconOnlyActions
+                                    allowFraming={false}
+                                    guidance={
+                                      ["perfil", "contato", "sobre"].includes(
+                                        sections.find((entry) => entry.id === draft.section_id)
+                                          ?.slug ?? "",
+                                      )
+                                        ? "Retrato vertical 3:4; sugestão 900 × 1200 px."
+                                        : "Miniatura editorial 1:1; sugestão 600 × 600 px."
+                                    }
+                                    ratio={
+                                      ["perfil", "contato", "sobre"].includes(
+                                        sections.find((entry) => entry.id === draft.section_id)
+                                          ?.slug ?? "",
+                                      )
+                                        ? "3 / 4"
+                                        : "1 / 1"
+                                    }
+                                    framing={
+                                      aboutImageTarget === "desktop" &&
+                                      sections.find((entry) => entry.id === draft.section_id)
+                                        ?.slug === "sobre" &&
+                                      draft.mobile_panel === "a" &&
+                                      index === 0
+                                        ? item.aboutDesktopFraming
+                                        : item.mediaFraming
+                                    }
+                                    onFramingChange={(framing) => {
+                                      if (
+                                        aboutImageTarget === "desktop" &&
+                                        sections.find((entry) => entry.id === draft.section_id)
+                                          ?.slug === "sobre" &&
+                                        draft.mobile_panel === "a" &&
+                                        index === 0
+                                      ) {
+                                        updateItem(index, { aboutDesktopFraming: framing })
+                                      } else updateItem(index, { mediaFraming: framing })
+                                    }}
+                                    value={
+                                      aboutImageTarget === "desktop" &&
+                                      sections.find((entry) => entry.id === draft.section_id)
+                                        ?.slug === "sobre" &&
+                                      draft.mobile_panel === "a" &&
+                                      index === 0
+                                        ? (item.aboutDesktopImage ?? "")
+                                        : (item.image ?? "")
+                                    }
+                                    onChange={(image, alt) => {
+                                      if (
+                                        aboutImageTarget === "desktop" &&
+                                        sections.find((entry) => entry.id === draft.section_id)
+                                          ?.slug === "sobre" &&
+                                        draft.mobile_panel === "a" &&
+                                        index === 0
+                                      ) {
+                                        updateItem(index, {
+                                          aboutDesktopImage: image,
+                                          aboutDesktopAlt: alt,
+                                        })
+                                      } else updateItem(index, { image, alt })
+                                    }}
+                                  />
+                                  {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                    "sobre" &&
+                                    draft.mobile_panel === "a" &&
+                                    index === 0 && (
+                                      <small className="field-wide">
+                                        As imagens mobile e desktop são preservadas separadamente.
+                                        Se desktop estiver vazio, a seção utiliza
+                                        /media/tulius-contact.jpg.
+                                      </small>
+                                    )}
+                                </div>
+                                <details className="visual-config">
+                                  <summary>Estilo, visibilidade e responsividade</summary>
+                                  <fieldset>
+                                    <legend>Compartilhado entre desktop e mobile</legend>
+                                    <div className="field-grid compact-grid">
+                                      <fieldset className="visual-icon-library">
+                                        <legend>Ícone do card</legend>
+                                        <div className="visual-icon-grid">
+                                          <button
+                                            type="button"
+                                            aria-label="Sem ícone"
+                                            aria-pressed={item.icon !== "arrow"}
+                                            className={item.icon !== "arrow" ? "active" : ""}
+                                            onClick={() => updateItem(index, { icon: "none" })}
+                                          >
+                                            —
+                                          </button>
+                                          <button
+                                            type="button"
+                                            aria-label="Seta diagonal"
+                                            aria-pressed={item.icon === "arrow"}
+                                            className={item.icon === "arrow" ? "active" : ""}
+                                            onClick={() => updateItem(index, { icon: "arrow" })}
+                                          >
+                                            <Icon name="arrow" size={24} />
+                                          </button>
+                                        </div>
+                                      </fieldset>
+                                      <ColorField
+                                        label="Cor do título"
+                                        value={item.titleColor}
+                                        fallback="#FF5414"
+                                        onChange={(titleColor) => updateItem(index, { titleColor })}
+                                      />
+                                      <ColorField
+                                        label="Cor da descrição"
+                                        value={item.textColor}
+                                        fallback="#FFFFFF"
+                                        onChange={(textColor) => updateItem(index, { textColor })}
+                                      />
+                                      <ColorField
+                                        label="Cor de fundo"
+                                        value={item.backgroundColor}
+                                        fallback="#171617"
+                                        onChange={(backgroundColor) =>
+                                          updateItem(index, { backgroundColor })
+                                        }
+                                      />
+                                    </div>
+                                  </fieldset>
+                                  <div className="responsive-style-grid">
+                                    {(["desktop", "mobile"] as const).map((device) => (
+                                      <DeviceStyleEditor
+                                        key={device}
+                                        device={device}
+                                        value={item[device]}
+                                        onChange={(patch) =>
+                                          updateDeviceStyle(index, device, patch)
+                                        }
+                                      />
+                                    ))}
+                                  </div>
+                                  {item.image && (
+                                    <fieldset>
+                                      <legend>Fotografia e selo da abertura</legend>
+                                      <div className="field-grid compact-grid">
+                                        <label className="field-wide">
+                                          Texto do selo circular
+                                          <input
+                                            value={
+                                              item.hero?.badgeText ??
+                                              "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·"
+                                            }
+                                            onChange={(event) =>
+                                              updateHero(index, {
+                                                badgeText: event.target.value,
+                                              })
+                                            }
+                                          />
+                                        </label>
+                                        <label className="toggle-field">
+                                          <input
+                                            type="checkbox"
+                                            checked={item.hero?.badgeVisible !== false}
+                                            onChange={(event) =>
+                                              updateHero(index, {
+                                                badgeVisible: event.target.checked,
+                                              })
+                                            }
+                                          />
+                                          Exibir selo
+                                        </label>
+                                        <ColorField
+                                          label="Fundo da coluna"
+                                          value={item.hero?.panelBackground}
+                                          fallback="#171617"
+                                          onChange={(panelBackground) =>
+                                            updateHero(index, { panelBackground })
+                                          }
+                                        />
+                                        <ColorField
+                                          label="Fundo do selo"
+                                          value={item.hero?.badgeBackground}
+                                          fallback="#FF5414"
+                                          onChange={(badgeBackground) =>
+                                            updateHero(index, { badgeBackground })
+                                          }
+                                        />
+                                        <ColorField
+                                          label="Traço do selo"
+                                          value={item.hero?.badgeColor}
+                                          fallback="#171617"
+                                          onChange={(badgeColor) =>
+                                            updateHero(index, { badgeColor })
+                                          }
+                                        />
+                                        <ColorField
+                                          label="Cor da frase"
+                                          value={item.hero?.introColor}
+                                          fallback="#FFFFFF"
+                                          onChange={(introColor) =>
+                                            updateHero(index, { introColor })
+                                          }
+                                        />
+                                      </div>
+                                      <div className="responsive-style-grid">
+                                        <HeroDeviceEditor
+                                          device="desktop"
+                                          value={item.hero?.desktop}
+                                          onChange={(patch) =>
+                                            updateHeroDevice(index, "desktop", patch)
+                                          }
+                                        />
+                                        <HeroDeviceEditor
+                                          device="mobile"
+                                          value={item.hero?.mobile}
+                                          onChange={(patch) =>
+                                            updateHeroDevice(index, "mobile", patch)
+                                          }
+                                        />
+                                      </div>
+                                    </fieldset>
+                                  )}
+                                </details>
+                                {sections.find((entry) => entry.id === draft.section_id)?.slug ===
+                                  "perfil" &&
+                                  draft.mobile_panel === "a" &&
+                                  index === 0 && (
+                                    <ProfileMobileEditorialEditor
+                                      value={item.hero?.mobileEditorial}
+                                      onChange={(mobileEditorial) =>
+                                        updateHero(index, { mobileEditorial })
+                                      }
+                                    />
+                                  )}
+                              </div>
+                            )}
+                          </article>
+                        ),
+                      )}
                     </>
                   )}
                 </div>
