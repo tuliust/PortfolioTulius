@@ -708,10 +708,23 @@ function ProfileMobileDetails({
           const destination = resolveHeroCardDestination(item.targetSlug, publishedSlugs)
           const content = (
             <>
-              <span className="profile-mobile-area-number">
+              <span
+                className={[
+                  "profile-mobile-area-number",
+                  heroSizeClass(item.fieldFormats?.label),
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                style={heroTextStyle(item.fieldFormats?.label)}
+              >
                 {item.label || String(index + 1).padStart(2, "0")}
               </span>
-              <strong>{item.title}</strong>
+              <strong
+                className={heroSizeClass(item.fieldFormats?.title)}
+                style={heroTextStyle(item.fieldFormats?.title)}
+              >
+                {item.title}
+              </strong>
               {destination && <Icon name="arrow" size={19} />}
             </>
           )
