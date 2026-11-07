@@ -342,7 +342,7 @@ try {
             const panel = document.getElementById("invest-rs-b")
             const body = panel?.querySelector(".experience-mobile-body")
             if (!body) return
-            window.scrollTo({ top: window.scrollY + body.getBoundingClientRect().top + 140, behavior: "instant" })
+            window.scrollTo({ top: window.scrollY + body.getBoundingClientRect().top + 220, behavior: "instant" })
           })
           const sticky = await page.evaluate(() => {
             const index = document.querySelector(".experience-index")?.getBoundingClientRect()
@@ -742,7 +742,7 @@ try {
       console.log("P3_ABOUT_INVEST_FIT " + JSON.stringify(composition))
       const fits = composition.aboutBottom !== null &&
         composition.portraitBottom !== null &&
-        composition.portraitBottom >= composition.aboutBottom + 16 &&
+        Math.abs(composition.portraitBottom - composition.aboutBottom) <= 2 &&
         // The current published Invest RS has six competencies approved in CMS.
         composition.count === 4 &&
         composition.competenceBadges === 6 &&
@@ -800,7 +800,8 @@ try {
         projectsFont: getComputedStyle(document.querySelector("#invest-rs .desktop-panel .experience-view-projects")).fontSize,
         trajectoryFont: getComputedStyle(document.querySelector("#invest-rs .desktop-panel .experience-view-trajectory")).fontSize,
         projects: document.querySelectorAll("#invest-rs .desktop-panel .experience-project").length,
-        bulletLabels: document.querySelectorAll("#invest-rs .desktop-panel .experience-full-point strong").length,
+        paragraphs: document.querySelectorAll("#invest-rs .desktop-panel .experience-full-body p").length,
+        hasText: Boolean(document.querySelector("#invest-rs .desktop-panel .experience-full-body")?.textContent?.trim()),
         selected: document.querySelector("#invest-rs .desktop-panel .experience-view-trajectory")?.getAttribute("aria-pressed"),
       }))
       await page.click("#invest-rs .desktop-panel .experience-view-projects")
@@ -810,7 +811,8 @@ try {
       }))
       if (
         trajectoryState.projects !== 0 ||
-        trajectoryState.bulletLabels < 1 ||
+        trajectoryState.paragraphs < 2 ||
+        !trajectoryState.hasText ||
         trajectoryState.selected !== "true" ||
         parseFloat(trajectoryState.trajectoryFont) <= parseFloat(trajectoryState.projectsFont) ||
         projectsRestored.projects !== 4 ||
@@ -823,12 +825,20 @@ try {
       }
       const secondProject = "#invest-rs .desktop-panel .experience-project-choice[aria-label='Exibir imagem de Organização de eventos']"
       await page.click(secondProject)
+      await page.waitForFunction(() =>
+        document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "organização de eventos",
+        { timeout: 10000 },
+      )
       const projectToGallery = await page.evaluate(() => ({
         activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
         galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
         count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
       }))
       await page.click("#invest-rs .desktop-panel .experience-gallery-controls button[aria-label^='Próxima foto']")
+      await page.waitForFunction(() =>
+        document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "plataforma de eventos e relacionamento",
+        { timeout: 10000 },
+      )
       const galleryToProject = await page.evaluate(() => ({
         activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
         galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
