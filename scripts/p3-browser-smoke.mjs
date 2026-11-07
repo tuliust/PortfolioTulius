@@ -496,10 +496,10 @@ try {
         })
         console.log("P3_TRAINING_TOOLS_MOBILE " + JSON.stringify({ viewport, ...state }))
         if (state.formCount !== 5 || state.formPanelA !== 3 || state.formPanelB !== 2 ||
-            state.toolsCount !== 6 || state.toolsPanelA !== 3 || state.toolsPanelB !== 3 ||
+            state.toolsCount !== 5 || state.toolsPanelA !== 3 || state.toolsPanelB !== 2 ||
             state.formHeadings !== 1 || state.toolsHeadings !== 1 ||
             !state.formSubtitle || !state.toolsSubtitleHidden ||
-            state.toolPositions.join(",") !== "left,right,left,right,left,right" ||
+            state.toolPositions.join(",") !== "left,right,left,right,left" ||
             !state.formVisible || !state.toolsVisible ||
             state.horizontalOverflow || state.toolOverflow) {
           throw new Error("Training/Tools layout invalid at " + viewport.width + "px")
@@ -829,7 +829,8 @@ try {
       await page.evaluate(() =>
         document.getElementById("invest-rs")?.scrollIntoView({ behavior: "instant", block: "start" }),
       )
-      await page.click(secondProject)
+      await page.focus(secondProject)
+      await page.keyboard.press("Enter")
       await page.waitForFunction(() =>
         document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "organização de eventos",
         { timeout: 10000 },
@@ -839,7 +840,8 @@ try {
         galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
         count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
       }))
-      await page.click("#invest-rs .desktop-panel .experience-gallery-controls button[aria-label^='Próxima foto']")
+      await page.focus("#invest-rs .desktop-panel .experience-gallery-controls button[aria-label^='Próxima foto']")
+      await page.keyboard.press("Enter")
       await page.waitForFunction(() =>
         document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "plataforma de eventos e relacionamento",
         { timeout: 10000 },
