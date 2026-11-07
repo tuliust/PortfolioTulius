@@ -30,7 +30,7 @@ describe("Perfil Editorial 360 — exclusivo mobile", () => {
     }
     expect(publicSource).toContain("mobileEditorialLines(config.headline)")
     expect(publicSource).toContain("config.mobileImage")
-    expect(publicSource).toContain("section.title.trim()")
+    expect(publicSource).toContain("splitProfileTitle(section.title)")
     expect(publicSource).not.toContain("CONEXÕES AUTÊNTICAS. INOVAÇÃO.")
   })
   it("oferece no admin controles para as três áreas e foto exclusiva", () => {
