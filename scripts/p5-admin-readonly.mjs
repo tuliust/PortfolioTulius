@@ -174,6 +174,7 @@ try {
 
   await selectModule(page, "Editor do site")
   await page.waitForSelector(".site-editor-section .editor-form .field-grid", { timeout: 16000 })
+  await page.waitForSelector(".studio-block-picker button", { timeout: 16000 })
   const section = await page.evaluate(() => {
     const fields = [...document.querySelectorAll(".site-editor-section .field-grid label")]
     const names = fields.map((item) => item.textContent?.trim() ?? "")
