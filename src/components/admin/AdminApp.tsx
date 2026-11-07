@@ -330,7 +330,8 @@ function SectionsEditor({
       const warning = editorAnchorError(
         anchor,
         draft.slug,
-        sections.filter((entry) => entry.id !== draft.id)
+        sections
+          .filter((entry) => entry.id !== draft.id)
           .flatMap((entry) => [entry.slug, entry.editor_anchor ?? entry.slug]),
       )
       if (warning) {
@@ -362,18 +363,22 @@ function SectionsEditor({
       setMessage(updated.error?.message ?? "Não foi possível confirmar o salvamento da seção.")
       return false
     }
-    if (isSettings && (
-      adminTitle !== (selected?.editor_title ?? selected?.title)?.trim() ||
-      anchor !== (selected?.editor_anchor ?? selected?.slug)
-    )) {
+    if (
+      isSettings &&
+      (adminTitle !== (selected?.editor_title ?? selected?.title)?.trim() ||
+        anchor !== (selected?.editor_anchor ?? selected?.slug))
+    ) {
       if (!draft.editor_block_id) {
         setMessage("Bloco de conteúdo não encontrado para salvar os dados administrativos.")
         return false
       }
       // Editor-only metadata belongs to the existing panel A JSONB; never
       // overwrite the public title or the canonical slug used by components.
-      const latest = await supabase.from("content_blocks")
-        .select("content_json").eq("id", draft.editor_block_id).single()
+      const latest = await supabase
+        .from("content_blocks")
+        .select("content_json")
+        .eq("id", draft.editor_block_id)
+        .single()
       if (latest.error || !latest.data) {
         setMessage(latest.error?.message ?? "Não foi possível ler os dados administrativos.")
         return false
@@ -383,12 +388,17 @@ function SectionsEditor({
         editorTitle: adminTitle,
         editorAnchor: anchor,
       }
-      const saved = await supabase.from("content_blocks")
+      const saved = await supabase
+        .from("content_blocks")
         .update({ content_json: nextContent })
         .eq("id", draft.editor_block_id)
-        .select("content_json").single()
-      if (saved.error || saved.data?.content_json?.editorTitle !== adminTitle ||
-        saved.data?.content_json?.editorAnchor !== anchor) {
+        .select("content_json")
+        .single()
+      if (
+        saved.error ||
+        saved.data?.content_json?.editorTitle !== adminTitle ||
+        saved.data?.content_json?.editorAnchor !== anchor
+      ) {
         setMessage(saved.error?.message ?? "Não foi possível confirmar o nome e a âncora.")
         return false
       }
@@ -476,7 +486,11 @@ function SectionsEditor({
             <div className="card-heading">
               <div>
                 <p>Seção {String(draft.sort_order).padStart(2, "0")}</p>
-                <h2>{mode === "editorial" ? "Textos públicos" : draft.editor_title || (draft.slug === "perfil" ? "Hero" : draft.title)}</h2>
+                <h2>
+                  {mode === "editorial"
+                    ? "Textos públicos"
+                    : draft.editor_title || (draft.slug === "perfil" ? "Hero" : draft.title)}
+                </h2>
               </div>
               <div className="order-buttons">
                 <button onClick={() => move(-1)} aria-label="Mover para cima">
@@ -519,7 +533,9 @@ function SectionsEditor({
                   </span>
                   <select
                     value={draft.animation_preset}
-                    onChange={(event) => setDraft({ ...draft, animation_preset: event.target.value })}
+                    onChange={(event) =>
+                      setDraft({ ...draft, animation_preset: event.target.value })
+                    }
                   >
                     <option value="none">Nenhuma</option>
                     <option value="fade-in">Aparecer suavemente</option>
@@ -534,34 +550,43 @@ function SectionsEditor({
               <div className="field-grid">
                 <label className="field-wide">
                   Título público
-                  <input value={draft.title}
-                    onChange={(event) => setDraft({ ...draft, title: event.target.value })} />
+                  <input
+                    value={draft.title}
+                    onChange={(event) => setDraft({ ...draft, title: event.target.value })}
+                  />
                 </label>
                 <label className="field-wide">
                   Linha editorial / descritivo
-                  <input value={draft.eyebrow ?? ""}
-                    onChange={(event) => setDraft({ ...draft, eyebrow: event.target.value })} />
+                  <input
+                    value={draft.eyebrow ?? ""}
+                    onChange={(event) => setDraft({ ...draft, eyebrow: event.target.value })}
+                  />
                 </label>
                 <label className="field-wide">
                   Introdução / frase editorial
-                  <textarea rows={4} value={draft.intro ?? ""}
-                    onChange={(event) => setDraft({ ...draft, intro: event.target.value })} />
+                  <textarea
+                    rows={4}
+                    value={draft.intro ?? ""}
+                    onChange={(event) => setDraft({ ...draft, intro: event.target.value })}
+                  />
                 </label>
               </div>
             )}
             <AdminNotice message={message} />
             <div className="form-actions">
-              {mode === "settings" && <button
-                type="button"
-                className={
-                  draft.status === "published" && draft.is_visible
-                    ? "danger-button"
-                    : "secondary-button site-editor-restore-button"
-                }
-                onClick={togglePublication}
-              >
-                {draft.status === "published" && draft.is_visible ? "Arquivar" : "Exibir"}
-              </button>}
+              {mode === "settings" && (
+                <button
+                  type="button"
+                  className={
+                    draft.status === "published" && draft.is_visible
+                      ? "danger-button"
+                      : "secondary-button site-editor-restore-button"
+                  }
+                  onClick={togglePublication}
+                >
+                  {draft.status === "published" && draft.is_visible ? "Arquivar" : "Exibir"}
+                </button>
+              )}
               <button
                 type="button"
                 className="secondary-button"
@@ -631,8 +656,8 @@ function SiteEditor({
   }
 
   async function chooseEditorMode(next: "section" | "left" | "center" | "right") {
-    if (next === editorMode || !editorAreas.some((area) => area.id === next) ||
-      !(await canLeave())) return
+    if (next === editorMode || !editorAreas.some((area) => area.id === next) || !(await canLeave()))
+      return
     onDirtyChange(false)
     setSectionInfoDirty(false)
     setContentDirty(false)
@@ -685,7 +710,8 @@ function SiteEditor({
                 <span>{String(entry.section.sort_order).padStart(2, "0")}</span>
                 <div>
                   <strong>
-                    {entry.section.editor_title || (entry.section.slug === "perfil" ? "Hero" : entry.section.title)}
+                    {entry.section.editor_title ||
+                      (entry.section.slug === "perfil" ? "Hero" : entry.section.title)}
                   </strong>
                   <small>{sectionPublicationLabel(entry.section)}</small>
                 </div>
@@ -706,7 +732,8 @@ function SiteEditor({
                   <h2>
                     {selectedIsExperience
                       ? "Experiências Profissionais"
-                      : selected.editor_title || (selected.slug === "perfil" ? "Hero" : selected.title)}
+                      : selected.editor_title ||
+                        (selected.slug === "perfil" ? "Hero" : selected.title)}
                   </h2>
                   <span>
                     {selectedIsExperience
@@ -715,10 +742,16 @@ function SiteEditor({
                   </span>
                 </div>
               </div>
-              <nav className="hero-editor-tabs site-editor-area-tabs"
-                role="tablist" aria-label={`Áreas de edição de ${selected.editor_title || selected.title}`}>
+              <nav
+                className="hero-editor-tabs site-editor-area-tabs"
+                role="tablist"
+                aria-label={`Áreas de edição de ${selected.editor_title || selected.title}`}
+              >
                 {editorAreas.map((area) => (
-                  <button type="button" role="tab" key={area.id}
+                  <button
+                    type="button"
+                    role="tab"
+                    key={area.id}
                     className={editorMode === area.id ? "active" : ""}
                     aria-selected={editorMode === area.id}
                     aria-controls="site-editor-active-panel"
@@ -769,19 +802,30 @@ function SiteEditor({
                     Alterações não salvas nesta área.
                   </p>
                 )}
-                <div className="site-editor-consolidated"
-                  id="site-editor-active-panel" role="tabpanel"
-                  aria-label={selectedArea.label}>
+                <div
+                  className="site-editor-consolidated"
+                  id="site-editor-active-panel"
+                  role="tabpanel"
+                  aria-label={selectedArea.label}
+                >
                   {selectedArea.id === "section" ? (
                     <>
-                      <div className="site-editor-consolidated-heading"
-                        id="site-editor-section-details">
+                      <div
+                        className="site-editor-consolidated-heading"
+                        id="site-editor-section-details"
+                      >
                         <h3>Informações da seção</h3>
                         <p>Título administrativo, âncora, transições e publicação.</p>
                       </div>
-                      <SectionsEditor key={selected.id + "-settings"}
-                        sections={sections} reload={reload} selectedSectionId={selected.id}
-                        embedded mode="settings" onDirtyChange={setSectionInfoDirty} />
+                      <SectionsEditor
+                        key={selected.id + "-settings"}
+                        sections={sections}
+                        reload={reload}
+                        selectedSectionId={selected.id}
+                        embedded
+                        mode="settings"
+                        onDirtyChange={setSectionInfoDirty}
+                      />
                     </>
                   ) : (
                     <>
@@ -790,30 +834,48 @@ function SiteEditor({
                         <p>{selectedArea.description} · edite somente os elementos desta área.</p>
                       </div>
                       {editorCopyInArea(selected.slug, selectedArea.id) && (
-                        <SectionsEditor key={selected.id + "-editorial"}
-                          sections={sections} reload={reload} selectedSectionId={selected.id}
-                          embedded mode="editorial" onDirtyChange={setSectionInfoDirty} />
+                        <SectionsEditor
+                          key={selected.id + "-editorial"}
+                          sections={sections}
+                          reload={reload}
+                          selectedSectionId={selected.id}
+                          embedded
+                          mode="editorial"
+                          onDirtyChange={setSectionInfoDirty}
+                        />
                       )}
                       {selected.slug === "depoimentos" && selectedArea.id === "left" && (
-                        <section aria-label="Gerenciar depoimentos"
-                          className="site-editor-testimonials">
+                        <section
+                          aria-label="Gerenciar depoimentos"
+                          className="site-editor-testimonials"
+                        >
                           <div className="site-editor-consolidated-heading">
                             <h3>Gerenciar depoimentos</h3>
-                            <p>Pessoas, cargos, textos, ordem e publicação; os registros alimentam os painéis A e B.</p>
+                            <p>
+                              Pessoas, cargos, textos, ordem e publicação; os registros alimentam os
+                              painéis A e B.
+                            </p>
                           </div>
-                          <CollectionsStudio key={selected.id + "-testimonials"}
+                          <CollectionsStudio
+                            key={selected.id + "-testimonials"}
                             initialSource="testimonials"
                             availableSources={["testimonials"]}
-                            linkedSources={["testimonials"]} embedded
-                            onDirtyChange={setTestimonialsDirty} />
+                            linkedSources={["testimonials"]}
+                            embedded
+                            onDirtyChange={setTestimonialsDirty}
+                          />
                         </section>
                       )}
                       {selectedArea.source !== "section" && (
                         <ContentStudio
                           key={selected.id + "-content-" + selectedArea.id}
-                          sections={sections} sectionIdOverride={selected.id}
+                          sections={sections}
+                          sectionIdOverride={selected.id}
                           editorArea={selectedArea}
-                          embedded onDirtyChange={setContentDirty} onSaved={reload} />
+                          embedded
+                          onDirtyChange={setContentDirty}
+                          onSaved={reload}
+                        />
                       )}
                     </>
                   )}
@@ -921,16 +983,23 @@ export function AdminApp() {
         let next: SectionRow[] = data ?? []
         let metadataError = ""
         if (!error && next.length && supabase) {
-          const read = await supabase.from("content_blocks")
+          const read = await supabase
+            .from("content_blocks")
             .select("id,section_id,content_json")
             .eq("mobile_panel", "a")
-            .in("section_id", next.map((row) => row.id))
+            .in(
+              "section_id",
+              next.map((row) => row.id),
+            )
             .order("sort_order")
           metadataError = read.error?.message ?? ""
-          const firstBySection = new Map<string, {
-            id: string
-            content_json: { editorTitle?: string; editorAnchor?: string } | null
-          }>()
+          const firstBySection = new Map<
+            string,
+            {
+              id: string
+              content_json: { editorTitle?: string; editorAnchor?: string } | null
+            }
+          >()
           for (const block of read.data ?? []) {
             if (!firstBySection.has(block.section_id)) firstBySection.set(block.section_id, block)
           }
@@ -940,8 +1009,12 @@ export function AdminApp() {
             const alias = block?.content_json?.editorAnchor
             return {
               ...section,
-              editor_title: typeof label === "string" && label.trim()
-                ? label : section.slug === "perfil" ? "Hero" : section.title,
+              editor_title:
+                typeof label === "string" && label.trim()
+                  ? label
+                  : section.slug === "perfil"
+                    ? "Hero"
+                    : section.title,
               editor_anchor: typeof alias === "string" && alias.trim() ? alias : section.slug,
               editor_block_id: block?.id,
             }

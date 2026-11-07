@@ -742,9 +742,14 @@ export function ContentStudio({
     }
     setBlocks((data as BlockRow[]) ?? [])
     setMessage("")
-    const expectedPanel = editorArea?.source === "a" || editorArea?.source === "b"
-      ? editorArea.source
-      : heroArea === "left" ? "a" : heroArea === "right" ? "b" : undefined
+    const expectedPanel =
+      editorArea?.source === "a" || editorArea?.source === "b"
+        ? editorArea.source
+        : heroArea === "left"
+          ? "a"
+          : heroArea === "right"
+            ? "b"
+            : undefined
     if (expectedPanel) {
       const preferred = data?.find((block) => block.mobile_panel === expectedPanel)
       if (preferred) {
@@ -771,7 +776,11 @@ export function ContentStudio({
   // The existing A item holds two independent photos for Sobre.
   useEffect(() => {
     const block = blocks.find((entry) => entry.id === selectedId)
-    if (experienceSlug === "sobre" && activeVisualArea === "center" && block?.mobile_panel === "a") {
+    if (
+      experienceSlug === "sobre" &&
+      activeVisualArea === "center" &&
+      block?.mobile_panel === "a"
+    ) {
       setExpandedItemIndex(0)
       setAboutImageTarget("desktop")
     }
@@ -1342,7 +1351,9 @@ export function ContentStudio({
         </div>
         {draft ? (
           <section className="admin-card editor-form">
-            {experienceSlug === "sobre" && activeVisualArea === "center" && draft.mobile_panel === "a" ? (
+            {experienceSlug === "sobre" &&
+            activeVisualArea === "center" &&
+            draft.mobile_panel === "a" ? (
               <div className="about-center-photo-only">
                 <div>
                   <h3>Fotografia desktop · Centro</h3>
@@ -2009,8 +2020,11 @@ export function ContentStudio({
                                       <span className="admin-hidden-label"> · Ocultado</span>
                                     )}
                                   </strong>
-                                  <small>{experienceSlug === "perfil" ? item.title?.trim() || "Sem título"
-                                    : `Elemento ${String(index + 1).padStart(2, "0")} · ${draft.mobile_panel.toUpperCase()}`}</small>
+                                  <small>
+                                    {experienceSlug === "perfil"
+                                      ? item.title?.trim() || "Sem título"
+                                      : `Elemento ${String(index + 1).padStart(2, "0")} · ${draft.mobile_panel.toUpperCase()}`}
+                                  </small>
                                 </span>
                               </button>
                               <div className="order-buttons">
@@ -2288,105 +2302,116 @@ export function ContentStudio({
                                           }
                                         />
                                       </label>
-                                      {Boolean(item.label?.trim()) && <label>
-                                        <span className="hero-field-label">
-                                          {draft.mobile_panel === "b" && experienceSlug === "perfil" && index < 5
-                                            ? "Linha superior / número" : "Rótulo / número"}
-                                          {experienceSlug === "perfil" &&
-                                            draft.mobile_panel === "b" &&
-                                            index < 5 && (
+                                      {Boolean(item.label?.trim()) && (
+                                        <label>
+                                          <span className="hero-field-label">
+                                            {draft.mobile_panel === "b" &&
+                                            experienceSlug === "perfil" &&
+                                            index < 5
+                                              ? "Linha superior / número"
+                                              : "Rótulo / número"}
+                                            {experienceSlug === "perfil" &&
+                                              draft.mobile_panel === "b" &&
+                                              index < 5 && (
+                                                <HeroFormattingButton
+                                                  label="linha superior"
+                                                  value={item.fieldFormats?.label}
+                                                  onChange={(next) =>
+                                                    updateFieldFormat(index, "label", next)
+                                                  }
+                                                  catalog={identityOptions}
+                                                />
+                                              )}
+                                          </span>
+                                          <input
+                                            value={item.label ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { label: event.target.value })
+                                            }
+                                          />
+                                        </label>
+                                      )}
+                                      {Boolean(item.text?.trim()) && (
+                                        <label className="field-wide">
+                                          <span className="hero-field-label">
+                                            {experienceSlug === "perfil"
+                                              ? draft.mobile_panel === "a"
+                                                ? index === 0
+                                                  ? "Mensagem principal · texto pequeno"
+                                                  : "Destaque · subtítulo"
+                                                : index >= 5
+                                                  ? "Descrição do item"
+                                                  : "Texto"
+                                              : "Texto"}
+                                            {experienceSlug === "perfil" && (
                                               <HeroFormattingButton
-                                                label="linha superior"
-                                                value={item.fieldFormats?.label}
+                                                label="texto do item"
+                                                value={item.fieldFormats?.text}
                                                 onChange={(next) =>
-                                                  updateFieldFormat(index, "label", next)
+                                                  updateFieldFormat(index, "text", next)
                                                 }
                                                 catalog={identityOptions}
                                               />
                                             )}
-                                        </span>
-                                        <input
-                                          value={item.label ?? ""}
-                                          onChange={(event) =>
-                                            updateItem(index, { label: event.target.value })
-                                          }
-                                        />
-                                      </label>}
-                                      {Boolean(item.text?.trim()) && <label className="field-wide">
-                                        <span className="hero-field-label">
-                                          {experienceSlug === "perfil"
-                                            ? draft.mobile_panel === "a"
-                                              ? index === 0
-                                                ? "Mensagem principal · texto pequeno"
-                                                : "Destaque · subtítulo"
-                                              : index >= 5
-                                                ? "Descrição do item"
-                                                : "Texto"
-                                            : "Texto"}
-                                          {experienceSlug === "perfil" && (
-                                            <HeroFormattingButton
-                                              label="texto do item"
-                                              value={item.fieldFormats?.text}
-                                              onChange={(next) =>
-                                                updateFieldFormat(index, "text", next)
-                                              }
-                                              catalog={identityOptions}
+                                          </span>
+                                          <textarea
+                                            value={item.text ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { text: event.target.value })
+                                            }
+                                          />
+                                        </label>
+                                      )}
+                                      {Boolean(item.value?.trim()) && (
+                                        <label>
+                                          <span className="admin-field-with-info">
+                                            Valor/métrica
+                                            <AdminInfoTip
+                                              label="Valor/métrica"
+                                              description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
                                             />
-                                          )}
-                                        </span>
-                                        <textarea
-                                          value={item.text ?? ""}
-                                          onChange={(event) =>
-                                            updateItem(index, { text: event.target.value })
-                                          }
-                                        />
-                                      </label>}
-                                      {Boolean(item.value?.trim()) && <label>
-                                        <span className="admin-field-with-info">
-                                          Valor/métrica
-                                          <AdminInfoTip
-                                            label="Valor/métrica"
-                                            description="Valor ou indicador exibido em componentes que utilizam métricas. Deixe vazio quando o item não tiver um valor."
+                                          </span>
+                                          <input
+                                            value={item.value ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { value: event.target.value })
+                                            }
                                           />
-                                        </span>
-                                        <input
-                                          value={item.value ?? ""}
-                                          onChange={(event) =>
-                                            updateItem(index, { value: event.target.value })
-                                          }
-                                        />
-                                      </label>}
-                                      {Boolean(item.meta?.trim()) && <label>
-                                        <span className="admin-field-with-info">
-                                          {experienceSlug === "perfil" &&
-                                          draft.mobile_panel === "b" &&
-                                          index >= 5
-                                            ? "Subtítulo do item"
-                                            : "Metadado/URL"}
-                                          {experienceSlug === "perfil" &&
+                                        </label>
+                                      )}
+                                      {Boolean(item.meta?.trim()) && (
+                                        <label>
+                                          <span className="admin-field-with-info">
+                                            {experienceSlug === "perfil" &&
                                             draft.mobile_panel === "b" &&
-                                            index >= 5 && (
-                                              <HeroFormattingButton
-                                                label="subtítulo do item"
-                                                value={item.fieldFormats?.meta}
-                                                onChange={(next) =>
-                                                  updateFieldFormat(index, "meta", next)
-                                                }
-                                                catalog={identityOptions}
-                                              />
-                                            )}
-                                          <AdminInfoTip
-                                            label="Metadado/URL"
-                                            description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
+                                            index >= 5
+                                              ? "Subtítulo do item"
+                                              : "Metadado/URL"}
+                                            {experienceSlug === "perfil" &&
+                                              draft.mobile_panel === "b" &&
+                                              index >= 5 && (
+                                                <HeroFormattingButton
+                                                  label="subtítulo do item"
+                                                  value={item.fieldFormats?.meta}
+                                                  onChange={(next) =>
+                                                    updateFieldFormat(index, "meta", next)
+                                                  }
+                                                  catalog={identityOptions}
+                                                />
+                                              )}
+                                            <AdminInfoTip
+                                              label="Metadado/URL"
+                                              description="Informação complementar do item, como período, local ou unidade. Alguns componentes podem utilizar este campo como URL; o comportamento depende da seção."
+                                            />
+                                          </span>
+                                          <input
+                                            value={item.meta ?? ""}
+                                            onChange={(event) =>
+                                              updateItem(index, { meta: event.target.value })
+                                            }
                                           />
-                                        </span>
-                                        <input
-                                          value={item.meta ?? ""}
-                                          onChange={(event) =>
-                                            updateItem(index, { meta: event.target.value })
-                                          }
-                                        />
-                                      </label>}
+                                        </label>
+                                      )}
                                     </>
                                   )}
                                   {sections.find((entry) => entry.id === draft.section_id)?.slug ===
