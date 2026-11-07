@@ -93,6 +93,11 @@ export function validateContentItems(items: ContentItem[]) {
     if (!item.title.trim()) errors.push(`Item ${index + 1}: título obrigatório.`)
     if (item.targetSlug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.targetSlug))
       errors.push(`Item ${index + 1}: destino de seção inválido.`)
+    if (
+      item.hero?.mobileEditorial?.mobileImage &&
+      !isSafeEditorialImage(item.hero.mobileEditorial.mobileImage)
+    )
+      errors.push(`Item ${index + 1}: imagem exclusiva mobile deve ser HTTPS ou /media/arquivo.`)
     if (item.aboutDesktopImage && !isSafeEditorialImage(item.aboutDesktopImage))
       errors.push(`Item ${index + 1}: imagem desktop deve ser HTTPS ou /media/arquivo.`)
     if (

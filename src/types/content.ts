@@ -33,6 +33,59 @@ export type HeroDeviceStyle = {
   introAlign?: "left" | "center" | "right"
 }
 
+export type MobileEditorialFont = "Big Shoulders Display" | "Inter" | "Georgia"
+
+export type MobileEditorialTop = {
+  background?: string
+  fontFamily?: MobileEditorialFont
+  textColor?: string
+  accentColor?: string
+  supportColor?: string
+  supportFontFamily?: MobileEditorialFont
+  headlineSize?: number
+  paddingY?: number
+  showHeadline?: boolean
+  showSupport?: boolean
+}
+
+export type MobileEditorialMiddle = {
+  background?: string
+  fontFamily?: MobileEditorialFont
+  textColor?: string
+  badgeSize?: number
+  paddingY?: number
+  showBadge?: boolean
+}
+
+export type MobileEditorialBottom = {
+  background?: string
+  fontFamily?: MobileEditorialFont
+  textColor?: string
+  accentColor?: string
+  descriptionColor?: string
+  descriptionFontFamily?: MobileEditorialFont
+  photoWidth?: number
+  nameSize?: number
+  yearsSize?: number
+  paddingY?: number
+  showPhoto?: boolean
+  showName?: boolean
+  showExperience?: boolean
+  showArrow?: boolean
+}
+
+export type MobileProfileEditorial = {
+  enabled?: boolean
+  headline?: string
+  mobileImage?: string
+  mobileAlt?: string
+  mobileFraming?: MediaFraming
+  badgeText?: string
+  top?: MobileEditorialTop
+  middle?: MobileEditorialMiddle
+  bottom?: MobileEditorialBottom
+}
+
 export type HeroVisualConfig = {
   panelBackground?: string
   badgeText?: string
@@ -42,6 +95,8 @@ export type HeroVisualConfig = {
   introColor?: string
   desktop?: HeroDeviceStyle
   mobile?: HeroDeviceStyle
+  /** Mobile-only editorial presentation; desktop always ignores these settings. */
+  mobileEditorial?: MobileProfileEditorial
 }
 
 import type { MediaFraming } from "../lib/media-framing"

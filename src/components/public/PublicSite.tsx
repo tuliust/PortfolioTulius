@@ -7,7 +7,12 @@ import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"
 import { ToolIcons } from "./ToolIcons"
 import { placementMotionVariables } from "../../lib/placement-motion"
 import { imageFramingStyle } from "../../lib/media-framing"
-import { resolveHeroCardDestination } from "../../lib/validation"
+import { isSafeEditorialImage, resolveHeroCardDestination } from "../../lib/validation"
+import {
+  mobileEditorialFont,
+  mobileEditorialLines,
+  mobileProfileEditorial,
+} from "../../lib/mobile-profile-editorial"
 
 const heroDefaults = {
   badgeText: "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·",
@@ -337,6 +342,140 @@ function ProfileDesktop({
   )
 }
 
+/** A separate mobile-only composition; desktop keeps ProfileDesktop and its original data. */
+function ProfileMobileEditorial({
+  section,
+  profile,
+}: {
+  section: PortfolioSection
+  profile: ContentItem
+}) {
+  const config = mobileProfileEditorial(profile.hero?.mobileEditorial)
+  const positioning = (section.eyebrow ?? "").split(" · ").slice(1).join(" · ")
+  const nameParts = section.title.trim().split(/\s+/)
+  const firstName = nameParts[0] || "TULIUS"
+  const surname = nameParts.slice(1).join(" ")
+  const portrait =
+    config.mobileImage && isSafeEditorialImage(config.mobileImage)
+      ? config.mobileImage
+      : profile.image
+
+  return (
+    <div className="mobile360" style={heroStyle(profile.hero)}>
+      <div
+        className="mobile360-top"
+        style={
+          {
+            backgroundColor: config.top.background,
+            color: config.top.textColor,
+            paddingBlock: `${config.top.paddingY}px`,
+            "--mobile360-top-font": mobileEditorialFont(config.top.fontFamily),
+            "--mobile360-headline-color": config.top.textColor,
+            "--mobile360-headline-accent": config.top.accentColor,
+            "--mobile360-support-color": config.top.supportColor,
+            "--mobile360-support-font": mobileEditorialFont(config.top.supportFontFamily),
+            "--mobile360-headline-size": `${config.top.headlineSize}px`,
+          } as React.CSSProperties
+        }
+      >
+        {config.top.showHeadline !== false && (
+          <h1 className="mobile360-headline">
+            {mobileEditorialLines(config.headline).map((line, index, lines) => (
+              <span
+                className={index === lines.length - 1 ? "mobile360-headline-accent" : undefined}
+                key={`${index}-${line}`}
+              >
+                {line}
+              </span>
+            ))}
+          </h1>
+        )}
+        {config.top.showSupport !== false && positioning && (
+          <p className="mobile360-support">{positioning}</p>
+        )}
+      </div>
+      <div
+        className="mobile360-middle"
+        style={
+          {
+            backgroundColor: config.middle.background,
+            paddingBlock: `${config.middle.paddingY}px`,
+            "--hero-badge-background": "transparent",
+            "--hero-badge-color": config.middle.textColor,
+            "--mobile360-badge-font": mobileEditorialFont(config.middle.fontFamily),
+            "--mobile360-badge-size": `${config.middle.badgeSize}px`,
+          } as React.CSSProperties
+        }
+      >
+        {config.middle.showBadge !== false && (
+          <Badge360
+            config={{
+              ...profile.hero,
+              badgeVisible: true,
+              badgeText: config.badgeText || profile.hero?.badgeText,
+            }}
+          />
+        )}
+      </div>
+      <div
+        className="mobile360-bottom"
+        style={
+          {
+            backgroundColor: config.bottom.background,
+            color: config.bottom.textColor,
+            paddingBlock: `${config.bottom.paddingY}px`,
+            "--mobile360-bottom-font": mobileEditorialFont(config.bottom.fontFamily),
+            "--mobile360-bottom-accent": config.bottom.accentColor,
+            "--mobile360-bottom-text": config.bottom.textColor,
+            "--mobile360-description-color": config.bottom.descriptionColor,
+            "--mobile360-description-font": mobileEditorialFont(config.bottom.descriptionFontFamily),
+            "--mobile360-photo-width": `${config.bottom.photoWidth}%`,
+            "--mobile360-name-size": `${config.bottom.nameSize}px`,
+            "--mobile360-years-size": `${config.bottom.yearsSize}px`,
+          } as React.CSSProperties
+        }
+      >
+        <div className={`mobile360-bottom-grid${config.bottom.showPhoto === false || !portrait ? " no-photo" : ""}`}>
+          {config.bottom.showPhoto !== false && portrait && (
+            <div className="mobile360-photo">
+              <ApprovedProfileImage
+                src={portrait}
+                alt={config.mobileImage ? config.mobileAlt : profile.alt}
+                mobile
+                style={imageFramingStyle(config.mobileImage ? config.mobileFraming : profile.mediaFraming)}
+              />
+            </div>
+          )}
+          <div className="mobile360-bottom-copy">
+            {config.bottom.showName !== false && (
+              <div className="mobile360-person-name">
+                <span>{firstName}</span>
+                <strong>{surname}</strong>
+              </div>
+            )}
+            {config.bottom.showExperience !== false && (
+              <div className="mobile360-experience">
+                <strong>{profile.title}</strong>
+                {profile.text && <p>{profile.text}</p>}
+              </div>
+            )}
+            {config.bottom.showArrow !== false && (
+              <a
+                className="mobile360-down"
+                href="#perfil-b"
+                aria-label="Ir para áreas de atuação e experiências"
+                title="Ir para áreas de atuação e experiências"
+              >
+                <Icon name="down" size={27} />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ProfileMobilePresentation({
   section,
   profile,
@@ -345,6 +484,9 @@ function ProfileMobilePresentation({
   profile: ContentItem
 }) {
   const hero = profile.hero
+  if (hero?.mobileEditorial?.enabled) {
+    return <ProfileMobileEditorial section={section} profile={profile} />
+  }
   const [kicker, ...positioning] = (section.eyebrow ?? "").split(" · ")
   return (
     <>
@@ -465,7 +607,7 @@ function MobilePanel({
     <div
       id={`${section.slug}-${panel}`}
       data-panel={panel}
-      className={`mobile-panel panel-${panel}`}
+      className={`mobile-panel panel-${panel}${isProfile && panel === "a" && hero?.mobileEditorial?.enabled ? " editorial360-mobile" : ""}`}
     >
       {section.slug === "depoimentos" ? (
         <>

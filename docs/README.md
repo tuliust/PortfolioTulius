@@ -2,6 +2,8 @@
 
 **Índice vigente em 05/11/2026.** Esta página distingue documentação **operacional**, **especificações de origem** e **evidências históricas**. Cada commit tem data e escopo; jamais interpretar um snapshot antigo como status corrente de `main`. A versão anterior deste índice está [arquivada](historico/INDICE_DOCUMENTACAO_ANTES_REORGANIZACAO_2026-11-05.md).
 
+> **Novo escopo de 06/11/2026:** [Perfil Editorial 360° — mobile](PERFIL_EDITORIAL_360_MOBILE_2026-11-06.md). A documentação anterior preserva o aceite e as evidências datadas de 05/11; esse novo pedido é restrito à abertura mobile.
+
 ## Primeiro acesso — cinco referências essenciais
 
 | Finalidade | Fonte |

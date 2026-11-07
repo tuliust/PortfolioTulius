@@ -18,6 +18,23 @@ export function Navigation({
   const activeSection = sections.find((section) => section.slug === current)
   const theme = current === "perfil" ? "profile" : (activeSection?.theme ?? "paper")
 
+  const mobileEditorialEnabled =
+    sections.find((section) => section.slug === "perfil")?.panelA[0]?.hero?.mobileEditorial
+      ?.enabled === true
+  const [firstPanelVisible, setFirstPanelVisible] = useState(false)
+
+  useEffect(() => {
+    if (!mobileEditorialEnabled || typeof IntersectionObserver === "undefined") return
+    const panel = document.getElementById("perfil-a")
+    if (!panel) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setFirstPanelVisible(entry.isIntersecting),
+      { threshold: 0 },
+    )
+    observer.observe(panel)
+    return () => observer.disconnect()
+  }, [mobileEditorialEnabled])
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (!open) return
@@ -82,7 +99,7 @@ export function Navigation({
 
   return (
     <>
-      <header className={`site-header header-${theme}`}>
+      <header className={`site-header header-${theme}${mobileEditorialEnabled && firstPanelVisible && current === "perfil" ? " header-profile-editorial" : ""}`}>
         <button className="brand-button" onClick={() => go("perfil")} aria-label="Voltar ao perfil">
           <span>TULIUS</span>
           <span>TSANGAROPULOS</span>

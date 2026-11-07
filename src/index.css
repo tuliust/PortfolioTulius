@@ -2387,3 +2387,189 @@
 .editor-readonly-status { display: grid; align-content: end; gap: .35rem; margin: 1rem 0; min-height: 3.5rem; color: #504a47; font-size: .78rem; }
 .editor-readonly-status strong { font-size: .88rem; }
 .editor-readonly-status span { color: #716b67; font-weight: 400; }
+
+/* Perfil · variante editorial 360 exclusiva da abertura mobile.
+   Os estilos desktop e o segundo painel mobile permanecem intactos. */
+@media (max-width: 767px) {
+  .public-site #perfil-a.editorial360-mobile {
+    display: block;
+    height: auto;
+    min-height: 100svh;
+    padding: var(--header) 0 0;
+    scroll-margin-top: 0;
+    background: var(--ink);
+  }
+  .site-header.header-profile-editorial {
+    background: var(--ink);
+    color: var(--paper);
+    backdrop-filter: none;
+  }
+  .site-header.header-profile-editorial .brand-button span:last-child {
+    color: var(--paper);
+  }
+  .site-header.header-profile-editorial .menu-button {
+    color: var(--paper);
+  }
+  .mobile360 {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .mobile360-top {
+    padding-right: var(--gutter);
+    padding-left: var(--gutter);
+    min-width: 0;
+  }
+  .mobile360-headline {
+    display: grid;
+    gap: .05em;
+    margin: 0;
+    color: var(--mobile360-headline-color, #fff);
+    font-family: var(--mobile360-top-font, var(--font-display));
+    font-size: clamp(2.35rem, 13.8vw, var(--mobile360-headline-size, 82px));
+    font-weight: 900;
+    line-height: .92;
+    letter-spacing: -.025em;
+    text-transform: uppercase;
+  }
+  .mobile360-headline > span {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .mobile360-headline-accent {
+    color: var(--mobile360-headline-accent, var(--orange));
+  }
+  .mobile360-support {
+    margin: clamp(1.25rem, 3svh, 2rem) 0 0;
+    max-width: 46ch;
+    color: var(--mobile360-support-color, white);
+    font: 400 clamp(.95rem, 3.5vw, 1.18rem)/1.43 var(--mobile360-support-font, Inter), sans-serif;
+    overflow-wrap: break-word;
+  }
+  .mobile360-middle {
+    display: grid;
+    place-items: center;
+    min-height: 12rem;
+    padding-right: var(--gutter);
+    padding-left: var(--gutter);
+  }
+  .mobile360-middle .badge-360 {
+    position: static;
+    width: min(var(--mobile360-badge-size, 240px), 76vw);
+    aspect-ratio: 1;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    transform: none;
+    color: var(--hero-badge-color, var(--ink));
+    background: transparent;
+  }
+  .mobile360-middle .badge-360 text {
+    font-family: var(--mobile360-badge-font, var(--font-display));
+  }
+  .mobile360-bottom {
+    padding-right: var(--gutter);
+    padding-left: var(--gutter);
+    min-width: 0;
+  }
+  .mobile360-bottom-grid {
+    display: grid;
+    grid-template-columns: minmax(0, var(--mobile360-photo-width, 45%)) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(.7rem, 3vw, 1.2rem);
+  }
+  .mobile360-bottom-grid.no-photo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mobile360-photo {
+    aspect-ratio: 3 / 4;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .mobile360-photo > picture,
+  .mobile360-photo > img,
+  .mobile360-photo > picture > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .mobile360-photo img {
+    object-fit: cover;
+    object-position: center;
+    filter: grayscale(1);
+  }
+  .mobile360-bottom-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1rem, 3svh, 1.7rem);
+    font-family: var(--mobile360-bottom-font, var(--font-display));
+  }
+  .mobile360-person-name {
+    display: grid;
+    justify-items: start;
+    gap: .2rem;
+    max-width: 100%;
+    font-size: clamp(1.35rem, 5.9vw, var(--mobile360-name-size, 48px));
+    font-weight: 900;
+    line-height: .93;
+    letter-spacing: -.025em;
+    text-transform: uppercase;
+  }
+  .mobile360-person-name > span {
+    max-width: 100%;
+    padding: .08em .13em;
+    background: var(--mobile360-bottom-accent, var(--orange));
+    color: var(--ink);
+  }
+  .mobile360-person-name > strong {
+    max-width: 100%;
+    font-weight: inherit;
+    color: var(--mobile360-bottom-text, var(--ink));
+    overflow-wrap: anywhere;
+  }
+  .mobile360-experience {
+    min-width: 0;
+  }
+  .mobile360-experience > strong {
+    display: block;
+    color: var(--mobile360-bottom-accent, var(--orange));
+    font-size: clamp(2.3rem, 10.7vw, var(--mobile360-years-size, 64px));
+    font-weight: 800;
+    line-height: .93;
+    overflow-wrap: break-word;
+  }
+  .mobile360-experience > p {
+    margin: .6rem 0 0;
+    color: var(--mobile360-description-color, var(--ink));
+    font: 400 clamp(.8rem, 3.15vw, 1rem)/1.4 var(--mobile360-description-font, Inter), sans-serif;
+    overflow-wrap: break-word;
+  }
+  .mobile360-down {
+    display: grid;
+    place-items: center;
+    width: 3.3rem;
+    height: 3.3rem;
+    margin-top: .25rem;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    color: var(--mobile360-bottom-text, var(--ink));
+    text-decoration: none;
+    transition: transform .2s ease, background-color .2s ease;
+  }
+  .mobile360-down:hover,
+  .mobile360-down:focus-visible {
+    background: var(--mobile360-bottom-accent, var(--orange));
+    transform: translateY(3px);
+  }
+  .mobile360-down svg {
+    animation: profile-scroll-hint 1.7s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile360-down svg {
+      animation: none;
+    }
+  }
+}
