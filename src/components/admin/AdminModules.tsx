@@ -1741,7 +1741,7 @@ export function ContentStudio({
                 </fieldset>
                 <StatusMessage>{message}</StatusMessage>
               </div>
-            ) :             {experienceSlug === "sobre" &&
+            ) : experienceSlug === "sobre" &&
             activeVisualArea === "center" &&
             draft.mobile_panel === "a" ? (
               <div className="about-center-photo-only">
