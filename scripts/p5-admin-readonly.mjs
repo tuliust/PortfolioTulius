@@ -210,10 +210,12 @@ try {
     const title = fields.find((item) => item.textContent?.trim() === "Título da seção (nome no CMS)")?.querySelector("input")?.value
     const select = document.querySelector(".site-editor-section select")
     const anchor = document.querySelector(".site-editor-section [aria-describedby='editor-anchor-help']")
+    const bg = document.querySelector(".site-editor-section button[aria-label='Fundo da seção (Hero)']")
     return {
       title,
       anchorEditable: anchor instanceof HTMLInputElement && !anchor.disabled,
       anchorValue: anchor?.value,
+      backgroundOnSection: Boolean(bg),
       fieldLabels: names,
       transitions: select ? [...select.options].map((option) => option.value) : [],
       archive: !![...document.querySelectorAll(".site-editor-section .form-actions button")]
@@ -227,7 +229,7 @@ try {
   })
   const transitions = ["none", "fade-in", "fade-up", "stagger", "image-reveal", "metric-count"]
   assert(section.title === "Hero" && section.anchorEditable && section.anchorValue === "perfil" &&
-    section.archive && section.contentHidden &&
+    section.archive && section.contentHidden && section.backgroundOnSection &&
     transitions.every((x) => section.transitions.includes(x)) &&
     section.transitions.length === transitions.length &&
     !section.fieldLabels.some((name) => /^(Tema|Layout|Exibir no site)$/.test(name)),
@@ -240,6 +242,7 @@ try {
     editableAnchor: true, removedRedundantFields: true })
   report("HERO_TABS", { tabs: section.tabs.map((tab) => tab.label),
     defaultMode: "Seção" })
+  report("HERO_SECTION_BG", { selector: "Identidade", section: true, panel: false })
 
   await page.evaluate(() =>
     [...document.querySelectorAll(".hero-editor-tabs button")]
@@ -254,12 +257,17 @@ try {
     palettes: document.querySelectorAll(".hero-left-editor .hero-visual-picker-trigger").length,
     genericCards: document.querySelectorAll(".hero-left-editor .block-item-editor").length,
     formatButtons: document.querySelectorAll(".hero-left-editor .hero-format-trigger").length,
+    movedFieldsAbsent: ![...document.querySelectorAll(".hero-left-editor .hero-picker-label")]
+      .some((node) => /Fundo da seção|Cor da frase/.test(node.textContent ?? "")),
+    mobileDetailsAbsent: !document.querySelector(".hero-left-mobile-details"),
+    advancedAbsent: !document.querySelector(".site-editor-advanced"),
     photo: [...document.querySelectorAll(".hero-left-editor .published-media-picker-label")]
       .some((node) => node.textContent?.trim() === "Foto"),
   }))
   assert(heroLeft.groups.includes("Mensagem principal") && heroLeft.groups.includes("Selo") &&
     heroLeft.groups.includes("Apresentação") && heroLeft.genericCards === 0 &&
-    heroLeft.palettes >= 5 && heroLeft.formatButtons >= 3 && heroLeft.photo,
+    heroLeft.palettes >= 4 && heroLeft.formatButtons >= 3 && heroLeft.photo &&
+    heroLeft.movedFieldsAbsent && heroLeft.mobileDetailsAbsent && heroLeft.advancedAbsent,
     "Elementos da Esquerda incompletos: " + JSON.stringify(heroLeft))
 
   const highlights = await page.evaluate(() => ({
@@ -289,35 +297,71 @@ try {
     iconGroups.includes("Navegação e controles"), "Ícones não agrupados.")
   await page.keyboard.press("Escape")
 
+  // The same editorial area opens two independent full-page views.
+  await page.click(".site-editor-subview-actions button[aria-pressed='false']:first-of-type")
+  await waitFor(page, () => !!document.querySelector(".site-editor-advanced-page") &&
+    !document.querySelector(".hero-left-editor"))
+  const advancedOnly = await page.evaluate(() => ({
+    blockSettings: Boolean(document.querySelector(".site-editor-advanced-page")),
+    heroContentAbsent: !document.querySelector(".hero-left-editor"),
+    panelConfig: Boolean(document.querySelector(".motion-editor")),
+  }))
+  assert(advancedOnly.blockSettings && advancedOnly.heroContentAbsent && advancedOnly.panelConfig,
+    "Página Avançado contém campos de conteúdo: " + JSON.stringify(advancedOnly))
+  await page.evaluate(() =>
+    document.querySelector(".site-editor-subview-actions button[aria-label='Configurações mobile']")?.click())
+  await waitFor(page, () => !!document.querySelector(".site-editor-mobile-page .mobile360-admin-config"))
+  const mobilePage = await page.evaluate(() => ({
+    advancedAbsent: !document.querySelector(".site-editor-advanced-page"),
+    contentAbsent: !document.querySelector(".hero-left-editor"),
+    mobileEditorial: Boolean(document.querySelector(".mobile360-admin-config")),
+    mobileDevice: [...document.querySelectorAll(".site-editor-mobile-page fieldset legend")]
+      .some((node) => node.textContent?.trim() === "Fotografia e selo · Mobile"),
+  }))
+  assert(Object.values(mobilePage).every(Boolean),
+    "Página Mobile não isolada: " + JSON.stringify(mobilePage))
+  report("HERO_SUBVIEWS", { advanced: true, mobile: true, separateFromContent: true })
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".site-editor-subview-actions button")]
+      .find((node) => node.textContent?.includes("Voltar à edição"))?.click())
+  await waitFor(page, () => Boolean(document.querySelector(".hero-left-editor")))
   await page.evaluate(() =>
     [...document.querySelectorAll(".hero-editor-tabs button")]
       .find((node) => node.textContent?.includes("Direita"))?.click())
-  await waitFor(page, () =>
-    document.querySelector(".hero-section-specific legend")?.textContent?.includes("Direita"))
+  await waitFor(page, () => Boolean(document.querySelector(".hero-right-editor")))
   const heroRight = await page.evaluate(() => ({
-    group: document.querySelector(".hero-section-specific legend")?.textContent?.trim(),
-    buttons: document.querySelectorAll(".hero-section-specific .hero-format-trigger").length,
-    secondary: [...document.querySelectorAll(".hero-section-specific input")].some(
-      (input) => input.value === "Experiência e atuação"),
-    labels: [...document.querySelectorAll(".hero-section-specific label, .hero-section-specific .hero-picker-label")]
+    groups: [...document.querySelectorAll(".hero-right-group > legend")]
       .map((node) => node.textContent?.trim()),
-    mainTitle: [...document.querySelectorAll(".hero-section-specific input")]
+    themes: document.querySelectorAll(
+      ".hero-right-group[aria-label='Botões Principais'] .hero-right-entry").length,
+    highlights: document.querySelectorAll(
+      ".hero-right-group[aria-label='Área de Destaques'] .hero-right-entry").length,
+    title: [...document.querySelectorAll(".hero-right-editor input")]
       .some((node) => node.value === "Tulius Tsangaropulos"),
+    secondary: [...document.querySelectorAll(".hero-right-editor input")]
+      .some((node) => node.value === "Experiência e atuação"),
+    bottomButton: Boolean(document.querySelector(".hero-right-bottom-button")),
+    genericCardsAbsent: !document.querySelector(".hero-right-editor .block-item-editor"),
     originalBlockCount: document.querySelectorAll(".studio-block-picker button").length,
   }))
-  assert(heroRight.group?.includes("Direita") && heroRight.secondary &&
-    heroRight.buttons >= 3 && heroRight.originalBlockCount === 2 && heroRight.mainTitle &&
-    heroRight.labels.some((x) => x.includes("Botão inferior")),
-    "Hero Direita incompleto: " + JSON.stringify(heroRight))
+  assert(heroRight.groups.includes("Título Cabeçalho") &&
+    heroRight.groups.includes("Subtítulo") &&
+    heroRight.groups.includes("Botões Principais") &&
+    heroRight.groups.includes("Área de Destaques") &&
+    heroRight.themes === 5 && heroRight.highlights === 6 &&
+    heroRight.title && heroRight.secondary && heroRight.bottomButton &&
+    heroRight.genericCardsAbsent && heroRight.originalBlockCount === 2,
+    "Agrupamentos da Direita incompletos: " + JSON.stringify(heroRight))
   await page.evaluate(() =>
-    document.querySelector(".hero-section-specific .hero-format-trigger")?.click())
+    document.querySelector(".hero-right-editor .hero-format-trigger")?.click())
   await page.waitForSelector(".hero-format-popover select", { timeout: 10000 })
   const styleChoices = await page.$eval(".hero-format-popover select", (select) =>
     [...select.options].filter((option) => option.value.startsWith("typography.")).length)
   assert(styleChoices === 7, "Popover não usa os 7 estilos da Identidade.")
   await page.evaluate(() =>
     document.querySelector(".hero-format-popover .hero-format-actions button:last-child")?.click())
-  report("HERO_FIELDS", { left: heroLeft.groups, right: heroRight.group, styles: styleChoices,
+  report("HERO_FIELDS", { left: heroLeft.groups, right: heroRight.groups, styles: styleChoices,
+    themes: heroRight.themes, highlights: heroRight.highlights,
     fieldsPersistedInExistingBlocks: true })
 
   await page.evaluate(() =>
@@ -498,5 +542,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 17, writes: blockedWrites.length }))
-if (checks !== 17) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 19, writes: blockedWrites.length }))
+if (checks !== 19) process.exitCode = 1

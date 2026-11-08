@@ -87,6 +87,7 @@ import { FloatingSaveButton } from "./FloatingSaveButton"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroItemFields } from "./HeroItemFields"
 import { HeroLeftEditor } from "./HeroLeftEditor"
+import { HeroRightEditor } from "./HeroRightEditor"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 
 interface SectionOption {
@@ -642,6 +643,7 @@ export function ContentStudio({
   onSaved,
   heroArea,
   editorArea,
+  editorView = "content",
 }: {
   sections: SectionOption[]
   sectionIdOverride?: string
@@ -650,6 +652,7 @@ export function ContentStudio({
   onSaved?: () => void
   heroArea?: "left" | "right"
   editorArea?: AdminVisualArea
+  editorView?: "content" | "advanced" | "mobile"
 }) {
   const identityOptions = useEditorIdentityOptions()
   const [sectionId, setSectionId] = useState(sectionIdOverride ?? sections[0]?.id ?? "")
@@ -773,6 +776,14 @@ export function ContentStudio({
   useEffect(() => {
     void load()
   }, [sectionId, heroArea, editorArea?.id, editorArea?.source])
+
+  useEffect(() => {
+    if (editorView === "mobile") {
+      setPlacementPanel(draft?.mobile_panel === "b" ? "mobile-b" : "mobile-a")
+    } else if (editorView === "advanced") {
+      setPlacementPanel("desktop")
+    }
+  }, [editorView, draft?.id])
 
   useEffect(() => {
     setExpandedItemIndex(experienceSlug === "perfil" ? 0 : null)
@@ -1357,61 +1368,10 @@ export function ContentStudio({
         </div>
         {draft ? (
           <section className="admin-card editor-form">
-            {experienceSlug === "sobre" &&
-            activeVisualArea === "center" &&
-            draft.mobile_panel === "a" ? (
-              <div className="about-center-photo-only">
-                <div>
-                  <h3>Fotografia desktop · Centro</h3>
-                  <p>
-                    Esta área controla apenas a fotografia central da seção 02. Os textos e a imagem
-                    mobile permanecem em seus próprios campos.
-                  </p>
-                </div>
-                {draft.content_json.items?.[0] ? (
-                  <PublishedMediaPicker
-                    label="Fotografia desktop"
-                    guidanceAsInfo
-                    iconOnlyActions
-                    allowFraming={false}
-                    guidance="Retrato vertical 3:4; sugestão 900 × 1200 px."
-                    ratio="3 / 4"
-                    framing={draft.content_json.items[0].aboutDesktopFraming}
-                    onFramingChange={(aboutDesktopFraming) =>
-                      updateItem(0, { aboutDesktopFraming })
-                    }
-                    value={draft.content_json.items[0].aboutDesktopImage ?? ""}
-                    onChange={(aboutDesktopImage, aboutDesktopAlt) =>
-                      updateItem(0, { aboutDesktopImage, aboutDesktopAlt })
-                    }
-                  />
-                ) : (
-                  <p role="status">Não foi encontrado o registro da fotografia desktop.</p>
-                )}
-                <p>
-                  Se não houver fotografia desktop, o site conserva a imagem de reserva. A imagem
-                  mobile não será modificada.
-                </p>
-                <StatusMessage>{message}</StatusMessage>
-                {!embedded && (
-                  <FloatingSaveButton
-                    enabled={blockDirty && !placementsLoading && !placementsReadError}
-                    onClick={saveBlock}
-                    label="Salvar fotografia desktop"
-                  />
-                )}
-              </div>
-            ) : (
-              <>
-                {draft.content_json.source_collection === "testimonials" && (
-                  <p className="site-editor-note">
-                    Os depoimentos exibidos no site são editados em
-                    <strong> Gerenciar depoimentos</strong>, acima. Os itens manuais deste bloco
-                    permanecem armazenados como reserva.
-                  </p>
-                )}
-                <details className="site-editor-advanced">
-                  <summary>Configurações avançadas do bloco e dos painéis</summary>
+            {editorView === "advanced" ? (
+              <div className="site-editor-standalone-page">
+                                <div className="site-editor-advanced site-editor-advanced-page">
+                  <h4>Bloco e painéis</h4>
                   <div className="field-grid compact-grid">
                     <label>
                       Tipo
@@ -1659,7 +1619,182 @@ export function ContentStudio({
                       </label>
                     </div>
                   </fieldset>
-                </details>
+                </div>
+                <fieldset className="site-editor-device-fieldset">
+                  <legend>Ajustes de apresentação desktop</legend>
+                  <div className="site-editor-device-list">
+                    {(draft.content_json.items ?? []).map((item, index) => (
+                      <details key={index} className="site-editor-device-item">
+                        <summary>{item.title || `Elemento ${index + 1}`}</summary>
+                        <DeviceStyleEditor
+                          device="desktop"
+                          value={item.desktop}
+                          onChange={(patch) => updateDeviceStyle(index, "desktop", patch)}
+                        />
+                        {experienceSlug === "perfil" && index === 0 && (
+                          <HeroDeviceEditor
+                            device="desktop"
+                            value={item.hero?.desktop}
+                            onChange={(patch) => updateHeroDevice(index, "desktop", patch)}
+                          />
+                        )}
+                      </details>
+                    ))}
+                  </div>
+                </fieldset>
+                <StatusMessage>{message}</StatusMessage>
+              </div>
+            ) : editorView === "mobile" ? (
+              <div className="site-editor-standalone-page site-editor-mobile-page">
+                <fieldset className="site-editor-device-fieldset">
+                  <legend>Configurações dos painéis mobile</legend>
+                  <div className="field-grid compact-grid">
+                    <label>
+                      Ordem de exibição do bloco
+                      <select value={draft.mobile_panel} onChange={(event) =>
+                        setDraft({ ...draft, mobile_panel: event.target.value as "a" | "b" })}>
+                        <option value="a">Painel A · Primeiro no mobile</option>
+                        <option value="b">Painel B · Segundo no mobile</option>
+                      </select>
+                    </label>
+                    <label>
+                      Placement mobile
+                      <select value={placementPanel} onChange={(event) =>
+                        setPlacementPanel(event.target.value as PanelKey)}>
+                        <option value="mobile-a">Mobile A</option>
+                        <option value="mobile-b">Mobile B</option>
+                      </select>
+                    </label>
+                    <label>
+                      Layout
+                      <select value={placement.layout_variant} onChange={(event) =>
+                        setPlacement({ ...placement, layout_variant: event.target.value })}>
+                        <option value="default">Padrão</option>
+                        <option value="compact">Compacto</option>
+                        <option value="featured">Destaque</option>
+                        <option value="wide">Largo</option>
+                      </select>
+                    </label>
+                    <label>
+                      Animação
+                      <select value={placement.preset} onChange={(event) =>
+                        setPlacement({ ...placement, preset: event.target.value })}>
+                        <option value="none">Nenhuma</option>
+                        <option value="fade-in">Aparecer suavemente</option>
+                        <option value="fade-up">Subir suavemente</option>
+                        <option value="stagger">Sequência</option>
+                        <option value="image-reveal">Revelar imagem</option>
+                        <option value="metric-count">Destacar métricas</option>
+                      </select>
+                    </label>
+                    <label>
+                      Duração (ms)
+                      <input type="number" min="0" max="1200" value={placement.duration}
+                        onChange={(event) =>
+                          setPlacement({ ...placement, duration: Number(event.target.value) })} />
+                    </label>
+                    <label>
+                      Atraso (ms)
+                      <input type="number" min="0" max="600" value={placement.delay}
+                        onChange={(event) =>
+                          setPlacement({ ...placement, delay: Number(event.target.value) })} />
+                    </label>
+                    <label>
+                      Deslocamento (px)
+                      <input type="number" min="0" max="48" value={placement.distance}
+                        onChange={(event) =>
+                          setPlacement({ ...placement, distance: Number(event.target.value) })} />
+                    </label>
+                    <label className="toggle-field">
+                      <input type="checkbox" checked={placement.is_visible}
+                        onChange={(event) =>
+                          setPlacement({ ...placement, is_visible: event.target.checked })} />
+                      Exibir placement mobile
+                    </label>
+                  </div>
+                </fieldset>
+                <fieldset className="site-editor-device-fieldset">
+                  <legend>Elementos responsivos · Mobile</legend>
+                  <div className="site-editor-device-list">
+                    {(draft.content_json.items ?? []).map((item, index) => (
+                      <details className="site-editor-device-item" key={index}
+                        open={experienceSlug === "perfil" && index === 0 ? true : undefined}>
+                        <summary>{item.title || `Elemento ${index + 1}`}</summary>
+                        <DeviceStyleEditor
+                          device="mobile"
+                          value={item.mobile}
+                          onChange={(patch) => updateDeviceStyle(index, "mobile", patch)}
+                        />
+                        {experienceSlug === "perfil" && index === 0 && (
+                          <HeroDeviceEditor device="mobile" value={item.hero?.mobile}
+                            onChange={(patch) => updateHeroDevice(index, "mobile", patch)} />
+                        )}
+                        {experienceSlug === "perfil" && draft.mobile_panel === "a" && index === 0 && (
+                          <ProfileMobileEditorialEditor
+                            value={item.hero?.mobileEditorial}
+                            onChange={(mobileEditorial) => updateHero(index, { mobileEditorial })}
+                          />
+                        )}
+                      </details>
+                    ))}
+                  </div>
+                </fieldset>
+                <StatusMessage>{message}</StatusMessage>
+              </div>
+            ) :             {experienceSlug === "sobre" &&
+            activeVisualArea === "center" &&
+            draft.mobile_panel === "a" ? (
+              <div className="about-center-photo-only">
+                <div>
+                  <h3>Fotografia desktop · Centro</h3>
+                  <p>
+                    Esta área controla apenas a fotografia central da seção 02. Os textos e a imagem
+                    mobile permanecem em seus próprios campos.
+                  </p>
+                </div>
+                {draft.content_json.items?.[0] ? (
+                  <PublishedMediaPicker
+                    label="Fotografia desktop"
+                    guidanceAsInfo
+                    iconOnlyActions
+                    allowFraming={false}
+                    guidance="Retrato vertical 3:4; sugestão 900 × 1200 px."
+                    ratio="3 / 4"
+                    framing={draft.content_json.items[0].aboutDesktopFraming}
+                    onFramingChange={(aboutDesktopFraming) =>
+                      updateItem(0, { aboutDesktopFraming })
+                    }
+                    value={draft.content_json.items[0].aboutDesktopImage ?? ""}
+                    onChange={(aboutDesktopImage, aboutDesktopAlt) =>
+                      updateItem(0, { aboutDesktopImage, aboutDesktopAlt })
+                    }
+                  />
+                ) : (
+                  <p role="status">Não foi encontrado o registro da fotografia desktop.</p>
+                )}
+                <p>
+                  Se não houver fotografia desktop, o site conserva a imagem de reserva. A imagem
+                  mobile não será modificada.
+                </p>
+                <StatusMessage>{message}</StatusMessage>
+                {!embedded && (
+                  <FloatingSaveButton
+                    enabled={blockDirty && !placementsLoading && !placementsReadError}
+                    onClick={saveBlock}
+                    label="Salvar fotografia desktop"
+                  />
+                )}
+              </div>
+            ) : (
+              <>
+                {draft.content_json.source_collection === "testimonials" && (
+                  <p className="site-editor-note">
+                    Os depoimentos exibidos no site são editados em
+                    <strong> Gerenciar depoimentos</strong>, acima. Os itens manuais deste bloco
+                    permanecem armazenados como reserva.
+                  </p>
+                )}
+
                 {["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(
                   sections.find((entry) => entry.id === draft.section_id)?.slug ?? "",
                 ) &&
@@ -1962,34 +2097,23 @@ export function ContentStudio({
                       onHeroFormat={(key, next) => updateHeroFormat(0, key, next)}
                       onMove={moveItem}
                       onRemove={(index) => void removeItem(index)}
-                      mobileSettings={
-                        draft.content_json.items?.[0] ? (
-                          <>
-                            <div className="responsive-style-grid">
-                              {(["desktop", "mobile"] as const).map((device) => (
-                                <DeviceStyleEditor
-                                  key={device}
-                                  device={device}
-                                  value={draft.content_json.items?.[0]?.[device]}
-                                  onChange={(patch) => updateDeviceStyle(0, device, patch)}
-                                />
-                              ))}
-                              {(["desktop", "mobile"] as const).map((device) => (
-                                <HeroDeviceEditor
-                                  key={device}
-                                  device={device}
-                                  value={draft.content_json.items?.[0]?.hero?.[device]}
-                                  onChange={(patch) => updateHeroDevice(0, device, patch)}
-                                />
-                              ))}
-                            </div>
-                            <ProfileMobileEditorialEditor
-                              value={draft.content_json.items[0].hero?.mobileEditorial}
-                              onChange={(mobileEditorial) => updateHero(0, { mobileEditorial })}
-                            />
-                          </>
-                        ) : undefined
-                      }
+
+                    />
+                  ) : experienceSlug === "perfil" && draft.mobile_panel === "b" ? (
+                    <HeroRightEditor
+                      items={draft.content_json.items ?? []}
+                      title={heroCopy.title}
+                      subtitle={heroCopy.eyebrow}
+                      sections={sections}
+                      catalog={identityOptions}
+                      onTitleChange={(title) => setHeroCopy((current) => ({ ...current, title }))}
+                      onSubtitleChange={(eyebrow) => setHeroCopy((current) => ({ ...current, eyebrow }))}
+                      onUpdateItem={updateItem}
+                      onUpdateHero={(patch) => updateHero(0, patch)}
+                      onFormat={updateFieldFormat}
+                      onHeroFormat={(key, next) => updateHeroFormat(0, key, next)}
+                      onMove={moveItem}
+                      onRemove={(index) => void removeItem(index)}
                     />
                   ) : (
                     <>

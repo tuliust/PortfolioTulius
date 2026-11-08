@@ -1,4 +1,3 @@
-import type { ReactNode } from "react"
 import type { ContentItem, HeroTextFormat, HeroVisualConfig } from "../../types/content"
 import type { IdentityTokenRow } from "../../lib/identity-catalog"
 import { HeroItemFields } from "./HeroItemFields"
@@ -25,7 +24,6 @@ export function HeroLeftEditor({
   onHeroFormat,
   onMove,
   onRemove,
-  mobileSettings,
 }: {
   items: ContentItem[]
   intro: string
@@ -37,7 +35,6 @@ export function HeroLeftEditor({
   onHeroFormat: (key: string, next?: HeroTextFormat) => void
   onMove: (index: number, direction: -1 | 1) => void
   onRemove: (index: number) => void
-  mobileSettings?: ReactNode
 }) {
   const item = items[0]
   if (!item) return <p role="status">O bloco esquerdo do Hero não contém uma apresentação.</p>
@@ -118,13 +115,6 @@ export function HeroLeftEditor({
             />
           </div>
           <HeroColorPicker
-            label="Fundo da seção (Hero)"
-            allowTransparent
-            value={hero?.rootBackground ?? "transparent"}
-            onChange={(rootBackground) => onUpdateHero({ rootBackground })}
-            catalog={catalog}
-          />
-          <HeroColorPicker
             label="Fundo da Esquerda"
             value={hero?.panelBackground ?? "#171617"}
             onChange={(panelBackground) => onUpdateHero({ panelBackground })}
@@ -146,19 +136,7 @@ export function HeroLeftEditor({
               onChange={(event) => onIntroChange(event.target.value)}
             />
           </label>
-          <HeroColorPicker
-            label="Cor da frase"
-            value={hero?.introColor ?? "#FFFFFF"}
-            onChange={(introColor) => onUpdateHero({ introColor })}
-            catalog={catalog}
-          />
         </div>
-        {mobileSettings && (
-          <details className="hero-left-mobile-details">
-            <summary>Estilo e apresentação mobile</summary>
-            {mobileSettings}
-          </details>
-        )}
       </fieldset>
 
       <HeroHighlightsEditor

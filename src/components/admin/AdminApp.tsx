@@ -7,6 +7,8 @@ import {
   isExperienceSection,
 } from "../../lib/admin-experience-navigation"
 import { Icon } from "../ui/Icons"
+import { HeroColorPicker } from "./HeroVisualPickers"
+import { useEditorIdentityOptions } from "./EditorIdentityFields"
 import { editorAnchorError, normalizeEditorAnchor } from "../../lib/editor-anchor"
 import { siteEditorAreas, editorCopyInArea } from "../../lib/site-editor-areas"
 import { AdminNotice } from "./AdminNotice"
@@ -46,6 +48,7 @@ type SectionRow = {
   editor_title?: string
   editor_anchor?: string
   editor_block_id?: string
+  editor_root_background?: string
 }
 
 function sectionPublicationLabel(section: SectionRow): string {
@@ -306,6 +309,7 @@ function SectionsEditor({
   const selected = sections.find((s) => s.id === selectedId)
   const [draft, setDraft] = useState<SectionRow | null>(selected ?? null)
   const [message, setMessage] = useState("")
+  const identityOptions = useEditorIdentityOptions()
   const sectionDirty = Boolean(
     draft && selected && JSON.stringify(draft) !== JSON.stringify(selected),
   )
@@ -321,6 +325,7 @@ function SectionsEditor({
     if (!draft || !supabase) return false
     const isSettings = mode === "settings"
     const adminTitle = draft.editor_title?.trim() || ""
+    const rootBackground = draft.editor_root_background ?? "transparent"
     if (isSettings ? !adminTitle : !draft.title.trim()) {
       setMessage("O título da seção é obrigatório.")
       return false
@@ -366,7 +371,8 @@ function SectionsEditor({
     if (
       isSettings &&
       (adminTitle !== (selected?.editor_title ?? selected?.title)?.trim() ||
-        anchor !== (selected?.editor_anchor ?? selected?.slug))
+        anchor !== (selected?.editor_anchor ?? selected?.slug) ||
+        (draft.slug === "perfil" && rootBackground !== (selected?.editor_root_background ?? "transparent")))
     ) {
       if (!draft.editor_block_id) {
         setMessage("Bloco de conteúdo não encontrado para salvar os dados administrativos.")
@@ -383,10 +389,16 @@ function SectionsEditor({
         setMessage(latest.error?.message ?? "Não foi possível ler os dados administrativos.")
         return false
       }
+      const currentContent = latest.data.content_json ?? {}
+      const items = [...(currentContent.items ?? [])]
+      if (draft.slug === "perfil" && items[0]) {
+        items[0] = { ...items[0], hero: { ...items[0].hero, rootBackground } }
+      }
       const nextContent = {
-        ...(latest.data.content_json ?? {}),
+        ...currentContent,
         editorTitle: adminTitle,
         editorAnchor: anchor,
+        ...(draft.slug === "perfil" ? { items } : {}),
       }
       const saved = await supabase
         .from("content_blocks")
@@ -397,7 +409,9 @@ function SectionsEditor({
       if (
         saved.error ||
         saved.data?.content_json?.editorTitle !== adminTitle ||
-        saved.data?.content_json?.editorAnchor !== anchor
+        saved.data?.content_json?.editorAnchor !== anchor ||
+        (draft.slug === "perfil" &&
+          saved.data?.content_json?.items?.[0]?.hero?.rootBackground !== rootBackground)
       ) {
         setMessage(saved.error?.message ?? "Não foi possível confirmar o nome e a âncora.")
         return false
@@ -523,6 +537,17 @@ function SectionsEditor({
                     Altere o endereço público sem perder os links para #{draft.slug}.
                   </small>
                 </label>
+                {draft.slug === "perfil" && (
+                  <div className="field-wide site-editor-section-background">
+                    <HeroColorPicker
+                      label="Fundo da seção (Hero)"
+                      value={draft.editor_root_background ?? "transparent"}
+                      allowTransparent
+                      catalog={identityOptions}
+                      onChange={(value) => setDraft({ ...draft, editor_root_background: value })}
+                    />
+                  </div>
+                )}
                 <label>
                   <span className="admin-field-label">
                     Transições
@@ -616,6 +641,7 @@ function SiteEditor({
 }) {
   const [selectedId, setSelectedId] = useState(sections[0]?.id ?? "")
   const [editorMode, setEditorMode] = useState<"section" | "left" | "center" | "right">("section")
+  const [editorSubView, setEditorSubView] = useState<"content" | "advanced" | "mobile">("content")
   const [sectionInfoDirty, setSectionInfoDirty] = useState(false)
   const [contentDirty, setContentDirty] = useState(false)
   const [testimonialsDirty, setTestimonialsDirty] = useState(false)
@@ -649,6 +675,7 @@ function SiteEditor({
     setContentDirty(false)
     setTestimonialsDirty(false)
     setEditorMode("section")
+    setEditorSubView("content")
     setSelectedId(id)
     if (sections.some((section) => section.id === id && isExperienceSection(section.slug))) {
       setLastExperienceId(id)
@@ -663,6 +690,16 @@ function SiteEditor({
     setContentDirty(false)
     setTestimonialsDirty(false)
     setEditorMode(next)
+    setEditorSubView("content")
+  }
+
+  async function chooseEditorSubView(next: "content" | "advanced" | "mobile") {
+    if (next === editorSubView || !(await canLeave())) return
+    onDirtyChange(false)
+    setSectionInfoDirty(false)
+    setContentDirty(false)
+    setTestimonialsDirty(false)
+    setEditorSubView(next)
   }
 
   function selectExperienceGroup() {
@@ -829,11 +866,39 @@ function SiteEditor({
                     </>
                   ) : (
                     <>
-                      <div className="site-editor-consolidated-heading">
-                        <h3>{selectedArea.label}</h3>
-                        <p>{selectedArea.description} · edite somente os elementos desta área.</p>
+                      <div className="site-editor-consolidated-heading site-editor-subview-heading">
+                        <div>
+                          <h3>{editorSubView === "content" ? selectedArea.label
+                            : editorSubView === "advanced" ? `Avançado · ${selectedArea.label}`
+                            : `Mobile · ${selectedArea.label}`}</h3>
+                          <p>{editorSubView === "content"
+                            ? `${selectedArea.description} · edite somente os elementos desta área.`
+                            : editorSubView === "advanced"
+                              ? "Configurações avançadas do bloco e dos painéis."
+                              : "Exibição, responsividade e apresentação mobile."}</p>
+                        </div>
+                        <div className="site-editor-subview-actions" role="group"
+                          aria-label="Outras configurações da área">
+                          {editorSubView !== "content" && (
+                            <button type="button" className="secondary-button"
+                              onClick={() => void chooseEditorSubView("content")}>
+                              Voltar à edição
+                            </button>
+                          )}
+                          <button type="button" className={editorSubView === "advanced" ? "active" : ""}
+                            aria-pressed={editorSubView === "advanced"}
+                            onClick={() => void chooseEditorSubView("advanced")}>
+                            Avançado
+                          </button>
+                          <button type="button" className={editorSubView === "mobile" ? "active" : ""}
+                            aria-label="Configurações mobile" title="Configurações mobile"
+                            aria-pressed={editorSubView === "mobile"}
+                            onClick={() => void chooseEditorSubView("mobile")}>
+                            <Icon name="smartphone" size={18} />
+                          </button>
+                        </div>
                       </div>
-                      {editorCopyInArea(selected.slug, selectedArea.id) && (
+                      {editorSubView === "content" && editorCopyInArea(selected.slug, selectedArea.id) && (
                         <SectionsEditor
                           key={selected.id + "-editorial"}
                           sections={sections}
@@ -844,7 +909,7 @@ function SiteEditor({
                           onDirtyChange={setSectionInfoDirty}
                         />
                       )}
-                      {selected.slug === "depoimentos" && selectedArea.id === "left" && (
+                      {editorSubView === "content" && selected.slug === "depoimentos" && selectedArea.id === "left" && (
                         <section
                           aria-label="Gerenciar depoimentos"
                           className="site-editor-testimonials"
@@ -868,10 +933,11 @@ function SiteEditor({
                       )}
                       {selectedArea.source !== "section" && (
                         <ContentStudio
-                          key={selected.id + "-content-" + selectedArea.id}
+                          key={selected.id + "-content-" + selectedArea.id + "-" + editorSubView}
                           sections={sections}
                           sectionIdOverride={selected.id}
                           editorArea={selectedArea}
+                          editorView={editorSubView}
                           embedded
                           onDirtyChange={setContentDirty}
                           onSaved={reload}
@@ -1017,6 +1083,10 @@ export function AdminApp() {
                     : section.title,
               editor_anchor: typeof alias === "string" && alias.trim() ? alias : section.slug,
               editor_block_id: block?.id,
+              editor_root_background:
+                section.slug === "perfil"
+                  ? block?.content_json?.items?.[0]?.hero?.rootBackground ?? "transparent"
+                  : undefined,
             }
           })
         }
