@@ -1086,7 +1086,7 @@ export function AdminApp() {
             string,
             {
               id: string
-              content_json: { editorTitle?: string; editorAnchor?: string } | null
+              content_json: { editorTitle?: string; editorAnchor?: string; items?: Array<{ hero?: { rootBackground?: string } }> } | null
             }
           >()
           for (const block of read.data ?? []) {
