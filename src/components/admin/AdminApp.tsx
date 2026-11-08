@@ -372,7 +372,8 @@ function SectionsEditor({
       isSettings &&
       (adminTitle !== (selected?.editor_title ?? selected?.title)?.trim() ||
         anchor !== (selected?.editor_anchor ?? selected?.slug) ||
-        (draft.slug === "perfil" && rootBackground !== (selected?.editor_root_background ?? "transparent")))
+        (draft.slug === "perfil" &&
+          rootBackground !== (selected?.editor_root_background ?? "transparent")))
     ) {
       if (!draft.editor_block_id) {
         setMessage("Bloco de conteúdo não encontrado para salvar os dados administrativos.")
@@ -868,69 +869,91 @@ function SiteEditor({
                     <>
                       <div className="site-editor-consolidated-heading site-editor-subview-heading">
                         <div>
-                          <h3>{editorSubView === "content" ? selectedArea.label
-                            : editorSubView === "advanced" ? `Avançado · ${selectedArea.label}`
-                            : `Mobile · ${selectedArea.label}`}</h3>
-                          <p>{editorSubView === "content"
-                            ? `${selectedArea.description} · edite somente os elementos desta área.`
-                            : editorSubView === "advanced"
-                              ? "Configurações avançadas do bloco e dos painéis."
-                              : "Exibição, responsividade e apresentação mobile."}</p>
+                          <h3>
+                            {editorSubView === "content"
+                              ? selectedArea.label
+                              : editorSubView === "advanced"
+                                ? `Avançado · ${selectedArea.label}`
+                                : `Mobile · ${selectedArea.label}`}
+                          </h3>
+                          <p>
+                            {editorSubView === "content"
+                              ? `${selectedArea.description} · edite somente os elementos desta área.`
+                              : editorSubView === "advanced"
+                                ? "Configurações avançadas do bloco e dos painéis."
+                                : "Exibição, responsividade e apresentação mobile."}
+                          </p>
                         </div>
-                        <div className="site-editor-subview-actions" role="group"
-                          aria-label="Outras configurações da área">
+                        <div
+                          className="site-editor-subview-actions"
+                          role="group"
+                          aria-label="Outras configurações da área"
+                        >
                           {editorSubView !== "content" && (
-                            <button type="button" className="secondary-button"
-                              onClick={() => void chooseEditorSubView("content")}>
+                            <button
+                              type="button"
+                              className="secondary-button"
+                              onClick={() => void chooseEditorSubView("content")}
+                            >
                               Voltar à edição
                             </button>
                           )}
-                          <button type="button" className={editorSubView === "advanced" ? "active" : ""}
+                          <button
+                            type="button"
+                            className={editorSubView === "advanced" ? "active" : ""}
                             aria-pressed={editorSubView === "advanced"}
-                            onClick={() => void chooseEditorSubView("advanced")}>
+                            onClick={() => void chooseEditorSubView("advanced")}
+                          >
                             Avançado
                           </button>
-                          <button type="button" className={editorSubView === "mobile" ? "active" : ""}
-                            aria-label="Configurações mobile" title="Configurações mobile"
+                          <button
+                            type="button"
+                            className={editorSubView === "mobile" ? "active" : ""}
+                            aria-label="Configurações mobile"
+                            title="Configurações mobile"
                             aria-pressed={editorSubView === "mobile"}
-                            onClick={() => void chooseEditorSubView("mobile")}>
+                            onClick={() => void chooseEditorSubView("mobile")}
+                          >
                             <Icon name="smartphone" size={18} />
                           </button>
                         </div>
                       </div>
-                      {editorSubView === "content" && editorCopyInArea(selected.slug, selectedArea.id) && (
-                        <SectionsEditor
-                          key={selected.id + "-editorial"}
-                          sections={sections}
-                          reload={reload}
-                          selectedSectionId={selected.id}
-                          embedded
-                          mode="editorial"
-                          onDirtyChange={setSectionInfoDirty}
-                        />
-                      )}
-                      {editorSubView === "content" && selected.slug === "depoimentos" && selectedArea.id === "left" && (
-                        <section
-                          aria-label="Gerenciar depoimentos"
-                          className="site-editor-testimonials"
-                        >
-                          <div className="site-editor-consolidated-heading">
-                            <h3>Gerenciar depoimentos</h3>
-                            <p>
-                              Pessoas, cargos, textos, ordem e publicação; os registros alimentam os
-                              painéis A e B.
-                            </p>
-                          </div>
-                          <CollectionsStudio
-                            key={selected.id + "-testimonials"}
-                            initialSource="testimonials"
-                            availableSources={["testimonials"]}
-                            linkedSources={["testimonials"]}
+                      {editorSubView === "content" &&
+                        editorCopyInArea(selected.slug, selectedArea.id) && (
+                          <SectionsEditor
+                            key={selected.id + "-editorial"}
+                            sections={sections}
+                            reload={reload}
+                            selectedSectionId={selected.id}
                             embedded
-                            onDirtyChange={setTestimonialsDirty}
+                            mode="editorial"
+                            onDirtyChange={setSectionInfoDirty}
                           />
-                        </section>
-                      )}
+                        )}
+                      {editorSubView === "content" &&
+                        selected.slug === "depoimentos" &&
+                        selectedArea.id === "left" && (
+                          <section
+                            aria-label="Gerenciar depoimentos"
+                            className="site-editor-testimonials"
+                          >
+                            <div className="site-editor-consolidated-heading">
+                              <h3>Gerenciar depoimentos</h3>
+                              <p>
+                                Pessoas, cargos, textos, ordem e publicação; os registros alimentam
+                                os painéis A e B.
+                              </p>
+                            </div>
+                            <CollectionsStudio
+                              key={selected.id + "-testimonials"}
+                              initialSource="testimonials"
+                              availableSources={["testimonials"]}
+                              linkedSources={["testimonials"]}
+                              embedded
+                              onDirtyChange={setTestimonialsDirty}
+                            />
+                          </section>
+                        )}
                       {selectedArea.source !== "section" && (
                         <ContentStudio
                           key={selected.id + "-content-" + selectedArea.id + "-" + editorSubView}
@@ -1085,7 +1108,7 @@ export function AdminApp() {
               editor_block_id: block?.id,
               editor_root_background:
                 section.slug === "perfil"
-                  ? block?.content_json?.items?.[0]?.hero?.rootBackground ?? "transparent"
+                  ? (block?.content_json?.items?.[0]?.hero?.rootBackground ?? "transparent")
                   : undefined,
             }
           })

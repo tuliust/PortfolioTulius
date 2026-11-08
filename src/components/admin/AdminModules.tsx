@@ -1370,7 +1370,7 @@ export function ContentStudio({
           <section className="admin-card editor-form">
             {editorView === "advanced" ? (
               <div className="site-editor-standalone-page">
-                                <div className="site-editor-advanced site-editor-advanced-page">
+                <div className="site-editor-advanced site-editor-advanced-page">
                   <h4>Bloco e painéis</h4>
                   <div className="field-grid compact-grid">
                     <label>
@@ -1651,24 +1651,34 @@ export function ContentStudio({
                   <div className="field-grid compact-grid">
                     <label>
                       Ordem de exibição do bloco
-                      <select value={draft.mobile_panel} onChange={(event) =>
-                        setDraft({ ...draft, mobile_panel: event.target.value as "a" | "b" })}>
+                      <select
+                        value={draft.mobile_panel}
+                        onChange={(event) =>
+                          setDraft({ ...draft, mobile_panel: event.target.value as "a" | "b" })
+                        }
+                      >
                         <option value="a">Painel A · Primeiro no mobile</option>
                         <option value="b">Painel B · Segundo no mobile</option>
                       </select>
                     </label>
                     <label>
                       Placement mobile
-                      <select value={placementPanel} onChange={(event) =>
-                        setPlacementPanel(event.target.value as PanelKey)}>
+                      <select
+                        value={placementPanel}
+                        onChange={(event) => setPlacementPanel(event.target.value as PanelKey)}
+                      >
                         <option value="mobile-a">Mobile A</option>
                         <option value="mobile-b">Mobile B</option>
                       </select>
                     </label>
                     <label>
                       Layout
-                      <select value={placement.layout_variant} onChange={(event) =>
-                        setPlacement({ ...placement, layout_variant: event.target.value })}>
+                      <select
+                        value={placement.layout_variant}
+                        onChange={(event) =>
+                          setPlacement({ ...placement, layout_variant: event.target.value })
+                        }
+                      >
                         <option value="default">Padrão</option>
                         <option value="compact">Compacto</option>
                         <option value="featured">Destaque</option>
@@ -1677,8 +1687,12 @@ export function ContentStudio({
                     </label>
                     <label>
                       Animação
-                      <select value={placement.preset} onChange={(event) =>
-                        setPlacement({ ...placement, preset: event.target.value })}>
+                      <select
+                        value={placement.preset}
+                        onChange={(event) =>
+                          setPlacement({ ...placement, preset: event.target.value })
+                        }
+                      >
                         <option value="none">Nenhuma</option>
                         <option value="fade-in">Aparecer suavemente</option>
                         <option value="fade-up">Subir suavemente</option>
@@ -1689,26 +1703,48 @@ export function ContentStudio({
                     </label>
                     <label>
                       Duração (ms)
-                      <input type="number" min="0" max="1200" value={placement.duration}
+                      <input
+                        type="number"
+                        min="0"
+                        max="1200"
+                        value={placement.duration}
                         onChange={(event) =>
-                          setPlacement({ ...placement, duration: Number(event.target.value) })} />
+                          setPlacement({ ...placement, duration: Number(event.target.value) })
+                        }
+                      />
                     </label>
                     <label>
                       Atraso (ms)
-                      <input type="number" min="0" max="600" value={placement.delay}
+                      <input
+                        type="number"
+                        min="0"
+                        max="600"
+                        value={placement.delay}
                         onChange={(event) =>
-                          setPlacement({ ...placement, delay: Number(event.target.value) })} />
+                          setPlacement({ ...placement, delay: Number(event.target.value) })
+                        }
+                      />
                     </label>
                     <label>
                       Deslocamento (px)
-                      <input type="number" min="0" max="48" value={placement.distance}
+                      <input
+                        type="number"
+                        min="0"
+                        max="48"
+                        value={placement.distance}
                         onChange={(event) =>
-                          setPlacement({ ...placement, distance: Number(event.target.value) })} />
+                          setPlacement({ ...placement, distance: Number(event.target.value) })
+                        }
+                      />
                     </label>
                     <label className="toggle-field">
-                      <input type="checkbox" checked={placement.is_visible}
+                      <input
+                        type="checkbox"
+                        checked={placement.is_visible}
                         onChange={(event) =>
-                          setPlacement({ ...placement, is_visible: event.target.checked })} />
+                          setPlacement({ ...placement, is_visible: event.target.checked })
+                        }
+                      />
                       Exibir placement mobile
                     </label>
                   </div>
@@ -1717,8 +1753,11 @@ export function ContentStudio({
                   <legend>Elementos responsivos · Mobile</legend>
                   <div className="site-editor-device-list">
                     {(draft.content_json.items ?? []).map((item, index) => (
-                      <details className="site-editor-device-item" key={index}
-                        open={experienceSlug === "perfil" && index === 0 ? true : undefined}>
+                      <details
+                        className="site-editor-device-item"
+                        key={index}
+                        open={experienceSlug === "perfil" && index === 0 ? true : undefined}
+                      >
                         <summary>{item.title || `Elemento ${index + 1}`}</summary>
                         <DeviceStyleEditor
                           device="mobile"
@@ -1726,15 +1765,20 @@ export function ContentStudio({
                           onChange={(patch) => updateDeviceStyle(index, "mobile", patch)}
                         />
                         {experienceSlug === "perfil" && index === 0 && (
-                          <HeroDeviceEditor device="mobile" value={item.hero?.mobile}
-                            onChange={(patch) => updateHeroDevice(index, "mobile", patch)} />
-                        )}
-                        {experienceSlug === "perfil" && draft.mobile_panel === "a" && index === 0 && (
-                          <ProfileMobileEditorialEditor
-                            value={item.hero?.mobileEditorial}
-                            onChange={(mobileEditorial) => updateHero(index, { mobileEditorial })}
+                          <HeroDeviceEditor
+                            device="mobile"
+                            value={item.hero?.mobile}
+                            onChange={(patch) => updateHeroDevice(index, "mobile", patch)}
                           />
                         )}
+                        {experienceSlug === "perfil" &&
+                          draft.mobile_panel === "a" &&
+                          index === 0 && (
+                            <ProfileMobileEditorialEditor
+                              value={item.hero?.mobileEditorial}
+                              onChange={(mobileEditorial) => updateHero(index, { mobileEditorial })}
+                            />
+                          )}
                       </details>
                     ))}
                   </div>
@@ -1742,8 +1786,8 @@ export function ContentStudio({
                 <StatusMessage>{message}</StatusMessage>
               </div>
             ) : experienceSlug === "sobre" &&
-            activeVisualArea === "center" &&
-            draft.mobile_panel === "a" ? (
+              activeVisualArea === "center" &&
+              draft.mobile_panel === "a" ? (
               <div className="about-center-photo-only">
                 <div>
                   <h3>Fotografia desktop · Centro</h3>
@@ -2097,7 +2141,6 @@ export function ContentStudio({
                       onHeroFormat={(key, next) => updateHeroFormat(0, key, next)}
                       onMove={moveItem}
                       onRemove={(index) => void removeItem(index)}
-
                     />
                   ) : experienceSlug === "perfil" && draft.mobile_panel === "b" ? (
                     <HeroRightEditor
@@ -2107,7 +2150,9 @@ export function ContentStudio({
                       sections={sections}
                       catalog={identityOptions}
                       onTitleChange={(title) => setHeroCopy((current) => ({ ...current, title }))}
-                      onSubtitleChange={(eyebrow) => setHeroCopy((current) => ({ ...current, eyebrow }))}
+                      onSubtitleChange={(eyebrow) =>
+                        setHeroCopy((current) => ({ ...current, eyebrow }))
+                      }
                       onUpdateItem={updateItem}
                       onUpdateHero={(patch) => updateHero(0, patch)}
                       onFormat={updateFieldFormat}
