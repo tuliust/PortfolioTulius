@@ -39,6 +39,7 @@ let pageId = null
 let mediaAssetId = null
 let mediaStoragePath = null
 let mediaTempDir = null
+const navigationFixtures = []
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -309,6 +310,118 @@ try {
   pass("MEDIA_UI_DELETE_NO_ORPHANS", { catalogRows: 0, storageObjectAbsent: true })
   mediaAssetId = null
   mediaStoragePath = null
+
+  // Version conflict through the real section form: reject a stale composite
+  // RPC attempt without falling back to another database write.
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-layout .editor-form select", { timeout: 15000 })
+  const changedTransition = await page.evaluate(() => {
+    const select = document.querySelector(".site-editor-layout .editor-form select")
+    if (!select) return false
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set.call(select, "none")
+    select.dispatchEvent(new Event("change", { bubbles: true }))
+    return true
+  })
+  ensure(changedTransition, "SECTION_UI_CAS_FIELD")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Alterações não salvas nesta área."),
+    { timeout: 10000 })
+  const conflict = await service.from("sections")
+    .update({ animation_preset: "stagger" }).eq("id", sectionId).select("id").single()
+  ensure(!conflict.error, "SECTION_UI_CONCURRENT_FIXTURE")
+  const attemptedSectionSave = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".site-editor-layout .editor-form .form-actions button")]
+      .find((node) => node.textContent?.trim() === "Salvar")
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(attemptedSectionSave, "SECTION_UI_CAS_SAVE_BUTTON")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Outra edição alterou este conteúdo."),
+    { timeout: 18000 })
+  const sectionRetained = await get(service.from("sections")
+    .select("animation_preset").eq("id", sectionId).single(), "SECTION_UI_CAS_DB")
+  ensure(sectionRetained.animation_preset === "stagger", "SECTION_UI_STALE_OVERWRITE")
+  pass("SECTION_UI_COMPOSITE_CAS_CONFLICT", { staleRejected: true, noLegacyFallback: true })
+
+  const firstId = randomUUID()
+  const secondId = randomUUID()
+  const firstLabel = "Menu fictício inicial " + suffix
+  const secondLabel = "Menu fictício secundário " + suffix
+  const revisedLabel = "Menu fictício revisado " + suffix
+  navigationFixtures.push(firstId, secondId)
+  const seededMenu = await service.from("navigation_items").insert([
+    { id: firstId, label: firstLabel, target_slug: "secao-ficticia",
+      group_name: "Menu", sort_order: 1, is_visible: true, status: "published" },
+    { id: secondId, label: secondLabel, target_slug: "secao-ficticia",
+      group_name: "Menu", sort_order: 2, is_visible: true, status: "published" },
+  ])
+  ensure(!seededMenu.error, "NAV_UI_SYNTHETIC_SEED")
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Navegação")?.click()
+  })
+  await page.waitForSelector('.admin-confirm-dialog[role="alertdialog"]', { timeout: 10000 })
+  const discard = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".admin-confirm-dialog button")]
+      .find((node) => node.textContent?.trim() === "Sair sem salvar")
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(discard, "UNSAVED_NAVIGATION_CONFIRMATION")
+  await page.waitForSelector(".navigation-form", { timeout: 15000 })
+  pass("SECTION_UI_UNSAVED_NAVIGATION_GUARD", { explicitDiscard: true })
+
+  await page.waitForFunction((name) =>
+    [...document.querySelectorAll(".navigation-form label input")]
+      .some((input) => input.value === name),
+    { timeout: 12000 }, firstLabel)
+  const moved = await page.evaluate(() => {
+    const button = document.querySelector('.navigation-form button[aria-label="Mover item para baixo"]')
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(moved, "NAV_UI_MOVE_BUTTON")
+  await page.waitForFunction((name) =>
+    document.querySelector(".navigation-form label input")?.value === name,
+    { timeout: 10000 }, secondLabel)
+  const changedLabel = await page.evaluate((value) => {
+    const input = document.querySelector(".navigation-form label input")
+    if (!input) return false
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(input, value)
+    input.dispatchEvent(new Event("input", { bubbles: true }))
+    return true
+  }, revisedLabel)
+  ensure(changedLabel, "NAV_UI_EDIT_LABEL")
+  await page.waitForSelector('.admin-floating-save button.primary-button', { timeout: 15000 })
+  await page.click('.admin-floating-save button.primary-button')
+  await page.waitForFunction(() => document.body.textContent?.includes("Navegação salva."),
+    { timeout: 20000 })
+  const menuRows = await get(service.from("navigation_items")
+    .select("id,label,sort_order").in("id", navigationFixtures).order("sort_order"), "NAV_UI_DB_ROWS")
+  ensure(menuRows.length === 2 && menuRows[0].id === secondId &&
+    menuRows[0].sort_order === 1 && menuRows[0].label === revisedLabel &&
+    menuRows[1].id === firstId && menuRows[1].sort_order === 2, "NAV_UI_SAVE_MISMATCH")
+  pass("NAVIGATION_UI_REORDER_SAVE_RELOAD", { rows: 2, order: true, editedLabel: true })
+
+  for (const v of [
+    { width: 1440, height: 900, label: "DESKTOP" },
+    { width: 390, height: 844, label: "MOBILE" },
+  ]) {
+    await page.setViewport({ width: v.width, height: v.height })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('[data-section="secao-ficticia"]', { timeout: 18000 })
+    await page.click('header.site-header button[aria-label="Abrir menu"]')
+    await page.waitForFunction((name) => {
+      const menu = document.querySelector("#site-menu")
+      return menu?.getAttribute("aria-hidden") === "false" &&
+        menu.textContent?.includes(name)
+    }, { timeout: 12000 }, revisedLabel)
+    pass("NAVIGATION_RENDERER_" + v.label, { visiblePublishedLabel: true, viewport: v.width })
+  }
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -319,7 +432,8 @@ try {
   if (mediaAssetId) await service.from("media_assets").delete().eq("id", mediaAssetId)
   if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
+  if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 11, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 11) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 16, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 16) process.exitCode = 1
