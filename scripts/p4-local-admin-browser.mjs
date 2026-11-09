@@ -40,6 +40,7 @@ let mediaAssetId = null
 let mediaStoragePath = null
 let mediaTempDir = null
 const navigationFixtures = []
+let syntheticProfileId = null
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -422,6 +423,150 @@ try {
     }, { timeout: 12000 }, revisedLabel)
     pass("NAVIGATION_RENDERER_" + v.label, { visiblePublishedLabel: true, viewport: v.width })
   }
+
+  // Representative real Hero A/B form coverage with entirely fictional content.
+  // Profile and media widgets are never connected to the production database.
+  const profileInserted = await service.from("sections").insert({
+    page_id: pageId, slug: "perfil", title: "Hero sintético",
+    eyebrow: "Cargo sintético", intro: "Apresentação sintética",
+    sort_order: 2, status: "published", is_visible: true,
+  }).select("id").single()
+  ensure(!profileInserted.error && profileInserted.data, "HERO_LOCAL_SECTION_SEED")
+  syntheticProfileId = profileInserted.data.id
+  const panels = await service.from("section_panels").insert([
+    { section_id: syntheticProfileId, breakpoint: "desktop", panel_key: "desktop", sort_order: 1 },
+    { section_id: syntheticProfileId, breakpoint: "mobile", panel_key: "mobile-a", sort_order: 1 },
+    { section_id: syntheticProfileId, breakpoint: "mobile", panel_key: "mobile-b", sort_order: 2 },
+  ]).select("id,panel_key")
+  ensure(!panels.error && panels.data?.length === 3, "HERO_LOCAL_PANELS")
+  const heroA = [
+    { title: "Mensagem fictícia original", text: "Linha menor de teste",
+      hero: { badgeText: "TESTE LOCAL", badgeVisible: true } },
+    { title: "Destaque de teste", text: "Só homologação" },
+  ]
+  const heroB = Array.from({ length: 10 }, (_, index) => ({
+    title: "Tema " + (index + 1), label: String(index + 1).padStart(2, "0"),
+    text: "Detalhe sintético " + index, targetSlug: "secao-ficticia",
+    ...(index === 0 ? { hero: { secondaryTitle: "Destaques originais", nextTarget: "secao-ficticia" } } : {}),
+  }))
+  const heroBlocks = await service.from("content_blocks").insert([
+    { section_id: syntheticProfileId, block_type: "hero",
+      content_json: { items: heroA }, mobile_panel: "a", sort_order: 1, status: "published" },
+    { section_id: syntheticProfileId, block_type: "cards",
+      content_json: { items: heroB }, mobile_panel: "b", sort_order: 2, status: "published" },
+  ]).select("id,mobile_panel")
+  ensure(!heroBlocks.error && heroBlocks.data?.length === 2, "HERO_LOCAL_BLOCKS")
+  const idByPanel = Object.fromEntries(panels.data.map((record) => [record.panel_key, record.id]))
+  const blockBySide = Object.fromEntries(heroBlocks.data.map((block) => [block.mobile_panel, block.id]))
+  const heroPlacements = await service.from("block_placements").insert([
+    { block_id: blockBySide.a, panel_id: idByPanel.desktop, sort_order: 1 },
+    { block_id: blockBySide.a, panel_id: idByPanel["mobile-a"], sort_order: 1 },
+    { block_id: blockBySide.b, panel_id: idByPanel.desktop, sort_order: 2 },
+    { block_id: blockBySide.b, panel_id: idByPanel["mobile-b"], sort_order: 1 },
+  ])
+  ensure(!heroPlacements.error, "HERO_LOCAL_PLACEMENTS")
+  await page.setViewport({ width: 1440, height: 900 })
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-sidebar", { timeout: 15000 })
+  const heroSelected = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".site-editor-sidebar button")]
+      .find((node) => node.textContent?.includes("Hero"))
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(heroSelected, "HERO_SECTION_NAV")
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-heading")?.textContent?.includes("Hero"),
+    { timeout: 12000 })
+  const leftSelected = await page.evaluate(() => {
+    const tab = [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"], .site-editor-main button[role="tab"]')]
+      .find((node) => node.textContent?.includes("Esquerda"))
+    tab?.click()
+    return Boolean(tab)
+  })
+  ensure(leftSelected, "HERO_A_TAB")
+  await page.waitForSelector(".hero-left-editor", { timeout: 15000 })
+  const heroMainText = "Mensagem fictícia revisada " + suffix
+  const heroBadge = "SELO SINTÉTICO " + suffix
+  const editField = async (selector, value) => {
+    const edited = await page.evaluate(({ selector, value }) => {
+      const input = document.querySelector(selector)
+      if (!input) return false
+      const proto = input instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
+      Object.getOwnPropertyDescriptor(proto, "value").set.call(input, value)
+      input.dispatchEvent(new Event("input", { bubbles: true }))
+      return true
+    }, { selector, value })
+    ensure(edited, "HERO_INPUT_" + selector)
+  }
+  await editField('.hero-left-editor input[aria-label="Mensagem principal, texto grande"]', heroMainText)
+  await editField('.hero-left-editor fieldset[aria-label="Selo"] label input', heroBadge)
+  await page.waitForSelector(".site-editor-main .admin-floating-save button", { timeout: 15000 })
+  await page.click(".site-editor-main .admin-floating-save button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Alterações salvas atomicamente e conferidas no Supabase."),
+    { timeout: 20000 })
+  const leftSaved = await get(service.from("content_blocks").select("content_json")
+    .eq("id", blockBySide.a).single(), "HERO_A_DB")
+  ensure(leftSaved.content_json.items?.[0]?.title === heroMainText &&
+    leftSaved.content_json.items?.[0]?.hero?.badgeText === heroBadge,
+    "HERO_A_UI_DB_MISMATCH")
+  pass("HERO_A_UI_TEXT_BADGE_SAVE_RELOAD", { publicCopy: true, badge: true, jsonb: true })
+
+  const rightSelected = await page.evaluate(() => {
+    const tab = [...document.querySelectorAll('.site-editor-main button[role="tab"]')]
+      .find((node) => node.textContent?.includes("Direita"))
+    tab?.click()
+    return Boolean(tab)
+  })
+  ensure(rightSelected, "HERO_B_TAB")
+  await page.waitForSelector(".hero-right-editor", { timeout: 15000 })
+  const heroHeading = "Cabeçalho fictício " + suffix
+  const heroSecondary = "Destaques novos " + suffix
+  await editField('.hero-right-editor fieldset[aria-label="Título Cabeçalho"] input', heroHeading)
+  await editField('.hero-right-editor fieldset[aria-label="Área de Destaques"] input', heroSecondary)
+  const openFirst = await page.evaluate(() => {
+    const first = document.querySelector(".hero-right-editor .hero-right-entries details")
+    if (!first) return false
+    first.open = true
+    return true
+  })
+  ensure(openFirst, "HERO_B_DETAILS")
+  await page.click('.hero-right-editor button[aria-label="Descer tema 1"]')
+  await page.waitForSelector(".site-editor-main .admin-floating-save button", { timeout: 15000 })
+  await page.click(".site-editor-main .admin-floating-save button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Alterações salvas atomicamente e conferidas no Supabase."),
+    { timeout: 20000 })
+  const [rightSaved, heroSectionSaved] = await Promise.all([
+    get(service.from("content_blocks").select("content_json")
+      .eq("id", blockBySide.b).single(), "HERO_B_DB"),
+    get(service.from("sections").select("title")
+      .eq("id", syntheticProfileId).single(), "HERO_SECTION_DB"),
+  ])
+  ensure(rightSaved.content_json.items?.[0]?.title === "Tema 2" &&
+    rightSaved.content_json.items?.[0]?.hero?.secondaryTitle === heroSecondary &&
+    heroSectionSaved.title === heroHeading, "HERO_B_UI_DB_MISMATCH")
+  pass("HERO_B_UI_COPY_REORDER_GLOBALS", { globalHeroStillOnFirst: true, orderSwapped: true, title: true })
+
+  for (const v of [
+    { width: 1440, height: 900, label: "DESKTOP" },
+    { width: 390, height: 844, label: "MOBILE" },
+  ]) {
+    await page.setViewport({ width: v.width, height: v.height })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('[data-section="perfil"]', { timeout: 18000 })
+    await page.waitForFunction((headline) =>
+      document.querySelector('[data-section="perfil"]')?.textContent?.includes(headline),
+      { timeout: 12000 }, heroMainText)
+    pass("HERO_RENDERER_" + v.label, { contentFromSyntheticCMS: true, viewport: v.width })
+  }
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -433,7 +578,8 @@ try {
   if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
+  if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 16, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 16) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 20, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 20) process.exitCode = 1
