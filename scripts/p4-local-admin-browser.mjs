@@ -283,12 +283,14 @@ try {
   const recoveryFile = join(mediaTempDir, recoveryName)
   writeFileSync(recoveryFile,
     '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><circle cx="4" cy="4" r="2"/></svg>')
-  let catalogFailureInjected = false
+  let catalogFailureCount = 0
   const catalogInterceptor = (request) => {
     const u = new URL(request.url())
-    if (!catalogFailureInjected && request.method() === "GET" &&
+    if (request.method() === "GET" &&
         u.pathname.endsWith("/rest/v1/media_assets") && u.searchParams.get("select") === "*") {
-      catalogFailureInjected = true
+      // Existing preview refreshes may still be in flight. Deny each catalog
+      // read until the new upload's own refresh has been attempted.
+      catalogFailureCount++
       void request.respond({
         status: 503,
         contentType: "application/json",
@@ -310,7 +312,7 @@ try {
       text.includes("Use JPG, PNG, WebP ou SVG")
   }, { timeout: 10000 })
   console.log("P4_MEDIA_RECOVERY_DIAGNOSTIC " + JSON.stringify({
-    injected: catalogFailureInjected,
+    injectedCount: catalogFailureCount,
     currentStatus: await page.evaluate(() =>
       [...document.querySelectorAll('[role="status"], .admin-notice')]
         .map((node) => node.textContent?.trim()).filter(Boolean).slice(-6)),
@@ -322,7 +324,7 @@ try {
     { timeout: 18000 })
   page.off("request", catalogInterceptor)
   await page.setRequestInterception(false)
-  ensure(catalogFailureInjected, "MEDIA_UI_READ_ERROR_NOT_INJECTED")
+  ensure(catalogFailureCount > 0, "MEDIA_UI_READ_ERROR_NOT_INJECTED")
   const preservedDraft = await page.evaluate(() => {
     const detail = document.querySelector(".media-library-detail")
     const alt = [...(detail?.querySelectorAll("label") ?? [])]
