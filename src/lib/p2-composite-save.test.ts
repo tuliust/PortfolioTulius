@@ -51,7 +51,9 @@ describe("P2: fallback seguro da RPC composta", () => {
   })
 
   it("não repete gravação após queda de rede ou resultado desconhecido", async () => {
-    rpc.mockRejectedValue(new Error("connection reset"))
+    rpc.mockImplementation(() => {
+      throw new Error("connection reset")
+    })
     const outcome = await tryCompositeSave(payload)
     expect(outcome.mode).toBe("error")
     if (outcome.mode === "error") expect(outcome.message).toContain("incerto")
