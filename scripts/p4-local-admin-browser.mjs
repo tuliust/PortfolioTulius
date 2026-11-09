@@ -41,6 +41,9 @@ let mediaStoragePath = null
 let mediaTempDir = null
 let mediaRecoveryAssetId = null
 let mediaRecoveryStoragePath = null
+let privateUiAssetId = null
+let privateUiOldPath = null
+let privateUiNewPath = null
 const navigationFixtures = []
 let syntheticProfileId = null
 let settingsOriginal = null
@@ -411,6 +414,81 @@ try {
   mediaRecoveryAssetId = null
   mediaRecoveryStoragePath = null
 
+  // Private-object rename must pass through the real editor, CAS, upload and
+  // auto-publication. The source bucket must retain no unreferenced duplicate.
+  const privateOldName = "private-media-" + suffix + ".svg"
+  const privateNewName = "private-media-renamed-" + suffix + ".svg"
+  privateUiOldPath = "p4-ui/" + privateOldName
+  privateUiNewPath = "p4-ui/" + privateNewName
+  const localSvg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="black"/></svg>')
+  const privateUpload = await service.storage.from("portfolio-private").upload(
+    privateUiOldPath, localSvg, { contentType: "image/svg+xml" },
+  )
+  ensure(!privateUpload.error, "MEDIA_UI_PRIVATE_SEED_UPLOAD")
+  const privateSeed = await service.from("media_assets").insert({
+    storage_bucket: "portfolio-private", storage_path: privateUiOldPath,
+    mime_type: "image/svg+xml", file_size: localSvg.length,
+    title: privateOldName, alt_text: "Prévia privada de teste",
+    status: "draft",
+  }).select("id").single()
+  ensure(!privateSeed.error && privateSeed.data, "MEDIA_UI_PRIVATE_SEED_DB")
+  privateUiAssetId = privateSeed.data.id
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 15000 })
+  await page.evaluate(() =>
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Mídia")?.click(),
+  )
+  await openMedia(privateOldName)
+  await updateMediaInput("Nome do arquivo físico", privateNewName)
+  await page.click(".media-library-detail .media-actions button.primary-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Metadados salvos e mídia publicada."),
+    { timeout: 25000 })
+  const privateResult = await get(service.from("media_assets")
+    .select("*").eq("id", privateUiAssetId).single(), "MEDIA_UI_PRIVATE_AFTER_PUBLISH")
+  const publicCopied = await service.storage.from("portfolio-public").download(privateUiNewPath)
+  const oldPrivate = await service.storage.from("portfolio-private").download(privateUiOldPath)
+  const renamedPrivate = await service.storage.from("portfolio-private").download(privateUiNewPath)
+  ensure(privateResult.storage_bucket === "portfolio-public" &&
+    privateResult.status === "published" &&
+    privateResult.storage_path === privateUiNewPath &&
+    privateResult.title === privateNewName &&
+    !publicCopied.error && Boolean(publicCopied.data) &&
+    Boolean(oldPrivate.error) && Boolean(renamedPrivate.error),
+    "MEDIA_UI_PRIVATE_RENAME_LEFT_ORPHAN")
+  pass("MEDIA_UI_PRIVATE_RENAME_AUTO_PUBLISH_NO_ORPHANS",
+    { newName: true, publicVisible: true, privateSourceAbsent: true, privateCopyAbsent: true })
+
+  // The final delete must clear both catalog and published physical storage.
+  await page.waitForFunction((title) =>
+    [...document.querySelectorAll(".media-library-card")]
+      .some((node) => node.textContent?.includes(title)),
+    { timeout: 15000 }, privateNewName)
+  const removePublishedPrivate = await page.evaluate((title) => {
+    const button = [...document.querySelectorAll("button.media-library-remove")]
+      .find((node) => node.getAttribute("aria-label")?.includes(title))
+    button?.click()
+    return Boolean(button)
+  }, privateNewName)
+  ensure(removePublishedPrivate, "MEDIA_UI_PRIVATE_PUBLISHED_DELETE_BUTTON")
+  await page.waitForSelector('.admin-confirm-dialog[role="alertdialog"] .danger-button',
+    { timeout: 10000 })
+  await page.click('.admin-confirm-dialog[role="alertdialog"] .danger-button')
+  await page.waitForFunction((title) => ![...document.querySelectorAll(".media-library-card")]
+    .some((node) => node.textContent?.includes(title)),
+    { timeout: 20000 }, privateNewName)
+  const finalMediaRows = await get(service.from("media_assets")
+    .select("id").eq("id", privateUiAssetId), "MEDIA_UI_PRIVATE_DELETE_ROWS")
+  const finalPublicObject = await service.storage.from("portfolio-public").download(privateUiNewPath)
+  ensure(finalMediaRows.length === 0 && Boolean(finalPublicObject.error),
+    "MEDIA_UI_PRIVATE_DELETE_LEFT_ORPHAN")
+  pass("MEDIA_UI_PUBLISHED_PRIVATE_DELETE_NO_ORPHANS",
+    { rows: 0, publicObjectAbsent: true, privateObjectAbsent: true })
+  privateUiAssetId = null
+  privateUiOldPath = null
+  privateUiNewPath = null
+
   // Version conflict through the real section form: reject a stale composite
   // RPC attempt without falling back to another database write.
   await page.evaluate(() => {
@@ -591,6 +669,8 @@ try {
   ensure(leftSelected, "HERO_A_TAB")
   await page.waitForSelector(".hero-left-editor", { timeout: 15000 })
   const heroMainText = "Mensagem fictícia revisada " + suffix
+  const heroSmall = "Complemento fictício " + suffix
+  const heroIntro = "Frase editorial fictícia " + suffix
   const heroBadge = "SELO SINTÉTICO " + suffix
   const editField = async (selector, value) => {
     const edited = await page.evaluate(({ selector, value }) => {
@@ -605,7 +685,10 @@ try {
     ensure(edited, "HERO_INPUT_" + selector)
   }
   await editField('.hero-left-editor input[aria-label="Mensagem principal, texto grande"]', heroMainText)
+  await editField('.hero-left-editor textarea[aria-label="Mensagem principal, texto pequeno"]', heroSmall)
+  await editField('.hero-left-editor fieldset[aria-label="Apresentação"] textarea', heroIntro)
   await editField('.hero-left-editor fieldset[aria-label="Selo"] label input', heroBadge)
+  await page.click('.hero-left-editor fieldset[aria-label="Selo"] input[type="checkbox"]')
   await page.waitForSelector(".site-editor-main .admin-floating-save button", { timeout: 15000 })
   await page.click(".site-editor-main .admin-floating-save button")
   await page.waitForFunction(() =>
@@ -617,6 +700,13 @@ try {
     leftSaved.content_json.items?.[0]?.hero?.badgeText === heroBadge,
     "HERO_A_UI_DB_MISMATCH")
   pass("HERO_A_UI_TEXT_BADGE_SAVE_RELOAD", { publicCopy: true, badge: true, jsonb: true })
+  const leftSectionCopy = await get(service.from("sections")
+    .select("intro").eq("id", syntheticProfileId).single(), "HERO_A_INTRO_DB")
+  ensure(leftSaved.content_json.items?.[0]?.text === heroSmall &&
+    leftSaved.content_json.items?.[0]?.hero?.badgeVisible === false &&
+    leftSectionCopy.intro === heroIntro, "HERO_A_ADVANCED_FIELDS_MISSING")
+  pass("HERO_A_UI_SMALL_COPY_INTRO_BADGE_VISIBILITY",
+    { smallCopy: true, intro: true, badgeHidden: true })
   // The parent editor reloads sections after saving; let the dirty-state update
   // propagate before requesting a different area, otherwise its safety dialog
   // correctly intercepts the pending navigation.
@@ -634,8 +724,11 @@ try {
   ensure(rightSelected, "HERO_B_TAB")
   await page.waitForSelector(".hero-right-editor", { timeout: 15000 })
   const heroHeading = "Cabeçalho fictício " + suffix
+  const heroRole = "Função fictícia " + suffix
+  const heroPrincipal = "Botão principal fictício " + suffix
   const heroSecondary = "Destaques novos " + suffix
   await editField('.hero-right-editor fieldset[aria-label="Título Cabeçalho"] input', heroHeading)
+  await editField('.hero-right-editor fieldset[aria-label="Subtítulo"] textarea', heroRole)
   await editField('.hero-right-editor fieldset[aria-label="Área de Destaques"] input', heroSecondary)
   const openFirst = await page.evaluate(() => {
     const first = document.querySelector(".hero-right-editor .hero-right-entries details")
@@ -644,6 +737,7 @@ try {
     return true
   })
   ensure(openFirst, "HERO_B_DETAILS")
+  await editField('.hero-right-editor fieldset[aria-label="Botões Principais"] .hero-right-entry:first-child input', heroPrincipal)
   await page.click('.hero-right-editor button[aria-label="Descer tema 1"]')
   await page.waitForSelector(".site-editor-main .admin-floating-save button", { timeout: 15000 })
   await page.click(".site-editor-main .admin-floating-save button")
@@ -660,6 +754,13 @@ try {
     rightSaved.content_json.items?.[0]?.hero?.secondaryTitle === heroSecondary &&
     heroSectionSaved.title === heroHeading, "HERO_B_UI_DB_MISMATCH")
   pass("HERO_B_UI_COPY_REORDER_GLOBALS", { globalHeroStillOnFirst: true, orderSwapped: true, title: true })
+  const heroRoleRow = await get(service.from("sections")
+    .select("eyebrow").eq("id", syntheticProfileId).single(), "HERO_B_ROLE_DB")
+  ensure(heroRoleRow.eyebrow === heroRole &&
+    rightSaved.content_json.items?.[1]?.title === heroPrincipal,
+    "HERO_B_ROLE_OR_PRINCIPAL_BUTTON_LOST")
+  pass("HERO_B_UI_ROLE_AND_REORDERED_PRINCIPAL_BUTTON",
+    { subtitle: true, buttonCopy: true, indexAfterReorder: 1 })
 
   for (const v of [
     { width: 1440, height: 900, label: "DESKTOP" },
@@ -684,10 +785,15 @@ try {
   if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
   if (mediaRecoveryAssetId) await service.from("media_assets").delete().eq("id", mediaRecoveryAssetId)
   if (mediaRecoveryStoragePath) await service.storage.from("portfolio-public").remove([mediaRecoveryStoragePath])
+  if (privateUiAssetId) await service.from("media_assets").delete().eq("id", privateUiAssetId)
+  if (privateUiNewPath) await service.storage.from("portfolio-public").remove([privateUiNewPath])
+  if (privateUiOldPath || privateUiNewPath)
+    await service.storage.from("portfolio-private")
+      .remove([privateUiOldPath, privateUiNewPath].filter(Boolean))
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 22, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 22) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 26, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 26) process.exitCode = 1
