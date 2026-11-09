@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto"
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
 import { createRequire } from "node:module"
 import puppeteer from "puppeteer-core"
 
@@ -33,6 +36,9 @@ const get = async (query, name) => {
 }
 let userId, browser, page, sectionOriginal, blockOriginal, sectionId, blockId
 let pageId = null
+let mediaAssetId = null
+let mediaStoragePath = null
+let mediaTempDir = null
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -159,6 +165,150 @@ try {
     ensure(result.exists && result.publicTitle && !result.metadataLeaked, "RENDERER_" + viewport.kind)
     pass("RENDERER_" + viewport.kind, { publicText: true, metadataPrivate: true })
   }
+
+  // Full media UI loop against the isolated Supabase Storage/PostgREST/Auth stack.
+  // Never use production credentials or any fixture outside this loopback runner.
+  await page.setViewport({ width: 1440, height: 900 })
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  const mediaNav = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Mídia")
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(mediaNav, "MEDIA_NAVIGATION")
+  await page.waitForSelector(".media-library-grid .upload-button, .admin-header .upload-button", { timeout: 15000 })
+  mediaTempDir = mkdtempSync(join(tmpdir(), "p4-synthetic-media-ui-"))
+  const fileName = "p4-media-ui-" + suffix + ".svg"
+  const filePath = join(mediaTempDir, fileName)
+  writeFileSync(filePath,
+    '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="black"/></svg>')
+  const fileInput = await page.$(".admin-header .upload-button input[type=file]")
+  ensure(Boolean(fileInput), "MEDIA_UPLOAD_INPUT")
+  await fileInput.uploadFile(filePath)
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Mídia enviada e publicada automaticamente na biblioteca pública."),
+    { timeout: 20000 },
+  )
+  const uploaded = await get(service.from("media_assets").select("*").eq("title", fileName).single(), "MEDIA_UI_UPLOADED_ROW")
+  mediaAssetId = uploaded.id
+  mediaStoragePath = uploaded.storage_path
+  const bytes = await service.storage.from("portfolio-public").download(mediaStoragePath)
+  ensure(!bytes.error && Boolean(bytes.data) && uploaded.status === "published", "MEDIA_UI_UPLOAD_INCOMPLETE")
+  pass("MEDIA_UI_UPLOAD_AND_PUBLIC_CATALOG", { storage: true, catalog: true })
+
+  const openMedia = async (title) => {
+    await page.waitForFunction((name) => [...document.querySelectorAll(".media-library-card")]
+      .some((card) => card.textContent?.includes(name)), { timeout: 15000 }, title)
+    const clicked = await page.evaluate((name) => {
+      const button = [...document.querySelectorAll(".media-library-card")]
+        .find((card) => card.textContent?.includes(name))
+      button?.click()
+      return Boolean(button)
+    }, title)
+    ensure(clicked, "MEDIA_UI_CARD_NOT_FOUND")
+    await page.waitForSelector(".media-library-detail", { timeout: 10000 })
+  }
+  const updateMediaInput = async (labelText, value) => {
+    const changed = await page.evaluate(({ labelText, value }) => {
+      const label = [...document.querySelectorAll(".media-library-detail label")]
+        .find((node) => node.textContent?.includes(labelText))
+      const field = label?.querySelector("input, textarea")
+      if (!field) return false
+      const setter = Object.getOwnPropertyDescriptor(
+        field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,
+        "value",
+      ).set
+      setter.call(field, value)
+      field.dispatchEvent(new Event("input", { bubbles: true }))
+      return true
+    }, { labelText, value })
+    ensure(changed, "MEDIA_UI_FIELD_MISSING_" + labelText)
+    await page.waitForFunction(({ labelText, value }) => {
+      const label = [...document.querySelectorAll(".media-library-detail label")]
+        .find((node) => node.textContent?.includes(labelText))
+      return label?.querySelector("input, textarea")?.value === value
+    }, { timeout: 10000 }, { labelText, value })
+  }
+  const mediaTitle = "Mídia sintética UI " + suffix
+  const mediaAlt = "Descrição fictícia verificada " + suffix
+  const mediaCredit = "Crédito sintético UI " + suffix
+  await openMedia(fileName)
+  await updateMediaInput("Título editorial", mediaTitle)
+  await updateMediaInput("Texto alternativo", mediaAlt)
+  await updateMediaInput("Crédito (opcional)", mediaCredit)
+  await page.click(".media-library-frame-control button")
+  await page.waitForSelector(".media-frame-dialog", { timeout: 10000 })
+  await page.click('.media-frame-zoom button[aria-label="Aumentar zoom"]')
+  await page.click(".media-frame-dialog footer button.primary-button")
+  await page.waitForFunction(() => document.querySelector(".media-library-detail") &&
+    document.querySelector(".media-library-detail")?.textContent?.includes("Zoom: 110%"),
+    { timeout: 10000 })
+  await page.click(".media-library-detail .media-actions button.primary-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Metadados salvos e conferidos."),
+    { timeout: 20000 })
+  const mediaSaved = await get(service.from("media_assets").select("*").eq("id", mediaAssetId).single(), "MEDIA_UI_METADATA_DB")
+  ensure(mediaSaved.title === mediaTitle && mediaSaved.alt_text === mediaAlt &&
+    mediaSaved.credit === mediaCredit && mediaSaved.focal_point?.zoom === 1.1,
+    "MEDIA_UI_METADATA_INCORRECT")
+  pass("MEDIA_UI_SAVE_ALT_CREDIT_FOCAL", { title: true, alt: true, credit: true, focalZoom: 1.1 })
+
+  await openMedia(mediaTitle)
+  const mediaReopened = await page.evaluate(() => {
+    const labels = [...document.querySelectorAll(".media-library-detail label")]
+    const field = (name) => labels.find((node) => node.textContent?.includes(name))
+      ?.querySelector("input, textarea")?.value
+    return {
+      alt: field("Texto alternativo"),
+      credit: field("Crédito (opcional)"),
+      zoom: document.querySelector(".media-library-frame-control")?.textContent,
+    }
+  })
+  ensure(mediaReopened.alt === mediaAlt && mediaReopened.credit === mediaCredit &&
+    mediaReopened.zoom?.includes("110%"), "MEDIA_UI_REOPEN_MISMATCH")
+  pass("MEDIA_UI_REOPEN_PERSISTED_FIELDS", { alt: true, credit: true, focal: true })
+
+  // Concurrent change must invalidate the UI's original updated_at CAS token.
+  const concurrentTitle = "Concorrente sintético " + suffix
+  const concurrent = await service.from("media_assets")
+    .update({ title: concurrentTitle }).eq("id", mediaAssetId).select("id").single()
+  ensure(!concurrent.error, "MEDIA_UI_CONCURRENT_FIXTURE")
+  await updateMediaInput("Texto alternativo", "Tentativa obsoleta " + suffix)
+  await page.click(".media-library-detail .media-actions button.primary-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Não foi possível confirmar todos os metadados."),
+    { timeout: 15000 })
+  const retained = await get(service.from("media_assets").select("title,alt_text").eq("id", mediaAssetId).single(), "MEDIA_UI_CONFLICT_DB")
+  ensure(retained.title === concurrentTitle && retained.alt_text === mediaAlt, "MEDIA_UI_CAS_OVERWROTE")
+  pass("MEDIA_UI_STALE_CAS_REJECTED", { concurrentTitlePreserved: true, altPreserved: true })
+
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((button) => button.textContent?.trim() === "Mídia")?.click()
+  })
+  await page.waitForFunction((title) => [...document.querySelectorAll(".media-library-card")]
+    .some((card) => card.textContent?.includes(title)), { timeout: 15000 }, concurrentTitle)
+  const clickedDelete = await page.evaluate((title) => {
+    const button = [...document.querySelectorAll("button.media-library-remove")]
+      .find((node) => node.getAttribute("aria-label")?.includes(title))
+    button?.click()
+    return Boolean(button)
+  }, concurrentTitle)
+  ensure(clickedDelete, "MEDIA_UI_DELETE_BUTTON")
+  await page.waitForSelector('.admin-confirm-dialog[role="alertdialog"] .danger-button', { timeout: 10000 })
+  await page.click('.admin-confirm-dialog[role="alertdialog"] .danger-button')
+  await page.waitForFunction((title) => ![...document.querySelectorAll(".media-library-card")]
+    .some((card) => card.textContent?.includes(title)), { timeout: 20000 }, concurrentTitle)
+  const remaining = await get(service.from("media_assets").select("id").eq("id", mediaAssetId), "MEDIA_UI_DELETE_DB")
+  const stored = await service.storage.from("portfolio-public").download(mediaStoragePath)
+  ensure(remaining.length === 0 && Boolean(stored.error), "MEDIA_UI_DELETE_ORPHAN")
+  pass("MEDIA_UI_DELETE_NO_ORPHANS", { catalogRows: 0, storageObjectAbsent: true })
+  mediaAssetId = null
+  mediaStoragePath = null
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -166,7 +316,10 @@ try {
   if (blockId && blockOriginal) await service.from("content_blocks").update({ content_json: blockOriginal.content_json, status: blockOriginal.status }).eq("id", blockId)
   if (sectionId && sectionOriginal) await service.from("sections").update({ animation_preset: sectionOriginal.animation_preset, status: sectionOriginal.status, is_visible: sectionOriginal.is_visible, page_id: sectionOriginal.page_id }).eq("id", sectionId)
   if (pageId) await service.from("pages").delete().eq("id", pageId)
+  if (mediaAssetId) await service.from("media_assets").delete().eq("id", mediaAssetId)
+  if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
+  if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 6, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 6) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 11, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 11) process.exitCode = 1
