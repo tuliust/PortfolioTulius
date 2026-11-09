@@ -1,3 +1,30 @@
+# P2/P4 — apêndice mais recente
+
+## Apêndice de homologação sintética — execução em 09/11/2026
+
+**Baseline auditado:** `b2c732213ba34789b7e04761dfff84fb91fcbc7f` (`main` na conferência). **Rerun P5:** [#42682410740](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42682410740), `run_attempt=2`, `completed/success`. **Validate:** [#42682411152](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42682411152), `completed/success`.
+
+| Suíte P5 | Resultado | Evidência efetiva |
+|---|---:|---|
+| Oito cenários originais | 8/8 | Auth/RLS, publicações e acesso local |
+| RPC P2 composta | 11/11 | CAS em seção/bloco/placement, rollback após atualização da seção, usuário não-admin, reenvio após ACK incerto |
+| E2E navegador JWT admin | **57/57** | UI salvar/reler, mídia, Hero, navegação, Trajetória, depoimentos, sete coleções, placements, tipografia, Identidade e revisões |
+| Storage e catálogo API | 8/8 | Mídia privada/publicada, RLS, renomeação e compensação de SQL, exclusão |
+| SEO sintético | 5/5 | Save RPC, rollback, HTML estático, canonical/robots/sitemap, publicação |
+| **Total** | **89/89** | `127.0.0.1:54321`, dados fictícios, sem cloud writes |
+
+**Novos cenários do browser comprovados individualmente:** `MEDIA_UI_SQL_PATCH_503_PRESERVES_DRAFT`, `MEDIA_UI_FAILED_CATALOG_READ_PRESERVES_DRAFT`, `MEDIA_UI_STORAGE_503_NO_ORPHAN`, `MEDIA_UI_STALE_CAS_REJECTED`, `MEDIA_UI_PRIVATE_RENAME_AUTO_PUBLISH_NO_ORPHANS`, `MEDIA_UI_DELETE_NO_ORPHANS`, `PLACEMENT_UI_DESKTOP_MOBILE_AND_SIBLING_ISOLATION`, `DEVICE_UI_DESKTOP_TYPOGRAPHY_PERSISTED`, `DEVICE_UI_MOBILE_TYPOGRAPHY_INDEPENDENT`, `IDENTITY_UI_COLOR_FONT_TYPE_SAVE_DB`, `REVISION_UI_PREVIEW_NO_WRITE`, `REVISION_UI_RESTORE_ALLOWED_FIELDS_ONLY`, `REVISION_UI_STALE_CAS_DENIED`. Os sete fluxos de coleções exibidos como `COLLECTION_UI_* ` validaram criação, publicação e consulta; a despublicação e a concorrência foram cenários representativos, não cada tabela. O run terminou sem falhas, mas a primeira tentativa do mesmo run foi reprovada por inicialização Docker/porta e não é reclassificada.
+
+**Validate funcional:** 56 arquivos Vitest, 258/258 PASS; formatação, TypeScript, build, smoke e sintaxe PASS. Não foram produzidos artefatos P5 nessa segunda tentativa (a prova é o job log).
+
+**P3, Vercel, Supabase:** último P3 anterior [#42677818677](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42677818677) falhou no LCP mobile mediano 3.648,364 ms; não há P3 aprovado para `b2c7322` neste snapshot. Vercel `dpl_BGTbvqwWkckcczUuePdZ3euVm6et` `READY` e alias `tulius.work` para o SHA funcional; fingerprint HTTP ainda por conferir. Supabase produtivo lido sem mutação: 14 seções, 28 blocos, 56 placements, 75 mídias, nove migrations remotas; `save_section_block_atomic` inexistente.
+
+**Limitações explícitas:** sem aceitação integral de todos os campos e CRUD de todas as nove coleções; sem E2E por uso do `focal_point` em Hero/Sobre/galerias; sem legenda pública automática de `credit`; não demonstrar resposta incerta de toda operação distribuída; sem P3 no SHA final nem aceite visual final. **P2 em produção bloqueada pela autorização específica da etapa 6; não executar nesta rodada.**
+
+---
+
+## Documentação anterior preservada
+
 # Adendo de evidências da execução conectada
 
 > **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.

@@ -1,3 +1,25 @@
+# Estado atual — adendo mais recente
+
+## Atualização operacional comprovada — 09/11/2026 (SHA funcional `b2c732213ba34789b7e04761dfff84fb91fcbc7f`)
+
+> Adendo de continuidade, sem modificação do código público ou de dados produtivos. O SHA deste registro documental será posterior ao SHA funcional citado; **não atribuir a ele sucesso automático** de workflows anteriores. Consultar as execuções do commit documental antes de homologar a convergência.
+
+- **Etapa 2 / CMS: PARCIAL, com cobertura sintética ampliada comprovada.** [P5 #42682410740, tentativa 2](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42682410740) terminou `success`, incluindo 57/57 cenários de navegador autenticado. Hero A/B, reordenação e globals, navegação, Trajetória, depoimentos, sete coleções normalizadas, placements desktop e mobile A, tipografia independente, Identidade e revisões foram exercitados com dados fictícios, gravação/releitura no PostgREST local quando assertada, renderer desktop/mobile nos casos especificados e conflitos CAS. **Não equivale** a CRUD completo (criar, editar, despublicar, reabrir, concorrer) individualmente em todas as nove coleções, nem a matriz exaustiva de cores, estilos nomeados, alinhamentos e painel mobile B. Esses gates permanecem parciais.
+- **Etapa 3 / Biblioteca: PARCIAL, ampla cobertura positiva e negativa demonstrada.** O mesmo P5 confirma upload/publicação, alt/título/crédito/ponto focal, persistência ao reabrir, CAS, renomeação privada com promoção, exclusão sem órfãos e injeções HTTP `503` em PATCH SQL/PostgREST e POST Storage com preservação sintética de rascunho/ausência de objetos órfãos. Restam conferir via navegador a precedência de enquadramento global e por uso em Hero, Sobre e galerias, referências de conteúdo em casos de exclusão e os estados de resposta incerta; **`credit` é metadado de catálogo, sem legenda pública automática comprovada**.
+- **P5 agregado: 89/89 PASS** = 8 cenários originais + 11 P2/RPC/CAS/rollback + 57 navegador + 8 Storage/API + 5 SEO, todos com endereço `127.0.0.1:54321` e `cloudConnections: 0` nos grupos que reportam esse campo. Erros de instrumentação e uma falha Docker na primeira tentativa foram históricos; o resultado final da tentativa 2 é `success`, não um sucesso retroativo das tentativas falhas.
+- **Validate #42682411152: SUCCESS** no mesmo SHA funcional: formatação, TypeScript, **258/258 testes Vitest (56 arquivos)**, build, smoke e sintaxe dos testes de navegador.
+- **P3 Lighthouse: BLOQUEIO ainda aberto.** A execução mais recente localizada antes desta atualização, [#42677818677](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42677818677), era de **outro SHA** (`06105c35013c7bd8b483c4d14ac0390ef7d9a16d`) e falhou com LCP mobile mediano **3.648,364 ms > 3.500 ms**, apesar de navegador sem falhas, SEO em paridade e Lighthouse acessibilidade/boas práticas/SEO 100. **Não há P3 aprovado atribuível ao SHA `b2c7322` nesta conferência**. Não afrouxar o orçamento.
+- **Vercel:** consulta autenticada identificou deploy de produção `dpl_BGTbvqwWkckcczUuePdZ3euVm6et` em estado `READY`, commit `b2c7322`, com alias `tulius.work`. A leitura HTTP do JSON de fingerprint do domínio não foi concluída nesta auditoria; não equivaler o metadata do Vercel à leitura da resposta HTTP.
+- **Supabase de produção: somente leitura, zero alterações realizadas nesta execução.** SELECT confirmou 14 seções, 28 blocos, 56 placements, 75 mídias; consulta a `pg_proc` retornou **zero** funções `public.save_section_block_atomic`; listagem de migrations: nove versões, sem `20261109024100`. Não houve inserts, updates, deletes, alterações em Storage ou migrations remotas.
+- **Etapa 5: PARCIAL/BLOQUEADA.** Validate e P5 do SHA funcional passaram, mas P3 do mesmo SHA e aceite visual final faltam. O commit documental que incorpora este adendo deve acionar Validate, P5 e P3 por path filter; os resultados **ainda precisam ser observados**. Não declarar convergência até validar os IDs e SHA efetivos.
+- **Etapa 6: DEPENDENTE DE AUTORIZAÇÃO ESPECÍFICA, NÃO EXECUTADA.** Arquivo: `supabase/migrations/20261109024100_p2_composite_section_block_save.sql`; adiciona `block_placements.updated_at` e seu trigger, além da RPC `public.save_section_block_atomic` (gravação composta com CAS/rollback e verificação de administrador). Nenhuma migration pode ser aplicada sem autorização separada, snapshot/backup e plano de recuperação. A implantação não reescreve conteúdo editorial como efeito normal, mas muda o contrato de persistência e deve ser monitorada.
+
+Consulte os detalhes do [relatório P2/P4](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md) e [pendências vigentes](OPEN_ISSUES.md).
+
+---
+
+## Documentação anterior preservada
+
 # Estado operacional — atualização das etapas 1 a 5
 
 > **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.

@@ -1,3 +1,24 @@
+# Pendências — adendo mais recente
+
+## Atualização das pendências — 09/11/2026, após P5 `b2c7322`
+
+**Não manter como “aguardando resultado” os testes já concluídos:** [P5 #42682410740 (tentativa 2)](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42682410740) **success, 89/89** (57/57 UI); [Validate #42682411152](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42682411152) **success, 258/258 Vitest**. Injeções HTTP 503 de PATCH de catálogo e POST de Storage passaram no mesmo workflow, com testes de preservação/compensação. Também passaram editores de Trajetória e depoimentos, sete coleções, Identidade, tipografia e revisões nos cenários testados.
+
+**Pendências atuais, sem extrapolar o alcance dos testes:**
+
+1. **P0 — Etapa 6 autorizada separadamente:** migration `supabase/migrations/20261109024100_p2_composite_section_block_save.sql` segue **não aplicada** ao banco cloud; `public.save_section_block_atomic` ausente no SELECT de produção. Confirmar snapshot, compatibilidade e recuperação antes de pedir autorização de aplicação.
+2. **P1 — P3 Lighthouse / convergência:** último P3 localizado [#42677818677](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42677818677) **FAIL em SHA anterior**; mediana LCP mobile 3.648,364 ms, acima do teto 3.500 ms. Exigir **nova mediana de três** no SHA documental final, sem flexibilização do budget, além de paridade SEO, auditoria de navegador e fingerprint HTTP.
+3. **P1 — Cobertura CMS ainda parcial:** sete coleções normalizadas tiveram criação/publicação/consulta; falta demonstrar CRUD e concorrência completo individualmente em todas as nove coleções, reabertura e validações por campo, todos os estilos Hero/cores/fontes nomeadas e isolamentos mobile B/desktop. Não alterar CSS ou conteúdo aprovado apenas para completar testes.
+4. **P1 — Biblioteca / enquadramento e erros incertos:** faltam demonstrações E2E públicas por componente (Hero/Sobre/galerias) da precedência entre `media_assets.focal_point` não padrão e override individual e remoção de referências reais sintéticas por uso; cobrir resposta incerta/timeout de forma explícita. `credit` continua metadado, sem legenda pública automática. Avaliar possível aviso de sucesso anterior após erro de catálogo, observado como diagnóstico não conclusivo no log.
+5. **P1 — Etapa 5:** os resultados finais de Validate, P5 e P3 devem convergir no mesmo SHA servido. Vercel marcou o SHA funcional `b2c7322` `READY` com alias `tulius.work`; falta confirmação da resposta do fingerprint após o commit documental e a revisão manual visual em dispositivos reais.
+6. **Manual:** aceite visual humano e eventual decisão editorial sobre exibição de crédito público. Nenhuma autorização geral para prosseguir inclui escrita no Supabase produtivo.
+
+**Restrições preservadas:** esta atualização é só documentação. Nenhuma escrita cloud Supabase, nenhum ajuste visual/textual/mídia produtiva, nenhum deploy ou migration manual. As falhas de tentativas anteriores não são apagadas pelo rerun aprovado.
+
+---
+
+## Documentação anterior preservada
+
 # Pendências vigentes — etapas 1 a 5
 
 > **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.
