@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { usePortfolio } from "../../hooks/usePortfolio"
 import { splitProfileTitle } from "../../lib/profile-title"
 import type {
@@ -9,7 +9,7 @@ import type {
 } from "../../types/content"
 import { Icon } from "../ui/Icons"
 import { Navigation } from "./Navigation"
-import { EXPERIENCE_SLUGS } from "../../lib/experience-slugs"
+import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"
 import { ToolIcons } from "./ToolIcons"
 import { placementMotionVariables } from "../../lib/placement-motion"
 import { imageFramingStyle } from "../../lib/media-framing"
@@ -20,12 +20,6 @@ import {
   mobileEditorialLines,
   mobileProfileEditorial,
 } from "../../lib/mobile-profile-editorial"
-
-// The professional experience gallery is below the initial Profile fold.
-// Keep its substantial view module out of the critical Hero JavaScript.
-const ExperienceStack = lazy(() =>
-  import("./ExperienceStack").then((module) => ({ default: module.ExperienceStack })),
-)
 
 const heroDefaults = {
   badgeText: "VISÃO 360° DA COMUNICAÇÃO E MARKETING ·",
@@ -1657,15 +1651,14 @@ export function PublicSite({
             )
               return null
             return (
-              <Suspense key="experience-stack" fallback={null}>
-                <ExperienceStack
-                  sections={visible.filter((entry) =>
-                    EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
-                  )}
-                  isMobile={isMobile}
-                  preview={preview}
-                />
-              </Suspense>
+              <ExperienceStack
+                key="experience-stack"
+                sections={visible.filter((entry) =>
+                  EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
+                )}
+                isMobile={isMobile}
+                preview={preview}
+              />
             )
           }
           return (
