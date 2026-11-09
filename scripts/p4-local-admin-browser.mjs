@@ -1253,6 +1253,131 @@ try {
     .select("status").eq("id", contactRow.id).single(), "CONTACT_UNPUBLISH_DB")
   ensure(unpublishedContact.status === "draft", "CONTACT_UNPUBLISH_FAILED")
   pass("COLLECTION_UI_UNPUBLISH_STATUS", { status: "draft", recordRetained: true })
+
+  // Edit actual placement controls, then verify P2's atomic save writes the
+  // requested desktop/mobile presentation without modifying sibling blocks.
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-sidebar", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".site-editor-sidebar button")]
+      .find((node) => node.textContent?.includes("Hero"))?.click()
+  })
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-heading")?.textContent?.includes("Hero"),
+    { timeout: 12000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+      .find((node) => node.textContent?.includes("Esquerda"))?.click()
+  })
+  await page.waitForSelector(".hero-left-editor", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".site-editor-subview-actions button")]
+      .find((node) => node.textContent?.trim() === "Avançado")?.click()
+  })
+  await page.waitForSelector(".motion-editor select", { timeout: 15000 })
+  const setMotion = async (index, value) => {
+    const changed = await page.evaluate(({ index, value }) => {
+      const el = document.querySelectorAll(".motion-editor select")[index]
+      if (!el) return false
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set.call(el, value)
+      el.dispatchEvent(new Event("change", { bubbles: true }))
+      return true
+    }, { index, value })
+    ensure(changed, "PLACEMENT_UI_SELECT_" + index)
+    await page.waitForFunction(({ index, value }) =>
+      document.querySelectorAll(".motion-editor select")[index]?.value === value,
+      { timeout: 10000 }, { index, value })
+  }
+  const siblingBefore = await get(service.from("block_placements")
+    .select("panel_id,layout_variant,is_visible,motion_config")
+    .eq("block_id", blockBySide.b).order("panel_id"), "P4_PLACEMENT_SIBLING_BEFORE")
+  await setMotion(0, "desktop")
+  await setMotion(1, "featured")
+  await setMotion(2, "fade-in")
+  await setMotion(0, "mobile-a")
+  await setMotion(1, "compact")
+  await setMotion(2, "stagger")
+  const opened = await page.evaluate(() => {
+    const details = document.querySelector(".site-editor-device-item")
+    if (!details) return false
+    details.open = true
+    return true
+  })
+  ensure(opened, "DEVICE_DESKTOP_EDITOR_MISSING")
+  const setDeviceNumber = async (root, labelText, value) => {
+    const changed = await page.evaluate(({ root, labelText, value }) => {
+      const label = [...document.querySelectorAll(root + " label")]
+        .find((node) => node.textContent?.trim().startsWith(labelText))
+      const field = label?.querySelector('input[type="number"]')
+      if (!field) return false
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")
+        .set.call(field, String(value))
+      field.dispatchEvent(new Event("input", { bubbles: true }))
+      return true
+    }, { root, labelText, value })
+    ensure(changed, "DEVICE_NUMERIC_FIELD_" + labelText)
+    await page.waitForFunction(({ root, labelText, value }) => {
+      const label = [...document.querySelectorAll(root + " label")]
+        .find((node) => node.textContent?.trim().startsWith(labelText))
+      return label?.querySelector('input[type="number"]')?.value === String(value)
+    }, { timeout: 10000 }, { root, labelText, value })
+  }
+  await setDeviceNumber(".site-editor-device-item fieldset", "Título (px)", 74)
+  await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
+    { timeout: 12000 })
+  await page.click(".site-editor-main .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Alterações salvas atomicamente e conferidas no Supabase."),
+    { timeout: 18000 })
+  const placementsAfter = await get(service.from("block_placements")
+    .select("panel_id,layout_variant,is_visible,motion_config")
+    .eq("block_id", blockBySide.a), "P4_PLACEMENT_AFTER")
+  const placed = (key) => placementsAfter.find((row) => row.panel_id === idByPanel[key])
+  const siblingAfter = await get(service.from("block_placements")
+    .select("panel_id,layout_variant,is_visible,motion_config")
+    .eq("block_id", blockBySide.b).order("panel_id"), "P4_PLACEMENT_SIBLING_AFTER")
+  ensure(placed("desktop")?.layout_variant === "featured" &&
+    placed("desktop")?.motion_config?.preset === "fade-in" &&
+    placed("mobile-a")?.layout_variant === "compact" &&
+    placed("mobile-a")?.motion_config?.preset === "stagger" &&
+    JSON.stringify(siblingBefore) === JSON.stringify(siblingAfter),
+    "P4_PLACEMENTS_REWROTE_UNEDITED_PANEL")
+  pass("PLACEMENT_UI_DESKTOP_MOBILE_AND_SIBLING_ISOLATION",
+    { desktop: true, mobileA: true, otherBlockUnchanged: true })
+  const styledDesktop = await get(service.from("content_blocks")
+    .select("content_json").eq("id", blockBySide.a).single(), "P4_DEVICE_DESKTOP_DB")
+  ensure(styledDesktop.content_json.items?.[0]?.desktop?.titleSize === 74,
+    "P4_DEVICE_DESKTOP_PERSISTENCE")
+  pass("DEVICE_UI_DESKTOP_TYPOGRAPHY_PERSISTED", { titleSize: 74 })
+
+  await page.waitForFunction(() => !document.querySelector(".site-editor-unsaved"),
+    { timeout: 15000 })
+  await page.click('.site-editor-subview-actions button[aria-label="Configurações mobile"]')
+  await page.waitForSelector(".site-editor-mobile-page .site-editor-device-item", { timeout: 15000 })
+  await page.evaluate(() => {
+    const details = document.querySelector(".site-editor-mobile-page .site-editor-device-item")
+    if (details) details.open = true
+  })
+  await setDeviceNumber(".site-editor-mobile-page .site-editor-device-item fieldset",
+    "Texto (px)", 19)
+  await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
+    { timeout: 12000 })
+  await page.click(".site-editor-main .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Alterações salvas atomicamente e conferidas no Supabase."),
+    { timeout: 18000 })
+  const mobileStyled = await get(service.from("content_blocks")
+    .select("content_json").eq("id", blockBySide.a).single(), "P4_DEVICE_MOBILE_DB")
+  ensure(mobileStyled.content_json.items?.[0]?.mobile?.textSize === 19 &&
+    mobileStyled.content_json.items?.[0]?.desktop?.titleSize === 74,
+    "P4_DEVICE_MOBILE_REWROTE_DESKTOP")
+  pass("DEVICE_UI_MOBILE_TYPOGRAPHY_INDEPENDENT",
+    { mobileSize: 19, desktopSizePreserved: 74 })
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -1280,5 +1405,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 47, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 47) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 50, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 50) process.exitCode = 1
