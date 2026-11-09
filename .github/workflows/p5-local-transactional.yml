@@ -8,6 +8,8 @@ on:
       - scripts/p5-local-transactional.mjs
       - scripts/p2-local-composite.mjs
       - scripts/p4-local-admin-browser.mjs
+      - scripts/p4-local-seo.mjs
+      - scripts/generate-seo.mjs
       - src/components/admin/AdminApp.tsx
       - src/components/admin/AdminModules.tsx
       - src/lib/p2-composite-save.ts
@@ -38,6 +40,7 @@ jobs:
           node --check scripts/p5-local-transactional.mjs
           node --check scripts/p2-local-composite.mjs
           node --check scripts/p4-local-admin-browser.mjs
+          node --check scripts/p4-local-seo.mjs
           docker info --format '{{.ServerVersion}}'
           npx --yes supabase@3.0.0 --version
           npx --yes supabase@3.0.0 start --help > /dev/null
@@ -97,6 +100,11 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:5173/ > /dev/null
           (cd "$RUNNER_TEMP/p4-browser" && node suite.mjs)
+      - name: Isolated SEO RPC, failure and static output parity
+        shell: bash
+        env:
+          P5_LOCAL_URL: http://127.0.0.1:54321/
+        run: node scripts/p4-local-seo.mjs
       - name: Stop isolated stack
         if: always()
         run: npx --yes supabase@3.0.0 stop || true

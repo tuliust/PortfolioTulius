@@ -17,6 +17,12 @@ function secureHttps(value) {
     return url.protocol === "https:" ? url.href : null
   } catch { return null }
 }
+// A loopback exception is available only in explicit isolated P4 CI runs.
+function allowSyntheticLocalSeo(base) {
+  return process.env.P4_LOCAL_SYNTHETIC_SEO === "true" &&
+    process.env.P5_LOCAL_URL === "http://127.0.0.1:54321/" &&
+    base === "http://127.0.0.1:54321"
+}
 function replaceMeta(html, name, content, attribute = "name") {
   const match = new RegExp(`<meta\\b[^>]*\\b${attribute}=["']${name}["'][^>]*>`, "i")
   const tag = `<meta ${attribute}="${name}" content="${escapeHtml(content)}" />`
@@ -30,7 +36,7 @@ function replaceCanonical(html, href) {
 async function getPublished(table, columns, filters) {
   const base = process.env.VITE_SUPABASE_URL
   const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY
-  if (!base || !key || !secureHttps(base)) return null
+  if (!base || !key || (!secureHttps(base) && !allowSyntheticLocalSeo(base))) return null
   const query = new URL(`${base}/rest/v1/${table}`)
   query.searchParams.set("select", columns)
   for (const [column, predicate] of Object.entries(filters))
