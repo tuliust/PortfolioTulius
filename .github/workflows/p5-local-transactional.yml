@@ -9,6 +9,8 @@ on:
       - scripts/p2-local-composite.mjs
       - scripts/p4-local-admin-browser.mjs
       - scripts/p4-local-seo.mjs
+      - scripts/p4-local-media.mjs
+      - src/lib/p2-composite-save.test.ts
       - scripts/generate-seo.mjs
       - src/components/admin/AdminApp.tsx
       - src/components/admin/AdminModules.tsx
@@ -100,6 +102,11 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:5173/ > /dev/null
           (cd "$RUNNER_TEMP/p4-browser" && node suite.mjs)
+      - name: Synthetic media Auth, Storage, metadata and compensations
+        shell: bash
+        env:
+          P5_LOCAL_URL: http://127.0.0.1:54321/
+        run: node scripts/p4-local-media.mjs
       - name: Isolated SEO RPC, failure and static output parity
         shell: bash
         env:
