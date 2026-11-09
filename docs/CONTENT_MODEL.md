@@ -1,3 +1,20 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Atualização de modelos e contratos de campos
+- `sections`: `title`, `eyebrow`, `intro`, `animation_preset` podem ser incluídos no mesmo save composto do bloco, com versão esperada.
+- `content_blocks`: `content_json`, `editorTitle`, `editorAnchor`, `items[0].hero.rootBackground`; o objeto global `hero` do primeiro item B deve permanecer no item 0 ao reordenar.
+- `block_placements`: `desktop`, `mobile-a`, `mobile-b`; `updated_at` **só** depois de instalar a migration incremental, versões CAS e visibilidade/motion por painel.
+- `media_assets`: `alt_text`, `credit`, `focal_point`, `storage_bucket`, `storage_path`, `updated_at`; novo teste local armazenou, releu e publicou esses dados, com RLS de admin/non-admin.
+- `alt_text`: o hook público prioriza catálogo, sincronizado em memória no desktop/mobile, Sobre, logo e galerias; fallback JSONB quando catálogo não disponível.
+- `credit` e `focal_point`: metadados editáveis da biblioteca, **não provar renderização global**. Enquadramento específico do renderer usa JSONB `mediaFraming` e variantes, sem default automático do catálogo.
+- SEO `pages` + `site_settings`: RPC `save_home_seo_atomic` protege dados; `scripts/generate-seo.mjs` gera HTML a cada build.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # Modelo de conteúdo
 
 ## Modelo editorial da revisão de 01/11/2026 (referência datada)

@@ -1,3 +1,14 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Evidência adicional de isolamento e Storage sintético (09/11)
+O workflow `p5-local-transactional.yml` liga Docker/Supabase CLI v3 apenas em `http://127.0.0.1:54321` com `supabase/seed.local.synthetic.sql`. `scripts/p4-local-media.mjs` exige `GITHUB_WORKSPACE` e endpoint loopback, usa usuários `example.invalid` e objetos SVG inventados, testa 8 cenários: JWT admin/non-admin, RLS privado, mutação proibida, metadados com CAS, renomeação privada, injeção de falha SQL e compensação de arquivo, promoção pública e exclusão controlada. Run #42561707707 SUCCESS, 8/8. A suíte não aborda ainda a UI da Biblioteca nem garante compensação automática em todas as falhas incertas do mundo real.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # Homologação P4 — Supabase local isolado (sem segundo projeto cloud)
 
 **Decisão explícita do proprietário, 02/11/2026:** usar exclusivamente uma instância local do Supabase para P4. Não criar projeto cloud, nem executar migrações, testes de escrita ou alterações no Supabase de produção.

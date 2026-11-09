@@ -1,3 +1,20 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Situação P1–P5 em 09/11/2026
+- **P1:** concluída tecnicamente; regressão de TypeScript, Vitest e build passou no Validate #42562429153.
+- **P2:** implementação/RPC e 11 cenários CAS/rollback sintéticos aprovados; o fallback não aceita erro SQL interno `42883` como ausência de função; **produção ainda usa RPC anterior e não recebeu nova migration**.
+- **P3:** mediana LCP mobile referência 3.684,469 ms (**FAIL**, teto ≤3.500). Experimento `b3dc0a5f` mediana 3.613,587 ms (**FAIL**); segundo experimento `93176222` medido em #42562429184, decisão depende da mediana. Identidade visual, fotos e CSS preservados.
+- **P4 editor:** 6/6 UI básicas com escrita/releitura/renderer sintético; matriz ampla Hero, navegação, coleções e revisões pendente.
+- **P4 mídia:** 8/8 novas verificações reais de Auth/Storage/metadados/compensações sintéticas em #42561707707; UI da Biblioteca completa pendente. `alt_text` canônico já refletido na composição em testes unitários; `credit` e `focal_point` são metadados, sem efeito público global automático comprovado.
+- **P4 SEO:** 5/5 sintéticos, HTML estático só após novo build/deploy.
+- **P5:** 30/30 referência #42556090560; mais 8 de mídia no workflow #42561707707. Não atribuir sucesso de run antigo ao SHA final.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # PortfolioTulius — estado operacional vigente
 
 **Snapshot conferido:** 05/11/2026 · **Fonte:** `main`, GitHub Actions e Vercel. A visão pública exibida hoje é o **baseline visual a preservar integralmente**. Não interpretar este Markdown como monitoramento em tempo real. O [estado acumulado anterior, com todos os marcos e métricas](historico/ESTADO_ATUAL_VIGENTE_ANTES_REORGANIZACAO_2026-11-05.md), foi preservado.

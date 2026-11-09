@@ -1,3 +1,18 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Evidência recente da interface administrativa
+- `src/lib/p2-composite-save.ts`: fallback só em PostgREST `PGRST202` **da função composta nomeada**; `42883`/conflito/rede/SQL não entram no caminho legado.
+- `AdminApp.tsx` e `AdminModules.tsx`: RPC composta quando instalada; quando ausente, fluxo antigo com salvamentos separados e avisos de parcialidade, e verificação de versões.
+- `scripts/p4-local-admin-browser.mjs`: seis cenários básicos autenticados com DB sintético; não representa homologação de cada campo do Hero.
+- `scripts/p4-local-media.mjs`: oito cenários reais Auth/PostgREST/Storage sintéticos, em workflow #42561707707. Não representa E2E completo da Biblioteca pela UI.
+- **Status P2:** tecnicamente implementada e testada em sintético; ativação produtiva e aceite final pendentes.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # CMS administrativo — contrato vigente
 
 **Contrato revisado em 07/11/2026:** as correções de rótulos, áreas visuais e gerenciamento de depoimentos estão registradas em [Ajustes do Editor](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md). A homologação anterior das Etapas 1–5 está em [relatório específico](HOMOLOGACAO_CMS_ETAPA5_2026-11-07.md). A auditoria P3 pública continua independente e com pendências conhecidas.

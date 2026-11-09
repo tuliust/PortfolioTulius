@@ -1,3 +1,19 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Pendências novas ou reconfirmadas (09/11/2026)
+1. **P0 — Ativação transacional P2:** proibida sem aprovação explícita. Após aprovar, conferir compatibilidade e migrações remotas, snapshot/rollback, rodar somente comandos autorizados e verificar a assinatura/proteções da RPC.
+2. **P1 — Lighthouse mobile:** baseline #42556090544 mediana 3.684,469 ms; #42561971244 mediana 3.613,587 ms, ambos FAILED. A segunda prova do `93176222` está no #42562429184. Exigir três execuções equivalentes e mediana ≤3.500 ms, sem aumentar orçamento.
+3. **P1 — UI integrada P4:** matriz completa Hero A/B, painel, botões, fundo, mídia, formatos, mobile editorial, destinos ocultos, navegação, tokens, Trajetória, depoimentos, histórico.
+4. **P2 — Mídia e Storage:** API sintética 8 PASS; ainda testar UI salvar/recarregar, indisponibilidade, resultado HTTP incerto, falha de remoção física pós-BD, e precedência de `focal_point` versus `mediaFraming`.
+5. **P2 — SEO:** após atualização editorial autorizada, rebuild e paridade de HTML/OG/canonical/robots/sitemap no domínio.
+6. **P2 — Convergência de SHA:** Validate, P5 e P3 no mesmo HEAD, deployment READY e impressão digital pública; aceite visual pelo proprietário.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # Verificações técnicas — sem reabertura automática do encerramento
 
 **Situação em 05/11/2026:** o proprietário encerrou administrativamente os checklists anteriores, conforme [decisão registrada](ENCERRAMENTO_OPERACIONAL_2026-11-05.md). Esta página não reabre automaticamente aquele backlog. Ela identifica **lacunas de homologação e acompanhamento técnico** após os novos pedidos, sem autorizar alterações destrutivas nem mudanças na exibição pública atual. [Registro anterior completo](historico/OPEN_ISSUES_ANTES_REORGANIZACAO_2026-11-05.md).

@@ -10,6 +10,8 @@ on:
       - scripts/p4-local-admin-browser.mjs
       - scripts/p4-local-seo.mjs
       - scripts/p4-local-media.mjs
+      - docs/ESTADO_ATUAL_VIGENTE.md
+      - docs/P2_P4_RELATORIO_EXECUCAO_2026-11-09.md
       - src/lib/p2-composite-save.test.ts
       - scripts/generate-seo.mjs
       - src/components/admin/AdminApp.tsx
@@ -43,6 +45,7 @@ jobs:
           node --check scripts/p2-local-composite.mjs
           node --check scripts/p4-local-admin-browser.mjs
           node --check scripts/p4-local-seo.mjs
+          node --check scripts/p4-local-media.mjs
           docker info --format '{{.ServerVersion}}'
           npx --yes supabase@3.0.0 --version
           npx --yes supabase@3.0.0 start --help > /dev/null

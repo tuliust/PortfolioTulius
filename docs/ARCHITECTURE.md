@@ -1,3 +1,14 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Ajustes de arquitetura e limites de integração
+A migration `20261109024100_p2_composite_section_block_save.sql` introduz `save_section_block_atomic`, versão de placements (`block_placements.updated_at`), bloqueios ordenados, verificação `private.require_portfolio_admin()` e rollback PostgreSQL. Ela atualiza a seção, o bloco e placements na mesma transação, com comparação de `updated_at`. O frontend escolhe contrato novo quando disponível; somente função especificamente ausente em cache PostgREST habilita o caminho anterior. Banco produtivo **não possui** a nova função. Não reaplicar baseline de 22/10 nem reconciliar histórico remoto com writes arbitrários. A API Storage e o Postgres **não** compartilham uma transação distribuída: publicação, renomeação e exclusão requerem compensação; oito ensaios reais sintéticos passaram, com limites de injeção ainda pendentes.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # Arquitetura
 
 ## Registro de arquitetura da revisão de 01/11/2026 (referência datada)

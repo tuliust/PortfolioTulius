@@ -1,3 +1,19 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Fluxo de deploy e aceite operacional
+1. Consultar HEAD de `main` e `AGENTS.md`, diff e formato; GitHub→Vercel pode publicar qualquer commit, inclusive docs.
+2. Confirmar Vercel Production `READY` e o SHA servido em `https://tulius.work/p3-deployment.json`; workflow Lighthouse recusa atribuir medições sem fingerprint igual ao SHA.
+3. Conferir Validate e P5 Local Transactional (Docker + seed sintético), não executar testes de escrita contra produção.
+4. Conferir três amostras mobile de Lighthouse e orçamento **≤3.500 ms** de mediana, desktop, SEO, browser e layout sem regressão.
+5. SEO editorial gravado no CMS só aparece no HTML/canonical/robots/sitemap após novo build da integração Git; sem redeploy manual não autorizado.
+6. A nova migration P2 **não pode** ser aplicada por `supabase link`, `db push`, `db pull` ou SQL remoto sem autorização expressa e plano de rollback. Não utilizar `supabase/seed.sql` legado.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # Publicação, SEO e verificações
 
 **Contrato operacional — 05/11/2026.** A publicação do site acontece via integração **GitHub `main` → Vercel**, com build Vite. Não criar deploy manual, rollback, mudanças de domínio, projeto, autenticação ou infraestrutura apenas para atualizar a documentação. [Registro anterior completo](historico/DEPLOYMENT_ANTES_REORGANIZACAO_2026-11-05.md).

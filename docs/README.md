@@ -1,3 +1,14 @@
+# Atualização operacional — P2/P4, 09/11/2026
+
+> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+
+## Entrada operacional de documentação e fontes
+**Ponto de entrada deste ciclo:** `ESTADO_ATUAL_VIGENTE.md`, `OPEN_ISSUES.md`, `P2_P4_PLANO_ACEITE_2026-11-08.md`, `MAPA_CAMPOS_CMS_RENDERER.md` e `P2_P4_RELATORIO_EXECUCAO_2026-11-09.md`. O conteúdo datado anterior deve ser interpretado como histórico no seu SHA e ambiente. As Fontes privadas do Projeto ChatGPT exigem substituição manual; não são atualizadas por push no GitHub.
+
+---
+
+## Documento anterior preservado para rastreabilidade
+
 # Documentação técnica — PortfolioTulius
 
 > **Atualização posterior de 07/11/2026:** [Ajustes no Editor do Site: rótulos, três áreas e Depoimentos sem Acervo separado](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md). A Etapa 4 anterior permanece documentada apenas como histórico.
