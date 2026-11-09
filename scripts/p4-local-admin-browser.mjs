@@ -1294,6 +1294,92 @@ try {
       { timeout: 15000 })
   }
 
+
+  // Complete an actual edit -> save -> refresh -> reselect -> PostgREST read
+  // for all seven normalized collections, not only their initial insertion.
+  // These changes are confined to the disposable local seed.
+  for (const fixture of collectionCases) {
+    const record = collectionFixtureRows.find((row) => row.table === fixture.table)
+    ensure(record?.id, "COLLECTION_REOPEN_FIXTURE_" + fixture.table)
+    const originalTitle = fixture.fields[
+      Object.keys(fixture.fields).find((label) =>
+        ["Título", "Rótulo", "Nome", "Curso", "Idioma", "Categoria"].includes(label))]
+    const mutable = {
+      portfolio_projects: { label: "Resumo", key: "summary", next: "Resumo atualizado " + suffix },
+      metrics: { label: "Contexto", key: "context", next: "Contexto atualizado " + suffix },
+      skills: { label: "Categoria", key: "category", next: "Categoria atualizada " + suffix },
+      education: { label: "Instituição", key: "institution", next: "Instituição atualizada " + suffix },
+      language_levels: { label: "Evidência", key: "evidence_note", next: "Evidência atualizada " + suffix },
+      tool_categories: { label: "Ferramentas, uma por linha", key: "tools",
+        next: "Planilha falsa\nAplicação fictícia\nFerramenta extra" },
+      contact_channels: { label: "Valor", key: "value", next: "Valor atualizado " + suffix },
+    }[fixture.table]
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector(".admin-shell", { timeout: 15000 })
+    await page.evaluate(() => {
+      [...document.querySelectorAll(".admin-sidebar nav button")]
+        .find((button) => button.textContent?.trim() === "Acervo")?.click()
+    })
+    await page.waitForSelector(".collection-tabs button", { timeout: 15000 })
+    await chooseAcervoTab(fixture.tab)
+    await page.waitForFunction((title) =>
+      [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .some((button) => button.textContent?.includes(title)),
+      { timeout: 15000 }, originalTitle)
+    await page.evaluate((title) => {
+      [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .find((button) => button.textContent?.includes(title))?.click()
+    }, originalTitle)
+    await page.waitForFunction(({ label, original }) => {
+      const el = [...document.querySelectorAll(".section-editor-layout .editor-form .field-grid > label")]
+        .find((entry) => entry.textContent?.trim().startsWith(label))
+        ?.querySelector("input, textarea")
+      return Boolean(el && typeof el.value === "string" && el.value.includes(original))
+    }, { timeout: 15000 }, {
+      label: mutable.label,
+      original: fixture.fields[mutable.label],
+    })
+    await updateCollectionField(mutable.label, mutable.next)
+    await page.waitForSelector(
+      ".section-editor-layout .editor-form .admin-floating-save button.primary-button",
+      { timeout: 12000 })
+    await page.click(".section-editor-layout .editor-form .admin-floating-save button.primary-button")
+    await page.waitForFunction(() =>
+      !document.querySelector(".section-editor-layout .editor-form .admin-floating-save"),
+      { timeout: 18000 })
+    const revisedRow = await get(service.from(fixture.table)
+      .select("*").eq("id", record.id).single(), "COLLECTION_EDIT_DB_" + fixture.table)
+    const persisted = fixture.table === "tool_categories"
+      ? revisedRow.tools?.length === 3 &&
+        revisedRow.tools[2]?.name === "Ferramenta extra"
+      : revisedRow[mutable.key] === mutable.next
+    ensure(persisted && revisedRow.status === "published",
+      "COLLECTION_EDIT_PERSISTENCE_" + fixture.table)
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector(".admin-shell", { timeout: 15000 })
+    await page.evaluate(() => {
+      [...document.querySelectorAll(".admin-sidebar nav button")]
+        .find((button) => button.textContent?.trim() === "Acervo")?.click()
+    })
+    await page.waitForSelector(".collection-tabs button", { timeout: 15000 })
+    await chooseAcervoTab(fixture.tab)
+    await page.waitForFunction(({ title, label, value }) => {
+      const list = [...document.querySelectorAll(".section-editor-layout .section-list button")]
+      const row = list.find((button) => button.textContent?.includes(title))
+      if (!row) return false
+      row.click()
+      const input = [...document.querySelectorAll(".section-editor-layout .editor-form .field-grid > label")]
+        .find((entry) => entry.textContent?.trim().startsWith(label))
+        ?.querySelector("input, textarea")
+      return Boolean(input && input.value === value)
+    }, { timeout: 15000 }, {
+      title: originalTitle, label: mutable.label, value: mutable.next,
+    })
+    pass("COLLECTION_UI_EDIT_REOPEN_" + fixture.table.toUpperCase(), {
+      editing: true, freshRead: true, persisted: true,
+    })
+  }
+
   // A late editor cannot replace a published contact record read before
   // another session's change, and invalid external URLs never reach the DB.
   await updateCollectionField("URL", "javascript:alert(1)")
@@ -1358,6 +1444,61 @@ try {
     .select("status").eq("id", contactRow.id).single(), "CONTACT_UNPUBLISH_DB")
   ensure(unpublishedContact.status === "draft", "CONTACT_UNPUBLISH_FAILED")
   pass("COLLECTION_UI_UNPUBLISH_STATUS", { status: "draft", recordRetained: true })
+
+
+  // Exercise archive/unpublish, fresh DB re-read and explicit republication
+  // across the seven normalized collections, using the real CMS controls.
+  for (const fixture of collectionCases) {
+    const record = collectionFixtureRows.find((row) => row.table === fixture.table)
+    const key = (await get(service.from(fixture.table).select("*")
+      .eq("id", record.id).single(), "COLLECTION_LIFECYCLE_BASE_" + fixture.table))[fixture.titleKey]
+    await chooseAcervoTab(fixture.tab)
+    await page.waitForFunction((title) =>
+      [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .some((button) => button.textContent?.includes(title)),
+      { timeout: 15000 }, key)
+    await page.evaluate((title) => {
+      [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .find((button) => button.textContent?.includes(title))?.click()
+    }, key)
+    await page.waitForFunction((title) => {
+      const row = [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .find((button) => button.textContent?.includes(title))
+      return row?.classList.contains("active") &&
+        Boolean(document.querySelector(".section-editor-layout .editor-form .danger-button"))
+    }, { timeout: 10000 }, key)
+    if (fixture.table !== "contact_channels") {
+      await page.click(".section-editor-layout .editor-form .danger-button")
+      await page.waitForSelector(".admin-confirm-dialog .danger-button", { timeout: 10000 })
+      await page.click(".admin-confirm-dialog .danger-button")
+      await page.waitForFunction(() =>
+        document.querySelector(".section-editor-layout .editor-form")
+          ?.textContent?.includes("Registro arquivado") ||
+        document.querySelector(".section-editor-layout .editor-form")
+          ?.textContent?.includes("Registro retirado da publicação."),
+        { timeout: 16000 })
+    }
+    const unpublished = await get(service.from(fixture.table)
+      .select("status").eq("id", record.id).single(), "COLLECTION_STATUS_DB_" + fixture.table)
+    const expectedState = ["skills", "tool_categories", "contact_channels"].includes(fixture.table)
+      ? "draft" : "archived"
+    ensure(unpublished.status === expectedState, "COLLECTION_ARCHIVE_STATE_" + fixture.table)
+    const statusSelector = ".section-editor-layout .editor-form .field-grid > label:last-child select"
+    await page.select(statusSelector, "published")
+    await page.waitForSelector(
+      ".section-editor-layout .editor-form .admin-floating-save button.primary-button",
+      { timeout: 12000 })
+    await page.click(".section-editor-layout .editor-form .admin-floating-save button.primary-button")
+    await page.waitForFunction(() =>
+      !document.querySelector(".section-editor-layout .editor-form .admin-floating-save"),
+      { timeout: 18000 })
+    const republished = await get(service.from(fixture.table)
+      .select("status").eq("id", record.id).single(), "COLLECTION_REPUBLISH_DB_" + fixture.table)
+    ensure(republished.status === "published", "COLLECTION_REPUBLISH_STATE_" + fixture.table)
+    pass("COLLECTION_UI_UNPUBLISH_REPUBLISH_" + fixture.table.toUpperCase(), {
+      archivedOrDraft: expectedState, republished: true, recordIdStable: true,
+    })
+  }
 
   // Edit actual placement controls, then verify P2's atomic save writes the
   // requested desktop/mobile presentation without modifying sibling blocks.
@@ -1484,6 +1625,45 @@ try {
     "P4_DEVICE_MOBILE_REWROTE_DESKTOP")
   pass("DEVICE_UI_MOBILE_TYPOGRAPHY_INDEPENDENT",
     { mobileSize: 20, desktopSizePreserved: 72 })
+
+
+  // The right-side Hero has its own mobile-b placement. Editing that panel
+  // must not modify the already saved desktop and mobile-a placements.
+  const leftBeforeMobileB = await get(service.from("block_placements")
+    .select("panel_id,layout_variant,is_visible,motion_config")
+    .eq("block_id", blockBySide.a).order("panel_id"), "MOBILE_B_LEFT_BASELINE")
+  await page.evaluate(() => {
+    [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+      .find((button) => button.textContent?.includes("Direita"))?.click()
+  })
+  await page.waitForSelector(".hero-right-editor", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".site-editor-subview-actions button")]
+      .find((button) => button.textContent?.trim() === "Avançado")?.click()
+  })
+  await page.waitForSelector(".motion-editor select", { timeout: 15000 })
+  await setMotion(0, "mobile-b")
+  await setMotion(1, "featured")
+  await setMotion(2, "fade-in")
+  await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
+    { timeout: 12000 })
+  await page.click(".site-editor-main .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Alterações salvas atomicamente e conferidas no Supabase."),
+    { timeout: 18000 })
+  const mobileBRecord = await get(service.from("block_placements")
+    .select("layout_variant,motion_config").eq("block_id", blockBySide.b)
+    .eq("panel_id", idByPanel["mobile-b"]).single(), "MOBILE_B_RIGHT_DB")
+  const leftAfterMobileB = await get(service.from("block_placements")
+    .select("panel_id,layout_variant,is_visible,motion_config")
+    .eq("block_id", blockBySide.a).order("panel_id"), "MOBILE_B_LEFT_AFTER")
+  ensure(mobileBRecord.layout_variant === "featured" &&
+    mobileBRecord.motion_config?.preset === "fade-in" &&
+    JSON.stringify(leftBeforeMobileB) === JSON.stringify(leftAfterMobileB),
+    "MOBILE_B_CHANGED_OTHER_DEVICE")
+  pass("PLACEMENT_UI_MOBILE_B_AND_SIBLING_ISOLATION", {
+    mobileB: true, desktopAndMobileAUnchanged: true,
+  })
 
   // Identity tokens are edited by real DOM controls, not database shortcuts.
   await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
@@ -1647,5 +1827,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 57, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 72, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
 if (tests.length !== 57) process.exitCode = 1
