@@ -1538,11 +1538,20 @@ try {
     })
     await page.waitForSelector(".collection-tabs button", { timeout: 15000 })
     await chooseAcervoTab(fixture.tab)
+    // Never click from a polling predicate. Repeated synthetic click events
+    // can reset the draft while React is loading a tab on a slower runner.
+    await page.waitForFunction((title) =>
+      [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .some((button) => button.textContent?.includes(title)),
+      { timeout: 20000 }, originalTitle)
+    await page.evaluate((title) => {
+      [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .find((button) => button.textContent?.includes(title))?.click()
+    }, originalTitle)
     await page.waitForFunction(({ title, label, value }) => {
-      const list = [...document.querySelectorAll(".section-editor-layout .section-list button")]
-      const row = list.find((button) => button.textContent?.includes(title))
-      if (!row) return false
-      row.click()
+      const selected = [...document.querySelectorAll(".section-editor-layout .section-list button")]
+        .find((button) => button.textContent?.includes(title))
+      if (!selected?.classList.contains("active")) return false
       const input = [...document.querySelectorAll(".section-editor-layout .editor-form .field-grid > label")]
         .find((entry) => entry.textContent?.trim().startsWith(label))
         ?.querySelector("input, textarea")
