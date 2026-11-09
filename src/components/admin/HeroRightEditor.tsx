@@ -4,10 +4,14 @@ import { HeroItemFields } from "./HeroItemFields"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 import { Icon } from "../ui/Icons"
+import {
+  publishedHeroDestinations,
+  type HeroAvailableSection,
+} from "../../lib/hero-admin-contract"
 import "./HeroRightEditor.css"
 
 type Catalog = Record<string, IdentityTokenRow>
-type Option = { id: string; slug: string; title: string }
+type Option = HeroAvailableSection & { id: string; title: string }
 
 const themes = [
   { key: "corporativa", name: "Comunicação Corporativa" },
@@ -58,10 +62,12 @@ export function HeroRightEditor({
       onChange={(value) => onHeroFormat(key, value)}
     />
   )
-  const linkOptions = sections.filter((section) => section.slug !== "perfil")
+  const linkOptions = publishedHeroDestinations(sections)
+  const validTargets = new Set(linkOptions.map((section) => section.slug))
   const employerOptions = linkOptions.filter((section) =>
     ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(section.slug),
   )
+  const validEmployers = new Set(employerOptions.map((section) => section.slug))
 
   return (
     <div className="hero-right-editor">
@@ -127,9 +133,16 @@ export function HeroRightEditor({
                 <label>
                   Link / destino do botão
                   <select
-                    value={item.targetSlug ?? "resultados"}
+                    value={
+                      validTargets.has(item.targetSlug ?? "resultados")
+                        ? item.targetSlug ?? "resultados"
+                        : ""
+                    }
                     onChange={(event) => onUpdateItem(index, { targetSlug: event.target.value })}
                   >
+                    <option value="" disabled>
+                      Selecione uma seção publicada
+                    </option>
                     {linkOptions.map((section) => (
                       <option value={section.slug} key={section.id}>
                         {section.title} (#{section.slug})
@@ -137,6 +150,11 @@ export function HeroRightEditor({
                     ))}
                   </select>
                 </label>
+                {!validTargets.has(item.targetSlug ?? "resultados") && (
+                  <small role="status">
+                    Destino oculto ou não publicado. O site usa um destino alternativo quando disponível.
+                  </small>
+                )}
                 <div className="hero-right-item-controls">
                   <button
                     type="button"
@@ -197,7 +215,7 @@ export function HeroRightEditor({
                   <label className="field-wide">
                     Link do destaque / empresa de destino
                     <select
-                      value={item.targetSlug ?? ""}
+                      value={item.targetSlug && validEmployers.has(item.targetSlug) ? item.targetSlug : ""}
                       onChange={(event) => onUpdateItem(index, { targetSlug: event.target.value })}
                     >
                       <option value="">Sem link</option>
@@ -208,6 +226,11 @@ export function HeroRightEditor({
                       ))}
                     </select>
                   </label>
+                  {item.targetSlug && !validEmployers.has(item.targetSlug) && (
+                    <small role="status">
+                      Destino não publicado; o destaque não terá link público.
+                    </small>
+                  )}
                   <div className="hero-right-item-controls">
                     <button
                       type="button"
@@ -264,7 +287,7 @@ export function HeroRightEditor({
             <label>
               Link do botão inferior
               <select
-                value={hero?.nextTarget ?? ""}
+                value={hero?.nextTarget && validTargets.has(hero.nextTarget) ? hero.nextTarget : ""}
                 onChange={(event) => onUpdateHero({ nextTarget: event.target.value })}
               >
                 <option value="">Próxima seção publicada</option>
@@ -275,6 +298,11 @@ export function HeroRightEditor({
                 ))}
               </select>
             </label>
+            {hero?.nextTarget && !validTargets.has(hero.nextTarget) && (
+              <small role="status">
+                Destino não publicado; a seta usará a próxima seção disponível.
+              </small>
+            )}
           </div>
         </fieldset>
       </fieldset>
