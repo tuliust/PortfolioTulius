@@ -89,11 +89,18 @@ import { HeroItemFields } from "./HeroItemFields"
 import { HeroLeftEditor } from "./HeroLeftEditor"
 import { HeroRightEditor } from "./HeroRightEditor"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
+import {
+  hasHeroMediaControls,
+  reorderHeroItems,
+  unavailableHeroDestination,
+} from "../../lib/hero-admin-contract"
 
 interface SectionOption {
   id: string
   title: string
   slug: string
+  status: string
+  is_visible: boolean
   intro?: string | null
   eyebrow?: string | null
 }
@@ -877,6 +884,19 @@ export function ContentStudio({
       setMessage("Carregue os placements antes de salvar.")
       return false
     }
+    if (experienceSlug === "perfil" && draft.mobile_panel === "b") {
+      const unavailable = unavailableHeroDestination(
+        draft.content_json.items ?? [],
+        draft.content_json.items?.[0]?.hero?.nextTarget,
+        sections,
+      )
+      if (unavailable) {
+        setMessage(
+          "O destino #" + unavailable + " não está publicado e visível. Escolha uma seção disponível.",
+        )
+        return false
+      }
+    }
     const validationErrors = isCollectionSource(draft.content_json.source_collection)
       ? []
       : validateContentItems(draft.content_json.items ?? [])
@@ -1185,10 +1205,14 @@ export function ContentStudio({
 
   function moveItem(index: number, direction: -1 | 1) {
     if (!draft) return
-    const items = [...(draft.content_json.items ?? [])]
+    let items = [...(draft.content_json.items ?? [])]
     const target = index + direction
     if (target < 0 || target >= items.length) return
-    ;[items[index], items[target]] = [items[target], items[index]]
+    if (experienceSlug === "perfil") {
+      items = reorderHeroItems(items, index, direction, draft.mobile_panel)
+    } else {
+      ;[items[index], items[target]] = [items[target], items[index]]
+    }
     setDraft({ ...draft, content_json: { ...draft.content_json, items } })
     setExpandedItemIndex((current) => expandedAfterMove(current, index, target))
   }
@@ -1631,7 +1655,7 @@ export function ContentStudio({
                           value={item.desktop}
                           onChange={(patch) => updateDeviceStyle(index, "desktop", patch)}
                         />
-                        {experienceSlug === "perfil" && index === 0 && (
+                        {hasHeroMediaControls(experienceSlug, draft.mobile_panel, index) && (
                           <HeroDeviceEditor
                             device="desktop"
                             value={item.hero?.desktop}
@@ -1764,7 +1788,7 @@ export function ContentStudio({
                           value={item.mobile}
                           onChange={(patch) => updateDeviceStyle(index, "mobile", patch)}
                         />
-                        {experienceSlug === "perfil" && index === 0 && (
+                        {hasHeroMediaControls(experienceSlug, draft.mobile_panel, index) && (
                           <HeroDeviceEditor
                             device="mobile"
                             value={item.hero?.mobile}
