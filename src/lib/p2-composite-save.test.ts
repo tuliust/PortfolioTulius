@@ -28,7 +28,8 @@ describe("P2: fallback seguro da RPC composta", () => {
     rpc.mockResolvedValue({
       error: {
         code: "PGRST202",
-        message: "Could not find the function public.save_section_block_atomic(p_section_id) in the schema cache",
+        message:
+          "Could not find the function public.save_section_block_atomic(p_section_id) in the schema cache",
       },
     })
     expect(await tryCompositeSave(payload)).toEqual({ mode: "legacy" })
