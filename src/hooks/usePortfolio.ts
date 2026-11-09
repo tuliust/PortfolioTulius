@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import { defaultTokens } from "../content/defaultTokens"
 import { publicReadClient } from "../lib/public-read"
@@ -24,6 +24,10 @@ import { selectSectionExperienceMedia } from "../lib/cms-contract"
 import { parseCardRadius } from "../lib/design-tokens"
 import { publicEditorAnchor } from "../lib/editor-anchor"
 import type { FormationPilotEducationRow } from "../lib/formation-pilot-preview"
+import {
+  synchronizePublishedMediaAlts,
+  type PublishedMediaAlt,
+} from "../lib/media-alt-sync"
 
 type SectionResult = {
   id: string
@@ -88,6 +92,29 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
   )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [publishedMediaAlts, setPublishedMediaAlts] = useState<PublishedMediaAlt[]>([])
+
+  // Load media metadata without delaying the first Hero paint.
+  // The public catalog takes precedence over copied JSON alt fields.
+  useEffect(() => {
+    if (!publicReadClient) return
+    let cancelled = false
+    void publicReadClient
+      .from("media_assets")
+      .select("storage_path,alt_text")
+      .eq("storage_bucket", "portfolio-public")
+      .eq("status", "published")
+      .then(({ data, error: mediaError }) => {
+        if (!cancelled && !mediaError) setPublishedMediaAlts(data ?? [])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  const sectionsWithMediaAlts = useMemo(
+    () => synchronizePublishedMediaAlts(data, publishedMediaAlts),
+    [data, publishedMediaAlts],
+  )
 
   useEffect(() => {
     if (!publicReadClient) {
@@ -517,7 +544,7 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
     }
   }, [includeDrafts, formationPilot])
 
-  return { sections: data, navigation, tokens, source, loading, error }
+  return { sections: sectionsWithMediaAlts, navigation, tokens, source, loading, error }
 }
 
 function setMeta(name: string, content: string, attribute = "name") {
