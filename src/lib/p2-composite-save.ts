@@ -43,7 +43,15 @@ export async function tryCompositeSave(payload: CompositePayload): Promise<Compo
   try {
     const { error } = await supabase.rpc("save_section_block_atomic", payload)
     if (!error) return { mode: "saved" }
-    if (error.code === "PGRST202" || error.code === "42883") return { mode: "legacy" }
+    // PGRST202 is the PostgREST schema-cache signal for an absent RPC.
+    // SQLSTATE 42883 may also be raised inside an installed RPC: NEVER fall
+    // back after a server-side execution error or an uncertain write.
+    if (
+      error.code === "PGRST202" &&
+      /\bpublic\.save_section_block_atomic\b/i.test(error.message ?? "")
+    ) {
+      return { mode: "legacy" }
+    }
     return { mode: "error", message: compositeErrorText(error) }
   } catch {
     return {
