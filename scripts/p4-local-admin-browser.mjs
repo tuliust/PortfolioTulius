@@ -48,6 +48,8 @@ const navigationFixtures = []
 let syntheticProfileId = null
 let syntheticTestimonialsSectionId = null
 let syntheticTestimonialId = null
+let syntheticCareerSectionId = null
+let syntheticCareerRowId = null
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -956,6 +958,122 @@ try {
     pass("TESTIMONIAL_RENDERER_" + viewport.label,
       { publishedRecord: true, currentTextOnly: true, viewport: viewport.width })
   }
+
+  // The Trajetória form is bound to career_experiences, not to copied
+  // content_blocks JSON. Verify real edits, CAS conflicts and both renderers.
+  const careerSection = await service.from("sections").insert({
+    page_id: pageId, slug: "invest-rs", title: "Experiência fictícia",
+    eyebrow: "Empresa sintética", sort_order: 4, status: "published", is_visible: true,
+  }).select("id").single()
+  ensure(!careerSection.error && careerSection.data, "CAREER_UI_SECTION_SEED")
+  syntheticCareerSectionId = careerSection.data.id
+  const careerRow = await service.from("career_experiences").insert({
+    company: "Invest RS", role: "Cargo fictício original",
+    location: "Cidade fictícia", description: "Trajetória fictícia original",
+    sort_order: 1, status: "published",
+  }).select("id").single()
+  ensure(!careerRow.error && careerRow.data, "CAREER_UI_RECORD_SEED")
+  syntheticCareerRowId = careerRow.data.id
+
+  const openCareerForm = async () => {
+    await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector(".admin-shell", { timeout: 20000 })
+    await page.evaluate(() => {
+      [...document.querySelectorAll(".admin-sidebar nav button")]
+        .find((node) => node.textContent?.trim() === "Editor do site")?.click()
+    })
+    await page.waitForSelector(".site-editor-experience-nav", { timeout: 15000 })
+    await page.click(".site-editor-experience-nav")
+    await page.waitForSelector(".site-editor-experience-current", { timeout: 15000 })
+    const openedLeft = await page.evaluate(() => {
+      const tab = [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+        .find((node) => node.textContent?.includes("Esquerda"))
+      tab?.click()
+      return Boolean(tab)
+    })
+    ensure(openedLeft, "CAREER_UI_LEFT_TAB")
+    await page.waitForSelector(".experience-inline-trajectory textarea",
+      { timeout: 15000 })
+  }
+  const editCareerField = async (selector, value) => {
+    const handle = await page.$(selector)
+    ensure(Boolean(handle), "CAREER_UI_FIELD_" + selector)
+    await handle.click()
+    await page.keyboard.down("Control")
+    await page.keyboard.press("A")
+    await page.keyboard.up("Control")
+    await page.keyboard.type(value, { delay: 1 })
+    await page.waitForFunction(({ selector, value }) =>
+      document.querySelector(selector)?.value === value,
+      { timeout: 10000 }, { selector, value })
+  }
+  await page.setViewport({ width: 1440, height: 900 })
+  await openCareerForm()
+  const editedCareerRole = "Cargo revisado sintético " + suffix
+  const editedCareerDescription = "Trajetória revisada sintética " + suffix
+  await editCareerField(".experience-inline-trajectory label:nth-child(2) input", editedCareerRole)
+  await editCareerField(".experience-inline-trajectory textarea", editedCareerDescription)
+  await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
+    { timeout: 15000 })
+  await page.click(".site-editor-main .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".experience-inline-trajectory")?.textContent
+      ?.includes("Trajetória salva e confirmada no Supabase."),
+    { timeout: 20000 })
+  const careerSaved = await get(service.from("career_experiences")
+    .select("*").eq("id", syntheticCareerRowId).single(), "CAREER_UI_SAVE_DB")
+  ensure(careerSaved.role === editedCareerRole &&
+    careerSaved.description === editedCareerDescription && careerSaved.status === "published",
+    "CAREER_UI_SAVE_MISMATCH")
+  pass("CAREER_UI_ROLE_TRAJECTORY_SAVE_DB", { role: true, description: true, published: true })
+
+  await openCareerForm()
+  await page.waitForFunction(({ role, description }) =>
+    document.querySelector(".experience-inline-trajectory label:nth-child(2) input")?.value === role &&
+    document.querySelector(".experience-inline-trajectory textarea")?.value === description,
+    { timeout: 15000 },
+    { role: editedCareerRole, description: editedCareerDescription })
+  pass("CAREER_UI_REOPEN_PERSISTED_FIELDS", { role: true, description: true })
+
+  const careerConcurrent = "Trajetória externa protegida " + suffix
+  const careerOverride = await service.from("career_experiences")
+    .update({ description: careerConcurrent }).eq("id", syntheticCareerRowId).select("id").single()
+  ensure(!careerOverride.error, "CAREER_UI_CONCURRENT_UPDATE")
+  await editCareerField(".experience-inline-trajectory textarea",
+    "Sobrescrita de carreira obsoleta " + suffix)
+  await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
+    { timeout: 12000 })
+  await page.click(".site-editor-main .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".experience-inline-trajectory")?.textContent
+      ?.includes("A trajetória foi modificada em outra sessão."),
+    { timeout: 15000 })
+  const careerPreserved = await get(service.from("career_experiences")
+    .select("description,status").eq("id", syntheticCareerRowId).single(),
+    "CAREER_UI_CAS_DB")
+  ensure(careerPreserved.description === careerConcurrent &&
+    careerPreserved.status === "published", "CAREER_UI_CAS_OVERWRITE")
+  pass("CAREER_UI_STALE_CAS_REJECTED", { concurrentEditPreserved: true })
+
+  for (const viewport of [
+    { label: "DESKTOP", width: 1440, height: 900 },
+    { label: "MOBILE", width: 390, height: 844 },
+  ]) {
+    await page.setViewport({ width: viewport.width, height: viewport.height })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('section[data-section="invest-rs"]',
+      { timeout: 18000 })
+    await page.waitForFunction(() => {
+      const button = document.querySelector('section[data-section="invest-rs"] button.experience-view-trajectory')
+      return Boolean(button && !button.disabled)
+    }, { timeout: 15000 })
+    await page.click('section[data-section="invest-rs"] button.experience-view-trajectory')
+    await page.waitForFunction((description) =>
+      document.querySelector('section[data-section="invest-rs"]')?.textContent?.includes(description),
+      { timeout: 15000 }, careerConcurrent)
+    pass("CAREER_RENDERER_" + viewport.label,
+      { latestPublishedTrajectory: true, viewport: viewport.width })
+  }
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -974,10 +1092,12 @@ try {
       .remove([privateUiOldPath, privateUiNewPath].filter(Boolean))
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
+  if (syntheticCareerRowId) await service.from("career_experiences").delete().eq("id", syntheticCareerRowId)
+  if (syntheticCareerSectionId) await service.from("sections").delete().eq("id", syntheticCareerSectionId)
   if (syntheticTestimonialId) await service.from("testimonials").delete().eq("id", syntheticTestimonialId)
   if (syntheticTestimonialsSectionId) await service.from("sections").delete().eq("id", syntheticTestimonialsSectionId)
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 31, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 31) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 36, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 36) process.exitCode = 1
