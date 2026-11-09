@@ -42,7 +42,11 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800;900&amp;family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" />
+    <!-- Load the same approved font families without blocking the first paint.
+         The stylesheet applies as soon as it arrives; noscript keeps typography
+         available when scripting is disabled. Do not change family/weights. -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800;900&amp;family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800;900&amp;family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" /></noscript>
     <meta
       name="description"
       content="Portfólio e trajetória profissional em comunicação corporativa, jornalismo, reputação e estratégia."
