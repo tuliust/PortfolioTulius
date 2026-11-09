@@ -6,6 +6,8 @@ on:
     paths:
       - .github/workflows/p5-local-transactional.yml
       - scripts/p5-local-transactional.mjs
+      - scripts/p2-local-composite.mjs
+      - supabase/migrations/**
   workflow_dispatch:
 
 permissions:
@@ -14,7 +16,7 @@ permissions:
 jobs:
   isolated-cms-transactions:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -30,6 +32,7 @@ jobs:
           set -euo pipefail
           node --test scripts/p2-local-isolation.check.mjs
           node --check scripts/p5-local-transactional.mjs
+          node --check scripts/p2-local-composite.mjs
           docker info --format '{{.ServerVersion}}'
           npx --yes supabase@3.0.0 --version
           npx --yes supabase@3.0.0 start --help > /dev/null
@@ -61,10 +64,14 @@ jobs:
               ;;
             esac
           done < "$RUNNER_TEMP/p5-local-env"
-      - name: Real isolated save, reload, archive, exhibit and restore
+      - name: Original eight synthetic scenarios
         env:
           P5_LOCAL_URL: http://127.0.0.1:54321/
         run: node scripts/p5-local-transactional.mjs
+      - name: P2 composed RPC atomicity, CAS and rollback
+        env:
+          P5_LOCAL_URL: http://127.0.0.1:54321/
+        run: node scripts/p2-local-composite.mjs
       - name: Stop isolated stack
         if: always()
         run: npx --yes supabase@3.0.0 stop || true
