@@ -383,7 +383,7 @@ function SectionsEditor({
       // overwrite the public title or the canonical slug used by components.
       const latest = await supabase
         .from("content_blocks")
-        .select("content_json")
+        .select("content_json,updated_at")
         .eq("id", draft.editor_block_id)
         .single()
       if (latest.error || !latest.data) {
@@ -405,8 +405,9 @@ function SectionsEditor({
         .from("content_blocks")
         .update({ content_json: nextContent })
         .eq("id", draft.editor_block_id)
+        .eq("updated_at", latest.data.updated_at)
         .select("content_json")
-        .single()
+        .maybeSingle()
       if (
         saved.error ||
         saved.data?.content_json?.editorTitle !== adminTitle ||
@@ -414,7 +415,10 @@ function SectionsEditor({
         (draft.slug === "perfil" &&
           saved.data?.content_json?.items?.[0]?.hero?.rootBackground !== rootBackground)
       ) {
-        setMessage(saved.error?.message ?? "Não foi possível confirmar o nome e a âncora.")
+        setMessage(
+          saved.error?.message ??
+            "A configuração da seção foi salva, mas os metadados não. Reabra a seção para evitar sobrescrever outra edição.",
+        )
         return false
       }
     }
