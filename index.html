@@ -28,7 +28,9 @@
           {
             headers: { apikey: key, Authorization: "Bearer " + key },
             cache: "no-store",
-            priority: "low"
+            // The Hero SVG needs these CMS values. Keep the portrait image
+            // at high priority, but do not artificially deprioritize its text.
+            priority: "auto"
           }
         ).then(async (response) => {
           if (!response.ok) throw new Error("Profile CMS request failed");
