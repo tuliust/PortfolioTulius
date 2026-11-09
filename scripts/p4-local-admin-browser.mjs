@@ -50,6 +50,7 @@ let syntheticTestimonialsSectionId = null
 let syntheticTestimonialId = null
 let syntheticCareerSectionId = null
 let syntheticCareerRowId = null
+const collectionFixtureRows = []
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -1074,6 +1075,184 @@ try {
     pass("CAREER_RENDERER_" + viewport.label,
       { latestPublishedTrajectory: true, viewport: viewport.width })
   }
+
+  // The full Acervo is available inside the authenticated CMS. Verify the
+  // seven non-testimonial/non-career collections through their actual inputs,
+  // published writes and a fresh PostgREST read, not just payload helpers.
+  await page.setViewport({ width: 1440, height: 900 })
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  const openAcervo = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Acervo")
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(openAcervo, "ACERVO_MODULE_NOT_ACCESSIBLE")
+  await page.waitForSelector(".collection-tabs button", { timeout: 15000 })
+  pass("ACERVO_UI_ALL_COLLECTIONS_ACCESSIBLE", { module: "Acervo", tables: 9 })
+
+  const collectionCases = [
+    { table: "portfolio_projects", tab: "Projetos", titleKey: "title",
+      fields: { "Título": "Projeto sintético " + suffix,
+        "Resumo": "Resumo fictício", "Detalhes": "Descrição fictícia", "Estado do projeto": "Concluído" } },
+    { table: "metrics", tab: "Métricas", titleKey: "label",
+      fields: { "Rótulo": "Indicador sintético " + suffix,
+        "Valor": "91", "Unidade": "%", "Contexto": "Contexto fictício" } },
+    { table: "skills", tab: "Competências", titleKey: "name",
+      fields: { "Nome": "Competência sintética " + suffix, "Categoria": "Categoria fictícia" } },
+    { table: "education", tab: "Formação", titleKey: "course",
+      fields: { "Instituição": "Instituição sintética", "Curso": "Curso sintético " + suffix,
+        "Tipo": "Graduação", "Início": "2024", "Fim": "2025" } },
+    { table: "language_levels", tab: "Idiomas", titleKey: "language",
+      fields: { "Idioma": "Idioma sintético " + suffix, "Nível": "Nível de teste",
+        "Evidência": "Evidência inventada" } },
+    { table: "tool_categories", tab: "Ferramentas", titleKey: "title",
+      fields: { "Categoria": "Ferramenta sintética " + suffix,
+        "Ferramentas, uma por linha": "Planilha falsa\nAplicação fictícia" } },
+    { table: "contact_channels", tab: "Contato", titleKey: "label",
+      fields: { "Rótulo": "Contato sintético " + suffix, "Valor": "Visitar teste",
+        "URL": "https://example.invalid/teste-" + suffix },
+      select: { "Tipo": "website" } },
+  ]
+  const chooseAcervoTab = async (name) => {
+    const clicked = await page.evaluate((tab) => {
+      const button = [...document.querySelectorAll(".collection-tabs button")]
+        .find((node) => node.textContent?.trim() === tab)
+      button?.click()
+      return Boolean(button)
+    }, name)
+    ensure(clicked, "COLLECTION_TAB_" + name)
+    await page.waitForFunction((tab) =>
+      [...document.querySelectorAll(".collection-tabs button")]
+        .some((button) => button.textContent?.trim() === tab && button.getAttribute("aria-selected") === "true"),
+      { timeout: 12000 }, name)
+  }
+  const updateCollectionField = async (name, value) => {
+    const field = await page.evaluate(({ name, value }) => {
+      const label = [...document.querySelectorAll(".section-editor-layout .editor-form .field-grid > label")]
+        .find((node) => node.textContent?.trim().startsWith(name))
+      const input = label?.querySelector("input, textarea")
+      if (!input) return false
+      const proto = input instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
+      Object.getOwnPropertyDescriptor(proto, "value").set.call(input, value)
+      input.dispatchEvent(new Event("input", { bubbles: true }))
+      return true
+    }, { name, value })
+    ensure(field, "COLLECTION_FIELD_" + name)
+    await page.waitForFunction(({ name, value }) => {
+      const label = [...document.querySelectorAll(".section-editor-layout .editor-form .field-grid > label")]
+        .find((node) => node.textContent?.trim().startsWith(name))
+      return label?.querySelector("input, textarea")?.value === value
+    }, { timeout: 10000 }, { name, value })
+  }
+  for (const fixture of collectionCases) {
+    await chooseAcervoTab(fixture.tab)
+    await page.click(".admin-header button.primary-button")
+    await page.waitForSelector(".section-editor-layout .editor-form", { timeout: 12000 })
+    for (const [field, value] of Object.entries(fixture.fields))
+      await updateCollectionField(field, value)
+    for (const [label, value] of Object.entries(fixture.select ?? {})) {
+      const changed = await page.evaluate(({ label, value }) => {
+        const el = [...document.querySelectorAll(".section-editor-layout .editor-form .field-grid > label")]
+          .find((node) => node.textContent?.trim().startsWith(label))?.querySelector("select")
+        if (!el) return false
+        Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set.call(el, value)
+        el.dispatchEvent(new Event("change", { bubbles: true }))
+        return true
+      }, { label, value })
+      ensure(changed, "COLLECTION_SELECT_" + label)
+    }
+    await page.select(".section-editor-layout .editor-form .field-grid > label:last-child select", "published")
+    await page.waitForSelector(".section-editor-layout .editor-form .admin-floating-save button.primary-button",
+      { timeout: 12000 })
+    await page.click(".section-editor-layout .editor-form .admin-floating-save button.primary-button")
+    await page.waitForFunction(() =>
+      document.querySelector(".section-editor-layout .editor-form")?.textContent
+        ?.includes("Registro salvo e recuperado do Supabase."),
+      { timeout: 16000 })
+    const key = fixture.fields[Object.keys(fixture.fields).find((name) =>
+      ["Título", "Rótulo", "Nome", "Curso", "Idioma", "Categoria"].includes(name))]
+    const row = await get(service.from(fixture.table).select("*")
+      .eq(fixture.titleKey, key).single(), "COLLECTION_ROW_" + fixture.table)
+    collectionFixtureRows.push({ table: fixture.table, id: row.id })
+    ensure(row.status === "published" && row[fixture.titleKey] === key,
+      "COLLECTION_UI_DB_MISMATCH_" + fixture.table)
+    if (fixture.table === "tool_categories")
+      ensure(row.tools?.length === 2 && row.tools[0]?.name === "Planilha falsa",
+        "COLLECTION_TOOLS_JSON_MISMATCH")
+    pass("COLLECTION_UI_" + fixture.table.toUpperCase(),
+      { created: true, published: true, postgrestVerified: true })
+    await page.waitForFunction(() =>
+      !document.querySelector(".section-editor-layout .editor-form .admin-floating-save"),
+      { timeout: 15000 })
+  }
+
+  // A late editor cannot replace a published contact record read before
+  // another session's change, and invalid external URLs never reach the DB.
+  await updateCollectionField("URL", "javascript:alert(1)")
+  await page.waitForSelector(".section-editor-layout .editor-form .admin-floating-save button.primary-button",
+    { timeout: 10000 })
+  await page.click(".section-editor-layout .editor-form .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".section-editor-layout .editor-form")?.textContent
+      ?.includes("A URL de contato precisa usar HTTPS"),
+    { timeout: 10000 })
+  const contactRow = collectionFixtureRows.find((record) => record.table === "contact_channels")
+  const unchangedContact = await get(service.from("contact_channels").select("*")
+    .eq("id", contactRow.id).single(), "CONTACT_URL_VALIDATION_DB")
+  ensure(unchangedContact.url.startsWith("https://"), "CONTACT_URL_UNSAFE_WRITE")
+  pass("COLLECTION_UI_REJECT_UNSAFE_URL", { safeUrlPreserved: true })
+
+  await updateCollectionField("URL", unchangedContact.url)
+  const competingLabel = "Contato alterado externamente " + suffix
+  const externalContact = await service.from("contact_channels")
+    .update({ label: competingLabel }).eq("id", contactRow.id).select("id").single()
+  ensure(!externalContact.error, "CONTACT_CAS_EXTERNAL_FIXTURE")
+  await updateCollectionField("Valor", "Tentativa de edição obsoleta " + suffix)
+  await page.waitForSelector(".section-editor-layout .editor-form .admin-floating-save button.primary-button",
+    { timeout: 10000 })
+  await page.click(".section-editor-layout .editor-form .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".section-editor-layout .editor-form")?.textContent
+      ?.includes("O registro foi alterado em outra sessão."),
+    { timeout: 14000 })
+  const protectedContact = await get(service.from("contact_channels").select("label,value")
+    .eq("id", contactRow.id).single(), "COLLECTION_CAS_DB")
+  ensure(protectedContact.label === competingLabel &&
+    protectedContact.value === unchangedContact.value, "COLLECTION_CAS_SILENT_OVERWRITE")
+  pass("COLLECTION_UI_STALE_CAS_REJECTED", { concurrentRowPreserved: true })
+
+  // Status-only unpublication follows the same optimistic concurrency path.
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Acervo")?.click()
+  })
+  await page.waitForSelector(".collection-tabs button", { timeout: 12000 })
+  await chooseAcervoTab("Contato")
+  await page.waitForFunction((label) =>
+    [...document.querySelectorAll(".section-editor-layout .section-list button")]
+      .some((node) => node.textContent?.includes(label)),
+    { timeout: 15000 }, competingLabel)
+  await page.evaluate((label) => {
+    [...document.querySelectorAll(".section-editor-layout .section-list button")]
+      .find((node) => node.textContent?.includes(label))?.click()
+  }, competingLabel)
+  await page.waitForSelector(".section-editor-layout .editor-form .danger-button", { timeout: 10000 })
+  await page.click(".section-editor-layout .editor-form .danger-button")
+  await page.waitForSelector(".admin-confirm-dialog .danger-button", { timeout: 10000 })
+  await page.click(".admin-confirm-dialog .danger-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".section-editor-layout .editor-form")?.textContent
+      ?.includes("Registro retirado da publicação."),
+    { timeout: 14000 })
+  const unpublishedContact = await get(service.from("contact_channels")
+    .select("status").eq("id", contactRow.id).single(), "CONTACT_UNPUBLISH_DB")
+  ensure(unpublishedContact.status === "draft", "CONTACT_UNPUBLISH_FAILED")
+  pass("COLLECTION_UI_UNPUBLISH_STATUS", { status: "draft", recordRetained: true })
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -1092,6 +1271,8 @@ try {
       .remove([privateUiOldPath, privateUiNewPath].filter(Boolean))
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
+  for (const record of collectionFixtureRows)
+    await service.from(record.table).delete().eq("id", record.id)
   if (syntheticCareerRowId) await service.from("career_experiences").delete().eq("id", syntheticCareerRowId)
   if (syntheticCareerSectionId) await service.from("sections").delete().eq("id", syntheticCareerSectionId)
   if (syntheticTestimonialId) await service.from("testimonials").delete().eq("id", syntheticTestimonialId)
@@ -1099,5 +1280,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 36, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 36) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 47, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 47) process.exitCode = 1
