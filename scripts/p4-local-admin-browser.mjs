@@ -39,6 +39,8 @@ let pageId = null
 let mediaAssetId = null
 let mediaStoragePath = null
 let mediaTempDir = null
+let mediaRecoveryAssetId = null
+let mediaRecoveryStoragePath = null
 const navigationFixtures = []
 let syntheticProfileId = null
 let settingsOriginal = null
@@ -271,6 +273,60 @@ try {
   ensure(mediaReopened.alt === mediaAlt && mediaReopened.credit === mediaCredit &&
     mediaReopened.zoom?.includes("110%"), "MEDIA_UI_REOPEN_MISMATCH")
   pass("MEDIA_UI_REOPEN_PERSISTED_FIELDS", { alt: true, credit: true, focal: true })
+  
+  // A successful upload followed by a transient catalog GET failure must
+  // leave the already-open unsaved metadata draft intact. All requests target
+  // this runner's loopback PostgREST and are intercepted only in this page.
+  const pendingAlt = "Rascunho protegido pela falha " + suffix
+  await updateMediaInput("Texto alternativo", pendingAlt)
+  const recoveryName = "p4-media-catalog-retry-" + suffix + ".svg"
+  const recoveryFile = join(mediaTempDir, recoveryName)
+  writeFileSync(recoveryFile,
+    '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><circle cx="4" cy="4" r="2"/></svg>')
+  let catalogFailureInjected = false
+  const catalogInterceptor = (request) => {
+    const u = new URL(request.url())
+    if (!catalogFailureInjected && request.method() === "GET" &&
+        u.pathname.endsWith("/rest/v1/media_assets") && u.searchParams.get("select") === "*") {
+      catalogFailureInjected = true
+      void request.respond({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ code: "PGRST503", message: "Falha sintética de leitura do catálogo" }),
+      })
+      return
+    }
+    void request.continue()
+  }
+  await page.setRequestInterception(true)
+  page.on("request", catalogInterceptor)
+  const recoveryInput = await page.$(".admin-header .upload-button input[type=file]")
+  ensure(Boolean(recoveryInput), "MEDIA_UI_RECOVERY_UPLOAD_INPUT")
+  await recoveryInput.uploadFile(recoveryFile)
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Falha sintética de leitura do catálogo"),
+    { timeout: 18000 })
+  page.off("request", catalogInterceptor)
+  await page.setRequestInterception(false)
+  ensure(catalogFailureInjected, "MEDIA_UI_READ_ERROR_NOT_INJECTED")
+  const preservedDraft = await page.evaluate(() => {
+    const detail = document.querySelector(".media-library-detail")
+    const alt = [...(detail?.querySelectorAll("label") ?? [])]
+      .find((node) => node.textContent?.includes("Texto alternativo"))
+      ?.querySelector("textarea")?.value
+    return { open: Boolean(detail), alt }
+  })
+  const preservedRow = await get(service.from("media_assets")
+    .select("alt_text").eq("id", mediaAssetId).single(), "MEDIA_UI_RECOVERY_UNSAVED_DB")
+  const recoveryRow = await get(service.from("media_assets")
+    .select("id,storage_path").eq("title", recoveryName).single(), "MEDIA_UI_RECOVERY_UPLOAD_DB")
+  mediaRecoveryAssetId = recoveryRow.id
+  mediaRecoveryStoragePath = recoveryRow.storage_path
+  ensure(preservedDraft.open && preservedDraft.alt === pendingAlt &&
+    preservedRow.alt_text === mediaAlt, "MEDIA_UI_READ_FAILURE_LOST_DRAFT")
+  pass("MEDIA_UI_FAILED_CATALOG_READ_PRESERVES_DRAFT",
+    { selected: true, dirtyDraftRetained: true, noUnintendedMetadataSave: true })
+
 
   // Concurrent change must invalidate the UI's original updated_at CAS token.
   const concurrentTitle = "Concorrente sintético " + suffix
@@ -311,6 +367,33 @@ try {
   pass("MEDIA_UI_DELETE_NO_ORPHANS", { catalogRows: 0, storageObjectAbsent: true })
   mediaAssetId = null
   mediaStoragePath = null
+
+  // The catalog recovers on a fresh authenticated read and the independently
+  // successful second upload remains visible and can be deleted without residue.
+  await page.waitForFunction((title) => [...document.querySelectorAll(".media-library-card")]
+    .some((card) => card.textContent?.includes(title)),
+    { timeout: 15000 }, recoveryName)
+  const recoveryDelete = await page.evaluate((title) => {
+    const button = [...document.querySelectorAll("button.media-library-remove")]
+      .find((node) => node.getAttribute("aria-label")?.includes(title))
+    button?.click()
+    return Boolean(button)
+  }, recoveryName)
+  ensure(recoveryDelete, "MEDIA_UI_RECOVERY_DELETE_BUTTON")
+  await page.waitForSelector('.admin-confirm-dialog[role="alertdialog"] .danger-button',
+    { timeout: 10000 })
+  await page.click('.admin-confirm-dialog[role="alertdialog"] .danger-button')
+  await page.waitForFunction((title) => ![...document.querySelectorAll(".media-library-card")]
+    .some((card) => card.textContent?.includes(title)),
+    { timeout: 20000 }, recoveryName)
+  const recoveredRows = await get(service.from("media_assets")
+    .select("id").eq("id", mediaRecoveryAssetId), "MEDIA_UI_RECOVERY_ROWS")
+  const recoveredObject = await service.storage.from("portfolio-public").download(mediaRecoveryStoragePath)
+  ensure(recoveredRows.length === 0 && Boolean(recoveredObject.error),
+    "MEDIA_UI_RECOVERY_LEFT_ORPHANS")
+  pass("MEDIA_UI_CATALOG_RECOVERY_AND_DELETE", { reloaded: true, catalogRows: 0, storageObjectAbsent: true })
+  mediaRecoveryAssetId = null
+  mediaRecoveryStoragePath = null
 
   // Version conflict through the real section form: reject a stale composite
   // RPC attempt without falling back to another database write.
@@ -583,10 +666,12 @@ try {
   if (pageId) await service.from("pages").delete().eq("id", pageId)
   if (mediaAssetId) await service.from("media_assets").delete().eq("id", mediaAssetId)
   if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
+  if (mediaRecoveryAssetId) await service.from("media_assets").delete().eq("id", mediaRecoveryAssetId)
+  if (mediaRecoveryStoragePath) await service.storage.from("portfolio-public").remove([mediaRecoveryStoragePath])
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 20, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 20) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 22, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 22) process.exitCode = 1

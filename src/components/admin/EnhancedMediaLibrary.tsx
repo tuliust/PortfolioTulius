@@ -47,17 +47,18 @@ export function EnhancedMediaLibrary({
       .from("media_assets")
       .select("*")
       .order("created_at", { ascending: false })
+    if (error) {
+      // A failed refresh must not discard an open unsaved draft or its preview.
+      // A preceding upload may have succeeded independently of this read.
+      setMessage("Falha ao atualizar o catálogo; edições em aberto preservadas. " + error.message)
+      return
+    }
     const nextAssets = data ?? []
     setAssets(nextAssets)
     setSelectedMediaId((current) =>
       nextAssets.some((item) => item.id === current) ? current : null,
     )
     setFailedImages({})
-    if (error) {
-      setPreviews({})
-      setMessage(error.message)
-      return
-    }
     const resolved = await Promise.all(
       nextAssets.map(async (asset) => ({
         id: asset.id,
