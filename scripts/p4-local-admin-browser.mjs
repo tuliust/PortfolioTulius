@@ -299,6 +299,8 @@ try {
     return textArea?.value === expected && Boolean(saveButton && !saveButton.disabled)
   }, { timeout: 10000 }, patchRejectedAlt)
   let rejectedPatchCount = 0
+  let resolveRejectedPatch
+  const rejectedPatchIntercepted = new Promise((resolve) => { resolveRejectedPatch = resolve })
   const rejectPatch = (request) => {
     const url = new URL(request.url())
     if (request.method() === "PATCH" &&
@@ -308,20 +310,19 @@ try {
         status: 503,
         contentType: "application/json",
         body: JSON.stringify({ code: "PGRST503", message: "Falha sintética de gravação SQL" }),
-      })
+      }).then(() => resolveRejectedPatch(true), () => resolveRejectedPatch(false))
       return
     }
     void request.continue()
   }
   await page.setRequestInterception(true)
   page.on("request", rejectPatch)
-  const rejectedPatchResponse = page.waitForResponse(
-    (response) => response.request().method() === "PATCH" &&
-      new URL(response.url()).pathname.endsWith("/rest/v1/media_assets"),
-    { timeout: 12000 },
-  )
   await page.click(".media-library-detail .media-actions button.primary-button")
-  await rejectedPatchResponse
+  const rejectedPatchAck = await Promise.race([
+    rejectedPatchIntercepted,
+    new Promise((resolve) => setTimeout(() => resolve(false), 12000)),
+  ])
+  ensure(rejectedPatchAck, "MEDIA_UI_PATCH_INTERCEPTION_NOT_ACKNOWLEDGED")
   page.off("request", rejectPatch)
   await page.setRequestInterception(false)
   const rejectedDraft = await page.evaluate(() => {
@@ -558,6 +559,8 @@ try {
     '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><circle cx="4" cy="4" r="3"/></svg>')
   let rejectedStorageCount = 0
   let rejectedStoragePath = ""
+  let resolveRejectedStorage
+  const rejectedStorageIntercepted = new Promise((resolve) => { resolveRejectedStorage = resolve })
   const rejectStorageUpload = (request) => {
     const url = new URL(request.url())
     const prefix = "/storage/v1/object/portfolio-public/"
@@ -568,23 +571,21 @@ try {
       void request.respond({
         status: 503, contentType: "application/json",
         body: JSON.stringify({ error: "Falha sintética do Storage durante upload" }),
-      })
+      }).then(() => resolveRejectedStorage(true), () => resolveRejectedStorage(false))
       return
     }
     void request.continue()
   }
   await page.setRequestInterception(true)
   page.on("request", rejectStorageUpload)
-  const failedUploadResponse = page.waitForResponse(
-    (response) => response.request().method() === "POST" &&
-      new URL(response.url()).pathname.includes("/storage/v1/object/portfolio-public/") &&
-      new URL(response.url()).pathname.endsWith(failedStorageFileName),
-    { timeout: 15000 },
-  )
   const failedStorageInput = await page.$(".admin-header .upload-button input[type=file]")
   ensure(Boolean(failedStorageInput), "MEDIA_UI_STORAGE_503_UPLOAD_CONTROL")
   await failedStorageInput.uploadFile(failedStorageLocalPath)
-  await failedUploadResponse
+  const failedStorageAck = await Promise.race([
+    rejectedStorageIntercepted,
+    new Promise((resolve) => setTimeout(() => resolve(false), 15000)),
+  ])
+  ensure(failedStorageAck, "MEDIA_UI_STORAGE_INTERCEPTION_NOT_ACKNOWLEDGED")
   page.off("request", rejectStorageUpload)
   await page.setRequestInterception(false)
   const rowsAfterFailedUpload = await get(service.from("media_assets")
