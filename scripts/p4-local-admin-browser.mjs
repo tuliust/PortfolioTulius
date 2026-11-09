@@ -1636,6 +1636,17 @@ try {
     [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
       .find((button) => button.textContent?.includes("Direita"))?.click()
   })
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+      .some((button) => button.textContent?.includes("Direita") &&
+        button.getAttribute("aria-selected") === "true"),
+    { timeout: 15000 })
+  // Switching areas preserves the currently open mobile settings subview.
+  // Return to content before asserting the right-hand Hero component.
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".site-editor-subview-actions button")]
+      .find((button) => button.textContent?.trim() === "Voltar à edição")?.click()
+  })
   await page.waitForSelector(".hero-right-editor", { timeout: 15000 })
   await page.evaluate(() => {
     [...document.querySelectorAll(".site-editor-subview-actions button")]
