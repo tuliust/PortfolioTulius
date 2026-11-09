@@ -113,7 +113,12 @@ try {
   ensure(savedSection.title === sectionOriginal.title, "PUBLIC_TITLE_MODIFIED_BY_CMS_LABEL")
   pass("UI_COMPOSITE_SAVE_DB_RELOAD", { rpc: "save_section_block_atomic", section: true, block: true, publicTitlePreserved: true })
 
-  await page.reload({ waitUntil: "domcontentloaded" })
+  // A beforeunload confirmation may still be pending until the parent CMS reload settles.
+  page.on("dialog", async (dialog) => {
+    if (dialog.type() === "beforeunload") await dialog.accept()
+    else await dialog.dismiss()
+  })
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
   await page.waitForSelector(".admin-shell", { timeout: 20000 })
   const reopened = await page.evaluate((expected) => {
     const nav = [...document.querySelectorAll(".admin-sidebar nav button")]
@@ -145,7 +150,7 @@ try {
   if (result.error) throw Error("P4_PUBLISH_BLOCK:" + result.error.code)
   for (const viewport of [{width:1440,height:900,kind:"DESKTOP"},{width:390,height:844,kind:"MOBILE"}]) {
     await page.setViewport({ width: viewport.width, height: viewport.height })
-    await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
     await page.waitForSelector('[data-section="secao-ficticia"]', { timeout: 18000 })
     const result = await page.evaluate(() => {
       const section = document.querySelector('[data-section="secao-ficticia"]')
