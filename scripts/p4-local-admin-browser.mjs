@@ -559,15 +559,26 @@ try {
     [...document.querySelectorAll(".navigation-form label input")]
       .some((input) => input.value === name),
     { timeout: 12000 }, firstLabel)
-  const moved = await page.evaluate(() => {
-    const button = document.querySelector('.navigation-form button[aria-label="Mover item para baixo"]')
+  // Locate the fixture by its actual editable label. Browser reloads and
+  // async catalog loads can otherwise make a generic "first move button"
+  // target a different row before React has settled.
+  await page.waitForFunction(([first, second]) => {
+    const rows = [...document.querySelectorAll(".navigation-form > div")]
+    return rows.length === 2 &&
+      rows[0]?.querySelector("label input")?.value === first &&
+      rows[1]?.querySelector("label input")?.value === second
+  }, { timeout: 15000 }, [firstLabel, secondLabel])
+  const moved = await page.evaluate((first) => {
+    const row = [...document.querySelectorAll(".navigation-form > div")]
+      .find((entry) => entry.querySelector("label input")?.value === first)
+    const button = row?.querySelector('button[aria-label="Mover item para baixo"]')
     button?.click()
     return Boolean(button)
-  })
+  }, firstLabel)
   ensure(moved, "NAV_UI_MOVE_BUTTON")
   await page.waitForFunction((name) =>
-    document.querySelector(".navigation-form label input")?.value === name,
-    { timeout: 10000 }, secondLabel)
+    document.querySelector(".navigation-form > div label input")?.value === name,
+    { timeout: 15000 }, secondLabel)
   const changedLabel = await page.evaluate((value) => {
     const input = document.querySelector(".navigation-form label input")
     if (!input) return false
