@@ -1,3 +1,25 @@
+# Pendências técnicas — adendo vigente
+
+## Pendências efetivas após homologação sintética ampliada — 09/11/2026
+
+**Resolvidos na matriz aprovada:** 87/87 navegador dentro de 119/119 P5, 260/260 Vitest, CRUD editorial representativo de sete coleções com reabertura e ciclo despublicar/republicar, CAS de Trajetória/depoimentos/Contato, isolamento mobile B, enquadramento global e individual em Hero/Sobre/galeria/logotipo, remoção referenciada sem órfãos, falhas 503 e reconciliação privada da renomeação incerta (Vitest). Fontes: [P5 #42711984678](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42711984678) e [Validate #42711984680](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42711984680), SHA `442c72cf7b0bc8b7dc3738c822ce7aab18e75814`.
+
+**Ainda exigem gate ou decisão:**
+
+1. **P0 — Desempenho LCP mobile:** meta intacta mediana de três Lighthouse ≤3.500 ms. Última medição anterior (#42696549446, outro SHA) **FAIL 3.692,071 ms**. Exigir P3 do SHA final; não flexibilizar orçamento nem declarar sucesso com amostra isolada.
+2. **P0 — Convergência Etapa 5:** Validate, P5, CMS read-only, P3 Lighthouse, P4 visual, SEO e Vercel fingerprint devem estar no **mesmo SHA** final. O próximo commit documental precisa rodar e ser conferido; aceitação visual humana permanece externa às asserções.
+3. **P0 — Produção P2 / etapa 6:** migration `20261109024100_p2_composite_section_block_save.sql` não autorizada e não aplicada. RPC `save_section_block_atomic` ausente. Antes de pedido de autorização, reconciliar migrations históricas, confirmar backup/rollback, requisitos e validação read-only.
+4. **Ressalvas de aceitação CMS:** não extrapolar a 87 testes para todas as combinações possíveis de estilos, famílias, tamanhos, alinhamentos e campos das nove coleções. Fluxos por coleção foram validados nas matrizes indicadas; revisão humana desktop/mobile é necessária.
+5. **Ressalvas de mídia:** resposta incerta da renomeação validada por testes unitários + lógica conservadora de releitura, não por teste HTTP browser de pós-commit sem ACK. `credit` não é legenda pública automática; decisão editorial separada seria necessária para mudar o renderer. Referências externas não mapeadas exigem revisão específica.
+6. **Arquivos privados do Projeto ChatGPT:** documentação do GitHub não substitui automaticamente anexos/snapshots históricos. Manter hierarquia de fontes vigente.
+
+**Zero gravações produtivas de Supabase, zero alteração de conteúdo público e nenhuma etapa 6 executada.**
+
+
+---
+
+## Snapshots anteriores preservados como histórico
+
 # Pendências após regressão do mesmo SHA
 
 ## Bloqueio P3 e pontos abertos — 09/11/2026, SHA `d36193e118693f43f4b85672514135ca5988b334`

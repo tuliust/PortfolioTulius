@@ -1,3 +1,36 @@
+# Estado técnico — adendo vigente pós-homologação P2/P4
+
+**Data:** 09/11/2026. **Branch:** `main`. **SHA funcional validado:** `442c72cf7b0bc8b7dc3738c822ce7aab18e75814`.
+[Evidência P5 #42711984678](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42711984678) `completed/success`; [Validate #42711984680](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42711984680) `completed/success`.
+**Importante:** um commit somente documental gera outro SHA e exige nova convergência. Não atribuir os resultados do SHA funcional ao novo SHA antes de seus jobs terminarem.
+
+| Verificação no SHA funcional | Resultado comprovado |
+|---|---|
+| P5 original (Auth/RLS e dados fictícios) | 8/8 PASS |
+| RPC composta P2, CAS e rollback | 11/11 PASS |
+| Navegador autenticado local | **87/87 PASS** |
+| Mídia sintética Auth/Storage/API | 8/8 PASS |
+| SEO sintético, static build e rollback | 5/5 PASS |
+| **P5 agregado** | **119/119 PASS**, `127.0.0.1:54321`, `cloudConnections:0` nos grupos que registram esta propriedade |
+| Validate | **260/260 Vitest**, 56 arquivos, formatação, TypeScript, build, smoke e sintaxe PASS |
+
+**Etapa 2 — COBERTURA TÉCNICA SINTÉTICA APROVADA COM RESSALVAS:** sete coleções normalizadas `portfolio_projects`, `metrics`, `skills`, `education`, `language_levels`, `tool_categories`, `contact_channels`: cada uma passou na UI por criação/publicação/PostgREST, edição/releitura pós-reabertura, despublicação/arquivamento e republicação com ID preservado. Os outros dois grupos, `career_experiences` e `testimonials`, foram homologados no editor embutido com persistência, reabertura, CAS obsoleto e leitura no renderer desktop/mobile. UI de Hero A/B, navegação, estados não salvos, dispositivos e isolamento desktop/mobile A/mobile B, tipografia, tokens de Identidade, comparação e restauração de revisões com preservação de status/visibilidade e CAS também passaram. **Limites:** não há afirmação de teste combinatório de todas as propriedades visuais em todos os nove schemas; concorrência de cada coleção é representada por casos específicos, não por varredura completa. Aceite visual humano em dispositivos reais permanece independente.
+
+**Etapa 3 — BIBLIOTECA APROVADA TECNICAMENTE NO SINTÉTICO, COM RESSALVAS:** UI de upload/publicação, edição de título/`alt_text`/`credit`/`focal_point`, fechar e reabrir, renomeação privada com promoção, CAS, exclusão sem órfãos e falhas HTTP 503 de PATCH catálogo/POST Storage passaram. Renderização pública de ponto focal global e override por uso validada em Hero desktop/mobile, Sobre desktop/mobile, galeria de Experiências desktop/mobile e logo de Experiências desktop. Remoção de mídia ainda referenciada limpou ponteiros no Hero e Sobre e eliminou objeto/registro. A rotina de renomeação privada reconcilia resposta SQL incerta por leitura: somente limpa a cópia nova com prova de que o catálogo continua no arquivo anterior; quando incerto, mantém ambas para análise. Dois novos Vitest de erro incerto confirmaram os comportamentos. **Limites:** casos de resposta perdida/timeout da renomeação foram testados em unidade, não em navegador com Storage real; `credit` é metadado de catálogo e não foi autorizada/implementada legenda pública automática. Não extrapolar para todo tipo possível de referência externa.
+
+**Falhas anteriores documentadas sem reclassificação:** os runs [#42707527325](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42707527325), [#42708182119](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42708182119), [#42708965865](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42708965865), [#42709234814](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42709234814) e [#42710744226](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42710744226) falharam por instrumentação/fixtures de navegador durante a expansão. Os cenários foram corrigidos e o conjunto passou integralmente em #42711984678. Registrar tentativas falhas como falhas históricas, não como aprovações.
+
+**Supabase produtivo SOMENTE LEITURA:** SELECT confirmou 14 seções, 28 blocos, 56 placements, 75 mídias; `save_section_block_atomic` ausente e nenhuma migração/alteração de Storage/INSERT/UPDATE/DELETE produtiva nesta execução. A migration `supabase/migrations/20261109024100_p2_composite_section_block_save.sql` **não foi executada** e exige autorização específica separada, verificação prévia de backup, compatibilidade de schema e plano de reversão.
+
+**Vercel:** deployment `dpl_H9EpM2d17jVMF1wZ5uPwqy6YHpwn` no estado `READY` e alias `tulius.work` para o SHA funcional. O SHA documental posterior exige novo teste do fingerprint HTTP `/p3-deployment.json`.
+
+**Etapa 5 e LCP (próximos gates):** executar Validate, P5 local, P5 admin read-only, produção pública, SEO/P4 e P3 no SHA documental final. Na última medição anterior [P3 #42696549446](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42696549446), SHA `283e4f3`, LCP mobile foi mediana **3.692,071 ms FAIL** (limite imutável **≤3.500 ms**). Não atribuir essa medição ao SHA funcional atualizado. A etapa 5 não pode receber aceite global até a verificação do P3 no SHA final e o gate de LCP; o usuário solicitou tratar LCP como última avaliação antes de eventual etapa 6.
+
+**Etapa 6:** NÃO AUTORIZADA, NÃO EXECUTADA. Nunca interpretar autorização para etapas 2/3/5/LCP como autorização de DDL ou escrita em produção.
+---
+
+## Snapshots anteriores preservados como histórico
+
 # Estado técnico e regressões — adendo mais recente
 
 ## Adendo final de auditoria de P3 — 09/11/2026, SHA `d36193e118693f43f4b85672514135ca5988b334`
