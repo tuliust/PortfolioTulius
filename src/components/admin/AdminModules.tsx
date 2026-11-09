@@ -508,7 +508,11 @@ export function ContentStudio({
       // Do not mark a write successful until rereading it through PostgREST.
       const [sectionRead, blockRead] = await Promise.all([
         heroCopyDirty
-          ? supabase.from("sections").select("title,eyebrow,intro").eq("id", draft.section_id).single()
+          ? supabase
+              .from("sections")
+              .select("title,eyebrow,intro")
+              .eq("id", draft.section_id)
+              .single()
           : Promise.resolve(null),
         blockDirty
           ? supabase.from("content_blocks").select("id,content_json").eq("id", draft.id).single()
@@ -521,10 +525,13 @@ export function ContentStudio({
             (sectionRead?.data?.eyebrow ?? "") !== normalizedCopy.eyebrow ||
             (sectionRead?.data?.intro ?? "") !== normalizedCopy.intro)) ||
         (blockDirty &&
-          (blockRead?.error || !blockRead?.data ||
+          (blockRead?.error ||
+            !blockRead?.data ||
             !sameJson(blockRead.data.content_json?.items, contentToSave.items)))
       ) {
-        setMessage("A gravação foi solicitada, mas a confirmação de leitura falhou. Recarregue antes de reenviar.")
+        setMessage(
+          "A gravação foi solicitada, mas a confirmação de leitura falhou. Recarregue antes de reenviar.",
+        )
         return false
       }
       if (heroCopyDirty) {
@@ -532,7 +539,9 @@ export function ContentStudio({
         setHeroCopySaved(normalizedCopy)
       }
       if (blockDirty && !(await load())) {
-        setMessage("O banco confirmou a transação, mas a recarga do bloco falhou. Verifique antes de reenviar.")
+        setMessage(
+          "O banco confirmou a transação, mas a recarga do bloco falhou. Verifique antes de reenviar.",
+        )
         return false
       }
       setMessage("Alterações salvas atomicamente e conferidas no Supabase.")
@@ -589,7 +598,9 @@ export function ContentStudio({
       return false
     }
     if (!(await load())) {
-      setMessage("A gravação do bloco foi confirmada, mas a releitura falhou. Recarregue antes de reenviar.")
+      setMessage(
+        "A gravação do bloco foi confirmada, mas a releitura falhou. Recarregue antes de reenviar.",
+      )
       return false
     }
     setMessage("Bloco salvo e conferido com a RPC existente.")

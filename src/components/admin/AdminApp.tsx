@@ -382,13 +382,15 @@ function SectionsEditor({
         return false
       }
       const current = latest.data.content_json ?? {}
-      const currentTitle = current.editorTitle ?? (draft.slug === "perfil" ? "Hero" : selected.title)
+      const currentTitle =
+        current.editorTitle ?? (draft.slug === "perfil" ? "Hero" : selected.title)
       const currentAnchor = current.editorAnchor ?? selected.slug
       const currentRoot = current.items?.[0]?.hero?.rootBackground ?? "transparent"
       if (
         currentTitle !== selected.editor_title ||
         currentAnchor !== selected.editor_anchor ||
-        (draft.slug === "perfil" && currentRoot !== (selected.editor_root_background ?? "transparent"))
+        (draft.slug === "perfil" &&
+          currentRoot !== (selected.editor_root_background ?? "transparent"))
       ) {
         setMessage("Os metadados do painel foram alterados em outra sessão. Reabra a seção.")
         return false
@@ -420,9 +422,17 @@ function SectionsEditor({
     }
     if (composed.mode === "saved") {
       const [verifiedSection, verifiedBlock] = await Promise.all([
-        supabase.from("sections").select("title,eyebrow,intro,animation_preset").eq("id", draft.id).single(),
+        supabase
+          .from("sections")
+          .select("title,eyebrow,intro,animation_preset")
+          .eq("id", draft.id)
+          .single(),
         metadataChanged && draft.editor_block_id
-          ? supabase.from("content_blocks").select("content_json").eq("id", draft.editor_block_id).single()
+          ? supabase
+              .from("content_blocks")
+              .select("content_json")
+              .eq("id", draft.editor_block_id)
+              .single()
           : Promise.resolve(null),
       ])
       const sectionMatches = isSettings
@@ -431,11 +441,14 @@ function SectionsEditor({
           verifiedSection.data?.eyebrow === draft.eyebrow &&
           verifiedSection.data?.intro === draft.intro
       if (
-        verifiedSection.error || !sectionMatches ||
-        (metadataChanged && (verifiedBlock?.error ||
-          !sameJson(verifiedBlock?.data?.content_json, blockContent)))
+        verifiedSection.error ||
+        !sectionMatches ||
+        (metadataChanged &&
+          (verifiedBlock?.error || !sameJson(verifiedBlock?.data?.content_json, blockContent)))
       ) {
-        setMessage("A transação foi enviada, mas a confirmação falhou. Recarregue antes de reenviar.")
+        setMessage(
+          "A transação foi enviada, mas a confirmação falhou. Recarregue antes de reenviar.",
+        )
         return false
       }
       setMessage("Alterações salvas atomicamente e conferidas no Supabase.")

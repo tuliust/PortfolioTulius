@@ -30,7 +30,12 @@ export function compositeErrorText(error: { code?: string; message?: string }): 
   if (code === "22023" || code === "P0002") {
     return "Os dados informados não puderam ser gravados. Revise os campos e recarregue."
   }
-  return "Não foi possível confirmar a gravação composta (" + code + "). Recarregue e confira os valores antes de tentar novamente. " + detail
+  return (
+    "Não foi possível confirmar a gravação composta (" +
+    code +
+    "). Recarregue e confira os valores antes de tentar novamente. " +
+    detail
+  )
 }
 
 export async function tryCompositeSave(payload: CompositePayload): Promise<CompositeOutcome> {
