@@ -1169,10 +1169,11 @@ try {
     await page.waitForSelector(".section-editor-layout .editor-form .admin-floating-save button.primary-button",
       { timeout: 12000 })
     await page.click(".section-editor-layout .editor-form .admin-floating-save button.primary-button")
+    // Save confirmation can be replaced by a second read of the same
+    // collection. Await the cleared draft and verify the DB row below.
     await page.waitForFunction(() =>
-      document.querySelector(".section-editor-layout .editor-form")?.textContent
-        ?.includes("Registro salvo e recuperado do Supabase."),
-      { timeout: 16000 })
+      !document.querySelector(".section-editor-layout .editor-form .admin-floating-save"),
+      { timeout: 18000 })
     const key = fixture.fields[Object.keys(fixture.fields).find((name) =>
       ["Título", "Rótulo", "Nome", "Curso", "Idioma", "Categoria"].includes(name))]
     const row = await get(service.from(fixture.table).select("*")
@@ -1498,9 +1499,9 @@ try {
   revisionFixtureIds.push(conflictRev.data.id)
   await openRevisions()
   await inspectById(conflictRev.data.id)
-  const concurrentTitle = "Edição concorrente preservada " + suffix
+  const revisionConcurrentTitle = "Edição concorrente preservada " + suffix
   const updated = await service.from("sections")
-    .update({ title: concurrentTitle }).eq("id", syntheticProfileId).select("id").single()
+    .update({ title: revisionConcurrentTitle }).eq("id", syntheticProfileId).select("id").single()
   ensure(!updated.error, "P4_REVISION_CONCURRENT_MODIFICATION")
   await page.click(".revision-preview button.primary-button")
   await page.waitForSelector(".admin-confirm-dialog .danger-button", { timeout: 10000 })
@@ -1510,7 +1511,7 @@ try {
     { timeout: 14000 })
   const conflictRetained = await get(service.from("sections").select("title")
     .eq("id", syntheticProfileId).single(), "P4_REVISION_CONFLICT_DB")
-  ensure(conflictRetained.title === concurrentTitle, "P4_REVISION_STALE_OVERWRITE")
+  ensure(conflictRetained.title === revisionConcurrentTitle, "P4_REVISION_STALE_OVERWRITE")
   pass("REVISION_UI_STALE_CAS_DENIED", { latestEditorialTitlePreserved: true })
 } finally {
   if (page) await page.close()
