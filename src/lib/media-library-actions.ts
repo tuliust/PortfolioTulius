@@ -9,7 +9,7 @@ export type PrivateMediaAsset = {
   mime_type: string | null
 }
 
-type MediaAction = { ok: boolean; message: string }
+type MediaAction = { ok: boolean; message: string; warning?: string }
 
 export async function uploadPublishedMedia(file: File): Promise<MediaAction> {
   const client = supabase
@@ -85,6 +85,24 @@ export async function publishPrivateMedia(asset: PrivateMediaAsset): Promise<Med
         (cleanup.error
           ? " Atenção: a cópia pública precisa de remoção manual."
           : " Cópia pública revertida."),
+    }
+  }
+  // The catalog now points at the public object. Keep no unreferenced
+  // private duplicate after publication; report an explicit clean-up warning
+  // rather than treating a successful DB transition as a failed publish.
+  try {
+    const cleanup = await client.storage.from("portfolio-private").remove([asset.storage_path])
+    if (cleanup.error)
+      return {
+        ok: true,
+        message: "Mídia disponibilizada no site após publicação explícita.",
+        warning: "Atenção: a cópia privada não pôde ser removida: " + cleanup.error.message,
+      }
+  } catch (error) {
+    return {
+      ok: true,
+      message: "Mídia disponibilizada no site após publicação explícita.",
+      warning: "Atenção: exclusão da cópia privada não confirmada: " + String(error),
     }
   }
   return { ok: true, message: "Mídia disponibilizada no site após publicação explícita." }

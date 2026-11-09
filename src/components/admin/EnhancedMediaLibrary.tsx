@@ -174,7 +174,7 @@ export function EnhancedMediaLibrary({
         await load()
         return false
       }
-      setMessage("Metadados salvos e mídia publicada.")
+      setMessage("Metadados salvos e mídia publicada." + (publication.warning ? " " + publication.warning : ""))
     }
     setFramingOpen(false)
     setMediaDraft(null)
