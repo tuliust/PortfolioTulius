@@ -1,6 +1,5 @@
 import { supabase } from "./supabase"
 import { mediaFileName } from "./media-framing"
-import { stagePrivateMediaChange } from "./media-operations"
 
 export type PrivateMediaAsset = {
   id: string
@@ -20,30 +19,83 @@ export async function uploadPublishedMedia(file: File): Promise<MediaAction> {
   )
     return { ok: false, message: "Use JPG, PNG, WebP ou SVG de até 8 MB." }
   const path = `${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`
-  const result = await stagePrivateMediaChange({
-    stage: () =>
-      client.storage.from("portfolio-public").upload(path, file, {
-        contentType: file.type,
-        cacheControl: "3600",
-        upsert: false,
-      }),
-    persist: async () =>
-      client.from("media_assets").insert({
-        storage_bucket: "portfolio-public",
-        storage_path: path,
-        mime_type: file.type,
-        file_size: file.size,
-        alt_text: "",
-        title: file.name.trim() || mediaFileName(path),
-        status: "published",
-      }),
-    undoStage: () => client.storage.from("portfolio-public").remove([path]),
-  })
-  return {
-    ok: result.ok,
-    message: result.ok
-      ? "Mídia enviada e publicada automaticamente na biblioteca pública."
-      : result.message,
+  try {
+    const uploaded = await client.storage.from("portfolio-public").upload(path, file, {
+      contentType: file.type,
+      cacheControl: "3600",
+      upsert: false,
+    })
+    if (uploaded.error) return { ok: false, message: uploaded.error.message }
+  } catch (error) {
+    return { ok: false, message: "Não foi possível confirmar o upload: " + String(error) }
+  }
+
+  let persistError: string | null = null
+  try {
+    const result = await client.from("media_assets").insert({
+      storage_bucket: "portfolio-public",
+      storage_path: path,
+      mime_type: file.type,
+      file_size: file.size,
+      alt_text: "",
+      title: file.name.trim() || mediaFileName(path),
+      status: "published",
+    })
+    persistError = result.error?.message ?? null
+  } catch (error) {
+    persistError = String(error)
+  }
+  if (!persistError)
+    return { ok: true, message: "Mídia enviada e publicada automaticamente na biblioteca pública." }
+
+  // A dropped HTTP response may follow a committed INSERT. A public object
+  // must never be removed until a fresh catalog read confirms no row exists.
+  let catalogState: "published" | "present" | "absent" | "unknown" = "unknown"
+  try {
+    const checked = await client
+      .from("media_assets")
+      .select("id,status")
+      .eq("storage_bucket", "portfolio-public")
+      .eq("storage_path", path)
+      .maybeSingle()
+    if (!checked.error)
+      catalogState = !checked.data
+        ? "absent"
+        : checked.data.status === "published"
+          ? "published"
+          : "present"
+  } catch {
+    // No trustworthy state: preserve the object for catalog reconciliation.
+  }
+  if (catalogState === "published")
+    return {
+      ok: true,
+      message: "Mídia publicada e conferida no catálogo após falha de resposta.",
+    }
+  if (catalogState !== "absent")
+    return {
+      ok: false,
+      message:
+        persistError +
+        " O resultado do cadastro não foi confirmado; o arquivo enviado foi preservado. Reabra o catálogo antes de tentar novamente.",
+    }
+
+  try {
+    const removed = await client.storage.from("portfolio-public").remove([path])
+    return {
+      ok: false,
+      message:
+        persistError +
+        (removed.error
+          ? " Atenção: objeto enviado sem cadastro confirmado; remoção física pendente: " +
+            removed.error.message
+          : " Upload temporário revertido após confirmar que não existe registro no catálogo."),
+    }
+  } catch (error) {
+    return {
+      ok: false,
+      message: persistError + " Atenção: limpeza do objeto sem cadastro não confirmada: " + String(error),
+    }
   }
 }
 

@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { publishPrivateMedia } from "./media-library-actions"
+import { publishPrivateMedia, uploadPublishedMedia } from "./media-library-actions"
 
 const mocks = vi.hoisted(() => ({
   updateResult: vi.fn(),
+  insertResult: vi.fn(),
   readResult: vi.fn(),
   removeResult: vi.fn(),
   downloadResult: vi.fn(),
@@ -19,7 +20,11 @@ vi.mock("./supabase", () => {
   }
   return {
     supabase: {
-      from: () => ({ update: () => query, select: () => query }),
+      from: () => ({
+        update: () => query,
+        select: () => query,
+        insert: () => mocks.insertResult(),
+      }),
       storage: {
         from: (bucket: string) => ({
           download: () => mocks.downloadResult(),
@@ -59,6 +64,7 @@ describe("private media publication reconciliation", () => {
     mocks.uploadResult.mockResolvedValue({ error: null })
     mocks.removeResult.mockResolvedValue({ error: null })
     mocks.updateResult.mockResolvedValue({ data: { id: asset.id }, error: null })
+    mocks.insertResult.mockResolvedValue({ error: null })
     mocks.readResult.mockResolvedValue({ data: privateRow, error: null })
   })
 
@@ -102,5 +108,58 @@ describe("private media publication reconciliation", () => {
     expect(result.ok).toBe(true)
     expect(result.warning).toContain("cópia privada")
     expect(mocks.removals).toEqual(["portfolio-private"])
+  })
+})
+
+describe("published media upload uncertain result reconciliation", () => {
+  const file = { name: "public-local.svg", type: "image/svg+xml", size: 250 } as File
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.removals.length = 0
+    mocks.uploadResult.mockResolvedValue({ error: null })
+    mocks.removeResult.mockResolvedValue({ error: null })
+    mocks.insertResult.mockResolvedValue({ error: null })
+    mocks.readResult.mockResolvedValue({ data: null, error: null })
+  })
+
+  it("publishes normally without compensating a confirmed insert", async () => {
+    const result = await uploadPublishedMedia(file)
+    expect(result.ok).toBe(true)
+    expect(mocks.removals).toEqual([])
+  })
+
+  it("preserves a catalog-backed object after an ambiguous insert error", async () => {
+    mocks.insertResult.mockResolvedValue({ error: { message: "response lost" } })
+    mocks.readResult.mockResolvedValue({ data: { id: "local", status: "published" }, error: null })
+    const result = await uploadPublishedMedia(file)
+    expect(result.ok).toBe(true)
+    expect(mocks.removals).toEqual([])
+  })
+
+  it("keeps the uploaded object if the read is also unavailable", async () => {
+    mocks.insertResult.mockRejectedValue(new Error("network interrupted"))
+    mocks.readResult.mockResolvedValue({ data: null, error: { message: "network unavailable" } })
+    const result = await uploadPublishedMedia(file)
+    expect(result.ok).toBe(false)
+    expect(result.message).toContain("foi preservado")
+    expect(mocks.removals).toEqual([])
+  })
+
+  it("compensates an upload only when a read proves the insert failed", async () => {
+    mocks.insertResult.mockResolvedValue({ error: { message: "constraint rejected" } })
+    const result = await uploadPublishedMedia(file)
+    expect(result.ok).toBe(false)
+    expect(result.message).toContain("revertido")
+    expect(mocks.removals).toEqual(["portfolio-public"])
+  })
+
+  it("reports pending cleanup when confirmed-absent catalog cannot remove Storage", async () => {
+    mocks.insertResult.mockResolvedValue({ error: { message: "constraint rejected" } })
+    mocks.removeResult.mockResolvedValue({ error: { message: "storage unavailable" } })
+    const result = await uploadPublishedMedia(file)
+    expect(result.ok).toBe(false)
+    expect(result.message).toContain("remoção física pendente")
+    expect(mocks.removals).toEqual(["portfolio-public"])
   })
 })
