@@ -101,7 +101,7 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
     let cancelled = false
     void publicReadClient
       .from("media_assets")
-      .select("storage_path,alt_text")
+      .select("storage_path,alt_text,focal_point")
       .eq("storage_bucket", "portfolio-public")
       .eq("status", "published")
       .then(({ data, error: mediaError }) => {
