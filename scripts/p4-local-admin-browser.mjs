@@ -282,6 +282,51 @@ try {
   ensure(mediaReopened.alt === mediaAlt && mediaReopened.credit === mediaCredit &&
     mediaReopened.zoom?.includes("110%"), "MEDIA_UI_REOPEN_MISMATCH")
   pass("MEDIA_UI_REOPEN_PERSISTED_FIELDS", { alt: true, credit: true, focal: true })
+
+  // A failed PostgREST PATCH must leave the public catalog row unchanged and
+  // preserve the editable draft; this simulates a SQL/network failure at UI level.
+  const patchRejectedAlt = "Alteração bloqueada por SQL 503 " + suffix
+  await updateMediaInput("Texto alternativo", patchRejectedAlt)
+  let rejectedPatchCount = 0
+  const rejectPatch = (request) => {
+    const url = new URL(request.url())
+    if (request.method() === "PATCH" &&
+        url.pathname.endsWith("/rest/v1/media_assets")) {
+      rejectedPatchCount++
+      void request.respond({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ code: "PGRST503", message: "Falha sintética de gravação SQL" }),
+      })
+      return
+    }
+    void request.continue()
+  }
+  await page.setRequestInterception(true)
+  page.on("request", rejectPatch)
+  const rejectedPatchResponse = page.waitForResponse(
+    (response) => response.request().method() === "PATCH" &&
+      new URL(response.url()).pathname.endsWith("/rest/v1/media_assets"),
+    { timeout: 12000 },
+  )
+  await page.click(".media-library-detail .media-actions button.primary-button")
+  await rejectedPatchResponse
+  page.off("request", rejectPatch)
+  await page.setRequestInterception(false)
+  const rejectedDraft = await page.evaluate(() => {
+    const labels = [...document.querySelectorAll(".media-library-detail label")]
+    return labels.find((label) => label.textContent?.includes("Texto alternativo"))
+      ?.querySelector("textarea")?.value
+  })
+  const unchangedAfterSqlError = await get(service.from("media_assets")
+    .select("alt_text").eq("id", mediaAssetId).single(), "MEDIA_UI_PATCH_503_DB")
+  ensure(rejectedPatchCount > 0 &&
+    unchangedAfterSqlError.alt_text === mediaAlt &&
+    rejectedDraft === patchRejectedAlt, "MEDIA_UI_SQL_PATCH_FAILURE_LOST_DATA")
+  pass("MEDIA_UI_SQL_PATCH_503_PRESERVES_DRAFT",
+    { injected: true, databaseUnchanged: true, editableCopyPreserved: true })
+  await updateMediaInput("Texto alternativo", mediaAlt)
+
   
   // A successful upload followed by a transient catalog GET failure must
   // leave the already-open unsaved metadata draft intact. All requests target
@@ -494,6 +539,52 @@ try {
   privateUiAssetId = null
   privateUiOldPath = null
   privateUiNewPath = null
+
+  // If Storage rejects an upload, no public object or catalog row is created.
+  const failedStorageFileName = "p4-storage-503-" + suffix + ".svg"
+  const failedStorageLocalPath = join(mediaTempDir, failedStorageFileName)
+  writeFileSync(failedStorageLocalPath,
+    '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><circle cx="4" cy="4" r="3"/></svg>')
+  let rejectedStorageCount = 0
+  let rejectedStoragePath = ""
+  const rejectStorageUpload = (request) => {
+    const url = new URL(request.url())
+    const prefix = "/storage/v1/object/portfolio-public/"
+    if (request.method() === "POST" && url.pathname.startsWith(prefix) &&
+        url.pathname.endsWith(failedStorageFileName)) {
+      rejectedStorageCount++
+      rejectedStoragePath = decodeURIComponent(url.pathname.slice(prefix.length))
+      void request.respond({
+        status: 503, contentType: "application/json",
+        body: JSON.stringify({ error: "Falha sintética do Storage durante upload" }),
+      })
+      return
+    }
+    void request.continue()
+  }
+  await page.setRequestInterception(true)
+  page.on("request", rejectStorageUpload)
+  const failedUploadResponse = page.waitForResponse(
+    (response) => response.request().method() === "POST" &&
+      new URL(response.url()).pathname.includes("/storage/v1/object/portfolio-public/") &&
+      new URL(response.url()).pathname.endsWith(failedStorageFileName),
+    { timeout: 15000 },
+  )
+  const failedStorageInput = await page.$(".admin-header .upload-button input[type=file]")
+  ensure(Boolean(failedStorageInput), "MEDIA_UI_STORAGE_503_UPLOAD_CONTROL")
+  await failedStorageInput.uploadFile(failedStorageLocalPath)
+  await failedUploadResponse
+  page.off("request", rejectStorageUpload)
+  await page.setRequestInterception(false)
+  const rowsAfterFailedUpload = await get(service.from("media_assets")
+    .select("id").eq("title", failedStorageFileName), "MEDIA_UI_STORAGE_503_ROWS")
+  const objectAfterFailedUpload = rejectedStoragePath
+    ? await service.storage.from("portfolio-public").download(rejectedStoragePath)
+    : { error: new Error("missing storage upload request") }
+  ensure(rejectedStorageCount === 1 && rowsAfterFailedUpload.length === 0 &&
+    Boolean(objectAfterFailedUpload.error), "MEDIA_UI_STORAGE_503_ORPHAN")
+  pass("MEDIA_UI_STORAGE_503_NO_ORPHAN",
+    { injected: true, catalogRows: 0, storageObjectAbsent: true })
 
   // Version conflict through the real section form: reject a stale composite
   // RPC attempt without falling back to another database write.
@@ -1543,5 +1634,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 55, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 55) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 57, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 57) process.exitCode = 1
