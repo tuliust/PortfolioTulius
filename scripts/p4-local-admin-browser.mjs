@@ -44,6 +44,8 @@ let mediaRecoveryStoragePath = null
 let privateUiAssetId = null
 let privateUiOldPath = null
 let privateUiNewPath = null
+let focalMediaId = null
+let focalMediaPath = null
 const navigationFixtures = []
 let syntheticProfileId = null
 let syntheticTestimonialsSectionId = null
@@ -736,8 +738,30 @@ try {
     { section_id: syntheticProfileId, breakpoint: "mobile", panel_key: "mobile-b", sort_order: 2 },
   ]).select("id,panel_key")
   ensure(!panels.error && panels.data?.length === 3, "HERO_LOCAL_PANELS")
+  // Published synthetic media with non-default global focal coordinates.
+  // It is linked to the same local Hero used by the public-renderer tests.
+  focalMediaPath = "p4-ui/focal-" + suffix + ".svg"
+  const focalBytes = Buffer.from(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">' +
+    '<rect width="40" height="40" fill="#999"/></svg>',
+  )
+  const focalUpload = await service.storage.from("portfolio-public")
+    .upload(focalMediaPath, focalBytes, { contentType: "image/svg+xml" })
+  ensure(!focalUpload.error, "MEDIA_FOCAL_LOCAL_UPLOAD")
+  const focalInserted = await service.from("media_assets").insert({
+    storage_bucket: "portfolio-public", storage_path: focalMediaPath,
+    title: "Mídia com enquadramento sintético " + suffix,
+    alt_text: "Imagem fictícia focal", credit: "Autor fictício",
+    mime_type: "image/svg+xml", file_size: focalBytes.length,
+    focal_point: { x: 23, y: 74, zoom: 1.3 }, status: "published",
+  }).select("id").single()
+  ensure(!focalInserted.error && focalInserted.data, "MEDIA_FOCAL_LOCAL_CATALOG")
+  focalMediaId = focalInserted.data.id
+  const focalMediaUrl = service.storage.from("portfolio-public")
+    .getPublicUrl(focalMediaPath).data.publicUrl
   const heroA = [
     { title: "Mensagem fictícia original", text: "Linha menor de teste",
+      image: focalMediaUrl,
       hero: { badgeText: "TESTE LOCAL", badgeVisible: true } },
     { title: "Destaque de teste", text: "Só homologação" },
   ]
@@ -894,6 +918,88 @@ try {
       { timeout: 12000 }, heroMainText)
     pass("HERO_RENDERER_" + v.label, { contentFromSyntheticCMS: true, viewport: v.width })
   }
+
+
+  // Verify the public React Hero uses the focal point from media_assets
+  // when no placement override exists. This tests the real CSS/DOM, not
+  // merely the media-alt-sync pure function.
+  const verifyHeroFraming = async (label, viewport, x, y, zoom) => {
+    await page.setViewport({ width: viewport, height: viewport === 1440 ? 900 : 844 })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('[data-section="perfil"]', { timeout: 18000 })
+    await page.waitForFunction(({ path, desktop, x, y, zoom }) => {
+      const root = document.querySelector(
+        desktop ? '[data-section="perfil"] .profile-desktop' :
+          '[data-section="perfil"] .mobile360',
+      )
+      const image = [...(root?.querySelectorAll("img") ?? [])]
+        .find((node) => node.src.includes(path))
+      return Boolean(image && image.style.objectPosition === `${x}% ${y}%` &&
+        image.style.transform === `scale(${zoom})`)
+    }, { timeout: 18000 }, {
+      path: focalMediaPath, desktop: viewport === 1440, x, y, zoom,
+    })
+    pass("MEDIA_PUBLIC_FOCAL_" + label, { viewport, x, y, zoom, renderer: true })
+  }
+  await verifyHeroFraming("GLOBAL_DESKTOP", 1440, 23, 74, 1.3)
+  await verifyHeroFraming("GLOBAL_MOBILE", 390, 23, 74, 1.3)
+
+  // A per-use override must remain authoritative even when a different
+  // editor updates the catalog's global focal point.
+  const beforeOverride = await get(service.from("content_blocks")
+    .select("content_json").eq("id", blockBySide.a).single(), "MEDIA_FOCAL_BLOCK_BASE")
+  const overrideJson = structuredClone(beforeOverride.content_json)
+  overrideJson.items[0].mediaFraming = { x: 76, y: 19, zoom: 1.8 }
+  const overrideSaved = await service.from("content_blocks")
+    .update({ content_json: overrideJson }).eq("id", blockBySide.a)
+  ensure(!overrideSaved.error, "MEDIA_FOCAL_OVERRIDE_SEED")
+  const globalChanged = await service.from("media_assets")
+    .update({ focal_point: { x: 12, y: 88, zoom: 1.6 } }).eq("id", focalMediaId)
+  ensure(!globalChanged.error, "MEDIA_FOCAL_CHANGED_GLOBAL")
+  await verifyHeroFraming("OVERRIDE_DESKTOP", 1440, 76, 19, 1.8)
+  await verifyHeroFraming("OVERRIDE_MOBILE", 390, 76, 19, 1.8)
+
+  // Delete through the authenticated media UI while a published Hero still
+  // references the file. The SQL RPC must scrub JSON pointers before the
+  // Storage object is removed, including the linked media catalog record.
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((button) => button.textContent?.trim() === "Mídia")?.click()
+  })
+  const focalTitle = "Mídia com enquadramento sintético " + suffix
+  await page.waitForFunction((name) =>
+    [...document.querySelectorAll(".media-library-card")]
+      .some((card) => card.textContent?.includes(name)),
+    { timeout: 15000 }, focalTitle)
+  const clickedFocalDelete = await page.evaluate((name) => {
+    const button = [...document.querySelectorAll("button.media-library-remove")]
+      .find((node) => node.getAttribute("aria-label")?.includes(name))
+    button?.click()
+    return Boolean(button)
+  }, focalTitle)
+  ensure(clickedFocalDelete, "MEDIA_FOCAL_DELETE_BUTTON")
+  await page.waitForSelector(".admin-confirm-dialog .danger-button", { timeout: 10000 })
+  await page.click(".admin-confirm-dialog .danger-button")
+  await page.waitForFunction((name) =>
+    ![...document.querySelectorAll(".media-library-card")]
+      .some((card) => card.textContent?.includes(name)),
+    { timeout: 20000 }, focalTitle)
+  const afterFocalDeletion = await get(service.from("content_blocks")
+    .select("content_json").eq("id", blockBySide.a).single(), "MEDIA_FOCAL_SCRUBBED_BLOCK")
+  const noFocalRows = await get(service.from("media_assets")
+    .select("id").eq("id", focalMediaId), "MEDIA_FOCAL_DELETED_ROW")
+  const noFocalObject = await service.storage.from("portfolio-public")
+    .download(focalMediaPath)
+  ensure(!afterFocalDeletion.content_json.items[0].image &&
+    noFocalRows.length === 0 && Boolean(noFocalObject.error),
+    "MEDIA_FOCAL_DELETION_LEFT_REFERENCES")
+  pass("MEDIA_UI_DELETE_REFERENCED_MEDIA_NO_ORPHANS", {
+    catalogRows: 0, storageObjectAbsent: true, publishedHeroPointerRemoved: true,
+  })
+  focalMediaId = null
+  focalMediaPath = null
 
   // Real embedded Testimonials collection UI, including the optimistic
   // concurrency guard and the published renderer. Synthetic rows only.
@@ -1836,6 +1942,8 @@ try {
   if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
   if (mediaRecoveryAssetId) await service.from("media_assets").delete().eq("id", mediaRecoveryAssetId)
   if (mediaRecoveryStoragePath) await service.storage.from("portfolio-public").remove([mediaRecoveryStoragePath])
+  if (focalMediaId) await service.from("media_assets").delete().eq("id", focalMediaId)
+  if (focalMediaPath) await service.storage.from("portfolio-public").remove([focalMediaPath])
   if (privateUiAssetId) await service.from("media_assets").delete().eq("id", privateUiAssetId)
   if (privateUiNewPath) await service.storage.from("portfolio-public").remove([privateUiNewPath])
   if (privateUiOldPath || privateUiNewPath)
@@ -1854,5 +1962,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 72, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 57) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 77, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 77) process.exitCode = 1
