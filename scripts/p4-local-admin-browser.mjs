@@ -354,7 +354,7 @@ try {
   const revisedLabel = "Menu fictício revisado " + suffix
   navigationFixtures.push(firstId, secondId)
   const seededMenu = await service.from("navigation_items").insert([
-    { id: firstId, label: firstLabel, target_slug: "secao-ficticia",
+    { id: firstId, label: firstLabel, target_slug: "secao-ficticia-nao-publicada-" + suffix,
       group_name: "Menu", sort_order: 1, is_visible: true, status: "published" },
     { id: secondId, label: secondLabel, target_slug: "secao-ficticia",
       group_name: "Menu", sort_order: 2, is_visible: true, status: "published" },
