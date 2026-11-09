@@ -17,6 +17,18 @@ O CMS está em `/admin`, com autenticação Supabase Auth e conferência do pape
 - **Depoimentos:** os registros da tabela original `testimonials` são editados em **Editor do site → Depoimentos → Gerenciar depoimentos**, com pessoa, cargo, texto, ordem, publicação e criação de registro; permanece a proteção de rascunhos e a confirmação de salvamento. **Acervo Estruturado foi retirado do menu**, sem exclusão de tabelas, vínculos ou conteúdo. A trajetória profissional permanece dentro da seção de cada empresa.
 - **Identidade:** rótulos e controles de formulário usam agora a mesma tipografia administrativa de **Informações da seção**, sem alterar as famílias ou o CSS do site público.
 
+## P3 — modularização incremental do painel (08/11/2026)
+
+A refatoração da P3 preservou as rotas, a hierarquia dos formulários, os textos, as classes CSS, os payloads e os contratos de Supabase. O arquivo `src/components/admin/AdminModules.tsx` passou de **5.076 para 2.679 linhas** (redução aproximada de 47%). Os nove módulos extraídos conservam o comportamento dos editores anteriores:
+
+- **Edição visual:** `AdminVisualFields.tsx` (controles numéricos e de cor compartilhados), `DeviceStyleEditors.tsx` (desktop/mobile) e `ProfileMobileEditorialEditor.tsx` (abertura editorial mobile).
+- **Mídia e conteúdo vinculado:** `EnhancedMediaLibrary.tsx`, `CollectionsStudio.tsx` e `CareerTrajectoryEditor.tsx`.
+- **Configurações globais e histórico:** `NavigationStudio.tsx`, `SeoStudio.tsx` e `EditorialStudio.tsx`.
+
+`AdminModules.tsx` conserva `ContentStudio` e **reexporta os módulos auxiliares**, mantendo a API já utilizada por `AdminApp.tsx`. Nenhum registro foi duplicado nem houve migration, mudança de RLS, alteração de Storage ou reconfiguração da Vercel. O registro de salvamento agregado dos editores Navegação e SEO passou a considerar seu estado `dirty`, evitando gravações de formulários não alterados.
+
+Os contratos de renderização dos controles visuais possuem quatro testes em `src/components/admin/admin-visual-editors.test.tsx`, cobrindo limites numéricos, campos desktop/mobile, opções específicas do Hero e as três áreas editoriais da abertura mobile. **O build Vercel por commit não substitui `pnpm check`**, e os testes funcionais com login administrativo, salvar/reabrir e comparação visual em dispositivos reais seguem previstos para a P4. A limitação de atomicidade entre `sections` e `content_blocks` identificada na P2 também permanece documentada.
+
 ## Seis experiências — projetos, slides e Trajetória
 
 As seis empresas preservam seus IDs/associações com `sections`, `content_blocks` e `career_experiences`. **Projetos e realizações**, slides editoriais, competências e texto integral da Trajetória têm fontes distintas; não copiar o texto integral da coleção para os blocos JSON.
