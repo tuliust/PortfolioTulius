@@ -7,6 +7,10 @@ on:
       - .github/workflows/p5-local-transactional.yml
       - scripts/p5-local-transactional.mjs
       - scripts/p2-local-composite.mjs
+      - scripts/p4-local-admin-browser.mjs
+      - src/components/admin/AdminApp.tsx
+      - src/components/admin/AdminModules.tsx
+      - src/lib/p2-composite-save.ts
       - supabase/migrations/**
   workflow_dispatch:
 
@@ -33,6 +37,7 @@ jobs:
           node --test scripts/p2-local-isolation.check.mjs
           node --check scripts/p5-local-transactional.mjs
           node --check scripts/p2-local-composite.mjs
+          node --check scripts/p4-local-admin-browser.mjs
           docker info --format '{{.ServerVersion}}'
           npx --yes supabase@3.0.0 --version
           npx --yes supabase@3.0.0 start --help > /dev/null
@@ -72,6 +77,26 @@ jobs:
         env:
           P5_LOCAL_URL: http://127.0.0.1:54321/
         run: node scripts/p2-local-composite.mjs
+      - name: Authenticated synthetic CMS UI and public renderer E2E
+        shell: bash
+        env:
+          P5_LOCAL_URL: http://127.0.0.1:54321/
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/p4-browser"
+          npm install --prefix "$RUNNER_TEMP/p4-browser" --no-save --no-audit --no-fund puppeteer-core@25.16.0
+          cp "$GITHUB_WORKSPACE/scripts/p4-local-admin-browser.mjs" "$RUNNER_TEMP/p4-browser/suite.mjs"
+          export VITE_SUPABASE_URL="http://127.0.0.1:54321"
+          export VITE_SUPABASE_PUBLISHABLE_KEY="$P5_LOCAL_ANON_KEY"
+          pnpm exec vite --host 127.0.0.1 --port 5173 > "$RUNNER_TEMP/p4-vite.log" 2>&1 &
+          vite_pid=$!
+          trap 'kill "$vite_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent http://127.0.0.1:5173/ > /dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:5173/ > /dev/null
+          (cd "$RUNNER_TEMP/p4-browser" && node suite.mjs)
       - name: Stop isolated stack
         if: always()
         run: npx --yes supabase@3.0.0 stop || true
