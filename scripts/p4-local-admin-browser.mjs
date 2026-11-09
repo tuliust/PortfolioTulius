@@ -303,6 +303,18 @@ try {
   const recoveryInput = await page.$(".admin-header .upload-button input[type=file]")
   ensure(Boolean(recoveryInput), "MEDIA_UI_RECOVERY_UPLOAD_INPUT")
   await recoveryInput.uploadFile(recoveryFile)
+  await page.waitForFunction(() => {
+    const text = document.body.textContent ?? ""
+    return text.includes("Mídia enviada e publicada automaticamente") ||
+      text.includes("Falha sintética de leitura do catálogo") ||
+      text.includes("Use JPG, PNG, WebP ou SVG")
+  }, { timeout: 10000 })
+  console.log("P4_MEDIA_RECOVERY_DIAGNOSTIC " + JSON.stringify({
+    injected: catalogFailureInjected,
+    currentStatus: await page.evaluate(() =>
+      [...document.querySelectorAll('[role="status"], .admin-notice')]
+        .map((node) => node.textContent?.trim()).filter(Boolean).slice(-6)),
+  }))
   await page.waitForFunction(() =>
     document.body.textContent?.includes("Falha sintética de leitura do catálogo"),
     { timeout: 18000 })
