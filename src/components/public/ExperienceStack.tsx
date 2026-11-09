@@ -15,14 +15,8 @@ import { publicReadClient } from "../../lib/public-read"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
 import { experienceSlugFromHash } from "../../lib/experience-hash"
 
-export const EXPERIENCE_SLUGS = [
-  "invest-rs",
-  "prefeitura-sp",
-  "vale",
-  "globo-sportv",
-  "inpress",
-  "cdi",
-] as const
+import { EXPERIENCE_SLUGS } from "../../lib/experience-slugs"
+export { EXPERIENCE_SLUGS } from "../../lib/experience-slugs"
 
 function Monogram({ name }: { name: string }) {
   const letters = name
