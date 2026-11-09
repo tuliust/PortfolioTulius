@@ -46,6 +46,8 @@ let privateUiOldPath = null
 let privateUiNewPath = null
 const navigationFixtures = []
 let syntheticProfileId = null
+let syntheticTestimonialsSectionId = null
+let syntheticTestimonialId = null
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -774,6 +776,156 @@ try {
       { timeout: 12000 }, heroMainText)
     pass("HERO_RENDERER_" + v.label, { contentFromSyntheticCMS: true, viewport: v.width })
   }
+
+  // Real embedded Testimonials collection UI, including the optimistic
+  // concurrency guard and the published renderer. Synthetic rows only.
+  const testimonialSection = await service.from("sections").insert({
+    page_id: pageId, slug: "depoimentos", title: "Depoimentos fictícios",
+    sort_order: 3, status: "published", is_visible: true,
+  }).select("id").single()
+  ensure(!testimonialSection.error && testimonialSection.data, "TESTIMONIAL_SECTION_SEED")
+  syntheticTestimonialsSectionId = testimonialSection.data.id
+  const testimonialPanels = await service.from("section_panels").insert([
+    { section_id: syntheticTestimonialsSectionId, breakpoint: "desktop",
+      panel_key: "desktop", sort_order: 1 },
+    { section_id: syntheticTestimonialsSectionId, breakpoint: "mobile",
+      panel_key: "mobile-a", sort_order: 1 },
+  ]).select("id,panel_key")
+  ensure(!testimonialPanels.error && testimonialPanels.data?.length === 2,
+    "TESTIMONIAL_PANEL_SEED")
+  const testimonialBlock = await service.from("content_blocks").insert({
+    section_id: syntheticTestimonialsSectionId, mobile_panel: "a",
+    block_type: "cards", sort_order: 1, status: "published",
+    content_json: { source_collection: "testimonials", items: [] },
+  }).select("id").single()
+  ensure(!testimonialBlock.error && testimonialBlock.data, "TESTIMONIAL_BLOCK_SEED")
+  const testimonialPlacement = await service.from("block_placements").insert(
+    testimonialPanels.data.map((panel) => ({
+      block_id: testimonialBlock.data.id, panel_id: panel.id, sort_order: 1,
+    })),
+  )
+  ensure(!testimonialPlacement.error, "TESTIMONIAL_PLACEMENT_SEED")
+  await page.setViewport({ width: 1440, height: 900 })
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((button) => button.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-sidebar", { timeout: 15000 })
+  const openedTestimonials = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".site-editor-sidebar button")]
+      .find((node) => node.textContent?.includes("Depoimentos fictícios"))
+    button?.click()
+    return Boolean(button)
+  })
+  ensure(openedTestimonials, "TESTIMONIAL_SECTION_NAV")
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-heading")?.textContent?.includes("Depoimentos fictícios"),
+    { timeout: 15000 })
+  const leftTestimonials = await page.evaluate(() => {
+    const tab = [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+      .find((node) => node.textContent?.includes("Esquerda"))
+    tab?.click()
+    return Boolean(tab)
+  })
+  ensure(leftTestimonials, "TESTIMONIAL_LEFT_TAB")
+  await page.waitForSelector(".site-editor-testimonials", { timeout: 15000 })
+  await page.click(".site-editor-testimonials .site-editor-actions button")
+  await page.waitForSelector(".site-editor-testimonials .editor-form", { timeout: 12000 })
+  const testimonialName = "Pessoa sintética " + suffix
+  const testimonialRole = "Cargo fictício " + suffix
+  const testimonialQuote = "Depoimento inicialmente publicado " + suffix
+  const changeTestimonial = async (labelText, value) => {
+    const changed = await page.evaluate(({ labelText, value }) => {
+      const label = [...document.querySelectorAll(".site-editor-testimonials .editor-form label")]
+        .find((node) => node.textContent?.trim().startsWith(labelText))
+      const field = label?.querySelector("input,textarea")
+      if (!field) return false
+      const proto = field instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
+      Object.getOwnPropertyDescriptor(proto, "value").set.call(field, value)
+      field.dispatchEvent(new Event("input", { bubbles: true }))
+      return true
+    }, { labelText, value })
+    ensure(changed, "TESTIMONIAL_FIELD_" + labelText)
+  }
+  await changeTestimonial("Pessoa", testimonialName)
+  await changeTestimonial("Cargo", testimonialRole)
+  await changeTestimonial("Depoimento", testimonialQuote)
+  await page.select(".site-editor-testimonials .editor-form label:last-child select", "published")
+  await page.click(".site-editor-testimonials .form-actions button.secondary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-testimonials")?.textContent
+      ?.includes("Registro salvo e recuperado do Supabase."),
+    { timeout: 18000 })
+  const createdTestimonial = await get(service.from("testimonials")
+    .select("*").eq("author_name", testimonialName).single(), "TESTIMONIAL_UI_DB_INSERT")
+  syntheticTestimonialId = createdTestimonial.id
+  ensure(createdTestimonial.author_role === testimonialRole &&
+    createdTestimonial.quote_text === testimonialQuote &&
+    createdTestimonial.status === "published",
+    "TESTIMONIAL_UI_INSERT_MISMATCH")
+  pass("TESTIMONIAL_UI_CREATE_PUBLISH_DB",
+    { person: true, role: true, quote: true, status: "published" })
+
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((node) => node.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-sidebar", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".site-editor-sidebar button")]
+      .find((node) => node.textContent?.includes("Depoimentos fictícios"))?.click()
+  })
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-heading")?.textContent?.includes("Depoimentos fictícios"),
+    { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+      .find((node) => node.textContent?.includes("Esquerda"))?.click()
+  })
+  await page.waitForFunction((name) => [...document.querySelectorAll(
+    ".site-editor-testimonials .editor-form label input",
+  )].some((input) => input.value === name), { timeout: 15000 }, testimonialName)
+  pass("TESTIMONIAL_UI_REOPEN_PERSISTED", { rowSelected: true })
+
+  // A concurrent editor changes the row after this form loaded. CAS must
+  // reject our stale copy without overwriting the new published testimony.
+  const externalQuote = "Depoimento atualizado em outra sessão " + suffix
+  const externalWrite = await service.from("testimonials")
+    .update({ quote_text: externalQuote }).eq("id", syntheticTestimonialId).select("id").single()
+  ensure(!externalWrite.error, "TESTIMONIAL_CONCURRENT_FIXTURE")
+  await changeTestimonial("Depoimento", "Sobrescrita obsoleta " + suffix)
+  await page.click(".site-editor-testimonials .form-actions button.secondary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-testimonials")?.textContent
+      ?.includes("O registro foi alterado em outra sessão."),
+    { timeout: 15000 })
+  const retainedQuote = await get(service.from("testimonials")
+    .select("quote_text,status").eq("id", syntheticTestimonialId).single(),
+    "TESTIMONIAL_CAS_DB_RECHECK")
+  ensure(retainedQuote.quote_text === externalQuote &&
+    retainedQuote.status === "published", "TESTIMONIAL_CAS_SILENT_OVERWRITE")
+  pass("TESTIMONIAL_UI_STALE_CAS_REJECTED",
+    { competingEditPreserved: true, statusUnchanged: true })
+
+  for (const viewport of [
+    { label: "DESKTOP", width: 1440, height: 900 },
+    { label: "MOBILE", width: 390, height: 844 },
+  ]) {
+    await page.setViewport({ width: viewport.width, height: viewport.height })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('[data-section="depoimentos"]', { timeout: 18000 })
+    await page.waitForFunction(({ name, quote }) => {
+      const section = document.querySelector('[data-section="depoimentos"]')
+      return section?.textContent?.includes(name) && section?.textContent?.includes(quote)
+    }, { timeout: 12000 }, { name: testimonialName, quote: externalQuote })
+    pass("TESTIMONIAL_RENDERER_" + viewport.label,
+      { publishedRecord: true, currentTextOnly: true, viewport: viewport.width })
+  }
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -792,8 +944,10 @@ try {
       .remove([privateUiOldPath, privateUiNewPath].filter(Boolean))
   if (mediaTempDir) rmSync(mediaTempDir, { recursive: true, force: true })
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
+  if (syntheticTestimonialId) await service.from("testimonials").delete().eq("id", syntheticTestimonialId)
+  if (syntheticTestimonialsSectionId) await service.from("sections").delete().eq("id", syntheticTestimonialsSectionId)
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 26, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 26) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 31, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 31) process.exitCode = 1
