@@ -1315,21 +1315,22 @@ try {
     const changed = await page.evaluate(({ root, labelText, value }) => {
       const label = [...document.querySelectorAll(root + " label")]
         .find((node) => node.textContent?.trim().startsWith(labelText))
-      const field = label?.querySelector('input[type="number"]')
-      if (!field) return false
-      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")
+      const field = label?.querySelector("select")
+      if (!field || ![...field.options].some((option) => option.value === String(value)))
+        return false
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")
         .set.call(field, String(value))
-      field.dispatchEvent(new Event("input", { bubbles: true }))
+      field.dispatchEvent(new Event("change", { bubbles: true }))
       return true
     }, { root, labelText, value })
-    ensure(changed, "DEVICE_NUMERIC_FIELD_" + labelText)
+    ensure(changed, "DEVICE_ALLOWED_TYPOGRAPHY_PRESET_" + labelText)
     await page.waitForFunction(({ root, labelText, value }) => {
       const label = [...document.querySelectorAll(root + " label")]
         .find((node) => node.textContent?.trim().startsWith(labelText))
-      return label?.querySelector('input[type="number"]')?.value === String(value)
+      return label?.querySelector("select")?.value === String(value)
     }, { timeout: 10000 }, { root, labelText, value })
   }
-  await setDeviceNumber(".site-editor-device-item fieldset", "Título (px)", 74)
+  await setDeviceNumber(".site-editor-device-item fieldset", "Título (px)", 72)
   await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
     { timeout: 12000 })
   await page.click(".site-editor-main .admin-floating-save button.primary-button")
@@ -1353,9 +1354,9 @@ try {
     { desktop: true, mobileA: true, otherBlockUnchanged: true })
   const styledDesktop = await get(service.from("content_blocks")
     .select("content_json").eq("id", blockBySide.a).single(), "P4_DEVICE_DESKTOP_DB")
-  ensure(styledDesktop.content_json.items?.[0]?.desktop?.titleSize === 74,
+  ensure(styledDesktop.content_json.items?.[0]?.desktop?.titleSize === 72,
     "P4_DEVICE_DESKTOP_PERSISTENCE")
-  pass("DEVICE_UI_DESKTOP_TYPOGRAPHY_PERSISTED", { titleSize: 74 })
+  pass("DEVICE_UI_DESKTOP_TYPOGRAPHY_PERSISTED", { titleSize: 72 })
 
   await page.waitForFunction(() => !document.querySelector(".site-editor-unsaved"),
     { timeout: 15000 })
@@ -1366,7 +1367,7 @@ try {
     if (details) details.open = true
   })
   await setDeviceNumber(".site-editor-mobile-page .site-editor-device-item fieldset",
-    "Texto (px)", 19)
+    "Texto (px)", 20)
   await page.waitForSelector(".site-editor-main .admin-floating-save button.primary-button",
     { timeout: 12000 })
   await page.click(".site-editor-main .admin-floating-save button.primary-button")
@@ -1375,11 +1376,11 @@ try {
     { timeout: 18000 })
   const mobileStyled = await get(service.from("content_blocks")
     .select("content_json").eq("id", blockBySide.a).single(), "P4_DEVICE_MOBILE_DB")
-  ensure(mobileStyled.content_json.items?.[0]?.mobile?.textSize === 19 &&
-    mobileStyled.content_json.items?.[0]?.desktop?.titleSize === 74,
+  ensure(mobileStyled.content_json.items?.[0]?.mobile?.textSize === 20 &&
+    mobileStyled.content_json.items?.[0]?.desktop?.titleSize === 72,
     "P4_DEVICE_MOBILE_REWROTE_DESKTOP")
   pass("DEVICE_UI_MOBILE_TYPOGRAPHY_INDEPENDENT",
-    { mobileSize: 19, desktopSizePreserved: 74 })
+    { mobileSize: 19, desktopSizePreserved: 72 })
 
   // Identity tokens are edited by real DOM controls, not database shortcuts.
   await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
