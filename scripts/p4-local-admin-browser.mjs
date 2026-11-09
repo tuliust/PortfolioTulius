@@ -899,6 +899,12 @@ try {
     .update({ quote_text: externalQuote }).eq("id", syntheticTestimonialId).select("id").single()
   ensure(!externalWrite.error, "TESTIMONIAL_CONCURRENT_FIXTURE")
   await changeTestimonial("Depoimento", "Sobrescrita obsoleta " + suffix)
+  // React must commit the changed draft before its save button becomes enabled.
+  // Clicking during the input event would be a no-op and falsely fail this test.
+  await page.waitForFunction(() => {
+    const button = document.querySelector(".site-editor-testimonials .form-actions button.secondary-button")
+    return Boolean(button && !button.disabled)
+  }, { timeout: 10000 })
   await page.click(".site-editor-testimonials .form-actions button.secondary-button")
   await page.waitForFunction(() =>
     document.querySelector(".site-editor-testimonials")?.textContent
