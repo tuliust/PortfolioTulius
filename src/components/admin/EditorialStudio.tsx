@@ -267,7 +267,7 @@ export function EditorialStudio() {
           )}
           <div className="revision-list">
             {revisions.map((revision) => (
-              <div key={revision.id}>
+              <div key={revision.id} data-revision-id={revision.id}>
                 <strong>{revision.entity_type}</strong>
                 <span>{new Date(revision.created_at).toLocaleString("pt-BR")}</span>
                 <code>{revision.entity_id}</code>

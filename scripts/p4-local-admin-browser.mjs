@@ -1551,11 +1551,12 @@ try {
   }
   const inspectById = async (id) => {
     await page.waitForFunction((id) =>
-      [...document.querySelectorAll(".revision-list > div")].some((node) =>
-        node.textContent?.includes(id)), { timeout: 14000 }, id)
+      [...document.querySelectorAll(".revision-list > [data-revision-id]")]
+        .some((node) => node.getAttribute("data-revision-id") === id),
+      { timeout: 14000 }, id)
     const clicked = await page.evaluate((id) => {
-      const row = [...document.querySelectorAll(".revision-list > div")]
-        .find((node) => node.textContent?.includes(id))
+      const row = [...document.querySelectorAll(".revision-list > [data-revision-id]")]
+        .find((node) => node.getAttribute("data-revision-id") === id)
       row?.querySelector("button")?.click()
       return Boolean(row)
     }, id)
