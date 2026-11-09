@@ -518,6 +518,13 @@ try {
     leftSaved.content_json.items?.[0]?.hero?.badgeText === heroBadge,
     "HERO_A_UI_DB_MISMATCH")
   pass("HERO_A_UI_TEXT_BADGE_SAVE_RELOAD", { publicCopy: true, badge: true, jsonb: true })
+  // The parent editor reloads sections after saving; let the dirty-state update
+  // propagate before requesting a different area, otherwise its safety dialog
+  // correctly intercepts the pending navigation.
+  await page.waitForFunction(() =>
+    !document.querySelector(".site-editor-main .admin-floating-save") &&
+    !document.querySelector(".site-editor-unsaved"),
+    { timeout: 15000 })
 
   const rightSelected = await page.evaluate(() => {
     const tab = [...document.querySelectorAll('.site-editor-main button[role="tab"]')]
