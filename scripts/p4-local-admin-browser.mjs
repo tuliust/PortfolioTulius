@@ -315,8 +315,10 @@ try {
       [...document.querySelectorAll('[role="status"], .admin-notice')]
         .map((node) => node.textContent?.trim()).filter(Boolean).slice(-6)),
   }))
+  // The local proxy can replace the upstream message on HTTP 503. Assert the
+  // exact fail-closed UI notice, not the incidental server error description.
   await page.waitForFunction(() =>
-    document.body.textContent?.includes("Falha sintética de leitura do catálogo"),
+    document.body.textContent?.includes("Falha ao atualizar o catálogo; edições em aberto preservadas."),
     { timeout: 18000 })
   page.off("request", catalogInterceptor)
   await page.setRequestInterception(false)
