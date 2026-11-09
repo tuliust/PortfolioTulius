@@ -91,10 +91,13 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
   const [error, setError] = useState<string | null>(null)
   const [publishedMediaAlts, setPublishedMediaAlts] = useState<PublishedMediaAlt[]>([])
 
-  // Load media metadata without delaying the first Hero paint.
-  // The public catalog takes precedence over copied JSON alt fields.
+  // The first live Profile already contains its approved public image alt.
+  // Read the canonical media catalog after that initial commit rather than
+  // competing with the critical Profile PostgREST request on a cold mobile load.
+  // The catalog still overrides copied JSON alt fields for the full renderer.
+  const profileCommittedForMedia = data.some((section) => section.slug === "perfil") || !loading
   useEffect(() => {
-    if (!publicReadClient) return
+    if (!publicReadClient || !profileCommittedForMedia) return
     let cancelled = false
     void publicReadClient
       .from("media_assets")
@@ -107,7 +110,7 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [profileCommittedForMedia])
   const sectionsWithMediaAlts = useMemo(
     () => synchronizePublishedMediaAlts(data, publishedMediaAlts),
     [data, publishedMediaAlts],
