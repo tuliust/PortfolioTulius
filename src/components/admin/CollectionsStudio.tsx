@@ -229,11 +229,22 @@ export function CollectionsStudio({
     }
     setMessage("Salvando registro…")
     const payload = buildCollectionSavePayload(draft, config.table)
+    // All collection rows expose updated_at. Prevent concurrent editors from
+    // silently overwriting a record opened from an older catalog snapshot.
     const result = draft.id
-      ? await supabase.from(config.table).update(payload).eq("id", draft.id).select("id").single()
+      ? await supabase
+          .from(config.table)
+          .update(payload)
+          .eq("id", draft.id)
+          .eq("updated_at", draft.updated_at)
+          .select("id")
+          .maybeSingle()
       : await supabase.from(config.table).insert(payload).select("id").single()
-    if (result.error) {
-      setMessage(result.error.message)
+    if (result.error || !result.data?.id) {
+      setMessage(
+        result.error?.message ??
+          "O registro foi alterado em outra sessão. Recarregue antes de salvar novamente.",
+      )
       return false
     }
     const confirmed = await load(result.data.id)
@@ -260,13 +271,20 @@ export function CollectionsStudio({
       ))
     )
       return
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from(config.table)
       .update({ status: unpublishOnly ? "draft" : "archived" })
       .eq("id", draft.id)
+      .eq("updated_at", draft.updated_at)
       .select("id")
-      .single()
-    if (error) return setMessage(error.message)
+      .maybeSingle()
+    if (error || !data) {
+      setMessage(
+        error?.message ??
+          "O registro foi alterado em outra sessão. Recarregue antes de arquivar ou despublicar.",
+      )
+      return
+    }
     const confirmed = await load(draft.id)
     setMessage(
       confirmed
