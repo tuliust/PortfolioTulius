@@ -922,6 +922,57 @@ export function ContentStudio({
       }
     }
 
+    // Check the source section before any block update. A CAS write prevents
+    // another editor's newer copy from being silently overwritten.
+    const heroTextSavedNow = heroCopyDirty
+    if (heroCopyDirty) {
+      const current = await supabase
+        .from("sections")
+        .select("title,eyebrow,intro,updated_at")
+        .eq("id", draft.section_id)
+        .single()
+      if (current.error || !current.data) {
+        setMessage(current.error?.message ?? "Não foi possível conferir os textos do Hero.")
+        return false
+      }
+      if (
+        current.data.title !== heroCopySaved.title ||
+        (current.data.eyebrow ?? "") !== heroCopySaved.eyebrow ||
+        (current.data.intro ?? "") !== heroCopySaved.intro
+      ) {
+        setMessage("Outra edição modificou os textos do Hero. Reabra a seção antes de salvar.")
+        return false
+      }
+      const normalizedCopy = { ...heroCopy, title: heroCopy.title.trim() }
+      const updated = await supabase
+        .from("sections")
+        .update(normalizedCopy)
+        .eq("id", draft.section_id)
+        .eq("updated_at", current.data.updated_at)
+        .select("title,eyebrow,intro")
+        .maybeSingle()
+      if (
+        updated.error ||
+        updated.data?.title !== normalizedCopy.title ||
+        updated.data?.eyebrow !== normalizedCopy.eyebrow ||
+        updated.data?.intro !== normalizedCopy.intro
+      ) {
+        setMessage(
+          updated.error?.message ??
+            "Não foi possível confirmar os textos do Hero: houve edição concorrente. Reabra a seção.",
+        )
+        return false
+      }
+      setHeroCopy(normalizedCopy)
+      setHeroCopySaved(normalizedCopy)
+    }
+    // A text-only edit must never rewrite a content block or its placements.
+    if (!blockDirty) {
+      setMessage("Textos do Hero salvos e conferidos no Supabase.")
+      onSaved?.()
+      return true
+    }
+
     // Preserve existing independent placements: send only edited panels
     // and create the required desktop/mobile placements if they are missing.
     const requiredKeys: PanelKey[] = [
@@ -987,41 +1038,19 @@ export function ContentStudio({
       p_placements: placementUpdates,
     })
     if (error) {
-      setMessage(error.message)
+      setMessage(
+        heroTextSavedNow
+          ? "Os textos do Hero foram salvos, mas o bloco não: " + error.message
+          : error.message,
+      )
       return false
     }
     const reloaded = await load()
     if (!reloaded) {
       setMessage(
-        "O banco confirmou a transação, mas a recuperação do bloco falhou. Verifique antes de salvar novamente.",
+        "O banco confirmou a transação do bloco, mas sua leitura posterior falhou. Verifique antes de salvar novamente.",
       )
       return false
-    }
-    if (heroCopyDirty) {
-      if (!heroCopy.title.trim()) {
-        setMessage("O título principal é obrigatório.")
-        return false
-      }
-      const updated = await supabase
-        .from("sections")
-        .update({
-          title: heroCopy.title.trim(),
-          eyebrow: heroCopy.eyebrow,
-          intro: heroCopy.intro,
-        })
-        .eq("id", draft.section_id)
-        .select("title,eyebrow,intro")
-        .single()
-      if (
-        updated.error ||
-        updated.data?.title !== heroCopy.title.trim() ||
-        updated.data?.eyebrow !== heroCopy.eyebrow ||
-        updated.data?.intro !== heroCopy.intro
-      ) {
-        setMessage(updated.error?.message ?? "Não foi possível confirmar os textos do Hero.")
-        return false
-      }
-      setHeroCopySaved({ ...heroCopy, title: heroCopy.title.trim() })
     }
     setMessage("Bloco e textos salvos e conferidos.")
     onSaved?.()
@@ -4730,15 +4759,25 @@ export function EnhancedMediaLibrary({
         .update(payload)
         .eq("id", asset.id)
         .eq("updated_at", asset.updated_at)
-        .select("id")
+        .select("id,title,alt_text,credit,focal_point")
         .maybeSingle()
-      if (error || !data) {
+      if (
+        error ||
+        !data ||
+        data.title !== payload.title ||
+        data.alt_text !== payload.alt_text ||
+        data.credit !== payload.credit ||
+        data.focal_point?.x !== payload.focal_point.x ||
+        data.focal_point?.y !== payload.focal_point.y ||
+        data.focal_point?.zoom !== payload.focal_point.zoom
+      ) {
         setMessage(
-          error?.message ?? "Esta mídia mudou durante a edição. Reabra para atualizar os dados.",
+          error?.message ??
+            "Não foi possível confirmar todos os metadados. Reabra a mídia antes de salvar novamente.",
         )
         return false
       }
-      setMessage("Metadados salvos.")
+      setMessage("Metadados salvos e conferidos.")
     }
     if (asset.storage_bucket === "portfolio-private") {
       const finalPath = renameRequested ? publishTargetPath : asset.storage_path
@@ -4762,8 +4801,12 @@ export function EnhancedMediaLibrary({
     return true
   }
   useEffect(
-    () => registerAdminSaveAction(async () => (selectedAsset ? save(selectedAsset) : false)),
-    [selectedAsset, mediaDraft],
+    () =>
+      registerAdminSaveAction(
+        async () => (selectedAsset ? save(selectedAsset) : false),
+        () => mediaDirty,
+      ),
+    [selectedAsset, mediaDraft, mediaDirty],
   )
   async function upload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
