@@ -1,3 +1,20 @@
+# Pendências vigentes — etapas 1 a 5
+
+> **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.
+
+**Já comprovado:** P5 sintético **52/52** e 20 verificações de navegador em [#42566409424](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42566409424); crédito da mídia editável; CAS P2 e mídia; menu e Hero parcial. **Não reabrir** esses casos por causa dos snapshots históricos abaixo.
+
+1. **P0 — Production P2:** `save_section_block_atomic` ausente da produção; migration incremental **não autorizada** e intocada.
+2. **P1 — P3 mobile LCP:** baseline 3.876,691 ms **FAIL**; experimentar mesmo Google Fonts em CSS assíncrono e medir mediana de três Lighthouse em commit estável (≤3.500 ms). Audit anterior em SHA ultrapassado não é aceite.
+3. **P1 — Cobertura P4 residual:** matriz por campo Hero A/B e editor de estilos/placements, coleções, Trajetória, depoimentos, revisões/restauração, mobile editorial e estados de falhas de rede ainda não inteiramente testados em UI.
+4. **P2 — Media distribuída:** casos API de compensação PASS; falta injeção de falha pós-SQL e resultado desconhecido pela interface, precedência de focal point vs override de uso, e decisão de eventual legenda pública de crédito.
+5. **P2 — SEO:** garantir validação do SHA publicado no P3; build é necessário para SEO estático. Sem ensaio de edição cloud.
+6. **Manual:** revisão visual em dispositivos, atualização Fontes privadas, autorização explícita separada P2 e aceite.
+
+---
+
+## Histórico anterior preservado
+
 # Atualização operacional — P2/P4, 09/11/2026
 
 > **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).

@@ -1,3 +1,17 @@
+# Estado operacional — atualização das etapas 1 a 5
+
+> **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.
+
+- **P2:** RPC composta implementada/testada com 11 cenários sintéticos; não instalada em produção (nove migrations remotas sem a nova). Caminho legado continua, sem atomicidade conjunta em produção.
+- **P3:** baseline LCP mobile mediana 3.876,691 ms **FAIL**. Carregamento assíncrono da folha de fontes preserva pesos e famílias finais, mas o novo resultado de Lighthouse **não estava verificado** no momento deste adendo. Exigir CI P3 do SHA final e verificação do domínio.
+- **P4:** E2E navegador **20/20 PASS** e suíte local total **52/52 PASS** em [P5 #42566409424](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42566409424). Inclui UI de mídia, navegação, conflito de seção e subset Hero A/B; não cobre toda a matriz do CMS.
+- **Validate:** [#42566409385](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42566409385) SUCCESS no commit funcional `f9e48dcb`. Este adendo requer um novo gate para o SHA documental final.
+- **Produção:** Supabase consultado somente em leitura, sem migrations ou Storage/cloud writes; Vercel auto-deployment associado a `main`. Aceite visual e aprovação de migration P2 continuam decisões manuais.
+
+---
+
+## Histórico anterior preservado
+
 # Atualização operacional — P2/P4, 09/11/2026
 
 > **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).

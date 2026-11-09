@@ -1,3 +1,16 @@
+# CMS — cobertura nova verificada
+
+> **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.
+
+- A **Biblioteca de Mídia** mostra o campo **Crédito (opcional)** que salva `media_assets.credit` com CAS/releitura. Editores de `alt_text`, `focal_point`, upload e exclusão foram exercitados na UI com Auth/Storage e dados sintéticos. Crédito não produz legenda pública global automaticamente.
+- A suíte em `scripts/p4-local-admin-browser.mjs` tem **20 cenários com navegação real pela UI** ([P5 #42566409424](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42566409424)): CAS de seção e mídia, guarda de saída, navegação e Hero A/B, desktop/mobile. Supabase CI local `127.0.0.1:54321` sem gravação cloud.
+- A migration da RPC composta P2 permanece **fora da produção**; apenas os testes sintéticos usam essa função. As telas de produção seguem com fallback legado condicionado estritamente a `PGRST202` de função ausente.
+- **Limite:** esses cenários são amostras E2E específicas; campos avançados, toda a matriz de estilos, revisões, Trajetória, coleções e falhas intermediárias não estão integralmente homologados.
+
+---
+
+## Histórico anterior preservado
+
 # Atualização operacional — P2/P4, 09/11/2026
 
 > **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).

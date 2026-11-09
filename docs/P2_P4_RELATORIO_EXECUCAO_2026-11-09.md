@@ -1,3 +1,15 @@
+# Adendo de evidências da execução conectada
+
+> **Adendo auditável — 09/11/2026.** Informação mais recente que os snapshots abaixo. Fonte: [execução conectada das etapas 1–5](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md), commit funcional `f9e48dcb`, CI e SELECT de produção. Preserve os documentos originais logo abaixo como histórico, sem atribuir a eles o estado atual.
+
+**Prova mais recente do código funcional `f9e48dcb`:** [P5 #42566409424](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42566409424) **SUCCESS 52/52**, incluindo **20/20 UI em navegador**; [Validate #42566409385](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42566409385) **SUCCESS**. Código alterado em `index.html` (preload assíncrono da fonte aprovada, performance ainda sem aceite Lighthouse no SHA final), `src/components/admin/EnhancedMediaLibrary.tsx` (crédito) e `scripts/p4-local-admin-browser.mjs` (cenários CMS/mídia/navegação/Hero). Falhas anteriores de fixture `d1a042ca` e race do teste `63933c10` são históricas, corrigidas.
+
+**Supabase cloud:** SELECT/RPC/listagem migrations somente leitura; `save_section_block_atomic` ausente, nove migrations remotas; sem writes. **Pendências:** performance P3 medida no SHA documental final, matriz P4 residual, homologação visual humana, autorização separada migration. [Relato técnico detalhado](EXECUCAO_ETAPAS_1_A_5_2026-11-09.md).
+
+---
+
+## Histórico anterior preservado
+
 # P2/P4 — Relatório de execução e aceite parcial (09/11/2026)
 
 **Repositório:** `tuliustsangaropulos/PortfolioTulius` • **Branch:** `main`. **Código funcional desta rodada:** `f28d91069fb2174feb47a3f1b61a9e8f608cea37` (retorno da preferência de rede ao estado `auto`). Este documento pode receber SHA próprio; sempre conferir HEAD e `/p3-deployment.json` no dia da leitura.
