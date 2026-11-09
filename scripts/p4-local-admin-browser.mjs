@@ -52,6 +52,7 @@ let syntheticTestimonialsSectionId = null
 let syntheticTestimonialId = null
 let syntheticCareerSectionId = null
 let syntheticCareerRowId = null
+let syntheticAboutSectionId = null
 const collectionFixtureRows = []
 const revisionFixtureIds = []
 let settingsOriginal = null
@@ -959,6 +960,70 @@ try {
   await verifyHeroFraming("OVERRIDE_DESKTOP", 1440, 76, 19, 1.8)
   await verifyHeroFraming("OVERRIDE_MOBILE", 390, 76, 19, 1.8)
 
+  // The About component uses different per-use keys for the desktop
+  // portrait and mobile thumbnail. Check the actual public DOM and CSS.
+  const aboutSection = await service.from("sections").insert({
+    page_id: pageId, slug: "sobre", title: "Sobre fictício " + suffix,
+    sort_order: 5, status: "published", is_visible: true,
+  }).select("id").single()
+  ensure(!aboutSection.error && aboutSection.data, "ABOUT_FRAMING_SECTION_SEED")
+  syntheticAboutSectionId = aboutSection.data.id
+  const aboutPanels = await service.from("section_panels").insert([
+    { section_id: syntheticAboutSectionId, breakpoint: "desktop", panel_key: "desktop", sort_order: 1 },
+    { section_id: syntheticAboutSectionId, breakpoint: "mobile", panel_key: "mobile-a", sort_order: 1 },
+  ]).select("id,panel_key")
+  ensure(!aboutPanels.error && aboutPanels.data?.length === 2,
+    "ABOUT_FRAMING_PANELS_SEED")
+  const aboutBlock = await service.from("content_blocks").insert({
+    section_id: syntheticAboutSectionId, mobile_panel: "a",
+    block_type: "media", sort_order: 1, status: "published",
+    content_json: {
+      items: [{
+        title: "Imagem Sobre de teste " + suffix,
+        image: focalMediaUrl,
+        aboutDesktopImage: focalMediaUrl,
+        alt: "Imagem sintética",
+      }],
+    },
+  }).select("id").single()
+  ensure(!aboutBlock.error && aboutBlock.data, "ABOUT_FRAMING_BLOCK_SEED")
+  const aboutPlacements = await service.from("block_placements").insert(
+    aboutPanels.data.map((panel) => ({
+      block_id: aboutBlock.data.id, panel_id: panel.id, sort_order: 1,
+    })),
+  )
+  ensure(!aboutPlacements.error, "ABOUT_FRAMING_PLACEMENT_SEED")
+  const verifyAboutFraming = async (device, x, y, zoom) => {
+    await page.setViewport({ width: device === "desktop" ? 1440 : 390,
+      height: device === "desktop" ? 900 : 844 })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('[data-section="sobre"]', { timeout: 18000 })
+    await page.waitForFunction(({ device, path, x, y, zoom }) => {
+      const root = document.querySelector(device === "desktop"
+        ? '[data-section="sobre"] .about-desktop'
+        : '[data-section="sobre"] .about-mobile-photo')
+      const image = [...(root?.querySelectorAll("img") ?? [])]
+        .find((node) => node.src.includes(path))
+      return Boolean(image && image.style.objectPosition === `${x}% ${y}%` &&
+        image.style.transform === `scale(${zoom})`)
+    }, { timeout: 18000 }, { device, path: focalMediaPath, x, y, zoom })
+    pass("MEDIA_PUBLIC_ABOUT_" + device.toUpperCase() + "_FRAMING", {
+      device, x, y, zoom, renderer: true,
+    })
+  }
+  await verifyAboutFraming("desktop", 12, 88, 1.6)
+  await verifyAboutFraming("mobile", 12, 88, 1.6)
+  const aboutOverride = await get(service.from("content_blocks")
+    .select("content_json").eq("id", aboutBlock.data.id).single(), "ABOUT_FRAMING_ORIGINAL")
+  const aboutOverrideJson = structuredClone(aboutOverride.content_json)
+  aboutOverrideJson.items[0].mediaFraming = { x: 41, y: 27, zoom: 1.4 }
+  aboutOverrideJson.items[0].aboutDesktopFraming = { x: 65, y: 13, zoom: 1.7 }
+  const persistedAboutOverride = await service.from("content_blocks")
+    .update({ content_json: aboutOverrideJson }).eq("id", aboutBlock.data.id)
+  ensure(!persistedAboutOverride.error, "ABOUT_FRAMING_OVERRIDE_SAVE")
+  await verifyAboutFraming("desktop", 65, 13, 1.7)
+  await verifyAboutFraming("mobile", 41, 27, 1.4)
+
   // Delete through the authenticated media UI while a published Hero still
   // references the file. The SQL RPC must scrub JSON pointers before the
   // Storage object is removed, including the linked media catalog record.
@@ -992,7 +1057,11 @@ try {
     .select("id").eq("id", focalMediaId), "MEDIA_FOCAL_DELETED_ROW")
   const noFocalObject = await service.storage.from("portfolio-public")
     .download(focalMediaPath)
+  const aboutScrubbed = await get(service.from("content_blocks")
+    .select("content_json").eq("id", aboutBlock.data.id).single(), "ABOUT_FRAMING_REFERENCE_SCRUB")
   ensure(!afterFocalDeletion.content_json.items[0].image &&
+    !aboutScrubbed.content_json.items[0].image &&
+    !aboutScrubbed.content_json.items[0].aboutDesktopImage &&
     noFocalRows.length === 0 && Boolean(noFocalObject.error),
     "MEDIA_FOCAL_DELETION_LEFT_REFERENCES")
   pass("MEDIA_UI_DELETE_REFERENCED_MEDIA_NO_ORPHANS", {
@@ -1957,10 +2026,11 @@ try {
     await service.from("content_revisions").delete().in("id", revisionFixtureIds)
   if (syntheticCareerRowId) await service.from("career_experiences").delete().eq("id", syntheticCareerRowId)
   if (syntheticCareerSectionId) await service.from("sections").delete().eq("id", syntheticCareerSectionId)
+  if (syntheticAboutSectionId) await service.from("sections").delete().eq("id", syntheticAboutSectionId)
   if (syntheticTestimonialId) await service.from("testimonials").delete().eq("id", syntheticTestimonialId)
   if (syntheticTestimonialsSectionId) await service.from("sections").delete().eq("id", syntheticTestimonialsSectionId)
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 77, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 77) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 81, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 81) process.exitCode = 1
