@@ -86,6 +86,7 @@ function AdminShell({
     ["editor", "Editor do site", "edit"],
     ["design", "Identidade", "palette"],
     ["media", "Mídia", "image"],
+    ["collections", "Acervo", "edit"],
     ["navigation", "Navegação", "arrow"],
     ["seo", "SEO", "edit"],
     ["editorial", "Revisões", "edit"],
@@ -1254,6 +1255,7 @@ export function AdminApp() {
       />
     ),
     media: <EnhancedMediaLibrary onDirtyChange={setEditorDirty} />,
+    collections: <CollectionsStudio onDirtyChange={setEditorDirty} />,
     navigation: <NavigationStudio onDirtyChange={setEditorDirty} />,
     seo: <SeoStudio onDirtyChange={setEditorDirty} />,
     editorial: <EditorialStudio />,

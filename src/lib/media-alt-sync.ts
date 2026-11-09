@@ -81,7 +81,10 @@ export function synchronizePublishedMediaAlts(
       ? {
           ...section.experienceMedia,
           logoAlt: altFor(section.experienceMedia.logo, section.experienceMedia.logoAlt),
-          logoFraming: framingFor(section.experienceMedia.logo, section.experienceMedia.logoFraming),
+          logoFraming: framingFor(
+            section.experienceMedia.logo,
+            section.experienceMedia.logoFraming,
+          ),
           slides: section.experienceMedia.slides?.map((slide) => ({
             ...slide,
             alt: altFor(slide.image, slide.alt),

@@ -95,7 +95,6 @@ describe("P2 — sincronização dos textos alternativos no site público", () =
   })
 })
 
-
 describe("P4 — precedência do enquadramento global e por uso", () => {
   const globalFocal = { x: 23, y: 79, zoom: 1.35 }
   const localFocal = { x: 70, y: 18, zoom: 1.8 }
@@ -126,10 +125,12 @@ describe("P4 — precedência do enquadramento global e por uso", () => {
     configured.experienceMedia!.slides![0].framing = localFocal
     const result = synchronizePublishedMediaAlts(
       [configured],
-      [{ storage_path: "portrait.webp", alt_text: "Atual", focal_point: globalFocal },
-       { storage_path: "desktop.webp", alt_text: "Desktop", focal_point: globalFocal },
-       { storage_path: "mobile.webp", alt_text: "Mobile", focal_point: globalFocal },
-       { storage_path: "slide.webp", alt_text: "Slide", focal_point: globalFocal }],
+      [
+        { storage_path: "portrait.webp", alt_text: "Atual", focal_point: globalFocal },
+        { storage_path: "desktop.webp", alt_text: "Desktop", focal_point: globalFocal },
+        { storage_path: "mobile.webp", alt_text: "Mobile", focal_point: globalFocal },
+        { storage_path: "slide.webp", alt_text: "Slide", focal_point: globalFocal },
+      ],
     )[0]
     expect(result.panelA[0].mediaFraming).toEqual(localFocal)
     expect(result.desktopPanelA?.[0].aboutDesktopFraming).toEqual(localFocal)
