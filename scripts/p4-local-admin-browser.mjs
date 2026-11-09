@@ -46,6 +46,8 @@ let privateUiOldPath = null
 let privateUiNewPath = null
 let focalMediaId = null
 let focalMediaPath = null
+let galleryAssetId = null
+let galleryPath = null
 const navigationFixtures = []
 let syntheticProfileId = null
 let syntheticTestimonialsSectionId = null
@@ -1355,6 +1357,119 @@ try {
       { latestPublishedTrajectory: true, viewport: viewport.width })
   }
 
+
+  // Global focal and per-use overrides for the real ExperienceStack gallery
+  // and company logo, using a second disposable media asset and the
+  // already published synthetic Trajetória section.
+  galleryPath = "p4-ui/gallery-focal-" + suffix + ".svg"
+  const galleryBytes = Buffer.from(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">' +
+      '<rect width="80" height="80" fill="#bbb"/></svg>',
+  )
+  const galleryUpload = await service.storage.from("portfolio-public")
+    .upload(galleryPath, galleryBytes, { contentType: "image/svg+xml" })
+  ensure(!galleryUpload.error, "MEDIA_GALLERY_STORAGE_SEED")
+  const galleryCatalog = await service.from("media_assets").insert({
+    storage_bucket: "portfolio-public", storage_path: galleryPath,
+    mime_type: "image/svg+xml", file_size: galleryBytes.length,
+    title: "Galeria focal fictícia " + suffix,
+    alt_text: "Imagem da galeria de teste",
+    focal_point: { x: 32, y: 71, zoom: 1.25 },
+    status: "published",
+  }).select("id").single()
+  ensure(!galleryCatalog.error && galleryCatalog.data, "MEDIA_GALLERY_CATALOG_SEED")
+  galleryAssetId = galleryCatalog.data.id
+  const galleryUrl = service.storage.from("portfolio-public")
+    .getPublicUrl(galleryPath).data.publicUrl
+  const galleryPanels = await service.from("section_panels").insert([
+    { section_id: syntheticCareerSectionId, breakpoint: "desktop",
+      panel_key: "desktop", sort_order: 1 },
+    { section_id: syntheticCareerSectionId, breakpoint: "mobile",
+      panel_key: "mobile-a", sort_order: 1 },
+  ]).select("id,panel_key")
+  ensure(!galleryPanels.error && galleryPanels.data?.length === 2,
+    "MEDIA_GALLERY_PANELS_SEED")
+  const galleryTitle = "Projeto focal fictício " + suffix
+  const galleryBlock = await service.from("content_blocks").insert({
+    section_id: syntheticCareerSectionId,
+    mobile_panel: "a", block_type: "cards", sort_order: 1, status: "published",
+    content_json: {
+      items: [{ title: galleryTitle, text: "Projeto de homologação local" }],
+      experienceMedia: {
+        logo: galleryUrl, logoAlt: "Marca sintética",
+        slides: [{ title: galleryTitle, image: galleryUrl, alt: "Imagem fictícia" }],
+      },
+    },
+  }).select("id").single()
+  ensure(!galleryBlock.error && galleryBlock.data, "MEDIA_GALLERY_BLOCK_SEED")
+  const galleryPlacements = await service.from("block_placements").insert(
+    galleryPanels.data.map((panel) => ({
+      block_id: galleryBlock.data.id, panel_id: panel.id, sort_order: 1,
+    })),
+  )
+  ensure(!galleryPlacements.error, "MEDIA_GALLERY_PLACEMENT_SEED")
+  const verifyGallery = async (device, x, y, zoom, label) => {
+    await page.setViewport({ width: device === "desktop" ? 1440 : 390,
+      height: device === "desktop" ? 900 : 844 })
+    await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector('[data-section="invest-rs"]', { timeout: 18000 })
+    await page.waitForFunction(({ device, path, x, y, zoom }) => {
+      const root = document.querySelector(device === "desktop"
+        ? 'section[data-section="invest-rs"] .experience-desktop .experience-gallery'
+        : 'section[data-section="invest-rs"] .experience-mobile-project-detail .experience-gallery')
+      const image = [...(root?.querySelectorAll("img") ?? [])]
+        .find((node) => node.src.includes(path))
+      return Boolean(image && image.style.objectPosition === `${x}% ${y}%` &&
+        image.style.transform === `scale(${zoom})`)
+    }, { timeout: 18000 }, { device, path: galleryPath, x, y, zoom })
+    pass("MEDIA_GALLERY_" + label + "_" + device.toUpperCase(), {
+      device, x, y, zoom, publicRenderer: true,
+    })
+  }
+  await verifyGallery("desktop", 32, 71, 1.25, "GLOBAL")
+  await verifyGallery("mobile", 32, 71, 1.25, "GLOBAL")
+  const logoApplied = await page.evaluate((path) => {
+    const root = document.querySelector("section[data-section='invest-rs']")
+    const image = [...(root?.querySelectorAll("img") ?? [])]
+      .find((img) => img.closest(".company-mark") && img.src.includes(path))
+    return Boolean(image && image.style.objectPosition === "32% 71%" &&
+      image.style.transform === "scale(1.25)")
+  }, galleryPath)
+  // Logos may be omitted from the mobile content panel. Verify the
+  // desktop CompanyMark independently, where it is always rendered.
+  await page.setViewport({ width: 1440, height: 900 })
+  await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForFunction((path) => {
+    const image = document.querySelector(
+      'section[data-section="invest-rs"] .experience-desktop .company-mark img')
+    return Boolean(image && image.src.includes(path) &&
+      image.style.objectPosition === "32% 71%" &&
+      image.style.transform === "scale(1.25)")
+  }, { timeout: 18000 }, galleryPath)
+  pass("MEDIA_GALLERY_LOGO_GLOBAL_DESKTOP", { publicRenderer: true })
+
+  const galleryBeforeOverride = await get(service.from("content_blocks")
+    .select("content_json").eq("id", galleryBlock.data.id).single(),
+    "MEDIA_GALLERY_CONTENT_RELOAD")
+  const galleryOverride = structuredClone(galleryBeforeOverride.content_json)
+  galleryOverride.experienceMedia.logoFraming = { x: 65, y: 20, zoom: 1.5 }
+  galleryOverride.experienceMedia.slides[0].framing = { x: 79, y: 18, zoom: 1.7 }
+  const galleryPatch = await service.from("content_blocks")
+    .update({ content_json: galleryOverride }).eq("id", galleryBlock.data.id)
+  ensure(!galleryPatch.error, "MEDIA_GALLERY_OVERRIDE_SAVE")
+  await verifyGallery("desktop", 79, 18, 1.7, "OVERRIDE")
+  await verifyGallery("mobile", 79, 18, 1.7, "OVERRIDE")
+  await page.setViewport({ width: 1440, height: 900 })
+  await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForFunction((path) => {
+    const image = document.querySelector(
+      'section[data-section="invest-rs"] .experience-desktop .company-mark img')
+    return Boolean(image && image.src.includes(path) &&
+      image.style.objectPosition === "65% 20%" &&
+      image.style.transform === "scale(1.5)")
+  }, { timeout: 18000 }, galleryPath)
+  pass("MEDIA_GALLERY_LOGO_OVERRIDE_DESKTOP", { publicRenderer: true })
+
   // The full Acervo is available inside the authenticated CMS. Verify the
   // seven non-testimonial/non-career collections through their actual inputs,
   // published writes and a fresh PostgREST read, not just payload helpers.
@@ -2020,6 +2135,8 @@ try {
   if (mediaStoragePath) await service.storage.from("portfolio-public").remove([mediaStoragePath])
   if (mediaRecoveryAssetId) await service.from("media_assets").delete().eq("id", mediaRecoveryAssetId)
   if (mediaRecoveryStoragePath) await service.storage.from("portfolio-public").remove([mediaRecoveryStoragePath])
+  if (galleryAssetId) await service.from("media_assets").delete().eq("id", galleryAssetId)
+  if (galleryPath) await service.storage.from("portfolio-public").remove([galleryPath])
   if (focalMediaId) await service.from("media_assets").delete().eq("id", focalMediaId)
   if (focalMediaPath) await service.storage.from("portfolio-public").remove([focalMediaPath])
   if (privateUiAssetId) await service.from("media_assets").delete().eq("id", privateUiAssetId)
@@ -2041,5 +2158,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 81, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 81) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 87, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 87) process.exitCode = 1
