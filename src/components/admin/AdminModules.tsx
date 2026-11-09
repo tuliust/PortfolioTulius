@@ -46,6 +46,7 @@ import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 import { ColorField, NumericField } from "./AdminVisualFields"
 import { DeviceStyleEditor, HeroDeviceEditor } from "./DeviceStyleEditors"
 import { ProfileMobileEditorialEditor } from "./ProfileMobileEditorialEditor"
+import { InlineCareerTrajectoryEditor } from "./CareerTrajectoryEditor"
 import {
   hasHeroMediaControls,
   reorderHeroItems,
@@ -2666,8 +2667,6 @@ export function ContentStudio({
     </EditorIdentityProvider>
   )
 }
-
-import { InlineCareerTrajectoryEditor } from "./CareerTrajectoryEditor"
 
 export { CollectionsStudio } from "./CollectionsStudio"
 
