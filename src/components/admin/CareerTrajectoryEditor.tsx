@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
-import {
-  TRAJECTORY_RECOMMENDED_CHARS,
-  trajectoryVisibleLength,
-} from "../../lib/experience-text"
+import { TRAJECTORY_RECOMMENDED_CHARS, trajectoryVisibleLength } from "../../lib/experience-text"
 import { validateCollectionSaveDraft } from "../../lib/admin-collection-payload"
 import { registerAdminSaveAction } from "./AdminConfirmationHost"
 import { AdminNotice } from "./AdminNotice"
 
 /** The six career trajectories remain bound to existing career_experiences rows. */
-function TrajectoryTextEditor({
+export function TrajectoryTextEditor({
   value,
   onChange,
 }: {
@@ -321,4 +318,3 @@ export function InlineCareerTrajectoryEditor({
     </section>
   )
 }
-

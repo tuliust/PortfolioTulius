@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest"
 const css = readFileSync(new URL("../index.css", import.meta.url), "utf8")
 const adminApp = readFileSync(new URL("../components/admin/AdminApp.tsx", import.meta.url), "utf8")
 const editorial = readFileSync(
-  new URL("../components/admin/AdminModules.tsx", import.meta.url),
+  new URL("../components/admin/EditorialStudio.tsx", import.meta.url),
   "utf8",
 )
 

@@ -39,9 +39,7 @@ describe("P3 — regressão dos formulários visuais extraídos", () => {
   })
 
   it("mantém as três áreas editoriais mobile, sem mudar a composição desktop", () => {
-    const html = renderToStaticMarkup(
-      <ProfileMobileEditorialEditor onChange={() => undefined} />,
-    )
+    const html = renderToStaticMarkup(<ProfileMobileEditorialEditor onChange={() => undefined} />)
     expect(html).toContain("Abertura Editorial 360°")
     expect(html).toContain("Área 1")
     expect(html).toContain("Área 2")

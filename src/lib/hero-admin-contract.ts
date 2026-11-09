@@ -36,11 +36,10 @@ export function reorderHeroItems(
   panel: "a" | "b",
 ): ContentItem[] {
   const target = index + direction
-  if (index < 0 || index >= items.length || target < 0 || target >= items.length)
-    return [...items]
+  if (index < 0 || index >= items.length || target < 0 || target >= items.length) return [...items]
   if (panel === "a" && (index === 0 || target === 0)) return [...items]
   // The five principal buttons and the career highlights are separate editorial groups.
-  if (panel === "b" && (index < 5) !== (target < 5)) return [...items]
+  if (panel === "b" && index < 5 !== target < 5) return [...items]
 
   const reordered = [...items]
   ;[reordered[index], reordered[target]] = [reordered[target], reordered[index]]

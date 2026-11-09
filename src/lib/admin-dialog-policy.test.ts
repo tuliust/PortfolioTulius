@@ -30,7 +30,9 @@ describe("Administração usa apenas diálogos próprios", () => {
   it("separa saída não salva de publicação e arquivamento", () => {
     const dialog = readFileSync(new URL("AdminConfirmationHost.tsx", adminDirectory), "utf8")
     const app = readFileSync(new URL("AdminApp.tsx", adminDirectory), "utf8")
-    const modules = readFileSync(new URL("AdminModules.tsx", adminDirectory), "utf8")
+    const modules = ["AdminModules.tsx", "EnhancedMediaLibrary.tsx"]
+      .map((name) => readFileSync(new URL(name, adminDirectory), "utf8"))
+      .join("\n")
     const identity = readFileSync(new URL("IdentityCatalogEditor.tsx", adminDirectory), "utf8")
     for (const label of ["Não sair", "Sair sem salvar", "Salvar e sair"])
       expect(dialog).toContain(label)

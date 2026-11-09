@@ -293,4 +293,3 @@ export function ProfileMobileEditorialEditor({
     </fieldset>
   )
 }
-

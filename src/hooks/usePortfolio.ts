@@ -24,10 +24,7 @@ import { selectSectionExperienceMedia } from "../lib/cms-contract"
 import { parseCardRadius } from "../lib/design-tokens"
 import { publicEditorAnchor } from "../lib/editor-anchor"
 import type { FormationPilotEducationRow } from "../lib/formation-pilot-preview"
-import {
-  synchronizePublishedMediaAlts,
-  type PublishedMediaAlt,
-} from "../lib/media-alt-sync"
+import { synchronizePublishedMediaAlts, type PublishedMediaAlt } from "../lib/media-alt-sync"
 
 type SectionResult = {
   id: string

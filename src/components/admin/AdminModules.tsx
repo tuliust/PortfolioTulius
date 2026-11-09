@@ -30,10 +30,7 @@ import type {
   MetricIconName,
   ExperienceMedia,
 } from "../../types/content"
-import {
-  EditorIdentityProvider,
-  useEditorIdentityOptions,
-} from "./EditorIdentityFields"
+import { EditorIdentityProvider, useEditorIdentityOptions } from "./EditorIdentityFields"
 import "./EditorIdentityFields.css"
 import { Icon } from "../ui/Icons"
 import { VisualIconLibrary, PlatformIconLibrary } from "./VisualIconLibrary"
@@ -47,6 +44,7 @@ import { ColorField, NumericField } from "./AdminVisualFields"
 import { DeviceStyleEditor, HeroDeviceEditor } from "./DeviceStyleEditors"
 import { ProfileMobileEditorialEditor } from "./ProfileMobileEditorialEditor"
 import { InlineCareerTrajectoryEditor } from "./CareerTrajectoryEditor"
+import { collectionConfigs } from "./CollectionsStudio"
 import {
   hasHeroMediaControls,
   reorderHeroItems,
@@ -336,7 +334,9 @@ export function ContentStudio({
       )
       if (unavailable) {
         setMessage(
-          "O destino #" + unavailable + " não está publicado e visível. Escolha uma seção disponível.",
+          "O destino #" +
+            unavailable +
+            " não está publicado e visível. Escolha uma seção disponível.",
         )
         return false
       }
@@ -475,11 +475,7 @@ export function ContentStudio({
         const originalRoot = savedBlock?.content_json.items?.[0]?.hero?.rootBackground
         const draftRoot = draft.content_json.items?.[0]?.hero?.rootBackground
         const latestRoot = latest.data?.content_json?.items?.[0]?.hero?.rootBackground
-        if (
-          draftRoot !== originalRoot &&
-          latestRoot !== originalRoot &&
-          latestRoot !== draftRoot
-        ) {
+        if (draftRoot !== originalRoot && latestRoot !== originalRoot && latestRoot !== draftRoot) {
           setMessage(
             "A cor de fundo do Hero mudou em outra edição. Reabra a seção para resolver o conflito.",
           )

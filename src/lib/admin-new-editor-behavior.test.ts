@@ -3,7 +3,16 @@ import { describe, expect, it } from "vitest"
 
 const read = (path: string) => readFileSync(new URL("../" + path, import.meta.url), "utf8")
 const app = read("components/admin/AdminApp.tsx")
-const modules = read("components/admin/AdminModules.tsx")
+const modules = [
+  "AdminModules.tsx",
+  "EnhancedMediaLibrary.tsx",
+  "CollectionsStudio.tsx",
+  "NavigationStudio.tsx",
+  "SeoStudio.tsx",
+  "CareerTrajectoryEditor.tsx",
+]
+  .map((name) => read("components/admin/" + name))
+  .join("\n")
 const publicSite = read("components/public/PublicSite.tsx")
 const experience = read("components/public/ExperienceStack.tsx")
 const css = read("index.css")
@@ -46,10 +55,7 @@ describe("editorial UX and public section transitions", () => {
   })
 
   it("simplifies site controls while preserving media metadata in the library", () => {
-    const editor =
-      modules
-        .split("export function ContentStudio")[1]
-        ?.split("function TrajectoryTextEditor")[0] ?? ""
+    const editor = read("components/admin/AdminModules.tsx")
     expect(app).toContain('className="site-editor-heading-copy"')
     expect(app).toContain("onClick={embedded ? saveRegisteredAdminChanges : save}")
     expect(app).not.toContain("Duplicar seção")

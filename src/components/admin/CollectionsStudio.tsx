@@ -12,6 +12,7 @@ import {
 import { adminConfirm, adminConfirmUnsaved, registerAdminSaveAction } from "./AdminConfirmationHost"
 import { AdminNotice, statusPt } from "./AdminNotice"
 import { FloatingSaveButton } from "./FloatingSaveButton"
+import { TrajectoryTextEditor } from "./CareerTrajectoryEditor"
 
 /** Structured collection editor and its existing field configuration. */
 type FieldConfig = {
@@ -27,7 +28,7 @@ type CollectionConfig = {
   fields: FieldConfig[]
 }
 
-const collectionConfigs: CollectionConfig[] = [
+export const collectionConfigs: CollectionConfig[] = [
   {
     table: "career_experiences",
     label: "Experiências",
@@ -507,4 +508,3 @@ export function CollectionsStudio({
     </>
   )
 }
-

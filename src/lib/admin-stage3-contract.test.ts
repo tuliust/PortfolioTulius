@@ -5,7 +5,14 @@ const read = (file: string) => readFileSync(new URL("../" + file, import.meta.ur
 
 const app = read("components/admin/AdminApp.tsx")
 const fields = read("components/admin/EditorIdentityFields.tsx")
-const modules = read("components/admin/AdminModules.tsx")
+const modules = [
+  "AdminModules.tsx",
+  "AdminVisualFields.tsx",
+  "DeviceStyleEditors.tsx",
+  "ProfileMobileEditorialEditor.tsx",
+]
+  .map((name) => read("components/admin/" + name))
+  .join("\n")
 const navigation = read("components/public/Navigation.tsx")
 const publicSite = read("components/public/PublicSite.tsx")
 

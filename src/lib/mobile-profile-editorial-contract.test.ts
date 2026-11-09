@@ -9,10 +9,9 @@ const navigation = readFileSync(
   new URL("../components/public/Navigation.tsx", import.meta.url),
   "utf8",
 )
-const editor = readFileSync(
-  new URL("../components/admin/AdminModules.tsx", import.meta.url),
-  "utf8",
-)
+const editor = ["AdminModules.tsx", "ProfileMobileEditorialEditor.tsx"]
+  .map((name) => readFileSync(new URL("../components/admin/" + name, import.meta.url), "utf8"))
+  .join("\n")
 const css = readFileSync(new URL("../index.css", import.meta.url), "utf8")
 
 describe("Perfil Editorial 360 — exclusivo mobile", () => {

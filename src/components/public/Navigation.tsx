@@ -95,6 +95,8 @@ export function Navigation({
     setOpen(false)
     const element = document.getElementById(slug)
     history.pushState(null, "", `#${slug}`)
+    // pushState does not emit hashchange; notify mobile experience selectors.
+    window.dispatchEvent(new HashChangeEvent("hashchange"))
     element?.scrollIntoView({
       behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
     })

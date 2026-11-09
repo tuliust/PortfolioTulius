@@ -26,7 +26,7 @@ describe("UX do editor: avisos e enquadramento", () => {
     expect(css).toContain(".admin-shell:has(.admin-floating-save) .admin-toast")
   })
   it("permite editar enquadramento na biblioteca sem campos de ponto focal soltos", () => {
-    const library = read("AdminModules.tsx")
+    const library = read("EnhancedMediaLibrary.tsx")
     expect(library).toContain("label={mediaDisplayTitle(asset)}")
     expect(library).toContain("validatePrivateMediaFileName")
     expect(library).toContain("MediaFramingDialog")

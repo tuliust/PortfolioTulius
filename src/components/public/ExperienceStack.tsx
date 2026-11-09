@@ -13,6 +13,7 @@ import {
 } from "../../lib/experience-text"
 import { publicReadClient } from "../../lib/public-read"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
+import { experienceSlugFromHash } from "../../lib/experience-hash"
 
 export const EXPERIENCE_SLUGS = [
   "invest-rs",
@@ -690,7 +691,15 @@ export function ExperienceStack({
   isMobile: boolean
   preview?: boolean
 }) {
-  const [active, setActive] = useState(sections[0]?.slug ?? "")
+  const [active, setActive] = useState(
+    () =>
+      experienceSlugFromHash(
+        typeof window === "undefined" ? "" : window.location.hash,
+        sections.map((section) => section.slug),
+      ) ??
+      sections[0]?.slug ??
+      "",
+  )
   const [careerDetails, setCareerDetails] = useState<Record<string, string>>({})
   const [isIndexStuck, setIsIndexStuck] = useState(false)
   const indexRef = useRef<HTMLElement>(null)
@@ -741,6 +750,42 @@ export function ExperienceStack({
     onScroll()
     return () => window.removeEventListener("scroll", onScroll)
   }, [sections, isMobile])
+
+  // The mobile stack mounts one experience; select deep-linked destinations
+  // before restoring scroll so direct #company URLs have a real DOM target.
+  useEffect(() => {
+    if (!isMobile) return
+    const syncHash = () => {
+      const destination = experienceSlugFromHash(
+        window.location.hash,
+        sections.map((section) => section.slug),
+      )
+      if (destination) setActive(destination)
+    }
+    window.addEventListener("hashchange", syncHash)
+    window.addEventListener("popstate", syncHash)
+    syncHash()
+    return () => {
+      window.removeEventListener("hashchange", syncHash)
+      window.removeEventListener("popstate", syncHash)
+    }
+  }, [isMobile, sections])
+
+  useEffect(() => {
+    if (!isMobile) return
+    const destination = experienceSlugFromHash(
+      window.location.hash,
+      sections.map((section) => section.slug),
+    )
+    if (destination !== active) return
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(active)?.scrollIntoView({
+        block: "start",
+        behavior: "instant",
+      })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [active, isMobile, sections])
 
   // The company navigation changes color only when it has actually reached
   // its sticky position below the fixed site header.

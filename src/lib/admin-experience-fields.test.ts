@@ -6,7 +6,7 @@ const read = (name: string) =>
 
 describe("Editor: competências e mapeamento das experiências", () => {
   it("edita badges no bloco A e mantém o contrato de rascunho", () => {
-    const src = read("AdminModules.tsx")
+    const src = [read("AdminModules.tsx"), read("CareerTrajectoryEditor.tsx")].join("\n")
     expect(src).toContain("Competências aplicadas — tags abaixo do período")
     expect(src).toContain('items.unshift({ title: "Competências aplicadas", tags })')
     expect(src).toContain("setDraft({ ...draft, content_json: { ...draft.content_json, items } })")

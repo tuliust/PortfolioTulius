@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest"
 const read = (path: string) => readFileSync(new URL("../" + path, import.meta.url), "utf8")
 describe("Editor do Site — depoimentos na própria seção", () => {
   const app = read("components/admin/AdminApp.tsx")
-  const modules = read("components/admin/AdminModules.tsx")
+  const modules = ["AdminModules.tsx", "CollectionsStudio.tsx"]
+    .map((name) => read("components/admin/" + name))
+    .join("\n")
   const visuals = read("lib/admin-visual-areas.ts")
   const identity = read("components/admin/IdentityCatalogEditor.css")
   const publicSite = read("components/public/PublicSite.tsx")

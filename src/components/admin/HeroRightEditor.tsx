@@ -4,10 +4,7 @@ import { HeroItemFields } from "./HeroItemFields"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 import { Icon } from "../ui/Icons"
-import {
-  publishedHeroDestinations,
-  type HeroAvailableSection,
-} from "../../lib/hero-admin-contract"
+import { publishedHeroDestinations, type HeroAvailableSection } from "../../lib/hero-admin-contract"
 import "./HeroRightEditor.css"
 
 type Catalog = Record<string, IdentityTokenRow>
@@ -135,7 +132,7 @@ export function HeroRightEditor({
                   <select
                     value={
                       validTargets.has(item.targetSlug ?? "resultados")
-                        ? item.targetSlug ?? "resultados"
+                        ? (item.targetSlug ?? "resultados")
                         : ""
                     }
                     onChange={(event) => onUpdateItem(index, { targetSlug: event.target.value })}
@@ -152,7 +149,8 @@ export function HeroRightEditor({
                 </label>
                 {!validTargets.has(item.targetSlug ?? "resultados") && (
                   <small role="status">
-                    Destino oculto ou não publicado. O site usa um destino alternativo quando disponível.
+                    Destino oculto ou não publicado. O site usa um destino alternativo quando
+                    disponível.
                   </small>
                 )}
                 <div className="hero-right-item-controls">
@@ -215,7 +213,11 @@ export function HeroRightEditor({
                   <label className="field-wide">
                     Link do destaque / empresa de destino
                     <select
-                      value={item.targetSlug && validEmployers.has(item.targetSlug) ? item.targetSlug : ""}
+                      value={
+                        item.targetSlug && validEmployers.has(item.targetSlug)
+                          ? item.targetSlug
+                          : ""
+                      }
                       onChange={(event) => onUpdateItem(index, { targetSlug: event.target.value })}
                     >
                       <option value="">Sem link</option>
