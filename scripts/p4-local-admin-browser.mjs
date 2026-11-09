@@ -930,7 +930,7 @@ try {
     await page.waitForFunction(({ path, desktop, x, y, zoom }) => {
       const root = document.querySelector(
         desktop ? '[data-section="perfil"] .profile-desktop' :
-          '[data-section="perfil"] .mobile360',
+          '[data-section="perfil"] .mobile360, [data-section="perfil"] .mobile-profile-hero',
       )
       const image = [...(root?.querySelectorAll("img") ?? [])]
         .find((node) => node.src.includes(path))
