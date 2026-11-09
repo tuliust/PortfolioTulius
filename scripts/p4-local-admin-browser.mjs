@@ -51,6 +51,7 @@ let syntheticTestimonialId = null
 let syntheticCareerSectionId = null
 let syntheticCareerRowId = null
 const collectionFixtureRows = []
+const revisionFixtureIds = []
 let settingsOriginal = null
 try {
   const created = await service.auth.admin.createUser({ email, password, email_confirm: true })
@@ -1378,6 +1379,139 @@ try {
     "P4_DEVICE_MOBILE_REWROTE_DESKTOP")
   pass("DEVICE_UI_MOBILE_TYPOGRAPHY_INDEPENDENT",
     { mobileSize: 19, desktopSizePreserved: 74 })
+
+  // Identity tokens are edited by real DOM controls, not database shortcuts.
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((button) => button.textContent?.trim() === "Identidade")?.click()
+  })
+  await page.waitForSelector(".identity-catalog .identity-color-row", { timeout: 15000 })
+  const testColor = "#E35F27"
+  const changedIdentity = await page.evaluate((color) => {
+    const el = document.querySelector('.identity-color-row:first-child .identity-color-value input:not([type="color"])')
+    if (!el) return false
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(el, color)
+    el.dispatchEvent(new Event("input", { bubbles: true }))
+    return true
+  }, testColor)
+  ensure(changedIdentity, "IDENTITY_UI_HEX_INPUT_MISSING")
+  await page.select(".identity-font-row:first-child select", "Inter")
+  await page.select(".identity-type-style:first-child .identity-type-fields label:nth-child(2) select",
+    "font.body")
+  await page.select(".identity-type-style:first-child .identity-type-fields label:nth-child(4) select",
+    "96")
+  await page.waitForSelector(".identity-catalog .admin-floating-save button.primary-button",
+    { timeout: 12000 })
+  await page.click(".identity-catalog .admin-floating-save button.primary-button")
+  await page.waitForFunction(() =>
+    document.querySelector(".identity-catalog")?.textContent?.includes("confirmado(s) no Supabase."),
+    { timeout: 18000 })
+  const identityRecords = await get(service.from("design_tokens")
+    .select("token_key,token_value,style_config")
+    .in("token_key", ["color.orange", "font.heading", "typography.profile-main"]),
+    "IDENTITY_UI_DB")
+  const byIdentityKey = Object.fromEntries(identityRecords.map((row) => [row.token_key, row]))
+  ensure(byIdentityKey["color.orange"]?.token_value === testColor &&
+    byIdentityKey["font.heading"]?.token_value === "Inter" &&
+    byIdentityKey["typography.profile-main"]?.style_config?.fontToken === "font.body" &&
+    byIdentityKey["typography.profile-main"]?.style_config?.desktopPx === 96,
+    "IDENTITY_UI_PERSISTENCE_MISMATCH")
+  pass("IDENTITY_UI_COLOR_FONT_TYPE_SAVE_DB", { color: true, family: true, typography: true })
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((button) => button.textContent?.trim() === "Identidade")?.click()
+  })
+  await page.waitForFunction((color) =>
+    document.querySelector('.identity-color-row:first-child .identity-color-value input:not([type="color"])')?.value === color &&
+    document.querySelector(".identity-font-row:first-child select")?.value === "Inter" &&
+    document.querySelector(".identity-type-style:first-child .identity-type-fields label:nth-child(4) select")?.value === "96",
+    { timeout: 15000 }, testColor)
+  pass("IDENTITY_UI_REOPEN_CURRENT_TOKENS", { color: true, typography: true })
+
+  // Restore only allowed editorial fields from a synthetic historical revision.
+  // The irreversible publication, IDs and Storage are deliberately not restored.
+  const revisionBase = await get(service.from("sections").select("*")
+    .eq("id", syntheticProfileId).single(), "P4_REVISION_BASE")
+  const oldTitle = "Título editorial recuperado " + suffix
+  const oldIntro = "Introdução recuperada " + suffix
+  const rev = await service.from("content_revisions").insert({
+    entity_type: "sections", entity_id: syntheticProfileId, actor_user_id: userId,
+    snapshot_json: {
+      ...revisionBase, title: oldTitle, intro: oldIntro,
+      status: "archived", is_visible: false,
+    },
+  }).select("id").single()
+  ensure(!rev.error && rev.data, "P4_REVISION_SEED")
+  revisionFixtureIds.push(rev.data.id)
+  const openRevisions = async () => {
+    await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector(".admin-shell", { timeout: 15000 })
+    await page.evaluate(() => {
+      [...document.querySelectorAll(".admin-sidebar nav button")]
+        .find((node) => node.textContent?.trim() === "Revisões")?.click()
+    })
+    await page.waitForSelector(".revision-list", { timeout: 12000 })
+  }
+  const inspectById = async (id) => {
+    await page.waitForFunction((id) =>
+      [...document.querySelectorAll(".revision-list > div")].some((node) =>
+        node.textContent?.includes(id)), { timeout: 14000 }, id)
+    const clicked = await page.evaluate((id) => {
+      const row = [...document.querySelectorAll(".revision-list > div")]
+        .find((node) => node.textContent?.includes(id))
+      row?.querySelector("button")?.click()
+      return Boolean(row)
+    }, id)
+    ensure(clicked, "P4_REVISION_LIST_ENTRY")
+    await page.waitForFunction(() =>
+      document.querySelector(".revision-preview button.primary-button") &&
+      document.querySelector(".revision-preview")?.textContent?.includes("Campos diferentes:"),
+      { timeout: 15000 })
+  }
+  await openRevisions()
+  await inspectById(rev.data.id)
+  pass("REVISION_UI_PREVIEW_NO_WRITE", { comparisonOnly: true })
+  await page.click(".revision-preview button.primary-button")
+  await page.waitForSelector(".admin-confirm-dialog .danger-button", { timeout: 10000 })
+  await page.click(".admin-confirm-dialog .danger-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("Campos recuperados. A versão anterior foi preservada no histórico."),
+    { timeout: 18000 })
+  const restored = await get(service.from("sections").select("*")
+    .eq("id", syntheticProfileId).single(), "P4_REVISION_RESTORED")
+  ensure(restored.title === oldTitle && restored.intro === oldIntro &&
+    restored.status === revisionBase.status &&
+    restored.is_visible === revisionBase.is_visible,
+    "P4_REVISION_RESTORED_PROTECTED_FIELDS")
+  pass("REVISION_UI_RESTORE_ALLOWED_FIELDS_ONLY",
+    { text: true, publishedPreserved: true, visibilityPreserved: true })
+
+  const conflictRev = await service.from("content_revisions").insert({
+    entity_type: "sections", entity_id: syntheticProfileId, actor_user_id: userId,
+    snapshot_json: { ...restored, title: "Revisão concorrente " + suffix },
+  }).select("id").single()
+  ensure(!conflictRev.error && conflictRev.data, "P4_REVISION_CONFLICT_SEED")
+  revisionFixtureIds.push(conflictRev.data.id)
+  await openRevisions()
+  await inspectById(conflictRev.data.id)
+  const concurrentTitle = "Edição concorrente preservada " + suffix
+  const updated = await service.from("sections")
+    .update({ title: concurrentTitle }).eq("id", syntheticProfileId).select("id").single()
+  ensure(!updated.error, "P4_REVISION_CONCURRENT_MODIFICATION")
+  await page.click(".revision-preview button.primary-button")
+  await page.waitForSelector(".admin-confirm-dialog .danger-button", { timeout: 10000 })
+  await page.click(".admin-confirm-dialog .danger-button")
+  await page.waitForFunction(() =>
+    document.body.textContent?.includes("O registro mudou desde a comparação."),
+    { timeout: 14000 })
+  const conflictRetained = await get(service.from("sections").select("title")
+    .eq("id", syntheticProfileId).single(), "P4_REVISION_CONFLICT_DB")
+  ensure(conflictRetained.title === concurrentTitle, "P4_REVISION_STALE_OVERWRITE")
+  pass("REVISION_UI_STALE_CAS_DENIED", { latestEditorialTitlePreserved: true })
 } finally {
   if (page) await page.close()
   if (browser) await browser.close()
@@ -1398,6 +1532,8 @@ try {
   if (navigationFixtures.length) await service.from("navigation_items").delete().in("id", navigationFixtures)
   for (const record of collectionFixtureRows)
     await service.from(record.table).delete().eq("id", record.id)
+  if (revisionFixtureIds.length)
+    await service.from("content_revisions").delete().in("id", revisionFixtureIds)
   if (syntheticCareerRowId) await service.from("career_experiences").delete().eq("id", syntheticCareerRowId)
   if (syntheticCareerSectionId) await service.from("sections").delete().eq("id", syntheticCareerSectionId)
   if (syntheticTestimonialId) await service.from("testimonials").delete().eq("id", syntheticTestimonialId)
@@ -1405,5 +1541,5 @@ try {
   if (syntheticProfileId) await service.from("sections").delete().eq("id", syntheticProfileId)
   if (userId) await service.auth.admin.deleteUser(userId)
 }
-console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 50, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
-if (tests.length !== 50) process.exitCode = 1
+console.log("P4_LOCAL_BROWSER_RESULT " + JSON.stringify({ passed: tests.length, expected: 55, endpoint: "127.0.0.1", cloudConnections: 0, syntheticOnly: true, checks: tests }))
+if (tests.length !== 55) process.exitCode = 1
