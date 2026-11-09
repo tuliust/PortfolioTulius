@@ -286,7 +286,18 @@ try {
   // A failed PostgREST PATCH must leave the public catalog row unchanged and
   // preserve the editable draft; this simulates a SQL/network failure at UI level.
   const patchRejectedAlt = "Alteração bloqueada por SQL 503 " + suffix
-  await updateMediaInput("Texto alternativo", patchRejectedAlt)
+  const rejectedTextArea = await page.$(".media-library-detail label textarea")
+  ensure(Boolean(rejectedTextArea), "MEDIA_UI_PATCH_503_TEXTAREA")
+  await rejectedTextArea.click()
+  await page.keyboard.down("Control")
+  await page.keyboard.press("A")
+  await page.keyboard.up("Control")
+  await page.keyboard.type(patchRejectedAlt, { delay: 1 })
+  await page.waitForFunction((expected) => {
+    const textArea = document.querySelector(".media-library-detail label textarea")
+    const saveButton = document.querySelector(".media-library-detail .media-actions button.primary-button")
+    return textArea?.value === expected && Boolean(saveButton && !saveButton.disabled)
+  }, { timeout: 10000 }, patchRejectedAlt)
   let rejectedPatchCount = 0
   const rejectPatch = (request) => {
     const url = new URL(request.url())
