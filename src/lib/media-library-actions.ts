@@ -64,27 +64,69 @@ export async function publishPrivateMedia(asset: PrivateMediaAsset): Promise<Med
   })
   if (upload.error) return { ok: false, message: upload.error.message }
 
-  const update = await client
-    .from("media_assets")
-    .update({
-      storage_bucket: "portfolio-public",
-      status: "published",
-    })
-    .eq("id", asset.id)
-    .eq("storage_bucket", "portfolio-private")
-    .eq("storage_path", asset.storage_path)
-    .select("id")
-    .single()
-
-  if (update.error) {
-    const cleanup = await client.storage.from("portfolio-public").remove([asset.storage_path])
-    return {
-      ok: false,
-      message:
-        update.error.message +
-        (cleanup.error
-          ? " Atenção: a cópia pública precisa de remoção manual."
-          : " Cópia pública revertida."),
+  // A timeout may happen after Postgres has committed. Never delete the
+  // freshly copied public object until a subsequent catalog read proves the
+  // row still points to its private source.
+  let writeError: string | null = null
+  try {
+    const update = await client
+      .from("media_assets")
+      .update({
+        storage_bucket: "portfolio-public",
+        status: "published",
+      })
+      .eq("id", asset.id)
+      .eq("storage_bucket", "portfolio-private")
+      .eq("storage_path", asset.storage_path)
+      .select("id")
+      .single()
+    writeError = update.error?.message ?? (update.data?.id ? null : "Gravação não confirmada.")
+  } catch (error) {
+    writeError = String(error)
+  }
+  if (writeError) {
+    let current: { storage_bucket: string; storage_path: string; status: string } | null = null
+    try {
+      const rechecked = await client
+        .from("media_assets")
+        .select("storage_bucket,storage_path,status")
+        .eq("id", asset.id)
+        .maybeSingle()
+      if (!rechecked.error) current = rechecked.data
+    } catch {
+      // Unknown result is safer than deleting a possibly published object.
+    }
+    const confirmedPublished =
+      current?.storage_bucket === "portfolio-public" &&
+      current?.storage_path === asset.storage_path &&
+      current?.status === "published"
+    if (!confirmedPublished) {
+      const definitelyPrivate =
+        current?.storage_bucket === "portfolio-private" &&
+        current?.storage_path === asset.storage_path
+      if (!definitelyPrivate)
+        return {
+          ok: false,
+          message:
+            writeError +
+            " A publicação não pôde ser confirmada. A cópia pública foi preservada para reconciliação; recarregue o catálogo antes de tentar novamente.",
+        }
+      try {
+        const cleanup = await client.storage.from("portfolio-public").remove([asset.storage_path])
+        return {
+          ok: false,
+          message:
+            writeError +
+            (cleanup.error
+              ? " Atenção: a cópia pública precisa de remoção manual."
+              : " Cópia pública revertida após confirmação de que o catálogo segue privado."),
+        }
+      } catch (error) {
+        return {
+          ok: false,
+          message: writeError + " Atenção: remoção da cópia pública não confirmada: " + String(error),
+        }
+      }
     }
   }
   // The catalog now points at the public object. Keep no unreferenced
