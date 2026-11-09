@@ -1025,6 +1025,31 @@ export function ContentStudio({
           ? { editorAnchor: latest.data.content_json.editorAnchor }
           : {}),
       }
+      if (experienceSlug === "perfil") {
+        // Settings and content editors share the same first Hero item. Keep a
+        // freshly saved root background unless this form explicitly edited it.
+        const originalRoot = savedBlock?.content_json.items?.[0]?.hero?.rootBackground
+        const draftRoot = draft.content_json.items?.[0]?.hero?.rootBackground
+        const latestRoot = latest.data?.content_json?.items?.[0]?.hero?.rootBackground
+        if (
+          draftRoot !== originalRoot &&
+          latestRoot !== originalRoot &&
+          latestRoot !== draftRoot
+        ) {
+          setMessage(
+            "A cor de fundo do Hero mudou em outra edição. Reabra a seção para resolver o conflito.",
+          )
+          return false
+        }
+        if (draftRoot === originalRoot && latestRoot !== originalRoot && contentToSave.items?.[0]) {
+          const items = [...contentToSave.items]
+          items[0] = {
+            ...items[0],
+            hero: { ...items[0].hero, rootBackground: latestRoot },
+          }
+          contentToSave = { ...contentToSave, items }
+        }
+      }
     }
     const { error } = await supabase.rpc("save_content_block_atomic", {
       p_block_id: draft.id,
