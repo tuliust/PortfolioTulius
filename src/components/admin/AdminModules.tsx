@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { tryCompositeSave, sameJson } from "../../lib/p2-composite-save"
 import { adminVisualAreas, type AdminVisualArea } from "../../lib/admin-visual-areas"
 import { sectionElementGroup } from "../../lib/section-element-group"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
@@ -78,6 +79,7 @@ type BlockRow = {
   status: string
   is_placeholder: boolean
   editorial_note: string | null
+  updated_at?: string
 }
 
 function StatusMessage({ children }: { children: string }) {
@@ -164,6 +166,7 @@ export function ContentStudio({
   >({})
   const [loadedPanelKeys, setLoadedPanelKeys] = useState<PanelKey[]>([])
   const [editedPanelKeys, setEditedPanelKeys] = useState<PanelKey[]>([])
+  const [placementVersions, setPlacementVersions] = useState<Partial<Record<PanelKey, string>>>({})
   const [placementsLoading, setPlacementsLoading] = useState(true)
   const [placementsReadError, setPlacementsReadError] = useState(false)
   const placement = placementsByPanel[placementPanel] ?? initialPlacement
@@ -260,6 +263,7 @@ export function ContentStudio({
     setPlacementsByPanel({})
     setLoadedPanelKeys([])
     setEditedPanelKeys([])
+    setPlacementVersions({})
     setPlacementsLoading(true)
     setPlacementsReadError(false)
     if (!selectedId || !supabase || !selected) {
@@ -270,10 +274,18 @@ export function ContentStudio({
     // Resolve panels independently to avoid relying on an ambiguous join shape.
     void Promise.all([
       supabase.from("section_panels").select("id,panel_key").eq("section_id", selected.section_id),
-      supabase
-        .from("block_placements")
-        .select("panel_id,layout_variant,is_visible,motion_config")
-        .eq("block_id", selectedId),
+      (async () => {
+        const versioned = await supabase
+          .from("block_placements")
+          .select("panel_id,layout_variant,is_visible,motion_config,updated_at")
+          .eq("block_id", selectedId)
+        if (versioned.error?.code !== "42703") return versioned
+        // The production schema has no placement.updated_at until P2 is enabled.
+        return supabase
+          .from("block_placements")
+          .select("panel_id,layout_variant,is_visible,motion_config")
+          .eq("block_id", selectedId)
+      })(),
     ]).then(([panelResult, placementResult]) => {
       if (cancelled) return
       if (panelResult.error || placementResult.error) {
@@ -291,6 +303,7 @@ export function ContentStudio({
       )
       const byPanel: Partial<Record<PanelKey, PlacementForm>> = {}
       const keys: PanelKey[] = []
+      const versions: Partial<Record<PanelKey, string>> = {}
       for (const row of placementResult.data ?? []) {
         const key = panelNames.get(row.panel_id) as PanelKey | undefined
         if (key !== "desktop" && key !== "mobile-a" && key !== "mobile-b") continue
@@ -305,7 +318,10 @@ export function ContentStudio({
           once: typeof motion?.once === "boolean" ? motion.once : true,
         }
         keys.push(key)
+        const version = (row as { updated_at?: string }).updated_at
+        if (typeof version === "string") versions[key] = version
       }
+      setPlacementVersions(versions)
       setPlacementsByPanel(byPanel)
       setLoadedPanelKeys(keys)
       setPlacementsLoading(false)
@@ -366,9 +382,10 @@ export function ContentStudio({
       }
     }
 
-    // Check the source section before any block update. A CAS write prevents
-    // another editor's newer copy from being silently overwritten.
-    const heroTextSavedNow = heroCopyDirty
+    // Validate the Hero copy against the user's initial snapshot. A later RPC
+    // checks the exact updated_at under row locks before making any write.
+    const normalizedCopy = { ...heroCopy, title: heroCopy.title.trim() }
+    let expectedSectionVersion: string | null = null
     if (heroCopyDirty) {
       const current = await supabase
         .from("sections")
@@ -387,52 +404,29 @@ export function ContentStudio({
         setMessage("Outra edição modificou os textos do Hero. Reabra a seção antes de salvar.")
         return false
       }
-      const normalizedCopy = { ...heroCopy, title: heroCopy.title.trim() }
-      const updated = await supabase
-        .from("sections")
-        .update(normalizedCopy)
-        .eq("id", draft.section_id)
-        .eq("updated_at", current.data.updated_at)
-        .select("title,eyebrow,intro")
-        .maybeSingle()
-      if (
-        updated.error ||
-        updated.data?.title !== normalizedCopy.title ||
-        updated.data?.eyebrow !== normalizedCopy.eyebrow ||
-        updated.data?.intro !== normalizedCopy.intro
-      ) {
-        setMessage(
-          updated.error?.message ??
-            "Não foi possível confirmar os textos do Hero: houve edição concorrente. Reabra a seção.",
-        )
-        return false
-      }
-      setHeroCopy(normalizedCopy)
-      setHeroCopySaved(normalizedCopy)
-    }
-    // A text-only edit must never rewrite a content block or its placements.
-    if (!blockDirty) {
-      setMessage("Textos do Hero salvos e conferidos no Supabase.")
-      onSaved?.()
-      return true
+      expectedSectionVersion = current.data.updated_at
     }
 
-    // Preserve existing independent placements: send only edited panels
-    // and create the required desktop/mobile placements if they are missing.
+    // Preserve all unedited panels. Existing placements carry their original
+    // versions when the new migration is installed; absent versions on the old
+    // backend are only used by the legacy, backward-compatible save path.
     const requiredKeys: PanelKey[] = [
       "desktop",
       draft.mobile_panel === "a" ? "mobile-a" : "mobile-b",
     ]
-    const changedKeys = Array.from(
-      new Set([
-        ...editedPanelKeys,
-        ...requiredKeys.filter((key) => !loadedPanelKeys.includes(key)),
-      ]),
-    )
+    const changedKeys = blockDirty
+      ? Array.from(
+          new Set([
+            ...editedPanelKeys,
+            ...requiredKeys.filter((key) => !loadedPanelKeys.includes(key)),
+          ]),
+        )
+      : []
     const placementUpdates = changedKeys.map((key) => {
       const form = placementsByPanel[key] ?? initialPlacement
       return {
         panel_key: key,
+        expected_updated_at: placementVersions[key] ?? null,
         sort_order: draft.sort_order,
         layout_variant: form.layout_variant,
         is_visible: form.is_visible,
@@ -446,50 +440,134 @@ export function ContentStudio({
       }
     })
 
-    setMessage("Salvando bloco e painéis…")
     let contentToSave = draft.content_json
-    if (draft.mobile_panel === "a") {
-      // Another editor can save the CMS-only section label while this item form is open.
-      // Read it again immediately before the atomic write to avoid losing that label.
+    if (blockDirty && draft.mobile_panel === "a") {
       const latest = await supabase
         .from("content_blocks")
-        .select("content_json")
+        .select("content_json,updated_at")
         .eq("id", draft.id)
         .single()
-      if (latest.error) {
-        setMessage(latest.error.message)
+      if (latest.error || !latest.data) {
+        setMessage(latest.error?.message ?? "Não foi possível conferir o bloco atual.")
+        return false
+      }
+      if (latest.data.updated_at !== savedBlock?.updated_at) {
+        setMessage("Este bloco foi alterado em outra edição. Reabra a seção antes de salvar.")
         return false
       }
       contentToSave = {
         ...contentToSave,
-        ...(latest.data?.content_json?.editorTitle !== undefined
+        ...(latest.data.content_json?.editorTitle !== undefined
           ? { editorTitle: latest.data.content_json.editorTitle }
           : {}),
-        ...(latest.data?.content_json?.editorAnchor !== undefined
+        ...(latest.data.content_json?.editorAnchor !== undefined
           ? { editorAnchor: latest.data.content_json.editorAnchor }
           : {}),
       }
       if (experienceSlug === "perfil") {
-        // Settings and content editors share the same first Hero item. Keep a
-        // freshly saved root background unless this form explicitly edited it.
         const originalRoot = savedBlock?.content_json.items?.[0]?.hero?.rootBackground
         const draftRoot = draft.content_json.items?.[0]?.hero?.rootBackground
-        const latestRoot = latest.data?.content_json?.items?.[0]?.hero?.rootBackground
+        const latestRoot = latest.data.content_json?.items?.[0]?.hero?.rootBackground
         if (draftRoot !== originalRoot && latestRoot !== originalRoot && latestRoot !== draftRoot) {
-          setMessage(
-            "A cor de fundo do Hero mudou em outra edição. Reabra a seção para resolver o conflito.",
-          )
+          setMessage("A cor de fundo do Hero mudou em outra edição. Reabra a seção.")
           return false
         }
         if (draftRoot === originalRoot && latestRoot !== originalRoot && contentToSave.items?.[0]) {
           const items = [...contentToSave.items]
-          items[0] = {
-            ...items[0],
-            hero: { ...items[0].hero, rootBackground: latestRoot },
-          }
+          items[0] = { ...items[0], hero: { ...items[0].hero, rootBackground: latestRoot } }
           contentToSave = { ...contentToSave, items }
         }
       }
+    }
+
+    setMessage("Salvando e conferindo a transação…")
+    const composed = await tryCompositeSave({
+      p_section_id: draft.section_id,
+      p_section_changes: heroCopyDirty ? normalizedCopy : {},
+      p_expected_section_updated_at: expectedSectionVersion,
+      p_block_id: blockDirty ? draft.id : null,
+      p_block_changes: blockDirty
+        ? {
+            block_type: draft.block_type,
+            content_json: contentToSave,
+            mobile_panel: draft.mobile_panel,
+            sort_order: draft.sort_order,
+            status: draft.status === "archived" ? "archived" : "published",
+            is_placeholder: draft.is_placeholder,
+            editorial_note: draft.editorial_note,
+          }
+        : null,
+      p_expected_block_updated_at: blockDirty ? (savedBlock?.updated_at ?? null) : null,
+      p_placements: placementUpdates,
+    })
+    if (composed.mode === "error") {
+      setMessage(composed.message)
+      return false
+    }
+    if (composed.mode === "saved") {
+      // Do not mark a write successful until rereading it through PostgREST.
+      const [sectionRead, blockRead] = await Promise.all([
+        heroCopyDirty
+          ? supabase.from("sections").select("title,eyebrow,intro").eq("id", draft.section_id).single()
+          : Promise.resolve(null),
+        blockDirty
+          ? supabase.from("content_blocks").select("id,content_json").eq("id", draft.id).single()
+          : Promise.resolve(null),
+      ])
+      if (
+        (heroCopyDirty &&
+          (sectionRead?.error ||
+            sectionRead?.data?.title !== normalizedCopy.title ||
+            (sectionRead?.data?.eyebrow ?? "") !== normalizedCopy.eyebrow ||
+            (sectionRead?.data?.intro ?? "") !== normalizedCopy.intro)) ||
+        (blockDirty &&
+          (blockRead?.error || !blockRead?.data ||
+            !sameJson(blockRead.data.content_json?.items, contentToSave.items)))
+      ) {
+        setMessage("A gravação foi solicitada, mas a confirmação de leitura falhou. Recarregue antes de reenviar.")
+        return false
+      }
+      if (heroCopyDirty) {
+        setHeroCopy(normalizedCopy)
+        setHeroCopySaved(normalizedCopy)
+      }
+      if (blockDirty && !(await load())) {
+        setMessage("O banco confirmou a transação, mas a recarga do bloco falhou. Verifique antes de reenviar.")
+        return false
+      }
+      setMessage("Alterações salvas atomicamente e conferidas no Supabase.")
+      onSaved?.()
+      return true
+    }
+
+    // Compatible production path while the new RPC is NOT installed. Only a
+    // missing-function error may reach this branch. The old atomic block RPC
+    // stays active, and an intermediate failure is reported explicitly.
+    const heroTextSavedNow = heroCopyDirty
+    if (heroCopyDirty) {
+      const updated = await supabase
+        .from("sections")
+        .update(normalizedCopy)
+        .eq("id", draft.section_id)
+        .eq("updated_at", expectedSectionVersion)
+        .select("title,eyebrow,intro")
+        .maybeSingle()
+      if (
+        updated.error ||
+        updated.data?.title !== normalizedCopy.title ||
+        updated.data?.eyebrow !== normalizedCopy.eyebrow ||
+        updated.data?.intro !== normalizedCopy.intro
+      ) {
+        setMessage(updated.error?.message ?? "Conflito ao salvar textos. Reabra a seção.")
+        return false
+      }
+      setHeroCopy(normalizedCopy)
+      setHeroCopySaved(normalizedCopy)
+    }
+    if (!blockDirty) {
+      setMessage("Textos do Hero salvos e conferidos no banco atual.")
+      onSaved?.()
+      return true
     }
     const { error } = await supabase.rpc("save_content_block_atomic", {
       p_block_id: draft.id,
@@ -505,22 +583,20 @@ export function ContentStudio({
     if (error) {
       setMessage(
         heroTextSavedNow
-          ? "Os textos do Hero foram salvos, mas o bloco não: " + error.message
+          ? "Os textos do Hero foram salvos, mas o bloco não (banco legado): " + error.message
           : error.message,
       )
       return false
     }
-    const reloaded = await load()
-    if (!reloaded) {
-      setMessage(
-        "O banco confirmou a transação do bloco, mas sua leitura posterior falhou. Verifique antes de salvar novamente.",
-      )
+    if (!(await load())) {
+      setMessage("A gravação do bloco foi confirmada, mas a releitura falhou. Recarregue antes de reenviar.")
       return false
     }
-    setMessage("Bloco e textos salvos e conferidos.")
+    setMessage("Bloco salvo e conferido com a RPC existente.")
     onSaved?.()
     return true
   }
+
   useEffect(
     () =>
       registerAdminSaveAction(

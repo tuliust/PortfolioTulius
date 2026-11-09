@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, Navigate, useBlocker, useNavigate } from "react-router"
 import { isAdmin, supabase } from "../../lib/supabase"
+import { tryCompositeSave, sameJson } from "../../lib/p2-composite-save"
 import { PublicSite } from "../public/PublicSite"
 import {
   buildAdminSectionNavigation,
@@ -45,6 +46,7 @@ type SectionRow = {
   theme: string
   layout_variant: string
   animation_preset: string
+  updated_at?: string
   editor_title?: string
   editor_anchor?: string
   editor_block_id?: string
@@ -353,12 +355,102 @@ function SectionsEditor({
     const expected = isSettings
       ? { animation_preset: draft.animation_preset }
       : { title: draft.title.trim(), eyebrow: draft.eyebrow, intro: draft.intro }
+    if (!selected?.updated_at) {
+      setMessage("A versão da seção não foi carregada. Reabra o editor antes de salvar.")
+      return false
+    }
+    const metadataChanged =
+      isSettings &&
+      (adminTitle !== (selected.editor_title ?? selected.title)?.trim() ||
+        anchor !== (selected.editor_anchor ?? selected.slug) ||
+        (draft.slug === "perfil" &&
+          rootBackground !== (selected.editor_root_background ?? "transparent")))
+    let blockContent: Record<string, any> | null = null
+    let expectedBlockVersion: string | null = null
+    if (metadataChanged) {
+      if (!draft.editor_block_id) {
+        setMessage("Bloco do painel A não encontrado. Nenhuma alteração foi salva.")
+        return false
+      }
+      const latest = await supabase
+        .from("content_blocks")
+        .select("content_json,updated_at")
+        .eq("id", draft.editor_block_id)
+        .single()
+      if (latest.error || !latest.data) {
+        setMessage(latest.error?.message ?? "Falha ao conferir metadados do painel.")
+        return false
+      }
+      const current = latest.data.content_json ?? {}
+      const currentTitle = current.editorTitle ?? (draft.slug === "perfil" ? "Hero" : selected.title)
+      const currentAnchor = current.editorAnchor ?? selected.slug
+      const currentRoot = current.items?.[0]?.hero?.rootBackground ?? "transparent"
+      if (
+        currentTitle !== selected.editor_title ||
+        currentAnchor !== selected.editor_anchor ||
+        (draft.slug === "perfil" && currentRoot !== (selected.editor_root_background ?? "transparent"))
+      ) {
+        setMessage("Os metadados do painel foram alterados em outra sessão. Reabra a seção.")
+        return false
+      }
+      const items = [...(current.items ?? [])]
+      if (draft.slug === "perfil" && items[0]) {
+        items[0] = { ...items[0], hero: { ...items[0].hero, rootBackground } }
+      }
+      blockContent = {
+        ...current,
+        editorTitle: adminTitle,
+        editorAnchor: anchor,
+        ...(draft.slug === "perfil" ? { items } : {}),
+      }
+      expectedBlockVersion = latest.data.updated_at
+    }
+    const composed = await tryCompositeSave({
+      p_section_id: draft.id,
+      p_section_changes: expected,
+      p_expected_section_updated_at: selected.updated_at,
+      p_block_id: metadataChanged ? (draft.editor_block_id ?? null) : null,
+      p_block_changes: blockContent ? { content_json: blockContent } : null,
+      p_expected_block_updated_at: expectedBlockVersion,
+      p_placements: [],
+    })
+    if (composed.mode === "error") {
+      setMessage(composed.message)
+      return false
+    }
+    if (composed.mode === "saved") {
+      const [verifiedSection, verifiedBlock] = await Promise.all([
+        supabase.from("sections").select("title,eyebrow,intro,animation_preset").eq("id", draft.id).single(),
+        metadataChanged && draft.editor_block_id
+          ? supabase.from("content_blocks").select("content_json").eq("id", draft.editor_block_id).single()
+          : Promise.resolve(null),
+      ])
+      const sectionMatches = isSettings
+        ? verifiedSection.data?.animation_preset === draft.animation_preset
+        : verifiedSection.data?.title === draft.title.trim() &&
+          verifiedSection.data?.eyebrow === draft.eyebrow &&
+          verifiedSection.data?.intro === draft.intro
+      if (
+        verifiedSection.error || !sectionMatches ||
+        (metadataChanged && (verifiedBlock?.error ||
+          !sameJson(verifiedBlock?.data?.content_json, blockContent)))
+      ) {
+        setMessage("A transação foi enviada, mas a confirmação falhou. Recarregue antes de reenviar.")
+        return false
+      }
+      setMessage("Alterações salvas atomicamente e conferidas no Supabase.")
+      reload()
+      return true
+    }
+    // Backend de produção sem RPC composta: mantém o fluxo publicado até
+    // a aplicação separadamente autorizada da migration.
     const updated = await supabase
       .from("sections")
       .update(expected)
       .eq("id", draft.id)
+      .eq("updated_at", selected.updated_at)
       .select("id,title,eyebrow,intro,animation_preset")
-      .single()
+      .maybeSingle()
     const verified = isSettings
       ? updated.data?.animation_preset === draft.animation_preset
       : updated.data?.title === draft.title.trim() &&
