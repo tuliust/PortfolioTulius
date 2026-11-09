@@ -898,16 +898,26 @@ try {
   const externalWrite = await service.from("testimonials")
     .update({ quote_text: externalQuote }).eq("id", syntheticTestimonialId).select("id").single()
   ensure(!externalWrite.error, "TESTIMONIAL_CONCURRENT_FIXTURE")
-  await changeTestimonial("Depoimento", "Sobrescrita obsoleta " + suffix)
-  // React must commit the changed draft before its save button becomes enabled.
-  // Clicking during the input event would be a no-op and falsely fail this test.
+  // Send trusted keystrokes on this reopened record, rather than relying on
+  // React's synthetic input setter while the collection is still settling.
+  const staleText = "Sobrescrita obsoleta " + suffix
+  const quoteInput = await page.$(".site-editor-testimonials .editor-form label.field-wide textarea")
+  ensure(Boolean(quoteInput), "TESTIMONIAL_STALE_QUOTE_FIELD")
+  await quoteInput.click()
+  await page.evaluate(() =>
+    document.querySelector(".site-editor-testimonials .editor-form label.field-wide textarea")?.select(),
+  )
+  await page.keyboard.type(staleText, { delay: 2 })
+  const quoteFormState = await page.evaluate(() => ({
+    quote: document.querySelector(".site-editor-testimonials .editor-form label.field-wide textarea")?.value,
+    saveDisabled: document.querySelector(".site-editor-testimonials .form-actions button.secondary-button")?.disabled,
+  }))
+  console.log("P4_TESTIMONIAL_CAS_DIAGNOSTIC " + JSON.stringify(quoteFormState))
   await page.waitForFunction((expected) => {
     const button = document.querySelector(".site-editor-testimonials .form-actions button.secondary-button")
-    const textarea = [...document.querySelectorAll(".site-editor-testimonials .editor-form label")]
-      .find((label) => label.textContent?.trim().startsWith("Depoimento"))
-      ?.querySelector("textarea")
+    const textarea = document.querySelector(".site-editor-testimonials .editor-form label.field-wide textarea")
     return Boolean(button && !button.disabled && textarea?.value === expected)
-  }, { timeout: 10000 }, "Sobrescrita obsoleta " + suffix)
+  }, { timeout: 10000 }, staleText)
   await page.click(".site-editor-testimonials .form-actions button.secondary-button")
   await page.waitForFunction(() =>
     document.querySelector(".site-editor-testimonials")?.textContent
