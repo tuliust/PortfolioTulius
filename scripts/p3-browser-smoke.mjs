@@ -50,6 +50,28 @@ try {
         } catch { /* Observer availability varies by browser. */ }
       })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
+      // networkidle2 only measures network quiet; the public CMS can still be
+      // awaiting its first live PostgREST response. Require the actual startup
+      // milestones before checking ordering or classifying a blank menu as a
+      // visual regression. Timeout remains a hard failure, not an approval.
+      try {
+        await page.waitForFunction(() => {
+          const marks = new Set(performance.getEntriesByType("mark").map((entry) => entry.name))
+          return marks.has("p3:profile-bootstrap-ready") &&
+            marks.has("p3:profile-dom-committed") &&
+            marks.has("p3:portfolio-primary-ready") &&
+            document.querySelectorAll("section.portfolio-section").length > 0
+        }, { timeout: 20000 })
+      } catch (error) {
+        const diagnosis = await page.evaluate(() => ({
+          marks: performance.getEntriesByType("mark").map((entry) => entry.name)
+            .filter((name) => name.startsWith("p3:")),
+          publicSections: document.querySelectorAll("section.portfolio-section").length,
+          message: document.querySelector('[role="alert"]')?.textContent?.slice(0, 160) ?? null,
+        }))
+        throw new Error("Public CMS initial load did not settle: " +
+          JSON.stringify(diagnosis) + " / " + String(error))
+      }
       const firstFold = await page.evaluate(() => {
         const marks = Object.fromEntries(
           performance.getEntriesByType("mark")
@@ -594,6 +616,13 @@ try {
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
       await page.click(".menu-button")
       await page.waitForSelector(".nav-backdrop.is-open", { timeout: 10000 })
+      // A drawer with zero links while the CMS is loading is not evidence
+      // that eight links no longer fit. Wait for populated navigation, then
+      // perform the unchanged geometric assertions. A real read failure
+      // still times out and fails this test.
+      await page.waitForFunction(() =>
+        document.querySelectorAll(".nav-drawer ol li button").length === 8,
+        { timeout: 20000 })
       const info = await page.evaluate(() => {
         const drawer = document.querySelector(".nav-drawer")
         const buttons = [...drawer.querySelectorAll("ol li button")]

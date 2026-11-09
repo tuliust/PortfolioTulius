@@ -1483,7 +1483,7 @@ try {
     mobileStyled.content_json.items?.[0]?.desktop?.titleSize === 72,
     "P4_DEVICE_MOBILE_REWROTE_DESKTOP")
   pass("DEVICE_UI_MOBILE_TYPOGRAPHY_INDEPENDENT",
-    { mobileSize: 19, desktopSizePreserved: 72 })
+    { mobileSize: 20, desktopSizePreserved: 72 })
 
   // Identity tokens are edited by real DOM controls, not database shortcuts.
   await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
