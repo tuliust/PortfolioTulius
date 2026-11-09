@@ -94,7 +94,8 @@ export async function uploadPublishedMedia(file: File): Promise<MediaAction> {
   } catch (error) {
     return {
       ok: false,
-      message: persistError + " Atenção: limpeza do objeto sem cadastro não confirmada: " + String(error),
+      message:
+        persistError + " Atenção: limpeza do objeto sem cadastro não confirmada: " + String(error),
     }
   }
 }
