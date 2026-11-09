@@ -123,6 +123,19 @@ export function EnhancedMediaLibrary({
             .eq("updated_at", asset.updated_at)
             .select("id")
             .single(),
+        // An interrupted response may follow a committed SQL update.
+        // Compensate only after a fresh read confirms the original path.
+        reconcile: async () => {
+          const { data, error } = await client
+            .from("media_assets")
+            .select("storage_path")
+            .eq("id", asset.id)
+            .maybeSingle()
+          if (error || !data) return "unknown"
+          if (data.storage_path === nextPath) return "committed"
+          if (data.storage_path === asset.storage_path) return "unchanged"
+          return "unknown"
+        },
         undoStage: () => client.storage.from("portfolio-private").remove([nextPath]),
         cleanupOld: () => client.storage.from("portfolio-private").remove([asset.storage_path]),
       })

@@ -7,6 +7,8 @@ export async function stagePrivateMediaChange(steps: {
   persist: () => Promise<MediaResponse>
   undoStage: () => Promise<MediaResponse>
   cleanupOld?: () => Promise<MediaResponse>
+  /** Distinguish a rejected SQL write from a lost response after commit. */
+  reconcile?: () => Promise<"committed" | "unchanged" | "unknown">
 }): Promise<Outcome> {
   try {
     const upload = await steps.stage()
@@ -23,19 +25,37 @@ export async function stagePrivateMediaChange(steps: {
     saveError = String(error)
   }
 
+  let recoveredAfterUncertainResponse = false
   if (saveError) {
+    let state: "committed" | "unchanged" | "unknown" = "unknown"
     try {
-      const cleanup = await steps.undoStage()
+      state = (await steps.reconcile?.()) ?? "unknown"
+    } catch {
+      // A failed confirmation read is an unknown outcome, not a rollback.
+    }
+    if (state === "committed") {
+      recoveredAfterUncertainResponse = true
+    } else if (state === "unknown") {
       return {
         ok: false,
-        message: cleanup.error
-          ? `${saveError} Atenção: arquivo temporário não removido: ${cleanup.error.message}`
-          : `${saveError} Upload temporário revertido.`,
+        message:
+          saveError +
+          " Não foi possível confirmar a gravação. As cópias anterior e nova foram preservadas; recarregue o catálogo antes de tentar novamente.",
       }
-    } catch (error) {
-      return {
-        ok: false,
-        message: `${saveError} Atenção: falha na limpeza do arquivo temporário: ${String(error)}`,
+    } else {
+      try {
+        const cleanup = await steps.undoStage()
+        return {
+          ok: false,
+          message: cleanup.error
+            ? `${saveError} Atenção: arquivo temporário não removido: ${cleanup.error.message}`
+            : `${saveError} Upload temporário revertido.`,
+        }
+      } catch (error) {
+        return {
+          ok: false,
+          message: `${saveError} Atenção: falha na limpeza do arquivo temporário: ${String(error)}`,
+        }
       }
     }
   }
@@ -59,5 +79,11 @@ export async function stagePrivateMediaChange(steps: {
     }
   }
 
-  return { ok: true, message: "" }
+  return {
+    ok: true,
+    message: "",
+    ...(recoveredAfterUncertainResponse
+      ? { warning: "Gravação confirmada por releitura após resposta SQL incerta." }
+      : {}),
+  }
 }
