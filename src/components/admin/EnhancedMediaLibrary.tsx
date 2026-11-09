@@ -309,9 +309,7 @@ export function EnhancedMediaLibrary({
                 <input
                   maxLength={300}
                   value={mediaDraft.credit}
-                  onChange={(event) =>
-                    setMediaDraft({ ...mediaDraft, credit: event.target.value })
-                  }
+                  onChange={(event) => setMediaDraft({ ...mediaDraft, credit: event.target.value })}
                 />
               </label>
               <div className="media-library-frame-control">
