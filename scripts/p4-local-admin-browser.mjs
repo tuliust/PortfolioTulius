@@ -1632,6 +1632,22 @@ try {
   const leftBeforeMobileB = await get(service.from("block_placements")
     .select("panel_id,layout_variant,is_visible,motion_config")
     .eq("block_id", blockBySide.a).order("panel_id"), "MOBILE_B_LEFT_BASELINE")
+  // Reopen the editor to clear the previous mobile subview and any
+  // asynchronous save context before switching to the sibling block.
+  await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForSelector(".admin-shell", { timeout: 20000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".admin-sidebar nav button")]
+      .find((button) => button.textContent?.trim() === "Editor do site")?.click()
+  })
+  await page.waitForSelector(".site-editor-sidebar", { timeout: 15000 })
+  await page.evaluate(() => {
+    [...document.querySelectorAll(".site-editor-sidebar button")]
+      .find((button) => button.textContent?.includes("Hero"))?.click()
+  })
+  await page.waitForFunction(() =>
+    document.querySelector(".site-editor-heading")?.textContent?.includes("Hero"),
+    { timeout: 12000 })
   await page.evaluate(() => {
     [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
       .find((button) => button.textContent?.includes("Direita"))?.click()
