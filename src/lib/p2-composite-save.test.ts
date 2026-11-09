@@ -50,13 +50,11 @@ describe("P2: fallback seguro da RPC composta", () => {
     expect((await tryCompositeSave(payload)).mode).toBe("error")
   })
 
-  it("não repete gravação após queda de rede ou resultado desconhecido", async () => {
-    rpc.mockImplementation(() => {
-      throw new Error("connection reset")
-    })
+  it("não ativa o legado quando a rede devolve erro não classificado", async () => {
+    rpc.mockResolvedValue({ error: { code: "PGRST000", message: "connection reset" } })
     const outcome = await tryCompositeSave(payload)
     expect(outcome.mode).toBe("error")
-    if (outcome.mode === "error") expect(outcome.message).toContain("incerto")
+    if (outcome.mode === "error") expect(outcome.message).toContain("Recarregue")
     expect(rpc).toHaveBeenCalledOnce()
   })
 
