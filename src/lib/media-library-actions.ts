@@ -124,7 +124,8 @@ export async function publishPrivateMedia(asset: PrivateMediaAsset): Promise<Med
       } catch (error) {
         return {
           ok: false,
-          message: writeError + " Atenção: remoção da cópia pública não confirmada: " + String(error),
+          message:
+            writeError + " Atenção: remoção da cópia pública não confirmada: " + String(error),
         }
       }
     }

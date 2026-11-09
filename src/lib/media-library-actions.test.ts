@@ -40,8 +40,16 @@ const asset = {
   storage_path: "synthetic/release.svg",
   mime_type: "image/svg+xml",
 }
-const privateRow = { storage_bucket: "portfolio-private", storage_path: asset.storage_path, status: "draft" }
-const publicRow = { storage_bucket: "portfolio-public", storage_path: asset.storage_path, status: "published" }
+const privateRow = {
+  storage_bucket: "portfolio-private",
+  storage_path: asset.storage_path,
+  status: "draft",
+}
+const publicRow = {
+  storage_bucket: "portfolio-public",
+  storage_path: asset.storage_path,
+  status: "published",
+}
 
 describe("private media publication reconciliation", () => {
   beforeEach(() => {
@@ -61,7 +69,10 @@ describe("private media publication reconciliation", () => {
   })
 
   it("preserves the public copy when an error response follows a committed update", async () => {
-    mocks.updateResult.mockResolvedValue({ data: null, error: { message: "connection interrupted" } })
+    mocks.updateResult.mockResolvedValue({
+      data: null,
+      error: { message: "connection interrupted" },
+    })
     mocks.readResult.mockResolvedValue({ data: publicRow, error: null })
     const result = await publishPrivateMedia(asset)
     expect(result.ok).toBe(true)

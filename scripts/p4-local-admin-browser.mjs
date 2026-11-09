@@ -901,10 +901,13 @@ try {
   await changeTestimonial("Depoimento", "Sobrescrita obsoleta " + suffix)
   // React must commit the changed draft before its save button becomes enabled.
   // Clicking during the input event would be a no-op and falsely fail this test.
-  await page.waitForFunction(() => {
+  await page.waitForFunction((expected) => {
     const button = document.querySelector(".site-editor-testimonials .form-actions button.secondary-button")
-    return Boolean(button && !button.disabled)
-  }, { timeout: 10000 })
+    const textarea = [...document.querySelectorAll(".site-editor-testimonials .editor-form label")]
+      .find((label) => label.textContent?.trim().startsWith("Depoimento"))
+      ?.querySelector("textarea")
+    return Boolean(button && !button.disabled && textarea?.value === expected)
+  }, { timeout: 10000 }, "Sobrescrita obsoleta " + suffix)
   await page.click(".site-editor-testimonials .form-actions button.secondary-button")
   await page.waitForFunction(() =>
     document.querySelector(".site-editor-testimonials")?.textContent

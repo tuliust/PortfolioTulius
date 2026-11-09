@@ -175,7 +175,8 @@ export function EnhancedMediaLibrary({
         return false
       }
       setMessage(
-        "Metadados salvos e mídia publicada." + (publication.warning ? " " + publication.warning : ""),
+        "Metadados salvos e mídia publicada." +
+          (publication.warning ? " " + publication.warning : ""),
       )
     }
     setFramingOpen(false)
