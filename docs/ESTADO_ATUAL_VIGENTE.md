@@ -1,3 +1,7 @@
+> **ESTADO VIGENTE EM 10/11/2026:** consultar [checklist oficial atualizado](CHECKLIST_PENDENCIAS_VIGENTE_2026-11-10.md) antes de qualquer status histórico abaixo. Duas cópias privadas de backup SQL foram verificadas com SHA-256; restauração PostgreSQL 17, backup de objetos Storage, reconciliação operacional das migrations e implantação P2 continuam pendentes. Aceites de LCP e visual foram concedidos. O material abaixo preserva o histórico e pode referir-se a situações superadas.
+
+---
+
 # Atualização operacional — 10/11/2026 (aceites e condição de segurança)
 
 O proprietário **aceitou formalmente** o desvio LCP mobile do P3 e **homologou visualmente o site em dispositivos reais**, por declaração expressa. Não tratar o LCP como PASS: último resultado `5f1db1f9`, mediana **3.510,791 ms > 3.500 ms**, [P3 FAILURE](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42733926964). O campo crédito saiu da interface administrativa no commit `28b8e2c8`, sem excluir dados históricos nem alterar o público.

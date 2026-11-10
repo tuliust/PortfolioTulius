@@ -1,3 +1,7 @@
+> **ESTADO VIGENTE EM 10/11/2026:** consultar [checklist oficial atualizado](CHECKLIST_PENDENCIAS_VIGENTE_2026-11-10.md) antes de qualquer status histórico abaixo. Duas cópias privadas de backup SQL foram verificadas com SHA-256; restauração PostgreSQL 17, backup de objetos Storage, reconciliação operacional das migrations e implantação P2 continuam pendentes. Aceites de LCP e visual foram concedidos. O material abaixo preserva o histórico e pode referir-se a situações superadas.
+
+---
+
 # Decisões e bloqueios atuais — 10/11/2026
 
 **Aceites do proprietário (expressos nesta data):**
