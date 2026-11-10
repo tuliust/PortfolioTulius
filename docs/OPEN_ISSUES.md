@@ -1,3 +1,6 @@
+> **Atualização de verificação executada (10/11/2026):** os três dumps SQL passaram SHA-256, **22/22 tabelas públicas** e **3/3 contagens adicionais** `auth.users`, `storage.buckets`, `storage.objects` coincidem com a produção; 25/25 sem divergências. Ver [relatório pré-restauração](P2_PRECHECK_BACKUP_RESTORACAO_2026-11-10.md) e [verificador CLI](../scripts/hygiene/verify-supabase-backup.mjs). Todos os cinco workflows do SHA `9a9d4c6e` foram aprovados, inclusive P3 LCP mobile 3.385,556 ms (PASS). **Restauração isolada não executada**; Storage físico não exportado e histórico de migrations ausente do dump padrão. P2 não instalada.
+
+---
 > **ESTADO VIGENTE EM 10/11/2026:** consultar [checklist oficial atualizado](CHECKLIST_PENDENCIAS_VIGENTE_2026-11-10.md) antes de qualquer status histórico abaixo. Duas cópias privadas de backup SQL foram verificadas com SHA-256; restauração PostgreSQL 17, backup de objetos Storage, reconciliação operacional das migrations e implantação P2 continuam pendentes. Aceites de LCP e visual foram concedidos. O material abaixo preserva o histórico e pode referir-se a situações superadas.
 
 ---
