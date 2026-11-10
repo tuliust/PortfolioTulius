@@ -1,3 +1,13 @@
+# Atualização de regressão após documentação — Gate P3 REPROVADO
+
+> **Atualização posterior — 09/11/2026, commit `9b902579` (resultado FINAL da regressão).** A convergência funcional foi aprovada, mas o P3 deste SHA terminou **FAILURE**, não "pendente": [P3 #42731103548](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103548). Lighthouse mobile LCP: **3.516,403 / 3.631,569 / 3.467,873 ms**, mediana **3.516,403 ms > teto imutável 3.500 ms** (excesso 16,403 ms). `P6_PERFORMANCE_BUDGET mobile result=FAIL`, `P6_RELEASE_REGRESSIONS` registra o excesso. Browser 0 falhas, P4 38 capturas sem falhas, SEO/paridade PASS, desktop LCP 864,261 ms PASS, e `P3_DEPLOYMENT_GATE` confirmou por HTTP que a produção servia `9b9025798fe1d453674283e670af4f9704bde973`. **Etapa 5: BLOQUEADA para este SHA**, sem reclassificar como sucesso o P3 anterior do SHA `4069611d` (mediana 3.496,608 ms PASS). A variação entre essas duas medições demonstra risco real de instabilidade laboratorial; nenhuma meta foi flexibilizada.
+>
+> Outros resultados do MESMO SHA `9b902579`: [Validate #42731104023](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731104023) SUCCESS **260/260**; [P5 #42731103839](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103839) SUCCESS **119/119**, inclusive **87/87 browser sintético**; [P5 read-only #42731103645](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103645) SUCCESS **19/19, 0 writes**; [exportação #42731103626](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103626) SUCCESS. Supabase produtivo continuou somente leitura, 0 INSERT/UPDATE/DELETE, Storage ou DDL nesta execução; etapa 6 NÃO autorizada/não executada. O commit posterior que incorpora este adendo também exigirá conferência de seus próprios workflows; não presumir resultado.
+
+---
+
+## Evidências convergentes anteriores e histórico
+
 # Estado técnico vigente — convergência das etapas 2, 3 e 5
 
 > **Estado vigente de aceite — 09/11/2026.** Evidências finais da rodada no SHA [`4069611d0b68c80b677f297ad74f6113009fc587`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/4069611d0b68c80b677f297ad74f6113009fc587), todas executadas no mesmo SHA. Este adendo prevalece sobre descrições históricas de jobs pendentes ou falhos **para este SHA**; não altera os resultados anteriores. Um commit documental posterior precisa de nova conferência de seus próprios workflows e fingerprint de deploy.
