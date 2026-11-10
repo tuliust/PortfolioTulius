@@ -1,3 +1,21 @@
+# Pendências e ressalvas vigentes — após convergência do SHA 4069611d
+
+**Os gates técnicos automatizados das etapas 2, 3 e 5 obtiveram resultados finais PASS no SHA `4069611d0b68c80b677f297ad74f6113009fc587`**, não estão mais "pendentes" nessa revisão. Evidências: [P5 119/119](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745803), [Validate 260/260](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745845), [CMS read-only 19/19](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745840), [P3/LCP/SEO/browser](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712746106) e [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745982). A mediana mobile de **3.496,608 ms** passou pelo teto inalterado de 3.500 ms **por apenas 3,392 ms**. O fingerprint HTTP da produção coincidiu com o SHA; Vercel READY.
+
+**Pendências realmente abertas / ressalvas:**
+
+1. **Etapa 6 — bloqueada por autorização específica.** `supabase/migrations/20261109024100_p2_composite_section_block_save.sql` existe apenas em Git/local sintético. A produção não tem RPC `save_section_block_atomic` nem coluna/trigger P2. Backup testado, plano de retorno validado e reconciliação do histórico de nove migrations remotas ainda exigem checagem **antes** de qualquer DDL.
+2. **Desempenho — aprovado com margem mínima, risco de regressão.** A segunda amostra LCP teve 3.514,925 ms; não afirmar estabilidade estatística ou de campo. Manter budget ≤3.500 ms e monitorar em mudanças futuras, sem afrouxar critério.
+3. **Aceite visual humano:** testar dispositivo real, zoom nativo 200%, leitor de tela e fidelidade à composição aprovada. Browser sintético/38 capturas não substituem essa aprovação.
+4. **Cobertura CMS/mídia:** cenário combinatório de todos os campos/coleções não foi executado; timeout/ACK perdido pós-commit da renomeação foi verificado em unidade, não em E2E de Storage; o crédito não é legenda pública automática; referências externas não mapeadas continuam fora da garantia.
+5. **Fontes privadas ChatGPT:** não são sincronizadas automaticamente com o GitHub. Não publicar backup privado, licenças nem secrets.
+
+**Sem escritas produtivas de Supabase e sem etapa 6.** O presente adendo separa o resultado final do SHA `4069611d` de falhas e estados provisórios **históricos** reproduzidos abaixo. Quando este documento gerar novo SHA, verificar os próprios jobs e o fingerprint dele, sem herdar aprovação.
+
+---
+
+## Histórico de pendências por SHA (não descreve o estado corrente)
+
 # Pendências técnicas — adendo vigente
 
 ## Pendências efetivas após homologação sintética ampliada — 09/11/2026

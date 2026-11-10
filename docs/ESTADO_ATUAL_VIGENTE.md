@@ -1,3 +1,32 @@
+# Estado técnico vigente — convergência das etapas 2, 3 e 5
+
+> **Estado vigente de aceite — 09/11/2026.** Evidências finais da rodada no SHA [`4069611d0b68c80b677f297ad74f6113009fc587`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/4069611d0b68c80b677f297ad74f6113009fc587), todas executadas no mesmo SHA. Este adendo prevalece sobre descrições históricas de jobs pendentes ou falhos **para este SHA**; não altera os resultados anteriores. Um commit documental posterior precisa de nova conferência de seus próprios workflows e fingerprint de deploy.
+
+| Controle no SHA `4069611d` | Evidência comprovada |
+|---|---|
+| Validate | [#42712745845](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745845): **SUCCESS**, 260/260 Vitest em 56 arquivos, formatação, TypeScript, build, smoke, sintaxe |
+| P5 Local Transactional | [#42712745803](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745803): **SUCCESS**, 119/119 = 8 Auth/RLS + 11 P2/RPC + 87 navegador + 8 mídia/API + 5 SEO, stack local `127.0.0.1:54321` e `cloudConnections:0` nos relatórios aplicáveis |
+| CMS autenticado read-only | [#42712745840](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745840): **SUCCESS**, 19/19, zero escritas de conteúdo |
+| P3 Lighthouse, P4 e SEO públicos | [#42712746106](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712746106): **SUCCESS**, browser 0 falhas, 38 capturas (13 desktop/25 mobile), paridade SEO PASS, RLS anônimo 3/3 |
+| Exportação documental | [#42712745982](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42712745982): **SUCCESS** |
+| P3 LCP mobile — gate mantido | 3.471,651 / 3.514,925 / 3.496,608 ms, mediana **3.496,608 ms PASS**, limite **≤3.500 ms**, margem **3,392 ms**. Fragilidade real: 1/3 amostras superou o teto |
+| P3 Lighthouse inicial | Mobile 84 performance; desktop 99. Acessibilidade/boas práticas/SEO 100 em ambos; LCP desktop 970,905 ms |
+| Produção publicada | P3 `P3_DEPLOYMENT_GATE` e P5 `P5_DEPLOYMENT_GATE MATCH`: leitura HTTP de `/p3-deployment.json` confirmou exatamente `4069611d0b68c80b677f297ad74f6113009fc587`. Vercel `dpl_7JC1riVMnW3iL1KSkSmh2MKtUXTx` READY, aliases `tulius.work` / `www.tulius.work` |
+
+**Etapa 2 — APROVADA TECNICAMENTE NO SINTÉTICO, COM RESSALVAS.** Hero A/B, cores/famílias/estilos de Identidade, tipografia e tamanhos por dispositivo, placements desktop/mobile A/mobile B com isolamento, navegação, revisão sem escrita/restauração/CAS e renderer foram exercitados. As sete coleções normalizadas `portfolio_projects`, `metrics`, `skills`, `education`, `language_levels`, `tool_categories`, `contact_channels` passaram em criar/publicar, editar/reabrir, despublicar/republicar com ID estável; `career_experiences` e `testimonials` tiveram cenários próprios de edição, releitura, publicação, CAS e renderer. A cobertura é representativa, **não** varredura combinatória de todos os campos/estilos de cada schema. A atomicidade P2 foi demonstrada localmente, mas **a RPC composta ainda não existe na produção**.
+
+**Etapa 3 — APROVADA TECNICAMENTE NO SINTÉTICO, COM RESSALVAS.** Upload/publicação, `title`, `alt_text`, `credit`, `focal_point`, releitura após reabrir, renomeação privada/publicação, CAS, exclusão de objetos e referências, falhas injetadas HTTP 503 de catálogo SQL/PostgREST e upload Storage, preservação de rascunho, compensação e verificação sem órfãos passaram. Renderer público conferiu ponto focal global e override por uso em Hero desktop/mobile, Sobre desktop/mobile, galerias desktop/mobile e logo desktop. A reconciliação da renomeação de ACK incerto passou em **testes unitários**, não em navegador real com resposta perdida após commit; `credit` é **metadado de catálogo**, não legenda pública automática autorizada.
+
+**Etapa 5 — GATES AUTOMATIZADOS APROVADOS PARA O SHA ACIMA, COM RESSALVAS.** CI, suite integrada, produção servindo mesmo SHA, performance sob orçamento, SEO/paridade, responsividade e público passaram. A aprovação **não** significa aceite visual humano em celular real/zoom 200% nem performance garantida fora das três amostras. Não ampliar o orçamento ou mascarar variação.
+
+**Supabase de produção — SOMENTE LEITURA.** Projeto `portfolio` HEALTHY; SELECT em 09/11/2026: 14 seções, 28 blocos, 56 placements, 75 mídias. Nove versões de migration remota; `public.save_section_block_atomic`, `block_placements.updated_at` e trigger P2 ausentes. As dependências `public.set_updated_at` e `private.require_portfolio_admin` existem. Zero INSERT/UPDATE/DELETE, Storage ou DDL produtivos executados nesta rodada.
+
+**Etapa 6 — NÃO AUTORIZADA/NÃO EXECUTADA.** A migration incremental exata é `supabase/migrations/20261109024100_p2_composite_section_block_save.sql`: acrescenta `block_placements.updated_at` com default e trigger de atualização; cria RPC `public.save_section_block_atomic` com verificação admin, CAS e rollback PostgreSQL e restringe EXECUTE a autenticados. Não reescreve intencionalmente conteúdo editorial, mas altera schema/contrato de gravação e inicializa timestamp nas linhas existentes. Antes de autorizar/aplicar: **comprovar backup/restore utilizável, conferir compatibilidade e história remota de migrations divergente, preparar reversão da RPC/trigger/coluna e pós-verificações**. Nenhum backup recuperável foi verificado nesta auditoria. O proprietário deve fornecer autorização separada e explícita.
+
+---
+
+## Arquivo histórico: estados e adendos anteriores (preservados integralmente)
+
 # Estado técnico — adendo vigente pós-homologação P2/P4
 
 **Data:** 09/11/2026. **Branch:** `main`. **SHA funcional validado:** `442c72cf7b0bc8b7dc3738c822ce7aab18e75814`.
