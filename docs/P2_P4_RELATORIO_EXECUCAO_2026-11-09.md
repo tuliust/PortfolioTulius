@@ -1,10 +1,22 @@
+# Fechamento técnico das etapas 2 e 3; execução da etapa 5 concluída
+
+**Resultado operacional:** etapas 2 e 3 **finalizadas no escopo sintético homologado**; etapa 5 **verificada e encerrada como tarefa**, mesmo que a aprovação do P3 mobile tenha falhado. Não declarar etapa 5 como tecnicamente aprovada. Detalhes em [ENCERRAMENTO_OPERACIONAL_ETAPAS_2_3_5_2026-11-09.md](ENCERRAMENTO_OPERACIONAL_ETAPAS_2_3_5_2026-11-09.md).
+
+**Base de evidências:** commit `9ed21dc5714eb469dce72e340701ae70122400c3` (a `main` antes do presente registro), todos os cinco workflows dessa base já terminaram. [P5 local](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731876916) `success` **119/119** (8 base, 11 P2/RPC, 87 navegador autenticado, 8 mídia/API, 5 SEO); [Validate](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731876889) `success` **260/260** Vitest/56 arquivos e build; [P5 CMS read-only](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731877020) `success` **19/19 e zero escritas**; [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731877235) `success`; [P3 Lighthouse](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731876931) **`failure`** por LCP mobile mediano **3.505,522 ms**, limite inalterado **≤3.500 ms**, desvio **+5,522 ms**. Amostras: 3.505,522 / 3.486,274 / 3.600,028 ms. P3 registrou zero falhas do navegador, 38 capturas editoriais sem falhas automáticas, SEO em paridade e LCP desktop 879,231 ms PASS. `P3_DEPLOYMENT_GATE` e `P5_DEPLOYMENT_GATE` confirmaram por leitura HTTP o SHA de referência realmente servido pelo domínio. Vercel `dpl_A5gcp7h4QhziiiFkASM7QJiDPsZy` `READY` e alias `tulius.work`.
+
+Nenhuma migration ou alteração produtiva autorizada. O bloqueio do **aceite de desempenho** permanece uma ressalva de produto; a tarefa de regressão já possui resultado final, não está aguardando execução. O proprietário responderá perguntas antes de qualquer decisão sobre etapa 6.
+
+---
+
+## Relatórios anteriores preservados por SHA
+
 # Complemento final de regressão P3 — execução reprovada
 
 > **Atualização posterior — 09/11/2026, commit `9b902579` (resultado FINAL da regressão).** A convergência funcional foi aprovada, mas o P3 deste SHA terminou **FAILURE**, não "pendente": [P3 #42731103548](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103548). Lighthouse mobile LCP: **3.516,403 / 3.631,569 / 3.467,873 ms**, mediana **3.516,403 ms > teto imutável 3.500 ms** (excesso 16,403 ms). `P6_PERFORMANCE_BUDGET mobile result=FAIL`, `P6_RELEASE_REGRESSIONS` registra o excesso. Browser 0 falhas, P4 38 capturas sem falhas, SEO/paridade PASS, desktop LCP 864,261 ms PASS, e `P3_DEPLOYMENT_GATE` confirmou por HTTP que a produção servia `9b9025798fe1d453674283e670af4f9704bde973`. **Etapa 5: BLOQUEADA para este SHA**, sem reclassificar como sucesso o P3 anterior do SHA `4069611d` (mediana 3.496,608 ms PASS). A variação entre essas duas medições demonstra risco real de instabilidade laboratorial; nenhuma meta foi flexibilizada.
 >
 > Outros resultados do MESMO SHA `9b902579`: [Validate #42731104023](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731104023) SUCCESS **260/260**; [P5 #42731103839](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103839) SUCCESS **119/119**, inclusive **87/87 browser sintético**; [P5 read-only #42731103645](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103645) SUCCESS **19/19, 0 writes**; [exportação #42731103626](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103626) SUCCESS. Supabase produtivo continuou somente leitura, 0 INSERT/UPDATE/DELETE, Storage ou DDL nesta execução; etapa 6 NÃO autorizada/não executada. O commit posterior que incorpora este adendo também exigirá conferência de seus próprios workflows; não presumir resultado.
 
-A regressão falha é um resultado definitivo do workflow e não apaga sucesso P5/Validate/SEO do mesmo commit. Não há código de frontend alterado pelo commit `${parent.slice(0,8)}`; o desvio de 16,403 ms foi medido em Lighthouse sintético, não atribuído a mudança visual. Nenhuma tentativa manual de mascarar medições foi feita.
+A regressão falha é um resultado definitivo do workflow e não apaga sucesso P5/Validate/SEO do mesmo commit. Não há código de frontend alterado pelo commit `9b902579`; o desvio de 16,403 ms foi medido em Lighthouse sintético, não atribuído a mudança visual. Nenhuma tentativa manual de mascarar medições foi feita.
 
 ---
 

@@ -1,3 +1,22 @@
+# Pendências remanescentes após encerramento das etapas 2, 3 e 5
+
+**Etapas 2 e 3: encerradas tecnicamente no escopo sintético comprovado. Etapa 5: execução/verificação encerrada, mas resultado de aceite NÃO CONFORME no gate P3 mobile.** Referência: [relatório de fechamento](ENCERRAMENTO_OPERACIONAL_ETAPAS_2_3_5_2026-11-09.md).
+
+**Base de evidências:** commit `9ed21dc5714eb469dce72e340701ae70122400c3` (a `main` antes do presente registro), todos os cinco workflows dessa base já terminaram. [P5 local](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731876916) `success` **119/119** (8 base, 11 P2/RPC, 87 navegador autenticado, 8 mídia/API, 5 SEO); [Validate](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731876889) `success` **260/260** Vitest/56 arquivos e build; [P5 CMS read-only](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731877020) `success` **19/19 e zero escritas**; [exportação](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731877235) `success`; [P3 Lighthouse](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731876931) **`failure`** por LCP mobile mediano **3.505,522 ms**, limite inalterado **≤3.500 ms**, desvio **+5,522 ms**. Amostras: 3.505,522 / 3.486,274 / 3.600,028 ms. P3 registrou zero falhas do navegador, 38 capturas editoriais sem falhas automáticas, SEO em paridade e LCP desktop 879,231 ms PASS. `P3_DEPLOYMENT_GATE` e `P5_DEPLOYMENT_GATE` confirmaram por leitura HTTP o SHA de referência realmente servido pelo domínio. Vercel `dpl_A5gcp7h4QhziiiFkASM7QJiDPsZy` `READY` e alias `tulius.work`.
+
+**Riscos e decisões que continuam abertos, sem reabrir a execução das etapas encerradas:**
+
+1. **Desempenho:** LCP mobile do SHA `9ed21dc5` ultrapassou 3.500 ms por 5,522 ms. É uma **não conformidade registrada**, não um workflow pendente. O proprietário decidirá se aceita esse risco para planejar a etapa 6 ou se deseja correção futura, sem alterar o orçamento.
+2. **Etapa 6 / dados produtivos:** migration exata `supabase/migrations/20261109024100_p2_composite_section_block_save.sql` ainda não aplicada. Pré-requisitos: backup recuperável comprovado, reconciliação das migrations remotas, verificação de compatibilidade e plano de rollback. **Não há autorização de DDL ou gravação produtiva.**
+3. **Ressalvas CMS/mídia:** cobertura representativa, não exaustiva; operação de renomeação com ACK perdido testada por unidade, não E2E distribuído; `credit` não é legenda pública automática; avaliação visual em dispositivos reais permanece externa.
+4. **Resultado após commit documental:** se novo SHA disparar workflows, seus resultados são novos e não devem ser confundidos com o SHA-base; eventual nova reprovação P3 será registrada como resultado, sem reabrir automaticamente a tarefa de verificação já concluída.
+
+**Sem alterações do design ou conteúdo editorial público e sem escrita Supabase.**
+
+---
+
+## Pendências e snapshots históricos por SHA
+
 # Bloqueio P3 mais recente — sem aceite da etapa 5
 
 > **Atualização posterior — 09/11/2026, commit `9b902579` (resultado FINAL da regressão).** A convergência funcional foi aprovada, mas o P3 deste SHA terminou **FAILURE**, não "pendente": [P3 #42731103548](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42731103548). Lighthouse mobile LCP: **3.516,403 / 3.631,569 / 3.467,873 ms**, mediana **3.516,403 ms > teto imutável 3.500 ms** (excesso 16,403 ms). `P6_PERFORMANCE_BUDGET mobile result=FAIL`, `P6_RELEASE_REGRESSIONS` registra o excesso. Browser 0 falhas, P4 38 capturas sem falhas, SEO/paridade PASS, desktop LCP 864,261 ms PASS, e `P3_DEPLOYMENT_GATE` confirmou por HTTP que a produção servia `9b9025798fe1d453674283e670af4f9704bde973`. **Etapa 5: BLOQUEADA para este SHA**, sem reclassificar como sucesso o P3 anterior do SHA `4069611d` (mediana 3.496,608 ms PASS). A variação entre essas duas medições demonstra risco real de instabilidade laboratorial; nenhuma meta foi flexibilizada.
