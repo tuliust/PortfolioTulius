@@ -31,6 +31,8 @@
 
 Os três hashes foram conferidos contra os arquivos recebidos no Drive, nas duas cópias. **Hash correto não é prova de recuperação**. Os dumps SQL contêm dados sensíveis: não publicar no GitHub e proteger/encriptar o armazenamento.
 
+> **Inventário Storage:** 56 objetos privados (2.840.299 B) + 72 públicos (1.821.052 B) = 128 objetos (4.661.351 B). Catálogo: 75 referências existentes, zero faltantes; 53 objetos sem cadastro editorial, **não excluir** e incluir no backup físico. Ver [relatório](P2_PRECHECK_BACKUP_RESTORACAO_2026-11-10.md).
+
 ## Próximos passos (ordem obrigatória)
 
 1. Preparar PostgreSQL 17 **isolado**, com dependências e schemas compatíveis, sem conexão de escrita à produção. Restaurar `roles.sql`, `schema.sql` e `data.sql`; documentar erros e contagens, constraints, RLS, RPCs, índices, triggers, sequências e leitura dos dados. Se necessário, adequar o procedimento ao contexto gerenciado Supabase sem apagar o dump original. Obter evidência inequívoca de restauração.

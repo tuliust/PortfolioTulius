@@ -22,6 +22,18 @@
 
 **Ação segura:** conservar o histórico real de cada lado; não introduzir backfill em `supabase_migrations.schema_migrations` nem executar o baseline antigo sobre a produção. Verificar equivalência de DDL do arquivo timestamp-divergente em um ambiente isolado, antes da P2.
 
+## Inventário agregado de Storage (somente leitura, sem baixar objetos)
+
+| Bucket | Objetos | Total de bytes informado nos metadados |
+|---|---:|---:|
+| `portfolio-private` | 56 | 2.840.299 |
+| `portfolio-public` | 72 | 1.821.052 |
+| **Total** | **128** | **4.661.351** |
+
+- **75/75** mídias de `public.media_assets` possuem ponteiro correspondente em `storage.objects` (0 referências de catálogo faltantes).
+- **53 objetos** de Storage não possuem correspondência em `media_assets`. Eles **não foram classificados como órfãos** nem excluídos: podem ser versões, uploads históricos ou objetos usados por outras referências. Devem integrar a cópia física dos dois buckets.
+- Esta é uma verificação de inventário **por metadados**, não download nem hash dos conteúdos. Preservar integralmente até análise de dependências.
+
 ## O que NÃO foi provado
 
 1. **Não houve restauração em PostgreSQL 17 isolado.** O runtime deste assistente não dispõe dos binários do servidor PostgreSQL e não consegue obter pacotes pela rede; o conector Supabase não importa arquivos `pg_dump` em um banco de teste. Portanto, backup integralmente **recuperável continua não comprovado**.
