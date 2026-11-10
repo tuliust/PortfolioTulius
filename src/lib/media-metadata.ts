@@ -4,14 +4,12 @@ export type StoredMediaMetadata = {
   storage_path: string
   title?: string | null
   alt_text?: string | null
-  credit?: string | null
   focal_point?: { x?: number; y?: number; zoom?: number } | null
 }
 
 export type MediaMetadataDraft = {
   title: string
   altText: string
-  credit: string
   focalX: string
   focalY: string
   focalZoom: string
@@ -32,7 +30,6 @@ export function createMediaMetadataDraft(asset: StoredMediaMetadata): MediaMetad
   return {
     title: mediaDisplayTitle(asset),
     altText: asset.alt_text ?? "",
-    credit: asset.credit ?? "",
     focalX: String(focalValue(asset.focal_point?.x)),
     focalY: String(focalValue(asset.focal_point?.y)),
     focalZoom: String(
@@ -59,7 +56,6 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
       payload: {
         title: string
         alt_text: string
-        credit: string | null
         focal_point: { x: number; y: number; zoom: number }
       }
     }
@@ -68,8 +64,8 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
   if (title.length < 2 || title.length > 180) {
     return { ok: false, error: "Informe um título editorial de 2 a 180 caracteres." }
   }
-  if (draft.altText.length > 500 || draft.credit.length > 300) {
-    return { ok: false, error: "Texto alternativo ou crédito acima do limite permitido." }
+  if (draft.altText.length > 500) {
+    return { ok: false, error: "Texto alternativo acima do limite permitido." }
   }
   const validPoint = (value: string) =>
     value.trim() !== "" &&
@@ -88,7 +84,6 @@ export function buildMediaMetadataPayload(draft: MediaMetadataDraft):
     payload: {
       title,
       alt_text: draft.altText.trim(),
-      credit: draft.credit.trim() || null,
       focal_point: { x: Number(draft.focalX), y: Number(draft.focalY), zoom },
     },
   }

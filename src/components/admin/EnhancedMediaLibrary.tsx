@@ -154,14 +154,13 @@ export function EnhancedMediaLibrary({
         .update(payload)
         .eq("id", asset.id)
         .eq("updated_at", asset.updated_at)
-        .select("id,title,alt_text,credit,focal_point")
+        .select("id,title,alt_text,focal_point")
         .maybeSingle()
       if (
         error ||
         !data ||
         data.title !== payload.title ||
         data.alt_text !== payload.alt_text ||
-        data.credit !== payload.credit ||
         data.focal_point?.x !== payload.focal_point.x ||
         data.focal_point?.y !== payload.focal_point.y ||
         data.focal_point?.zoom !== payload.focal_point.zoom
@@ -319,14 +318,6 @@ export function EnhancedMediaLibrary({
                   onChange={(event) =>
                     setMediaDraft({ ...mediaDraft, altText: event.target.value })
                   }
-                />
-              </label>
-              <label>
-                Crédito (opcional)
-                <input
-                  maxLength={300}
-                  value={mediaDraft.credit}
-                  onChange={(event) => setMediaDraft({ ...mediaDraft, credit: event.target.value })}
                 />
               </label>
               <div className="media-library-frame-control">

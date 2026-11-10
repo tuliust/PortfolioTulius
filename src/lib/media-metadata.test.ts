@@ -11,7 +11,6 @@ const asset = {
   storage_path: "private/uuid-portrait.png",
   title: "Retrato editorial do Perfil",
   alt_text: "Retrato de Tulius",
-  credit: "Fotografia enviada pelo proprietário",
   focal_point: { x: 45, y: 60 },
 }
 
@@ -21,7 +20,7 @@ describe("media metadata and guarded private filename editing", () => {
     expect(mediaDisplayTitle({ storage_path: "folder/photo.png", title: "" })).toBe("photo.png")
   })
 
-  it("preserves existing description, credit and focal point", () => {
+  it("preserves description and focal point without exposing media credits", () => {
     const draft = createMediaMetadataDraft(asset)
     expect(hasMediaMetadataChanges(asset, draft)).toBe(false)
     expect(buildMediaMetadataPayload(draft)).toEqual({
@@ -29,7 +28,6 @@ describe("media metadata and guarded private filename editing", () => {
       payload: {
         title: asset.title,
         alt_text: asset.alt_text,
-        credit: asset.credit,
         focal_point: { x: 45, y: 60, zoom: 1 },
       },
     })
@@ -46,6 +44,7 @@ describe("media metadata and guarded private filename editing", () => {
       expect(result.payload).not.toHaveProperty("storage_path")
       expect(result.payload).not.toHaveProperty("storage_bucket")
       expect(result.payload).not.toHaveProperty("status")
+      expect(result.payload).not.toHaveProperty("credit")
     }
   })
 

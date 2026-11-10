@@ -251,11 +251,9 @@ try {
   }
   const mediaTitle = "Mídia sintética UI " + suffix
   const mediaAlt = "Descrição fictícia verificada " + suffix
-  const mediaCredit = "Crédito sintético UI " + suffix
   await openMedia(fileName)
   await updateMediaInput("Título editorial", mediaTitle)
   await updateMediaInput("Texto alternativo", mediaAlt)
-  await updateMediaInput("Crédito (opcional)", mediaCredit)
   await page.click(".media-library-frame-control button")
   await page.waitForSelector(".media-frame-dialog", { timeout: 10000 })
   await page.click('.media-frame-zoom button[aria-label="Aumentar zoom"]')
@@ -269,9 +267,9 @@ try {
     { timeout: 20000 })
   const mediaSaved = await get(service.from("media_assets").select("*").eq("id", mediaAssetId).single(), "MEDIA_UI_METADATA_DB")
   ensure(mediaSaved.title === mediaTitle && mediaSaved.alt_text === mediaAlt &&
-    mediaSaved.credit === mediaCredit && mediaSaved.focal_point?.zoom === 1.1,
+    mediaSaved.focal_point?.zoom === 1.1,
     "MEDIA_UI_METADATA_INCORRECT")
-  pass("MEDIA_UI_SAVE_ALT_CREDIT_FOCAL", { title: true, alt: true, credit: true, focalZoom: 1.1 })
+  pass("MEDIA_UI_SAVE_ALT_FOCAL", { title: true, alt: true, focalZoom: 1.1 })
 
   await openMedia(mediaTitle)
   const mediaReopened = await page.evaluate(() => {
@@ -280,13 +278,13 @@ try {
       ?.querySelector("input, textarea")?.value
     return {
       alt: field("Texto alternativo"),
-      credit: field("Crédito (opcional)"),
       zoom: document.querySelector(".media-library-frame-control")?.textContent,
     }
   })
-  ensure(mediaReopened.alt === mediaAlt && mediaReopened.credit === mediaCredit &&
+  ensure(mediaReopened.alt === mediaAlt &&
     mediaReopened.zoom?.includes("110%"), "MEDIA_UI_REOPEN_MISMATCH")
-  pass("MEDIA_UI_REOPEN_PERSISTED_FIELDS", { alt: true, credit: true, focal: true })
+  pass("MEDIA_UI_REOPEN_PERSISTED_FIELDS", { alt: true, focal: true })
+  ensure(await page.evaluate(() => ![...document.querySelectorAll(".media-library-detail label")].some((el) => el.textContent?.includes("Crédito"))), "MEDIA_UI_CREDIT_FIELD_VISIBLE")
 
   // A failed PostgREST PATCH must leave the public catalog row unchanged and
   // preserve the editable draft; this simulates a SQL/network failure at UI level.
