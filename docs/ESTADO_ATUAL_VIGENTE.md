@@ -1,3 +1,11 @@
+# Atualização operacional — 10/11/2026 (aceites e condição de segurança)
+
+O proprietário **aceitou formalmente** o desvio LCP mobile do P3 e **homologou visualmente o site em dispositivos reais**, por declaração expressa. Não tratar o LCP como PASS: último resultado `5f1db1f9`, mediana **3.510,791 ms > 3.500 ms**, [P3 FAILURE](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42733926964). O campo crédito saiu da interface administrativa no commit `28b8e2c8`, sem excluir dados históricos nem alterar o público.
+
+O pré-check remoto confirmou **11 migrations no GitHub / 9 registradas no Supabase**, com diferença de timestamp da migration de mídia, baseline não registrado e P2 ainda não aplicada. O plano Free não possui a exportação/backup automático exigido neste fluxo e a [pasta de destino](https://drive.google.com/drive/folders/1KYWGJVvrxDsCgKjahkqRtNeJztcTImd8) foi encontrada vazia. **Não executar a migration de produção antes de obter backup recuperável, restauração isolada validada e plano de reversão.** Nenhum DDL, UPDATE ou DELETE produtivo foi realizado nesta conferência. Detalhes em [pendências atuais](OPEN_ISSUES.md).
+
+---
+
 # Quadro vigente de encerramento operacional — etapas 2, 3 e 5
 
 **Registro:** 09/11/2026 (Brasília). **Etapa 2: FINALIZADA TECNICAMENTE (com ressalvas). Etapa 3: FINALIZADA TECNICAMENTE (com ressalvas). Etapa 5: VERIFICADA E FINALIZADA COMO EXECUÇÃO — RESULTADO NÃO CONFORME no LCP mobile (P3). Etapa 6: NÃO AUTORIZADA.** Ver [relatório de fechamento](ENCERRAMENTO_OPERACIONAL_ETAPAS_2_3_5_2026-11-09.md).

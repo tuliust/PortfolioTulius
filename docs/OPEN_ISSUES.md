@@ -1,3 +1,18 @@
+# Decisões e bloqueios atuais — 10/11/2026
+
+**Aceites do proprietário (expressos nesta data):**
+- **LCP mobile:** a não conformidade do gate P3 foi **formalmente aceita como risco residual**, sem converter o teste `failure` em `success` nem alterar o orçamento de ≤3.500 ms. Em `5f1db1f9`, a mediana de três medições foi **3.510,791 ms**, excesso de **10,791 ms**; [workflow P3](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42733926964). Essa decisão remove a exigência de corrigir o LCP para iniciar planejamento futuro, mas preserva o histórico de não conformidade.
+- **Homologação visual em dispositivos reais:** o proprietário declarou sua conclusão **com sucesso**. Trata-se de aceite humano informado pelo proprietário, não de nova medição automatizada.
+- **Crédito de mídia:** optou por não expor nem editar créditos. O commit [`28b8e2c8`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/28b8e2c8d77a4c45200f4faf7e78290c9ca1ed96) retirou o campo da biblioteca/CMS e das atualizações de metadados. Por segurança, os valores históricos e a coluna `media_assets.credit` foram preservados (60 registros preenchidos no SELECT desta data); **remoção física não realizada**, pois depende de backup validado e autorização/migration específica.
+
+**Reconciliação somente leitura efetuada:** GitHub `main` possui 11 arquivos em `supabase/migrations`; o Supabase `portfolio` registra 9 migrations: 8 versões coincidentes, 1 divergência de timestamp na migration `delete_media_asset_everywhere` (`20261105101500` no Git, `20261105101829` no remoto), o baseline `202610220001` existe apenas em Git e a P2 `20261109024100` ainda não está instalada. Foram confirmados em produção PostgreSQL 17.11, 14 seções, 28 blocos, 56 placements, 75 mídias, os requisitos centrais de schema, RPC administrativa privada e função `set_updated_at`; `save_section_block_atomic` e `block_placements.updated_at` permanecem ausentes. **Não reescrever `schema_migrations` ou reaplicar baseline para corrigir o histórico.**
+
+**Bloqueio efetivo da etapa 6:** o projeto é Supabase Free e a pasta privada de destino [04 - Backup](https://drive.google.com/drive/folders/1KYWGJVvrxDsCgKjahkqRtNeJztcTImd8) estava vazia na inspeção. Não há dump exportado nem restauração testada nesta execução; os conectores conectados não oferecem exportação completa `pg_dump`/`supabase db dump` nem upload de bytes do banco. **Apesar da autorização explícita do proprietário para executar a P2 quando seguro, a migration não foi aplicada, porque a pré-condição de backup recuperável não foi cumprida.** As duas cópias na mesma pasta Drive não têm independência contra falha da conta/pasta. Preparar exportação e restaurar em PostgreSQL 17 isolado antes de aplicar `20261109024100_p2_composite_section_block_save.sql`. A cópia de objetos Supabase Storage também é separada da cópia do banco.
+
+**Aguardar essa condição real:** prova de dump e restauração, verificação de integridade e revisão de retorno. O próximo ciclo (casos residuais de CMS/mídia, sincronização privada e encerramento final) será retomado após essas ações, como solicitado.
+
+---
+
 # Pendências remanescentes após encerramento das etapas 2, 3 e 5
 
 **Etapas 2 e 3: encerradas tecnicamente no escopo sintético comprovado. Etapa 5: execução/verificação encerrada, mas resultado de aceite NÃO CONFORME no gate P3 mobile.** Referência: [relatório de fechamento](ENCERRAMENTO_OPERACIONAL_ETAPAS_2_3_5_2026-11-09.md).
