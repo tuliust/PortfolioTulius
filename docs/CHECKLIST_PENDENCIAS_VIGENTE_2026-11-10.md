@@ -1,3 +1,6 @@
+> **Migration de mídia reconciliada (10/11/2026):** o registro remoto `supabase_migrations.schema_migrations` versão `20261105101829` contém um único SQL de 7.899 caracteres, **idêntico byte a byte** ao arquivo Git anteriormente nomeado `20261105101500_delete_media_asset_everywhere.sql`. O arquivo Git foi **renomeado sem alterar conteúdo** para `20261105101829_delete_media_asset_everywhere.sql`, alinhando o versionamento ao que de fato foi aplicado. Nenhum comando SQL ou migration foi executado no remoto. O baseline `202610220001` permanece pendente de resolução segura e P2 continua não aplicada.
+
+---
 > **Atualização de verificação executada (10/11/2026):** os três dumps SQL passaram SHA-256, **22/22 tabelas públicas** e **3/3 contagens adicionais** `auth.users`, `storage.buckets`, `storage.objects` coincidem com a produção; 25/25 sem divergências. Ver [relatório pré-restauração](P2_PRECHECK_BACKUP_RESTORACAO_2026-11-10.md) e [verificador CLI](../scripts/hygiene/verify-supabase-backup.mjs). Todos os cinco workflows do SHA `9a9d4c6e` foram aprovados, inclusive P3 LCP mobile 3.385,556 ms (PASS). **Restauração isolada não executada**; Storage físico não exportado e histórico de migrations ausente do dump padrão. P2 não instalada.
 
 ---

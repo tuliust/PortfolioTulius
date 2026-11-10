@@ -1,3 +1,6 @@
+> **Migration de mídia reconciliada (10/11/2026):** o registro remoto `supabase_migrations.schema_migrations` versão `20261105101829` contém um único SQL de 7.899 caracteres, **idêntico byte a byte** ao arquivo Git anteriormente nomeado `20261105101500_delete_media_asset_everywhere.sql`. O arquivo Git foi **renomeado sem alterar conteúdo** para `20261105101829_delete_media_asset_everywhere.sql`, alinhando o versionamento ao que de fato foi aplicado. Nenhum comando SQL ou migration foi executado no remoto. O baseline `202610220001` permanece pendente de resolução segura e P2 continua não aplicada.
+
+---
 # P2 — Backup e pré-verificações: evidência de execução
 
 **Data:** 10/11/2026. **Projeto:** PortfolioTulius · Supabase `zfnrhzplwpjpdljraypt` · PostgreSQL 17.
