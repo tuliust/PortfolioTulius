@@ -17,28 +17,60 @@ try {
     const { endpoint, expectedSections, errorNotice, preservePortraits = false } = scenario
     const page = await browser.newPage()
     let failuresInjected = 0
+    let supabaseReadsObserved = 0
+    let documentRequestsObserved = 0
+    let requestInterceptionErrors = 0
+    const pageErrors = []
+    const failedRequests = []
     try {
       await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
-      await page.setRequestInterception(true)
-      page.on("request", (request) => {
+      await page.setBypassServiceWorker(true)
+      await page.setCacheEnabled(false)
+      page.on("pageerror", (error) => {
+        pageErrors.push(String(error?.message || error).slice(0, 240))
+      })
+      page.on("requestfailed", (request) => {
         const url = new URL(request.url())
-        if (
-          request.method() === "GET" &&
-          url.hostname.endsWith(".supabase.co") &&
-          url.pathname === "/rest/v1/" + endpoint
-        ) {
-          failuresInjected++
-          void request.respond({
-            status: 503,
-            contentType: "application/json",
-            headers: { "access-control-allow-origin": "*" },
-            body: JSON.stringify({ message: "P4 simulated read failure" }),
-          })
-        } else {
-          void request.continue()
+        failedRequests.push({
+          type: request.resourceType(),
+          host: url.hostname,
+          path: url.pathname,
+          reason: request.failure()?.errorText || "unknown",
+        })
+      })
+      await page.setRequestInterception(true)
+      page.on("request", async (request) => {
+        const url = new URL(request.url())
+        if (request.resourceType() === "document") documentRequestsObserved++
+        if (request.method() === "GET" && url.hostname.endsWith(".supabase.co")) {
+          supabaseReadsObserved++
+        }
+        try {
+          if (
+            request.method() === "GET" &&
+            url.hostname.endsWith(".supabase.co") &&
+            url.pathname === "/rest/v1/" + endpoint
+          ) {
+            failuresInjected++
+            await request.respond({
+              status: 503,
+              contentType: "application/json",
+              headers: { "access-control-allow-origin": "*" },
+              body: JSON.stringify({ message: "P4 simulated read failure" }),
+            })
+          } else {
+            await request.continue()
+          }
+        } catch {
+          requestInterceptionErrors++
         }
       })
-      // DOM readiness plus the field assertions below are the contract. A 503-injection\n      // scenario must not require every unrelated network request to go idle.\n      await page.goto("https://tulius.work/", { waitUntil: "load", timeout: 45000 })
+      // A unique URL plus disabled cache/service workers prevents a preceding
+      // browser audit from satisfying this fault-injection probe from cache.
+      // DOM readiness plus the field assertions below remain the contract.
+      const probeUrl = "https://tulius.work/?p4FailureProbe=" +
+        encodeURIComponent(endpoint + "-" + Date.now())
+      await page.goto(probeUrl, { waitUntil: "load", timeout: 45000 })
       // When production returned no application bootstrap at all, retry a
       // single navigation. Do not suppress failed injected requests or DOM
       // contract mismatches: only retry a zero-Supabase-request blank page.
@@ -56,18 +88,32 @@ try {
         } catch (error) {
           const observed = await page.evaluate(() => ({
             readyState: document.readyState,
+            title: document.title,
+            bodyChildren: document.body?.children.length || 0,
+            rootChildren: document.querySelector("#root")?.children.length || 0,
             sectionCount: document.querySelectorAll("section.portfolio-section").length,
             dataError: Boolean(document.querySelector(".public-site .data-error")),
             profileImagePresent: Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
           }))
           if (attempt === 1 && failuresInjected === 0 && observed.sectionCount === 0) {
             console.log("P4_PUBLIC_BOOTSTRAP_RETRY " +
-              JSON.stringify({ endpoint, attempt, reason: "no_supabase_requests_and_no_sections" }))
+              JSON.stringify({ endpoint, attempt, reason: "no_injected_request_and_no_sections" }))
             await page.reload({ waitUntil: "load", timeout: 45000 })
             continue
           }
           throw new Error("P4 recovery wait did not satisfy its contract: " +
-            JSON.stringify({ endpoint, expectedSections, errorNotice, failuresInjected, observed }) +
+            JSON.stringify({
+              endpoint,
+              expectedSections,
+              errorNotice,
+              failuresInjected,
+              supabaseReadsObserved,
+              documentRequestsObserved,
+              requestInterceptionErrors,
+              pageErrors,
+              failedRequests: failedRequests.slice(0, 8),
+              observed,
+            }) +
             "; cause=" + error.message)
         }
       }
@@ -89,7 +135,16 @@ try {
         !result.portraitLoaded ||
         (preservePortraits && (result.testimonials !== 3 || result.savedPortraits !== 3))
       ) {
-        throw new Error("P4 recovery contract failed: " + JSON.stringify({ scenario, failuresInjected, result }))
+        throw new Error("P4 recovery contract failed: " + JSON.stringify({
+          scenario,
+          failuresInjected,
+          supabaseReadsObserved,
+          documentRequestsObserved,
+          requestInterceptionErrors,
+          pageErrors,
+          failedRequests: failedRequests.slice(0, 8),
+          result,
+        }))
       }
       console.log("P4_PUBLIC_PARTIAL_FAILURE " + JSON.stringify({
         endpoint, result: "PASS", injected: failuresInjected, ...result, mutations: 0,
