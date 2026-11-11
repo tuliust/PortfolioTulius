@@ -17,9 +17,11 @@
 
 Workflows principais utilizam Node **24.16.0** e pnpm **10.34.8** na versão consultada; conferir YAML antes de mudanças. Comandos em [`package.json`](../../package.json), Vercel `pnpm build` → `dist`.
 
+**Remoção de legado Figma Make (11/11/2026):** `utils/supabase/info.tsx`, autogerado e com chave pública embutida, foi retirado do código. A fonte operacional de credenciais publicáveis é [`src/lib/supabase.ts`](../../src/lib/supabase.ts), sob variáveis de ambiente. [Registro histórico](../historico/figma-make-2026-11-11/README.md).
+
 ## Onde encontrar
 GitHub Settings → Actions/Secrets/Variables; Supabase Dashboard → Database/Auth/Storage/API; Vercel Project Settings → Git/Domains/Environment Variables. Registrar nome, ambiente, finalidade e política de acesso, nunca credenciais.
 
 [Segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Deploy](../04-infraestrutura/VERCEL_DEPLOY_SEO.md).
 
-**Higiene de branches:** [SHA, commits exclusivos e único procedimento manual restante](BRANCHES_E_REFERENCIAS.md).
+**Higiene de branches:** [SHA e confirmação de exclusão das branches históricas](BRANCHES_E_REFERENCIAS.md).

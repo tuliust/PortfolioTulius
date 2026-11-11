@@ -36,3 +36,7 @@ Nunca copiar fontes privadas do Projeto ChatGPT, tokens, segredos, dumps, hashes
 ## Atualização obrigatória após mudanças futuras
 
 Antes de encerrar qualquer implementação, ajuste de padrão, alteração de CMS, configuração ou infraestrutura **efetivamente executada**, seguir o [protocolo permanente de atualização documental](PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md): comparar SHA e comportamento real, atualizar os guias canônicos afetados, conferir links e CI, registrar evidência e incluir a documentação no mesmo commit funcional quando viável. Mudanças externas exigem commit documental separado. Fontes privadas do Projeto ChatGPT não sincronizam automaticamente; quando precisarem de revisão, explicitar a substituição manual. Não atualizar documentos como se uma proposta não executada estivesse publicada.
+
+## Figma Make — não tratar como ferramenta operacional
+
+As instruções de bootstrap `guidelines.md` e a auditoria antiga de `plans/` foram [arquivadas em 11/11/2026](../historico/figma-make-2026-11-11/README.md). A configuração Supabase autogerada `utils/supabase/info.tsx` foi retirada. Para qualquer mudança futura, ler o código e os guias canônicos, **não** reproduzir `figma make verify-*` ou antigas instruções de integração. Referências ao Figma como ferramenta profissional no currículo permanecem válidas e não devem ser removidas por higiene.

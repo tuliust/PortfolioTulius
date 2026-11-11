@@ -2,6 +2,11 @@
 
 Este índice armazena evidências e especificações anteriores. **Não usar como contrato operacional vigente.** O projeto atual é descrito no [índice temático](../README.md).
 
+## Arquivamento do Figma Make — 11/11/2026
+
+- [Especificações originais `guidelines.md` e auditoria do Figma Make, preservadas com os hashes](figma-make-2026-11-11/README.md). Foram retiradas da raiz e de `plans/`; nenhuma dependência atual deve apontar para elas.
+- O arquivo autogerado `utils/supabase/info.tsx`, com chave publicável embutida, foi excluído da árvore atual. Seu conteúdo histórico permanece no commit anterior; não copiar a chave para docs.
+
 ## Arquivamento de 11/11/2026 — Etapa 03
 
 - [Índice completo dos 84 documentos antigos com hashes e links de origem](legado-ate-2026-11-11/INDEX.md).

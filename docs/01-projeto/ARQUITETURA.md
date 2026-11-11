@@ -16,6 +16,8 @@ Leitura pública: PostgREST/RLS → `sections`, `content_blocks`, `section_panel
 
 Admin: Auth → vínculo `admin_users`/guarda administrativa → editores → CAS/RPC, revisão e releitura. A RPC composta `save_section_block_atomic` está instalada. SEO estático exige novo build; SQL + Storage não é transação distribuída.
 
+O arquivo autogerado legado `utils/supabase/info.tsx` foi removido da árvore atual por não ser a fonte vigente de configuração; o [cliente efetivo](../../src/lib/supabase.ts) recebe URL e chave publicável por variáveis `VITE_*`. O valor público embutido no arquivo histórico não foi copiado para a documentação. Ver [arquivo de origem](../historico/figma-make-2026-11-11/README.md).
+
 A página inicial não deve carregar antecipadamente o roteador de administração. `src/content/fallback.ts` serve como fallback controlado, não substituto de dados produtivos.
 
 ## Proteções

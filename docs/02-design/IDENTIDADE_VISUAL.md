@@ -9,7 +9,7 @@ Os materiais originais propuseram **valores de referência**: `#FF5414` (laranja
 Famílias citadas nas fontes de criação: Heading Now, Big Shoulders/Big Shoulders Display, Neue Montreal, Inter. Não publicar arquivos tipográficos nem pressupor licença de fonte trial; conferir o CSS efetivo.
 
 ## Composições
-Abertura com nome monumental, retrato, indicador de experiência, selo laranja, cinco áreas de atuação e destaques; composição Editorial 360° própria do mobile. Experiências com logos, projetos, trajetória e slides, vinculados ao CMS. O Canva/PDF/Figma original foi referência criativa, mas **a versão atualmente publicada, já aceita, tem precedência** sobre prints antigos.
+Abertura com nome monumental, retrato, indicador de experiência, selo laranja, cinco áreas de atuação e destaques; composição Editorial 360° própria do mobile. Experiências com logos, projetos, trajetória e slides, vinculados ao CMS. O Canva/PDF/Figma original foi referência criativa, mas **a versão atualmente publicada, já aceita, tem precedência** sobre prints antigos. As [especificações Figma Make originais](../historico/figma-make-2026-11-11/README.md) foram arquivadas e **não constituem dependência atual**.
 
 ## Regras
 Antes de modificar visual, localizar CSS/renderer/tokens e verificar desktop/mobile, altura baixa, foco, contraste e `prefers-reduced-motion`. Não redesenhar ou substituir mídia por inferência. [Responsividade](RESPONSIVIDADE_E_ACESSIBILIDADE.md), [referências visuais](../baselines/2026-11-07/REFERENCIAS_VISUAIS.md).
