@@ -2,6 +2,15 @@
 
 > Registro incremental de execução. **Não é prova de restauração concluída nem autorização para ignorar gates.** Repositório público: sem conteúdo dos dumps, credenciais ou dados pessoais.
 
+## Retomada local — 11/11/2026 14:30 BRT
+
+- `main` foi buscada novamente e está em `9f9c624f90ecd0a8934968c951ac5f9006f15da7`, sem alterações concorrentes no início desta rodada. O status combinado do GitHub é SUCCESS; a Vercel confirma o deployment de Production `dpl_5dWrVycm4jXw35gD2F8GTVAK2JHv` como `READY` para o mesmo SHA.
+- Os SHA-256 de `roles.sql`, `schema.sql` e `data.sql` na cópia local correspondem a `SHA256SUMS.txt`. A pasta contém somente esses três dumps e o arquivo de hashes; não contém `storage-objects`, manifesto físico nem evidência de cópia dos bytes dos 128 objetos.
+- Após iniciar Docker Desktop, o contêiner alvo `supabase_db_PortfolioTulius-restore-isolado` respondeu como PostgreSQL `17.6`. A consulta somente leitura encontrou zero tabelas base no schema `public`, zero linhas em `auth.users` e zero linhas em `storage.objects`.
+- **O restore foi deliberadamente interrompido antes de qualquer escrita:** `docker inspect` e `docker port` mostram o host port `30002` vinculado a `0.0.0.0` e `::`, não exclusivamente a `127.0.0.1` como exige o gate local previamente documentado. Não foram executados `psql` de importação, `DROP`, `TRUNCATE` ou reset. O contêiner não atende ao requisito de isolamento até que o vínculo de rede seja corrigido e confirmado sem perda de volumes ou dados locais.
+- A CLI Supabase local lista projetos de uma conta diferente e não está vinculada ao ref `zfnrhzplwpjpdljraypt`; não foi vinculada nem usada para acessar Storage. A conexão MCP do projeto `portfolio` foi usada somente para confirmar identidade/estado e migrations. Nove versões remotas seguem registradas, e nenhuma das duas migrations pendentes foi aplicada.
+- Resultado: gates de restore PostgreSQL, bytes/hash do Storage, histórico de migration no restore e ensaio real de rollback permanecem **BLOCKED**. Nenhuma escrita produtiva ocorreu. Próxima ação: ajustar ou substituir o ambiente isolado preservando seus dados/volumes, confirmar o vínculo estrito a loopback, executar o restore e então seguir os validadores e ensaios já documentados.
+
 ## Escopo e baseline consultado
 
 - GitHub `main`, HEAD pré-documental `ec754448c3ed0cbd973147bd3633adff3bfe12ba`, conforme API GitHub. `AGENTS.md` consultado; a branch de trabalho é `main`.
