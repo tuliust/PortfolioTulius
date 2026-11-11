@@ -38,15 +38,28 @@ try {
           void request.continue()
         }
       })
-      // DOM readiness plus the field assertions below are the contract. A 503-injection\n      // scenario must not require every unrelated network request to go idle.\n      await page.goto("https://tulius.work/", { waitUntil: "domcontentloaded", timeout: 45000 })
-      await page.waitForFunction(
-        ({ expectedSections, errorNotice }) =>
-          document.querySelectorAll("section.portfolio-section").length === expectedSections &&
-          Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
-          Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
-        { timeout: 22000 },
-        { expectedSections, errorNotice },
-      )
+      // DOM readiness plus the field assertions below are the contract. A 503-injection\n      // scenario must not require every unrelated network request to go idle.\n      await page.goto("https://tulius.work/", { waitUntil: "load", timeout: 45000 })
+      try {
+        await page.waitForFunction(
+          ({ expectedSections, errorNotice }) =>
+            document.querySelectorAll("section.portfolio-section").length === expectedSections &&
+            Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
+            Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
+          { timeout: 22000 },
+          { expectedSections, errorNotice },
+        )
+      } catch (error) {
+        // Preserve the assertion failure; add bounded non-sensitive diagnostics.
+        const observed = await page.evaluate(() => ({
+          readyState: document.readyState,
+          sectionCount: document.querySelectorAll("section.portfolio-section").length,
+          dataError: Boolean(document.querySelector(".public-site .data-error")),
+          profileImagePresent: Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
+        }))
+        throw new Error("P4 recovery wait did not satisfy its contract: " +
+          JSON.stringify({ endpoint, expectedSections, errorNotice, failuresInjected, observed }) +
+          "; cause=" + error.message)
+      }
       const result = await page.evaluate(() => ({
         sections: document.querySelectorAll("section.portfolio-section").length,
         profileVisible: Boolean(document.querySelector("section#perfil")),
