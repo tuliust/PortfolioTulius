@@ -21,3 +21,5 @@ Workflows principais utilizam Node **24.16.0** e pnpm **10.34.8** na versão con
 GitHub Settings → Actions/Secrets/Variables; Supabase Dashboard → Database/Auth/Storage/API; Vercel Project Settings → Git/Domains/Environment Variables. Registrar nome, ambiente, finalidade e política de acesso, nunca credenciais.
 
 [Segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Deploy](../04-infraestrutura/VERCEL_DEPLOY_SEO.md).
+
+**Higiene de branches:** [SHA, commits exclusivos e único procedimento manual restante](BRANCHES_E_REFERENCIAS.md).

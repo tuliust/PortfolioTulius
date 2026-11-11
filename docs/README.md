@@ -19,6 +19,7 @@
 | CI, Lighthouse, homologação | [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
 | Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
 | Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
+| Branches antigas e limpeza manual | [Referências de branches](06-governanca/BRANCHES_E_REFERENCIAS.md) |
 | O que já foi decidido | [Decisões](06-governanca/DECISOES_VIGENTES.md) |
 | Itens a não executar agora | [Backlog standby](06-governanca/BACKLOG_STANDBY.md) |
 | Consultas por ChatGPT/Codex | [Guia para IA](06-governanca/GUIA_USO_POR_IA.md) |
