@@ -167,16 +167,35 @@ try {
   must(Boolean(invalid.error),"P2_INVALID_PAYLOAD_ACCEPTED")
   pass("INVALID_PAYLOAD_DENIED",{denied:true})
 
+  // A pre-P2 client can still use the direct table path after the migration.
+  // Its unrelated field must persist and produce a fresh version for P2 clients.
+  const beforeLegacy=await section()
+  const legacyEyebrow="Cliente legado "+suffix
+  const legacySaved=await value(writer.from("sections").update({eyebrow:legacyEyebrow})
+    .eq("id",sectionId).eq("updated_at",beforeLegacy.updated_at).select("*").single(),
+  "P2_LEGACY_DIRECT_WRITE")
+  must(legacySaved.eyebrow===legacyEyebrow && legacySaved.title===beforeLegacy.title &&
+    legacySaved.updated_at!==beforeLegacy.updated_at,"P2_LEGACY_WRITE_NOT_PRESERVED")
+  pass("LEGACY_CLIENT_WRITE_AFTER_P2",{directTableWrite:true,unrelatedFieldsPreserved:true})
+
   // Simulate an ACK/network loss by replaying the same successful request with its stale CAS.
   const beforeRetry=await section()
   const payload={p_section_changes:{intro:"Rede simulada "+suffix},
     p_expected_section_updated_at:beforeRetry.updated_at}
   r=await compose(writer,payload)
   must(!r.error,"P2_RETRY_FIRST_WRITE_FAILED")
+  const afterFirstWrite=await section()
+  const laterLegacyValue="Legado posterior "+suffix
+  await value(writer.from("sections").update({eyebrow:laterLegacyValue})
+    .eq("id",sectionId).eq("updated_at",afterFirstWrite.updated_at).select("*").single(),
+  "P2_LATER_LEGACY_WRITE")
   const retry=await compose(writer,payload)
-  must(Boolean(retry.error) && (await section()).intro==="Rede simulada "+suffix,
+  const afterRetry=await section()
+  must(Boolean(retry.error) && afterRetry.intro==="Rede simulada "+suffix,
     "P2_UNCERTAIN_RESULT_OVERWROTE")
   pass("RETRY_AFTER_UNKNOWN_ACK",{reloadRequired:true})
+  must(afterRetry.eyebrow===laterLegacyValue,"P2_RETRY_REMOVED_LATER_LEGACY_WRITE")
+  pass("RETRY_PRESERVES_LATER_LEGACY_WRITE",{laterWritePreserved:true})
 } finally {
   // Service role operates only against the URL asserted as strict loopback.
   if (blockId && desktopId) {
@@ -194,6 +213,6 @@ try {
   if (sectionId && initialSection) await service.from("sections").update(initialSection).eq("id",sectionId)
   for (const id of users) await service.auth.admin.deleteUser(id)
 }
-console.log("P2_COMPOSITE_RESULT " + JSON.stringify({passed:checks.length,expected:11,
+console.log("P2_COMPOSITE_RESULT " + JSON.stringify({passed:checks.length,expected:13,
   endpoint:"127.0.0.1",cloudConnections:0,syntheticOnly:true,checks}))
-if (checks.length!==11) process.exitCode=1
+if (checks.length!==13) process.exitCode=1
