@@ -53,6 +53,18 @@ jobs:
         run: |
           npm install --global pnpm@10.34.8
           pnpm install --frozen-lockfile
+      - name: Remove stale isolated stack from the runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Stop only the stack identified by supabase/config.toml. This makes
+          # retries idempotent without deleting unrelated Docker resources.
+          npx --yes supabase@3.0.0 stop --no-backup || true
+          if docker ps --filter publish=54322 --format '{{.ID}}' | grep -q .; then
+            echo '::error::Port 54322 is still occupied after stopping the isolated project stack.'
+            docker ps --filter publish=54322 --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}'
+            exit 1
+          fi
       - name: Start fully isolated Supabase synthetic stack
         run: npx --yes supabase@3.0.0 start
       - name: Read only local connection details, never cloud credentials
