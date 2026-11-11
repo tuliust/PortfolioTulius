@@ -208,3 +208,4 @@
 
 [Estado vigente](ESTADO_ATUAL_VIGENTE.md) · [Auditoria dos pedidos](AUDITORIA_PEDIDOS_CHAT_2026-11-05.md) · [Histórico de pendências e decisões](historico/OPEN_ISSUES_ANTES_REORGANIZACAO_2026-11-05.md).
 
+> **ATUALIZAÇÃO DE RETOMADA — 11/11/2026 04:59 BRT:** o executor de backup físico de Storage passou a aceitar retomada segura após interrupção e a reconhecer backup já completo como no-op idempotente. Ele rejeita arquivos estranhos, links simbólicos, tamanho/hash incorretos e, para objetos cujo manifesto não possui SHA-256, baixa novamente para comparar o hash remoto antes de reutilizar o arquivo local. A pendência não foi encerrada: nenhum byte produtivo foi transferido nesta execução remota.

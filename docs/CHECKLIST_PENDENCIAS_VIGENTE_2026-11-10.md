@@ -92,3 +92,5 @@ Os três hashes foram conferidos contra os arquivos recebidos no Drive, nas duas
 - **LCP mobile:** o workflow continua `FAIL`; o risco foi aceito formalmente, sem mascarar o desvio.
 - **Aceite visual humano:** concedido.
 - **Próxima fase:** restrita aos casos residuais CMS/mídia, documentação privada e encerramento **depois** dos gates produtivos.
+
+> **RETOMADA SEGURA DO BACKUP DE STORAGE — 11/11/2026 04:59 BRT:** a execução física agora é idempotente. Em nova tentativa, arquivos já baixados só são reutilizados quando pertencem ao manifesto, são arquivos regulares, têm tamanho correto e, quando o manifesto contém SHA-256, hash coincidente. Objetos sem hash de origem são baixados novamente e comparados byte a byte por SHA-256 antes da reutilização. Arquivos extras, links simbólicos, conteúdo parcial corrompido ou divergência remota abortam a operação; um backup completo e válido vira no-op verificado. Esta é preparação testada, não prova de transferência: o gate permanece aberto até `manifestMatched:true`, `verified:128` e `complete:true` em diretório privado.

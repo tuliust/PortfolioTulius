@@ -112,7 +112,7 @@ As **22 tabelas de `public` têm RLS habilitada e contêm registros**. Foram ide
 
 - `scripts/hygiene/storage-inventory.sql`: exporta inventário JSON do Storage por SQL somente leitura; o **resultado contém caminhos privados e jamais deve ser commitado**.
 - `scripts/hygiene/storage-plan.mjs`: classifica referências de um manifesto privado e impõe **`deletionCount: 0`** em qualquer cenário. Não se conecta à rede.
-- `scripts/hygiene/storage-backup.mjs`: faz simulação offline por padrão; execução de backup real requer variável explícita `HYG_STORAGE_URL`, credencial privada `HYG_STORAGE_SERVICE_ROLE_KEY` e diretório absoluto `HYG_BACKUP_DIR` **fora da árvore do Git**. Faz download autenticado, confere tamanho, computa SHA-256, grava bytes com permissão restrita e índice. `--verify-backup` compara hashes dos arquivos e dos pares presentes.
+- `scripts/hygiene/storage-backup.mjs`: faz simulação offline por padrão; execução de backup real requer variável explícita `HYG_STORAGE_URL`, credencial privada `HYG_STORAGE_SERVICE_ROLE_KEY` e diretório absoluto `HYG_BACKUP_DIR` **fora da árvore do Git**. Faz download autenticado, confere tamanho, computa SHA-256, grava bytes com permissão restrita e índice. A execução pode ser retomada no mesmo diretório: reaproveita apenas arquivos determinísticos seguros e íntegros; se o manifesto não trouxer SHA-256, confirma o arquivo existente contra novo download antes de reutilizá-lo. Um índice completo válido resulta em no-op. Arquivos extras, links, corrupção ou divergência abortam sem sobrescrita. `--verify-backup` compara hashes e exige o manifesto para comprovar cobertura integral.
 - `scripts/hygiene/schema-audit.mjs`: varre referências textuais em fonte e migrations, separando arquivos de teste, e marca todas as tabelas/colunas `safeToDrop: false`.
 - `.github/workflows/hygiene-audit.yml`: testes isolados Node 24, dry-run de manifesto sintético e varredura estática; **sem segredos, sem downloads reais, sem Storage.remove e sem SQL de escrita**.
 
@@ -124,6 +124,14 @@ node scripts/hygiene/storage-plan.mjs --manifest scripts/hygiene/fixtures/sample
 node scripts/hygiene/storage-backup.mjs --manifest scripts/hygiene/fixtures/sample-manifest.json
 node scripts/hygiene/schema-audit.mjs --summary-only
 ```
+
+Antes de retomar uma transferência privada, é possível inspecionar o diretório parcial sem rede:
+
+```sh
+node scripts/hygiene/storage-backup.mjs --manifest CAMINHO_PRIVADO_DO_MANIFESTO.json --inspect-partial CAMINHO_PRIVADO_DO_BACKUP
+```
+
+O resultado informa quantos arquivos são reutilizáveis e quantos já estão vinculados a hashes do manifesto. Ele não substitui a verificação final com `--verify-backup` e o mesmo manifesto privado.
 
 Para gerar um manifesto de produção, executar o SQL de inventário em sessão segura e guardar a saída exclusivamente fora do repositório. Não publicar o manifesto ou o índice do backup em Actions, Issues, commits ou artifacts. O backup de bytes **não** foi executado nesta rodada porque exigiria credencial e destino privado controlado.
 

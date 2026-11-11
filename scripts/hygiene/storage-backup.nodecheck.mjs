@@ -1,7 +1,7 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 import { createHash } from "node:crypto"
-import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises"
+import { mkdtemp, mkdir, readFile, symlink, unlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -60,6 +60,26 @@ function verify(directory, manifestPath = null) {
   if (manifestPath) args.push("--manifest", manifestPath)
   return spawnSync(process.execPath, args, {
     encoding: "utf8",
+  })
+}
+
+function inspectPartial(directory, manifestPath) {
+  return spawnSync(process.execPath, [
+    script, "--manifest", manifestPath, "--inspect-partial", directory,
+  ], { encoding: "utf8" })
+}
+
+function executeBackup(directory, manifestPath) {
+  return spawnSync(process.execPath, [
+    script, "--manifest", manifestPath, "--execute-backup",
+  ], {
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      HYG_STORAGE_URL: "https://zfnrhzplwpjpdljraypt.supabase.co/",
+      HYG_STORAGE_SERVICE_ROLE_KEY: "offline-test-placeholder",
+      HYG_BACKUP_DIR: directory,
+    },
   })
 }
 
@@ -136,4 +156,49 @@ test("rejects manifest size or checksum disagreement", async () => {
     assert.notEqual(result.status, 0)
     assert.match(result.stderr, /HYG_BACKUP_MANIFEST_MISMATCH/)
   }
+})
+
+test("accepts an intact resumable partial backup without network access", async () => {
+  const { directory, manifestPath } = await fixture()
+  const index = JSON.parse(await readFile(join(directory, "index.json"), "utf8"))
+  await unlink(join(directory, "index.json"))
+  const result = inspectPartial(directory, manifestPath)
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /"reusable":1/)
+  assert.match(result.stdout, /"sourceHashVerified":1/)
+  assert.match(result.stdout, /"networkUsed":false/)
+  assert.equal(index.items.length, 1)
+})
+
+test("treats a verified completed backup as an idempotent no-op", async () => {
+  const { directory, manifestPath } = await fixture()
+  const result = executeBackup(directory, manifestPath)
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /"alreadyComplete":true/)
+  assert.match(result.stdout, /"downloaded":0/)
+  assert.match(result.stdout, /"reused":1/)
+})
+
+test("rejects corrupt, unexpected or symbolic-link partial files", async () => {
+  const corrupt = await fixture()
+  await unlink(join(corrupt.directory, "index.json"))
+  await writeFile(join(corrupt.directory, corrupt.entry.file), "bytes corrompidos")
+  assert.match(inspectPartial(corrupt.directory, corrupt.manifestPath).stderr,
+    /HYG_BACKUP_PARTIAL_(SIZE|SHA256)_MISMATCH/)
+
+  const extra = await fixture()
+  await unlink(join(extra.directory, "index.json"))
+  await writeFile(join(extra.directory, "unexpected.bin"), "extra")
+  assert.match(inspectPartial(extra.directory, extra.manifestPath).stderr,
+    /HYG_BACKUP_PARTIAL_DIRECTORY_MISMATCH/)
+
+  const linked = await fixture()
+  await Promise.all([
+    unlink(join(linked.directory, "index.json")),
+    unlink(join(linked.directory, linked.entry.file)),
+  ])
+  await symlink(linked.manifestPath, join(linked.directory, linked.entry.file))
+  const linkedResult = inspectPartial(linked.directory, linked.manifestPath)
+  assert.notEqual(linkedResult.status, 0)
+  assert.match(linkedResult.stderr, /HYG_BACKUP_UNSAFE_FILE/)
 })

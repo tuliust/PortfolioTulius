@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs"
-import { lstat, mkdir, readFile, readdir, writeFile } from "node:fs/promises"
+import { chmod, lstat, mkdir, readFile, readdir, writeFile } from "node:fs/promises"
 import { createHash } from "node:crypto"
 import { isAbsolute, relative, resolve, sep, join, parse } from "node:path"
 import { loadManifest } from "./storage-plan.mjs"
@@ -51,22 +51,17 @@ function validateBackupAgainstManifest(data, manifest) {
     }
   }
 }
-const has = (s) => process.argv.includes(s)
-const arg = (s) => {
-  const i = process.argv.indexOf(s)
-  return i < 0 ? null : process.argv[i + 1]
+
+async function readSafeBackupFile(target) {
+  const stat = await lstat(target)
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error("HYG_BACKUP_UNSAFE_FILE")
+  return readFile(target)
 }
-const manifestPath = arg("--manifest")
-const verifyDirectory = arg("--verify-backup")
-if (!manifestPath && !verifyDirectory) {
-  throw new Error("Uso: --manifest arquivo.json [--execute-backup] OU --verify-backup diretorio")
-}
-if (verifyDirectory) {
-  const absolute = resolve(verifyDirectory)
+
+async function verifyBackupDirectory(absolute, manifest = null) {
   const { data, files } = validateBackupIndex(
     JSON.parse(readFileSync(join(absolute, "index.json"), "utf8")),
   )
-  const manifest = manifestPath ? loadManifest(manifestPath) : null
   if (manifest) validateBackupAgainstManifest(data, manifest)
   const directoryEntries = await readdir(absolute)
   const expectedEntries = new Set(["index.json", ...files])
@@ -75,14 +70,60 @@ if (verifyDirectory) {
     throw new Error("HYG_BACKUP_DIRECTORY_MISMATCH")
   }
   for (const entry of data.items) {
-    const target = join(absolute, entry.file)
-    const stat = await lstat(target)
-    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error("HYG_BACKUP_UNSAFE_FILE")
-    const bytes = await readFile(target)
+    const bytes = await readSafeBackupFile(join(absolute, entry.file))
     if (bytes.byteLength !== entry.bytes || sha(bytes) !== entry.sha256) {
       throw new Error("HYG_BACKUP_CORRUPTED")
     }
   }
+  return data
+}
+
+export async function inspectPartialBackup(absolute, manifest) {
+  const expected = new Map(manifest.items.map((item) => [
+    backupFile(item.bucket, item.path), item,
+  ]))
+  const entries = await readdir(absolute)
+  if (entries.includes("index.json")) throw new Error("HYG_BACKUP_INDEX_ALREADY_EXISTS")
+  if (entries.some((name) => !expected.has(name))) {
+    throw new Error("HYG_BACKUP_PARTIAL_DIRECTORY_MISMATCH")
+  }
+  const reusable = new Map()
+  for (const file of entries) {
+    const item = expected.get(file)
+    const bytes = await readSafeBackupFile(join(absolute, file))
+    if (bytes.byteLength !== item.size) throw new Error("HYG_BACKUP_PARTIAL_SIZE_MISMATCH")
+    const digest = sha(bytes)
+    if (item.sha256 && digest !== item.sha256) {
+      throw new Error("HYG_BACKUP_PARTIAL_SHA256_MISMATCH")
+    }
+    reusable.set(file, { bytes, digest, sourceHashVerified: Boolean(item.sha256) })
+  }
+  return reusable
+}
+const has = (s) => process.argv.includes(s)
+const arg = (s) => {
+  const i = process.argv.indexOf(s)
+  return i < 0 ? null : process.argv[i + 1]
+}
+const manifestPath = arg("--manifest")
+const verifyDirectory = arg("--verify-backup")
+const inspectDirectory = arg("--inspect-partial")
+if (!manifestPath && !verifyDirectory) {
+  throw new Error("Uso: --manifest arquivo.json [--execute-backup|--inspect-partial diretorio] OU --verify-backup diretorio")
+}
+if (inspectDirectory) {
+  const manifest = loadManifest(manifestPath)
+  const reusable = await inspectPartialBackup(resolve(inspectDirectory), manifest)
+  console.log(JSON.stringify({
+    partial: true,
+    reusable: reusable.size,
+    sourceHashVerified: [...reusable.values()].filter((entry) => entry.sourceHashVerified).length,
+    networkUsed: false,
+  }))
+} else if (verifyDirectory) {
+  const absolute = resolve(verifyDirectory)
+  const manifest = manifestPath ? loadManifest(manifestPath) : null
+  const data = await verifyBackupDirectory(absolute, manifest)
   const paired = new Map()
   for (const entry of data.items) {
     const record = paired.get(entry.path) ?? {}
@@ -128,32 +169,62 @@ if (verifyDirectory) {
       throw new Error("HYG_BACKUP_MUST_BE_OUTSIDE_REPOSITORY")
     }
     if (absolute === parse(absolute).root || absolute === "/tmp") throw new Error("HYG_BACKUP_UNSAFE_DIRECTORY")
-    await mkdir(absolute, { mode: 0o700 })
+    await mkdir(absolute, { mode: 0o700, recursive: true })
+    await chmod(absolute, 0o700)
+    const entries = await readdir(absolute)
+    if (entries.includes("index.json")) {
+      const completed = await verifyBackupDirectory(absolute, manifest)
+      console.log(JSON.stringify({
+        complete: true, alreadyComplete: true, backedUp: completed.items.length,
+        downloaded: 0, reused: completed.items.length,
+      }))
+      process.exit(0)
+    }
+    const reusable = await inspectPartialBackup(absolute, manifest)
     const { createClient } = await import("@supabase/supabase-js")
     const client = createClient(url.href, secret, { auth: { persistSession: false, autoRefreshToken: false } })
     const recorded = []
+    let downloaded = 0
+    let reused = 0
     for (const item of manifest.items) {
-      const result = await client.storage.from(item.bucket).download(item.path)
-      if (result.error || !result.data) throw new Error("HYG_DOWNLOAD_FAILED")
-      const content = Buffer.from(await result.data.arrayBuffer())
-      if (content.byteLength !== item.size) throw new Error("HYG_SIZE_MISMATCH")
-      const digest = sha(content)
-      if (item.sha256 && digest !== item.sha256) throw new Error("HYG_SHA256_MISMATCH")
       const file = backupFile(item.bucket, item.path)
-      await writeFile(join(absolute, file), content, { flag: "wx", mode: 0o600 })
+      const existing = reusable.get(file)
+      let content
+      let digest
+      if (existing?.sourceHashVerified) {
+        content = existing.bytes
+        digest = existing.digest
+        reused++
+      } else {
+        const result = await client.storage.from(item.bucket).download(item.path)
+        if (result.error || !result.data) throw new Error("HYG_DOWNLOAD_FAILED")
+        content = Buffer.from(await result.data.arrayBuffer())
+        if (content.byteLength !== item.size) throw new Error("HYG_SIZE_MISMATCH")
+        digest = sha(content)
+        if (item.sha256 && digest !== item.sha256) throw new Error("HYG_SHA256_MISMATCH")
+        if (existing) {
+          if (digest !== existing.digest) throw new Error("HYG_BACKUP_PARTIAL_REMOTE_MISMATCH")
+          reused++
+        } else {
+          await writeFile(join(absolute, file), content, { flag: "wx", mode: 0o600 })
+          downloaded++
+        }
+      }
       recorded.push({ bucket: item.bucket, path: item.path, file, bytes: content.byteLength, sha256: digest })
     }
     await writeFile(join(absolute, "index.json"), JSON.stringify({
       version: 1,
       projectRef: manifest.projectRef,
       complete: true,
-      expectedObjects: recorded.length,
-      expectedBytes: recorded.reduce((total, item) => total + item.bytes, 0),
+      expectedObjects: manifest.items.length,
+      expectedBytes: manifest.items.reduce((total, item) => total + item.size, 0),
       items: recorded,
     }, null, 2), { flag: "wx", mode: 0o600 })
     console.log(JSON.stringify({
       complete: true,
       backedUp: recorded.length,
+      downloaded,
+      reused,
       verification: "node scripts/hygiene/storage-backup.mjs --verify-backup " + absolute + " --manifest " + resolve(manifestPath),
     }))
   }
