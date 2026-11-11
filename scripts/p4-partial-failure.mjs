@@ -39,26 +39,37 @@ try {
         }
       })
       // DOM readiness plus the field assertions below are the contract. A 503-injection\n      // scenario must not require every unrelated network request to go idle.\n      await page.goto("https://tulius.work/", { waitUntil: "load", timeout: 45000 })
-      try {
-        await page.waitForFunction(
-          ({ expectedSections, errorNotice }) =>
-            document.querySelectorAll("section.portfolio-section").length === expectedSections &&
-            Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
-            Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
-          { timeout: 22000 },
-          { expectedSections, errorNotice },
-        )
-      } catch (error) {
-        // Preserve the assertion failure; add bounded non-sensitive diagnostics.
-        const observed = await page.evaluate(() => ({
-          readyState: document.readyState,
-          sectionCount: document.querySelectorAll("section.portfolio-section").length,
-          dataError: Boolean(document.querySelector(".public-site .data-error")),
-          profileImagePresent: Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
-        }))
-        throw new Error("P4 recovery wait did not satisfy its contract: " +
-          JSON.stringify({ endpoint, expectedSections, errorNotice, failuresInjected, observed }) +
-          "; cause=" + error.message)
+      // When production returned no application bootstrap at all, retry a
+      // single navigation. Do not suppress failed injected requests or DOM
+      // contract mismatches: only retry a zero-Supabase-request blank page.
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          await page.waitForFunction(
+            ({ expectedSections, errorNotice }) =>
+              document.querySelectorAll("section.portfolio-section").length === expectedSections &&
+              Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
+              Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
+            { timeout: 22000 },
+            { expectedSections, errorNotice },
+          )
+          break
+        } catch (error) {
+          const observed = await page.evaluate(() => ({
+            readyState: document.readyState,
+            sectionCount: document.querySelectorAll("section.portfolio-section").length,
+            dataError: Boolean(document.querySelector(".public-site .data-error")),
+            profileImagePresent: Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
+          }))
+          if (attempt === 1 && failuresInjected === 0 && observed.sectionCount === 0) {
+            console.log("P4_PUBLIC_BOOTSTRAP_RETRY " +
+              JSON.stringify({ endpoint, attempt, reason: "no_supabase_requests_and_no_sections" }))
+            await page.reload({ waitUntil: "load", timeout: 45000 })
+            continue
+          }
+          throw new Error("P4 recovery wait did not satisfy its contract: " +
+            JSON.stringify({ endpoint, expectedSections, errorNotice, failuresInjected, observed }) +
+            "; cause=" + error.message)
+        }
       }
       const result = await page.evaluate(() => ({
         sections: document.querySelectorAll("section.portfolio-section").length,

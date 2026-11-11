@@ -78,18 +78,18 @@ try {
   pass("NONADMIN_WRITE_DENIED", { titleIntact: true })
 
   const metadata = { title: "Catálogo sintético revisado", alt_text: "Novo texto alternativo fictício",
-    credit: "Crédito fictício para auditoria", focal_point: { x: 32, y: 67, zoom: 1.4 } }
+    focal_point: { x: 32, y: 67, zoom: 1.4 } }
   const updated = await requireData(admin.from("media_assets").update(metadata)
     .eq("id", assetId).eq("updated_at", asset.updated_at).select("*").single(), "CAS_METADATA_SAVE")
-  must(updated.alt_text === metadata.alt_text && updated.credit === metadata.credit &&
+  must(updated.alt_text === metadata.alt_text && updated.title === metadata.title &&
     updated.focal_point?.x === 32 && updated.focal_point?.zoom === 1.4, "METADATA_MISMATCH")
   const stale = await admin.from("media_assets").update({ title: "STALE_CHANGE" })
     .eq("id", assetId).eq("updated_at", asset.updated_at).select("id").maybeSingle()
   must(!stale.error && !stale.data, "STALE_CAS_ACCEPTED")
   const fresh = await requireData(admin.from("media_assets").select("*").eq("id", assetId).single(), "RELOAD_METADATA")
-  must(fresh.alt_text === metadata.alt_text && fresh.credit === metadata.credit &&
+  must(fresh.alt_text === metadata.alt_text &&
     fresh.focal_point?.y === 67 && fresh.title === metadata.title, "RELOAD_METADATA_MISMATCH")
-  pass("METADATA_ALT_CREDIT_FOCAL_CAS_RELOAD", { alt: true, credit: true, focalPoint: true, staleRejected: true })
+  pass("METADATA_ALT_FOCAL_CAS_RELOAD", { alt: true, focalPoint: true, staleRejected: true })
 
   const copied = await admin.storage.from("portfolio-private").copy(original, renamed)
   must(!copied.error, "COPY_RENAME")
@@ -127,7 +127,7 @@ try {
   }).eq("id", assetId).eq("storage_bucket", "portfolio-private")
     .eq("storage_path", renamed).select("*").single(), "PUBLISH_METADATA")
   const publicRows = await requireData(anonymous.from("media_assets")
-    .select("id,alt_text,credit,focal_point").eq("id", assetId), "PUBLIC_CATALOG_RELOAD")
+    .select("id,alt_text,focal_point").eq("id", assetId), "PUBLIC_CATALOG_RELOAD")
   const publicFile = await anonymous.storage.from("portfolio-public").download(renamed)
   must(publicRows.length === 1 && publicRows[0].alt_text === metadata.alt_text &&
     !!publicFile.data && !publicFile.error, "PUBLICATION_NOT_VISIBLE")

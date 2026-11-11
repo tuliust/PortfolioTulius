@@ -752,7 +752,7 @@ try {
   const focalInserted = await service.from("media_assets").insert({
     storage_bucket: "portfolio-public", storage_path: focalMediaPath,
     title: "Mídia com enquadramento sintético " + suffix,
-    alt_text: "Imagem fictícia focal", credit: "Autor fictício",
+    alt_text: "Imagem fictícia focal",
     mime_type: "image/svg+xml", file_size: focalBytes.length,
     focal_point: { x: 23, y: 74, zoom: 1.3 }, status: "published",
   }).select("id").single()
