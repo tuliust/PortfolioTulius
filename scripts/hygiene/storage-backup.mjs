@@ -35,6 +35,22 @@ function validateBackupIndex(data) {
   }
   return { data, files, bytes }
 }
+
+function validateBackupAgainstManifest(data, manifest) {
+  if (data.items.length !== manifest.items.length) {
+    throw new Error("HYG_BACKUP_MANIFEST_COUNT_MISMATCH")
+  }
+  const recorded = new Map(data.items.map((entry) => [
+    JSON.stringify([entry.bucket, entry.path]), entry,
+  ]))
+  for (const item of manifest.items) {
+    const entry = recorded.get(JSON.stringify([item.bucket, item.path]))
+    if (!entry || entry.bytes !== item.size ||
+        (item.sha256 !== undefined && entry.sha256 !== item.sha256)) {
+      throw new Error("HYG_BACKUP_MANIFEST_MISMATCH")
+    }
+  }
+}
 const has = (s) => process.argv.includes(s)
 const arg = (s) => {
   const i = process.argv.indexOf(s)
@@ -50,6 +66,8 @@ if (verifyDirectory) {
   const { data, files } = validateBackupIndex(
     JSON.parse(readFileSync(join(absolute, "index.json"), "utf8")),
   )
+  const manifest = manifestPath ? loadManifest(manifestPath) : null
+  if (manifest) validateBackupAgainstManifest(data, manifest)
   const directoryEntries = await readdir(absolute)
   const expectedEntries = new Set(["index.json", ...files])
   if (directoryEntries.length !== expectedEntries.size ||
@@ -80,7 +98,8 @@ if (verifyDirectory) {
     }
   }
   console.log(JSON.stringify({
-    verified: data.items.length, complete: true, matchingPairs, differingPairs,
+    verified: data.items.length, complete: true,
+    manifestMatched: Boolean(manifest), matchingPairs, differingPairs,
     note: "Comparação SHA-256 apenas dos pares presentes neste backup",
   }))
 } else {
@@ -132,6 +151,10 @@ if (verifyDirectory) {
       expectedBytes: recorded.reduce((total, item) => total + item.bytes, 0),
       items: recorded,
     }, null, 2), { flag: "wx", mode: 0o600 })
-    console.log(JSON.stringify({ complete: true, backedUp: recorded.length, verification: "node scripts/hygiene/storage-backup.mjs --verify-backup " + absolute }))
+    console.log(JSON.stringify({
+      complete: true,
+      backedUp: recorded.length,
+      verification: "node scripts/hygiene/storage-backup.mjs --verify-backup " + absolute + " --manifest " + resolve(manifestPath),
+    }))
   }
 }
