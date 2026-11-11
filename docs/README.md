@@ -21,6 +21,7 @@
 | Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
 | Branches antigas e limpeza manual | [Referências de branches](06-governanca/BRANCHES_E_REFERENCIAS.md) |
 | Encerramento oficial das Etapas 01–05 | [Termo final e validações](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) |
+| Como manter os guias atualizados após mudanças | [Protocolo de atualização](06-governanca/PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md) |
 | O que já foi decidido | [Decisões](06-governanca/DECISOES_VIGENTES.md) |
 | Itens a não executar agora | [Backlog standby](06-governanca/BACKLOG_STANDBY.md) |
 | Consultas por ChatGPT/Codex | [Guia para IA](06-governanca/GUIA_USO_POR_IA.md) |

@@ -32,3 +32,7 @@ Nunca copiar fontes privadas do Projeto ChatGPT, tokens, segredos, dumps, hashes
 - **Exatamente 5 fontes privadas consolidadas** são as Fontes de projeto; 8 originais não constam mais como Fontes ativas.
 - Etapas de documentação **01–05 encerradas**, sem mudanças de aplicação; o [termo final](ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) registra CI PASS/FAILURE por SHA e a falha P5 read-only ainda sem diagnóstico.
 - Não executar o standby por inferência.
+
+## Atualização obrigatória após mudanças futuras
+
+Antes de encerrar qualquer implementação, ajuste de padrão, alteração de CMS, configuração ou infraestrutura **efetivamente executada**, seguir o [protocolo permanente de atualização documental](PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md): comparar SHA e comportamento real, atualizar os guias canônicos afetados, conferir links e CI, registrar evidência e incluir a documentação no mesmo commit funcional quando viável. Mudanças externas exigem commit documental separado. Fontes privadas do Projeto ChatGPT não sincronizam automaticamente; quando precisarem de revisão, explicitar a substituição manual. Não atualizar documentos como se uma proposta não executada estivesse publicada.

@@ -52,3 +52,7 @@ Ler [índice temático](docs/README.md) e o contrato do assunto antes de editar.
 ## Arquivo histórico após Etapa 03
 
 Os documentos antigos em `docs/*.md` são **apenas apontadores** para [cópias históricas](docs/historico/legado-ate-2026-11-11/INDEX.md); não devem ser tratados como instrução técnica atual. Os workflows legados foram [arquivados](docs/historico/workflows-retirados-2026-11-11/README.md). O CI ativo permanece em `.github/workflows/`; não reativar tarefas antigas por inferência.
+
+## Documentação obrigatória após modificações
+
+Toda implementação ou alteração **material** efetivamente realizada exige atualizar, na mesma entrega, o(s) guia(s) temático(s) correspondentes, conforme [protocolo permanente de atualização documental](docs/06-governanca/PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md). Não concluir uma tarefa alegando sucesso sem conferir o estado do código/CMS/ambiente e registrar a documentação da mudança; sempre que viável, versionar documentação e código no mesmo commit. Para alterações feitas apenas em serviços externos, registrar o estado validado em commit documental separado. Não modificar relatórios históricos nem publicar fontes privadas.
