@@ -38,7 +38,7 @@ try {
           void request.continue()
         }
       })
-      await page.goto("https://tulius.work/", { waitUntil: "networkidle2", timeout: 45000 })
+      // DOM readiness plus the field assertions below are the contract. A 503-injection\n      // scenario must not require every unrelated network request to go idle.\n      await page.goto("https://tulius.work/", { waitUntil: "domcontentloaded", timeout: 45000 })
       await page.waitForFunction(
         ({ expectedSections, errorNotice }) =>
           document.querySelectorAll("section.portfolio-section").length === expectedSections &&
