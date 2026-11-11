@@ -6,7 +6,7 @@
 
 - Repositório: [tuliustsangaropulos/PortfolioTulius](https://github.com/tuliustsangaropulos/PortfolioTulius), visibilidade **pública**.
 - Branch padrão: `main`, commit pré-consolidação **[`0627947897f04635a1dfe720e4d771cf12e3e705`](https://github.com/tuliustsangaropulos/PortfolioTulius/tree/0627947897f04635a1dfe720e4d771cf12e3e705)**.
-- Tree Git: `0627947897f04635a1dfe720e4d771cf12e3e705` (captura completa, `truncated=false`).
+- Tree Git efetiva do commit-base: `eac00dc3f9913134e6147e29e1ae69effde450a6` (captura recursiva completa, `truncated=false`).
 - Inventário exato: [CSV de arquivos com SHA de blob](ARQUIVOS_GIT_PRE_CONSOLIDACAO.csv). Cada linha guarda caminho, modo, SHA do blob e tamanho; o commit-base preserva os bytes no histórico Git. Este documento **não constitui exportação binária independente de todo o repositório**.
 - 416 entradas Git (384 arquivos e 32 diretórios); 107 arquivos Markdown, 102 sob `docs/`, 16 sob `docs/historico/`.
 - 11 workflows versionados em `.github/workflows/`.
