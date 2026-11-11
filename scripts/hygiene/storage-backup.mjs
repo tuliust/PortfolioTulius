@@ -176,7 +176,10 @@ if (inspectDirectory) {
     }
   }
   console.log(JSON.stringify({
-    verified: data.items.length, complete: true,
+    projectRef: data.projectRef,
+    verified: data.items.length,
+    verifiedBytes: data.expectedBytes,
+    complete: true,
     manifestMatched: Boolean(manifest), matchingPairs, differingPairs,
     note: "Comparação SHA-256 apenas dos pares presentes neste backup",
   }))

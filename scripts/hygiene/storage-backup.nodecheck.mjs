@@ -88,15 +88,32 @@ test("accepts a complete deterministic backup index matched to its manifest", as
   const { directory, manifestPath } = await fixture()
   const result = verify(directory, manifestPath)
   assert.equal(result.status, 0, result.stderr)
-  assert.match(result.stdout, /"verified":1/)
-  assert.match(result.stdout, /"manifestMatched":true/)
+  assert.deepEqual(JSON.parse(result.stdout), {
+    projectRef: ref,
+    verified: 1,
+    verifiedBytes: Buffer.byteLength("bytes verificaveis"),
+    complete: true,
+    manifestMatched: true,
+    matchingPairs: 0,
+    differingPairs: 0,
+    note: "Comparação SHA-256 apenas dos pares presentes neste backup",
+  })
 })
 
 test("does not claim manifest proof when verification omits the manifest", async () => {
   const { directory } = await fixture()
   const result = verify(directory)
   assert.equal(result.status, 0, result.stderr)
-  assert.match(result.stdout, /"manifestMatched":false/)
+  assert.deepEqual(JSON.parse(result.stdout), {
+    projectRef: ref,
+    verified: 1,
+    verifiedBytes: Buffer.byteLength("bytes verificaveis"),
+    complete: true,
+    manifestMatched: false,
+    matchingPairs: 0,
+    differingPairs: 0,
+    note: "Comparação SHA-256 apenas dos pares presentes neste backup",
+  })
 })
 
 test("rejects wrong project, forged filename and inconsistent totals", async () => {
