@@ -44,7 +44,7 @@ P3 executada como estabilização, segurança, validação funcional não destru
 
 **Concluível tecnicamente:** código/CI, isolamento SQL simulado, restrição de grants e SEO, métricas Lighthouse e diagnóstico automatizado de viewport; documentação presente.
 
-**Aceite pendente do proprietário:** (1) ativação da proteção contra senhas vazadas no Auth; (2) operações reais de CRUD/publicação/reversão/Storage com o administrador; (3) validação visual/zoom de 200% e revisão da seção hero; (4) decisões sobre nove pendências editoriais listadas em `docs/OPEN_ISSUES.md`. Performance mobile e avisos de otimização de banco são melhorias posteriores com orçamento/escopo próprio, não falhas de autorização comprovadas.
+**Decisão registrada do proprietário:** a proteção contra senhas vazadas ficará desativada porque exige upgrade de plano; custo recusado e risco residual aceito. Não é pendência. Os demais aceites de CRUD/publicação/Storage, revisão visual e itens editoriais descritos neste documento são históricos e devem ser conferidos contra o estado vigente antes de retomada. Performance e otimizações de banco permanecem ressalvas distintas.
 
 ## Referências reprodutíveis
 
@@ -52,7 +52,7 @@ P3 executada como estabilização, segurança, validação funcional não destru
 - CI: https://github.com/tuliustsangaropulos/PortfolioTulius/actions/workflows/validate.yml
 - Auditoria: https://github.com/tuliustsangaropulos/PortfolioTulius/actions/workflows/audit-p3-lighthouse.yml
 - Supabase Security Advisor: https://supabase.com/docs/guides/database/database-linter
-- Ativação de proteção contra senhas vazadas: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
+- Referência da decisão aceita sobre proteção contra senhas vazadas: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 
 Para reproduzir localmente (PowerShell, sem ler segredos):
 

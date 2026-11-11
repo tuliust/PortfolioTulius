@@ -19,7 +19,7 @@ Reorder, duplicação e publicação usam RPCs `security definer` que exigem `pr
 
 - Migration remota `20261025203559_p3_revoke_excess_table_privileges` remove `TRUNCATE`, `TRIGGER` e `REFERENCES` de `anon` e `authenticated` nas 22 tabelas públicas. RLS não cobre `TRUNCATE`; permissões `SELECT/INSERT/UPDATE/DELETE` permanecem sujeitas a RLS.
 - Verificado em transações `READ ONLY` e com identidade JWT **simulada via claim de sessão SQL**: usuário autenticado não administrador enxerga zero registros de `admin_users`/`editorial_issues`; 14 seções publicadas visíveis. Seis RPCs administrativas falham com `portfolio_admin_required`; identidade do administrador existente acessa 1 vínculo administrativo e 9 pendências. Não equivale a um JWT real emitido pelo Auth.
-- Permanecem alertas do Security Advisor: seis RPCs `SECURITY DEFINER` executáveis pelo papel `authenticated` (esperado, todas verificam `private.require_portfolio_admin()`) e *leaked password protection* desativada (habilitação manual pendente no Auth).
+- Permanecem alertas do Security Advisor: seis RPCs `SECURITY DEFINER` executáveis pelo papel `authenticated` (esperado, todas verificam `private.require_portfolio_admin()`) e *leaked password protection* desativada por decisão do proprietário: requer upgrade de plano, que foi recusado com aceitação do risco residual; sem pendência de Auth.
 - Há somente um usuário Auth, vinculado a um administrador. Não foi criada conta adicional e não foi executado CRUD produtivo de CMS/Storage para não modificar dados reais.
 - A baseline `202610220001_portfolio_cms.sql` existe em Git, mas não consta como versão aplicada no histórico remoto; o schema já existe. Não reaplicar sem plano explícito.
 
