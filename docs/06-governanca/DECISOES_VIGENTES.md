@@ -15,8 +15,12 @@
 | PAT histórico | Decisão anterior de não revogação; revogação não comprovada |
 | Storage | Não excluir originais/duplicatas sem estudo e operação específica |
 | Pendências | **Todas em standby**, não executar automaticamente |
-| Fontes privadas | Consolidar no projeto ChatGPT sem publicar no Git |
+| Fontes privadas | **Cinco fontes consolidadas ativas no Projeto ChatGPT**, oito antigas removidas das fontes ativas, verificado em 11/11/2026 |
+| Branches históricas | **Excluídas pelo proprietário**, somente `main` verificada via GitHub |
+| Etapas 01–05 | **Consolidação documental e higiene encerradas**, sem reabrir o backlog |
 
 O aceite do site não transforma CI falho em PASS; um documento de migration não é prova de aplicação; deployment READY não é teste de gravação administrativa. Nenhuma dessas decisões concede autorização para mudanças invisíveis de segurança, conteúdo ou mídia nesta organização documental.
 
 [Estado atual](../01-projeto/ESTADO_ATUAL.md) · [Standby](BACKLOG_STANDBY.md) · [encerramento histórico](../ENCERRAMENTO_OPERACIONAL_2026-11-05.md).
+
+[Termo final com evidências e falhas observadas](ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md).

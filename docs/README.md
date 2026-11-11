@@ -20,6 +20,7 @@
 | Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
 | Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
 | Branches antigas e limpeza manual | [Referências de branches](06-governanca/BRANCHES_E_REFERENCIAS.md) |
+| Encerramento oficial das Etapas 01–05 | [Termo final e validações](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) |
 | O que já foi decidido | [Decisões](06-governanca/DECISOES_VIGENTES.md) |
 | Itens a não executar agora | [Backlog standby](06-governanca/BACKLOG_STANDBY.md) |
 | Consultas por ChatGPT/Codex | [Guia para IA](06-governanca/GUIA_USO_POR_IA.md) |
@@ -34,4 +35,4 @@ Primeiro [`AGENTS.md`](../AGENTS.md), o guia temático e o código atual. Em con
 
 [Baseline pré-consolidação](historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md) e [CSV de 384 hashes Git](historico/preconsolidacao-2026-11-11/ARQUIVOS_GIT_PRE_CONSOLIDACAO.csv). [Arquivo histórico organizado](historico/README.md), [estilos/visual](baselines/2026-11-07/REFERENCIAS_VISUAIS.md), [evidência sanitizada](evidence/p2-backup-counts-2026-11-10.json).
 
-**Etapa 02:** contratos e índice concluídos. **Etapa 03 (11/11/2026):** [84 documentos legados arquivados](historico/legado-ate-2026-11-11/INDEX.md), mantendo stubs em seus caminhos anteriores e preservando blobs originais. [Cinco workflows obsoletos retirados e preservados](historico/workflows-retirados-2026-11-11/README.md); seis workflows operacionais permanecem. **Branches antigas continuam no remoto**: documentação e análise de exclusão realizadas, porém a integração GitHub disponível não permite remover referências de branch; executar a exclusão posteriormente pela interface, se desejado. **Etapa 04:** substituir Fontes privadas anexadas ao ChatGPT, sem sincronização automática.
+**Etapa 02:** contratos e índice concluídos. **Etapa 03 (11/11/2026):** [84 documentos legados arquivados](historico/legado-ate-2026-11-11/INDEX.md), mantendo stubs em seus caminhos anteriores e preservando blobs originais. [Cinco workflows obsoletos retirados e preservados](historico/workflows-retirados-2026-11-11/README.md); seis workflows operacionais permanecem. **Branches antigas excluídas pelo proprietário e ausência conferida no GitHub. Etapa 04:** cinco Fontes privadas já anexadas ao projeto ChatGPT, com as oito originais retiradas das Fontes ativas. **Etapa 05:** auditoria de encerramento e registro dos resultados em [termo final](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md). Os riscos técnicos continuam em standby.

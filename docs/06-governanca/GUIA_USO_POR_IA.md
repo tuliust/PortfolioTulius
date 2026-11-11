@@ -25,3 +25,10 @@
 A RPC `save_section_block_atomic` **está instalada**; `media_assets.credit` **já não existe**; o staging aprovado é **local sintético**. P3 do SHA original teve FAILURE no budget mobile, embora o site já tenha sido aceito pelo proprietário. Não reabrir P0–P6 automaticamente.
 
 Nunca copiar fontes privadas do Projeto ChatGPT, tokens, segredos, dumps, hashes privados de objetos ou arquivos de fonte para o repositório público. O inventário pré-consolidação está [preservado](../historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md).
+
+## Estado após Etapa 05 — 11/11/2026
+
+- **Somente `main`**: as duas branches `fix/*` antigas foram excluídas e o GitHub confirma ausência.
+- **Exatamente 5 fontes privadas consolidadas** são as Fontes de projeto; 8 originais não constam mais como Fontes ativas.
+- Etapas de documentação **01–05 encerradas**, sem mudanças de aplicação; o [termo final](ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) registra CI PASS/FAILURE por SHA e a falha P5 read-only ainda sem diagnóstico.
+- Não executar o standby por inferência.

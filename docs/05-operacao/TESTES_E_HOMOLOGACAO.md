@@ -27,3 +27,12 @@ Os seis primeiros seguem em `.github/workflows/`. Os cinco seguintes foram **ret
 Testar desktop/mobile/teclado/zoom; CMS `editar → salvar → reler → DB → renderer` em ambiente local sintético; autorização de não admin; Storage/alt; SEO em novo build. Registrar SHA, ambiente, método e resultado real. Resultados de outro commit não contam.
 
 [Estado](../01-projeto/ESTADO_ATUAL.md) · [backups](BACKUP_E_RECUPERACAO.md).
+
+## Verificação da Etapa 05 (11/11/2026)
+
+- `603fe3aa`: [Validate #43099272397](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43099272397) **SUCCESS** e [Export Docs #43099272253](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43099272253) **SUCCESS**.
+- `c4bc83ce`: [P5 Local #43098792267](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43098792267) **SUCCESS**; [P5 Admin Read-Only #43098792458](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43098792458) **FAILURE**, timeout Puppeteer 18 s na suíte após verificações iniciais PASS; [P3 #43098792240](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43098792240) **FAILURE**, mobile LCP mediano 3.546,641 ms > 3.500 ms.
+- A falha read-only P5 **não foi diagnosticada nem aceita tecnicamente** como comportamento correto. O backlog documenta observação adicional sob nova demanda, sem execução automática.
+- O último SHA de validação e exportação não acionou P3/P5; não proclamar CI integral verde para ele.
+
+[Termo de encerramento](../06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md).
