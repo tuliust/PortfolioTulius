@@ -117,6 +117,13 @@ try {
             "; cause=" + error.message)
         }
       }
+      // Some public reads (notably SEO pages) start after the primary UI is
+      // already ready. Require the selected request to be observed and
+      // intercepted before evaluating a same-UI fallback scenario.
+      const injectionDeadline = Date.now() + 10000
+      while (failuresInjected === 0 && Date.now() < injectionDeadline) {
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      }
       const result = await page.evaluate(() => ({
         sections: document.querySelectorAll("section.portfolio-section").length,
         profileVisible: Boolean(document.querySelector("section#perfil")),
