@@ -18,12 +18,12 @@
 
 | Estado | Arquivo / versão |
 |---|---|
-| 8 versões compartilhadas | Supabase remoto e GitHub `supabase/migrations` possuem nomes/versões coincidentes |
+| 9 versões compartilhadas | Supabase remoto e GitHub `supabase/migrations` possuem nomes/versões coincidentes; mídia alinhada em `20261105101829` |
 | Baseline local, não registrado remotamente | `202610220001_portfolio_cms.sql` |
-| Mesmo nome funcional, versões divergentes | Git `20261105101500_delete_media_asset_everywhere.sql` versus remoto `20261105101829_delete_media_asset_everywhere` |
-| Ainda não instalada | `20261109024100_p2_composite_section_block_save.sql` |
+| Staged; gate de recuperação incompleto | `20261109024100_p2_composite_section_block_save.sql` |
+| Staged; preservar 60 valores até recuperação | `20261110153000_remove_media_credit.sql` |
 
-**Ação segura:** conservar o histórico real de cada lado; não introduzir backfill em `supabase_migrations.schema_migrations` nem executar o baseline antigo sobre a produção. Verificar equivalência de DDL do arquivo timestamp-divergente em um ambiente isolado, antes da P2.
+**Ação segura:** conservar o histórico real de cada lado; não introduzir backfill em `supabase_migrations.schema_migrations` nem executar o baseline antigo sobre a produção. O snapshot remoto sanitizado e o ledger offline exigem 9 compartilhadas, baseline somente Git e as duas migrations staged ainda ausentes do remoto.
 
 ## Inventário agregado de Storage (somente leitura, sem baixar objetos)
 

@@ -74,3 +74,6 @@ jobs:
           node --check scripts/hygiene/restore-evidence.mjs
           node --check scripts/hygiene/restore-evidence.nodecheck.mjs
           node --test scripts/hygiene/restore-evidence.nodecheck.mjs
+          node --check scripts/hygiene/migration-ledger.mjs
+          node --check scripts/hygiene/migration-ledger.nodecheck.mjs
+          node --test scripts/hygiene/migration-ledger.nodecheck.mjs

@@ -31,3 +31,5 @@ jobs:
         run: node scripts/hygiene/schema-audit.mjs --summary-only
       - name: Backup command must default to offline dry-run
         run: node scripts/hygiene/storage-backup.mjs --manifest scripts/hygiene/fixtures/sample-manifest.json
+      - name: Reconcile remote migration snapshot with Git
+        run: node scripts/hygiene/migration-ledger.mjs --remote scripts/hygiene/fixtures/portfolio-remote-migrations-2026-11-11.json
