@@ -80,7 +80,12 @@ try {
             ({ expectedSections, errorNotice }) =>
               document.querySelectorAll("section.portfolio-section").length === expectedSections &&
               Boolean(document.querySelector(".public-site .data-error")) === errorNotice &&
-              Boolean(document.querySelector("#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img")),
+              (() => {
+                const portrait = document.querySelector(
+                  "#perfil-a .mobile-profile-hero img, #perfil-a .mobile360-photo img",
+                )
+                return Boolean(portrait?.complete && portrait.naturalWidth > 0)
+              })(),
             { timeout: 22000 },
             { expectedSections, errorNotice },
           )
