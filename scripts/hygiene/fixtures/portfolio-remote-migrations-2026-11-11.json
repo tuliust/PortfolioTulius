@@ -1,8 +1,9 @@
 {
   "version": 1,
   "projectRef": "zfnrhzplwpjpdljraypt",
-  "observedAt": "2026-11-11T08:51:35.000Z",
+  "observedAt": "2026-11-11T19:02:00.000Z",
   "migrations": [
+    { "version": "202610220001", "name": "portfolio_cms" },
     { "version": "20261024044005", "name": "p0_01_atomic_content_block_save" },
     { "version": "20261024051406", "name": "p0_03_05_section_panels_publish_permissions" },
     { "version": "20261024052156", "name": "p0_05_pin_updated_at_search_path" },
@@ -11,6 +12,8 @@
     { "version": "20261025230446", "name": "p7_admin_rls_initplan_fk_indexes" },
     { "version": "20261025230528", "name": "p7_admin_users_own_select_initplan" },
     { "version": "20261105101829", "name": "delete_media_asset_everywhere" },
-    { "version": "20261107042248", "name": "identity_catalog_stage2" }
+    { "version": "20261107042248", "name": "identity_catalog_stage2" },
+    { "version": "20261109024100", "name": "p2_composite_section_block_save" },
+    { "version": "20261110153000", "name": "remove_media_credit" }
   ]
 }

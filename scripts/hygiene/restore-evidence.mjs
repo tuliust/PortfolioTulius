@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url"
 const REF = "zfnrhzplwpjpdljraypt"
 const allowedKeys = new Set([
   "project", "originalChecksums", "derivedRolesSHA256",
-  "removedLocalOnlyPrivilegeStatement", "originalBackupFilesChanged", "warning",
+  "removedLocalOnlyPrivilegeStatement", "clusterPrivilegeReconstructed",
+  "originalBackupFilesChanged", "warning",
   "localPostgresVersionNum", "mode", "restoreResult", "role", "verifiedAt",
   "tablesCompared", "allCountsMatch", "differences", "foreignKeysChecked",
   "foreignKeyViolations", "rlsPublicTables", "publicPolicies", "publicForeignKeys",
@@ -44,6 +45,7 @@ export function validateRestoreEvidence(evidence) {
   if (evidence.project !== REF || evidence.originalChecksums !== "PASS" ||
       !/^[a-f0-9]{64}$/.test(evidence.derivedRolesSHA256) ||
       evidence.removedLocalOnlyPrivilegeStatement !== 1 ||
+      evidence.clusterPrivilegeReconstructed !== true ||
       evidence.originalBackupFilesChanged !== 0) {
     fail("RESTORE_EVIDENCE_BACKUP_IDENTITY_FAILED")
   }
@@ -70,8 +72,8 @@ export function validateRestoreEvidence(evidence) {
   if (evidence.fullStorageBytesRestored !== false || evidence.migrationHistoryRestored !== false) {
     fail("RESTORE_EVIDENCE_SCOPE_FLAGS_INVALID")
   }
-  if (evidence.warning !== "Derived roles file omits only one cluster-level privilege; does NOT reproduce that grant." ||
-      evidence.scopeNote !== "25 counts and object inventory restored; other gates require independent checks. Do not apply P2 automatically.") {
+  if (evidence.warning !== "Derived roles file omits one cluster grant; equivalent isolated role and SET privilege were reconstructed from remote role metadata." ||
+      evidence.scopeNote !== "Database restore evidence excludes physical Storage bytes, remote migration history and production migration state; verify each separately.") {
     fail("RESTORE_EVIDENCE_SCOPE_TEXT_INVALID")
   }
   return {
@@ -80,9 +82,9 @@ export function validateRestoreEvidence(evidence) {
     databaseRestoreGate: "PASS",
     databaseCounts: "25/25",
     foreignKeysChecked: evidence.foreignKeysChecked,
-    storageBytesGate: "BLOCKED",
-    migrationHistoryGate: "BLOCKED",
-    p2ProductionGate: "BLOCKED",
+    storageBytesGate: "SEPARATE_EVIDENCE_REQUIRED",
+    migrationHistoryGate: "NOT_INCLUDED_IN_RESTORE_EVIDENCE",
+    p2ProductionGate: "NOT_DERIVED_FROM_RESTORE_EVIDENCE",
     safeToShareSummaryOnly: true,
   }
 }

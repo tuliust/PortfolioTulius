@@ -7,8 +7,9 @@ const valid = () => ({
   originalChecksums: "PASS",
   derivedRolesSHA256: "a".repeat(64),
   removedLocalOnlyPrivilegeStatement: 1,
+  clusterPrivilegeReconstructed: true,
   originalBackupFilesChanged: 0,
-  warning: "Derived roles file omits only one cluster-level privilege; does NOT reproduce that grant.",
+  warning: "Derived roles file omits one cluster grant; equivalent isolated role and SET privilege were reconstructed from remote role metadata.",
   localPostgresVersionNum: "170011",
   mode: "LOCAL_RESTORE",
   restoreResult: "COMMITTED",
@@ -30,15 +31,15 @@ const valid = () => ({
   coreRolesPresent: 4,
   fullStorageBytesRestored: false,
   migrationHistoryRestored: false,
-  scopeNote: "25 counts and object inventory restored; other gates require independent checks. Do not apply P2 automatically.",
+  scopeNote: "Database restore evidence excludes physical Storage bytes, remote migration history and production migration state; verify each separately.",
 })
 
 test("accepts sanitized committed local restore evidence but keeps production gates closed", () => {
   const result = validateRestoreEvidence(valid())
   assert.equal(result.databaseRestoreGate, "PASS")
-  assert.equal(result.storageBytesGate, "BLOCKED")
-  assert.equal(result.migrationHistoryGate, "BLOCKED")
-  assert.equal(result.p2ProductionGate, "BLOCKED")
+  assert.equal(result.storageBytesGate, "SEPARATE_EVIDENCE_REQUIRED")
+  assert.equal(result.migrationHistoryGate, "NOT_INCLUDED_IN_RESTORE_EVIDENCE")
+  assert.equal(result.p2ProductionGate, "NOT_DERIVED_FROM_RESTORE_EVIDENCE")
   assert.equal(result.safeToShareSummaryOnly, true)
 })
 

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url"
 
 const REF = "zfnrhzplwpjpdljraypt"
 const remoteExpected = new Map([
+  ["202610220001", "portfolio_cms"],
   ["20261024044005", "p0_01_atomic_content_block_save"],
   ["20261024051406", "p0_03_05_section_panels_publish_permissions"],
   ["20261024052156", "p0_05_pin_updated_at_search_path"],
@@ -14,12 +15,10 @@ const remoteExpected = new Map([
   ["20261025230528", "p7_admin_users_own_select_initplan"],
   ["20261105101829", "delete_media_asset_everywhere"],
   ["20261107042248", "identity_catalog_stage2"],
+  ["20261109024100", "p2_composite_section_block_save"],
+  ["20261110153000", "remove_media_credit"],
 ])
-const localOnlyPolicy = new Map([
-  ["202610220001", { name: "portfolio_cms", state: "BASELINE_GIT_ONLY", gate: "DO_NOT_APPLY" }],
-  ["20261109024100", { name: "p2_composite_section_block_save", state: "STAGED", gate: "RECOVERY_GATES_BLOCKED" }],
-  ["20261110153000", { name: "remove_media_credit", state: "STAGED", gate: "RECOVERY_GATES_BLOCKED" }],
-])
+const localOnlyPolicy = new Map()
 
 function fail(code) {
   throw new Error(code)
@@ -42,7 +41,7 @@ export function reconcileMigrationLedger(snapshot, localFiles) {
   }
   const remote = new Map()
   for (const entry of snapshot.migrations) {
-    if (!entry || !/^\d{14}$/.test(entry.version) ||
+    if (!entry || !/^\d{12,14}$/.test(entry.version) ||
         !/^[a-z0-9_]+$/.test(entry.name) || remote.has(entry.version)) {
       fail("MIGRATION_LEDGER_INVALID_REMOTE_ENTRY")
     }
@@ -78,9 +77,11 @@ export function reconcileMigrationLedger(snapshot, localFiles) {
     })),
     mediaMigrationAligned: remote.get("20261105101829") === "delete_media_asset_everywhere",
     baselineApplyAuthorized: false,
-    schemaMigrationsWriteAuthorized: false,
-    p2ProductionGate: "BLOCKED",
-    creditRemovalGate: "BLOCKED",
+    baselineHistoryReconciled: remote.get("202610220001") === "portfolio_cms",
+    controlledHistoryRepairCompleted: remote.get("202610220001") === "portfolio_cms",
+    arbitrarySchemaMigrationsWriteAuthorized: false,
+    p2ProductionGate: remote.get("20261109024100") === "p2_composite_section_block_save" ? "APPLIED" : "BLOCKED",
+    creditRemovalGate: remote.get("20261110153000") === "remove_media_credit" ? "APPLIED" : "BLOCKED",
   }
 }
 

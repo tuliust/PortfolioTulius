@@ -13,20 +13,20 @@ const snapshot = () => JSON.parse(readFileSync(
 const localFiles = () => readdirSync(join(root, "supabase", "migrations"))
   .filter((file) => file.endsWith(".sql")).sort()
 
-test("reconciles nine remote migrations and keeps three local-only gates closed", () => {
+test("reconciles all twelve local migrations without replaying the baseline", () => {
   const result = reconcileMigrationLedger(snapshot(), localFiles())
-  assert.equal(result.remoteCount, 9)
-  assert.equal(result.sharedCount, 9)
+  assert.equal(result.remoteCount, 12)
+  assert.equal(result.sharedCount, 12)
   assert.equal(result.localCount, 12)
   assert.deepEqual(result.remoteOnly, [])
-  assert.deepEqual(result.localOnly.map((entry) => entry.version), [
-    "202610220001", "20261109024100", "20261110153000",
-  ])
+  assert.deepEqual(result.localOnly, [])
   assert.equal(result.mediaMigrationAligned, true)
   assert.equal(result.baselineApplyAuthorized, false)
-  assert.equal(result.schemaMigrationsWriteAuthorized, false)
-  assert.equal(result.p2ProductionGate, "BLOCKED")
-  assert.equal(result.creditRemovalGate, "BLOCKED")
+  assert.equal(result.baselineHistoryReconciled, true)
+  assert.equal(result.controlledHistoryRepairCompleted, true)
+  assert.equal(result.arbitrarySchemaMigrationsWriteAuthorized, false)
+  assert.equal(result.p2ProductionGate, "APPLIED")
+  assert.equal(result.creditRemovalGate, "APPLIED")
 })
 
 test("rejects remote drift, duplicates and staged migrations reported as installed", () => {
@@ -39,8 +39,8 @@ test("rejects remote drift, duplicates and staged migrations reported as install
   assert.throws(() => reconcileMigrationLedger(duplicate, localFiles()), /INVALID_REMOTE_ENTRY/)
 
   const staged = snapshot()
-  staged.migrations.push({ version: "20261109024100", name: "p2_composite_section_block_save" })
-  assert.throws(() => reconcileMigrationLedger(staged, localFiles()), /REMOTE_DRIFT|GATED/)
+  staged.migrations.push({ version: "20261111120000", name: "unexpected" })
+  assert.throws(() => reconcileMigrationLedger(staged, localFiles()), /REMOTE_DRIFT/)
 })
 
 test("rejects a missing, renamed or unexpected local migration", () => {
