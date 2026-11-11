@@ -19,8 +19,6 @@ on:
       - src/lib/identity-catalog.ts
       - src/types/content.ts
       - index.html
-      - docs/ESTADO_ATUAL_VIGENTE.md
-      - docs/P2_P4_RELATORIO_EXECUCAO_2026-11-09.md
       - src/hooks/usePortfolio.ts
       - vite.config.ts
       - src/app/**

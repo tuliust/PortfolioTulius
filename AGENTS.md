@@ -47,3 +47,8 @@ Para staging, usar **somente Supabase CLI + Docker local**, `supabase/config.tom
 ## Roteamento documental vigente (11/11/2026)
 
 Ler [índice temático](docs/README.md) e o contrato do assunto antes de editar. O [estado consolidado](docs/01-projeto/ESTADO_ATUAL.md), o código `main` e os serviços reais por SHA prevalecem sobre relatórios datados. Itens em [standby](docs/06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas; seguir [guia de IA](docs/06-governanca/GUIA_USO_POR_IA.md). Preservar todas as demais regras de design, branch, segurança, segredos e deploy deste arquivo.
+
+
+## Arquivo histórico após Etapa 03
+
+Os documentos antigos em `docs/*.md` são **apenas apontadores** para [cópias históricas](docs/historico/legado-ate-2026-11-11/INDEX.md); não devem ser tratados como instrução técnica atual. Os workflows legados foram [arquivados](docs/historico/workflows-retirados-2026-11-11/README.md). O CI ativo permanece em `.github/workflows/`; não reativar tarefas antigas por inferência.

@@ -1,8 +1,16 @@
-# Arquivo histórico — versões anteriores e evidências por SHA
+# Arquivo histórico — versões anteriores, evidências e blobs
 
-Este índice conserva documentos de fases anteriores e a revisão de 05/11/2026. **Não são instruções operacionais vigentes.** Os textos continuam rastreáveis em Git; foram ajustados apenas caminhos Markdown relativos quando cópias mudaram de pasta. A aparência e o código do site **não** foram alterados nesta reorganização.
+Este índice armazena evidências e especificações anteriores. **Não usar como contrato operacional vigente.** O projeto atual é descrito no [índice temático](../README.md).
 
-## Versões integrais antes da reorganização de 05/11
+## Arquivamento de 11/11/2026 — Etapa 03
+
+- [Índice completo dos 84 documentos antigos com hashes e links de origem](legado-ate-2026-11-11/INDEX.md).
+- [Cinco workflows operacionais antigos retirados dos gatilhos e preservados](workflows-retirados-2026-11-11/README.md).
+- [Baseline documental pré-consolidação](preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md), com [inventário original de 384 arquivos](preconsolidacao-2026-11-11/ARQUIVOS_GIT_PRE_CONSOLIDACAO.csv).
+- O histórico interno dos documentos movidos conserva links relativos ao diretório original; para navegação, usar o **permalink ao SHA antes do arquivamento**, não seus links relativos na cópia.
+- Os caminhos antigos em `docs/*.md` continuam como encaminhadores curtos para evitar quebrar links.
+
+## Arquivo da reorganização de 05/11/2026
 
 - [README do projeto](README_ANTES_REORGANIZACAO_2026-11-05.md) — introdução e estados anteriores.
 - [Índice de documentação](INDICE_DOCUMENTACAO_ANTES_REORGANIZACAO_2026-11-05.md).
@@ -15,7 +23,7 @@ Este índice conserva documentos de fases anteriores e a revisão de 05/11/2026.
 
 Estas cópias conservam texto e evidências; links locais foram **rebaseados** para resolver a partir desta pasta. O commit funcional original antes da documentação é [`79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2), que preserva os arquivos **exatamente como estavam antes da reorganização**, sem nenhuma correção de links.
 
-## Histórico de consolidação até 31/10
+## Consolidação até 31/10
 
 - [README anterior](README_ATE_2026-10-31.md).
 - [Estado acumulado até 31/10](ESTADO_ATUAL_VIGENTE_ATE_2026-10-31.md).
@@ -27,13 +35,6 @@ Estas cópias conservam texto e evidências; links locais foram **rebaseados** p
 
 Foram **corrigidas 110 referências Markdown internas** em quatro arquivos movidos nesta pasta (38 + 33 + 21 + 18). Seus números, marcos e decisões foram preservados, apenas os destinos dos links relativos foram corrigidos.
 
-## Relatórios históricos mantidos em `docs/`
+## Limites e sigilo
 
-Os relatórios datados como [continuidade do CMS](../CONTINUIDADE_CMS_FONTES_E_PENDENCIAS_2026-10-31.md), [auditoria P3](../P3_QUALIDADE_ACEITE_2026-10-28.md), [otimização LCP](../P3_LCP_MOBILE_RESULTADOS_2026-10-31.md), [checklists de 02/11](../CHECKLIST_CONSOLIDADO_P0_P2_P3_P4_2026-11-02.md), [reconciliação dos pedidos](../RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) e [auditoria dos pedidos](../AUDITORIA_PEDIDOS_CHAT_2026-11-05.md) **continuam em suas rotas originais** para não quebrar referências externas. São **evidências cronológicas**, não contratos atuais.
-
-As especificações em [`guidelines.md`](../../guidelines.md) (22/10) e [`plans/auditoria-portfolio-tulius.md`](../../plans/auditoria-portfolio-tulius.md) (23/10) também estão classificadas como **fontes de origem**, não descrição do último código.
-
-## Fonte vigente e confidencialidade
-
-A [documentação vigente](../README.md), o [Estado atual](../ESTADO_ATUAL_VIGENTE.md), o [CMS](../ADMIN_CMS.md) e o [layout responsivo](../RESPONSIVE_LAYOUT.md) têm precedência operacional, sempre conferidos contra `main`. Os anexos privados e o backup de 80 linhas da Seção 01 são **exclusivos das Fontes privadas do ChatGPT**; não os copiar para o GitHub.
-
+Fontes privadas do Projeto ChatGPT, backups binários, dumps, chaves e segredos não são disponibilizados no GitHub. A identidade visual e a aplicação não foram modificadas durante esta organização.

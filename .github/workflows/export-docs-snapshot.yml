@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - README.md
+      - AGENTS.md
       - docs/**
       - .github/workflows/export-docs-snapshot.yml
   workflow_dispatch:
@@ -27,6 +28,8 @@ jobs:
           name: portfolio-tulius-fontes-md
           path: |
             README.md
+            AGENTS.md
             docs/*.md
+            docs/**/*.md
           if-no-files-found: error
           retention-days: 7

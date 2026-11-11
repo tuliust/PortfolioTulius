@@ -29,8 +29,8 @@ Primeiro [`AGENTS.md`](../AGENTS.md), o guia temático e o código atual. Em con
 
 **Informações superadas em relatórios antigos:** a RPC P2 está em produção; a coluna de crédito de mídia foi removida; o staging escolhido é Supabase CLI/Docker local. Os itens do [standby](06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas.
 
-## Histórico e próximas fases
+## Histórico organizado e fases
 
 [Baseline pré-consolidação](historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md) e [CSV de 384 hashes Git](historico/preconsolidacao-2026-11-11/ARQUIVOS_GIT_PRE_CONSOLIDACAO.csv). [Arquivo histórico organizado](historico/README.md), [estilos/visual](baselines/2026-11-07/REFERENCIAS_VISUAIS.md), [evidência sanitizada](evidence/p2-backup-counts-2026-11-10.json).
 
-**Etapa 02:** criar contratos e índice. **Etapa 03:** arquivar documentos legados, revisar branches/workflows e corrigir referências. **Etapa 04:** substituir as Fontes privadas anexadas ao Projeto ChatGPT; elas não se sincronizam automaticamente com o GitHub.
+**Etapa 02:** contratos e índice concluídos. **Etapa 03 (11/11/2026):** [84 documentos legados arquivados](historico/legado-ate-2026-11-11/INDEX.md), mantendo stubs em seus caminhos anteriores e preservando blobs originais. [Cinco workflows obsoletos retirados e preservados](historico/workflows-retirados-2026-11-11/README.md); seis workflows operacionais permanecem. **Branches antigas continuam no remoto**: documentação e análise de exclusão realizadas, porém a integração GitHub disponível não permite remover referências de branch; executar a exclusão posteriormente pela interface, se desejado. **Etapa 04:** substituir Fontes privadas anexadas ao ChatGPT, sem sincronização automática.

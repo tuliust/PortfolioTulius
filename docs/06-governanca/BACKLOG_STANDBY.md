@@ -13,7 +13,7 @@
 | ST-08 | Edge Function `portfolio-illustrative-import-20261026` ainda ACTIVE | Inventário de dependências |
 | ST-09 | Melhorias CMS/SEO/UX/A11y não essenciais | Nova solicitação |
 | ST-10 | Registros `editorial_issues` e metadados históricos | Curadoria editorial |
-| ST-11 | Workflows pontuais e CI em commits de docs | Etapa 03 de higiene |
+| ST-11 | Workflows pontuais antigos: cinco arquivados e removidos dos gatilhos na Etapa 03; seis workflows preservados. Deploy Vercel por commits documentais continua possível | Revisão futura de custos e disparos sem enfraquecer a validação |
 
 **Não agir** a partir desses itens: sem exclusões, alterações de schema, relaxamento do Lighthouse, testes em produção, publicação de mídia ou uso de tokens. Registrar sempre SHA, evidência, riscos e decisão quando algo for reaberto. Risco aceito não significa corrigido.
 

@@ -1,38 +1,9 @@
-# Perfil — composição Editorial 360° exclusiva do mobile
+# Registro histórico — PERFIL EDITORIAL 360 MOBILE 2026-11-06
 
-**Novo escopo autorizado:** 06/11/2026. **Seção:** `#perfil-a`, sem alteração da composição desktop ou do segundo painel `#perfil-b`.
+> **ARQUIVADO NA ETAPA 03 (11/11/2026).** Este caminho foi mantido apenas para compatibilidade com links antigos. **Não usar como contrato vigente.**
 
-## Contrato de exibição
+- [**Abrir conteúdo integral preservado**](historico/legado-ate-2026-11-11/PERFIL_EDITORIAL_360_MOBILE_2026-11-06.md) — mesma árvore de bytes (Git blob `d04f8d6b88a2a5501bcd943cba2e19ec328c97e0`).
+- [**Abrir documento na versão original e navegar por seus links internos**](https://github.com/tuliustsangaropulos/PortfolioTulius/blob/f87e38881d5ba02a511348d4dc9d95a41ea890c3/docs/PERFIL_EDITORIAL_360_MOBILE_2026-11-06.md) — permalink ao SHA auditado.
+- [**Contrato atual por assunto**](03-cms/GUIA_ADMINISTRATIVO.md) · [**Índice temático**](README.md) · [**Backlog standby**](06-governanca/BACKLOG_STANDBY.md).
 
-A nova variante é ativada apenas quando `content_blocks.content_json.items[0].hero.mobileEditorial.enabled` é `true`. Ausente ou `false`, preserva a abertura mobile anterior. O desktop continua usando `ProfileDesktop` e não consulta as opções da nova variante.
-
-1. **Área superior (grafite):** título editorial próprio do mobile, inicialmente com as linhas `CONEXÕES`, `AUTÊNTICAS.`, `INOVAÇÃO.` (a última em laranja), seguido do complemento da linha editorial em `sections.eyebrow` após o primeiro separador ` · `. A expressão `Comunicação Corporativa e Institucional` não é reproduzida. A introdução `sections.intro` permanece no banco e no desktop, mas não é exibida neste layout mobile.
-2. **Área central (laranja):** o componente SVG `Badge360`, com texto circular e seta diagonal. Inscrição, fonte, tamanho, cor, fundo e visibilidade possuem controles móveis independentes.
-3. **Área inferior (papel claro):** imagem exclusiva escolhida na Biblioteca de Mídia, o nome compartilhado de `sections.title`, o indicador `+15 ANOS` e a descrição do primeiro item do painel A. O botão circular (sem texto visível) mantém o destino `#perfil-b`. Se ainda não houver foto móvel exclusiva cadastrada, a imagem publicada do perfil é um fallback temporário; isso não deve ser confundido com foto nova já aprovada.
-
-A composição tem altura natural, sem forçar o conteúdo das três áreas dentro de um único viewport. O header escuro se aplica somente enquanto o painel `#perfil-a` estiver visível; o painel B preserva seu fundo claro. Sob `prefers-reduced-motion`, a dica da seta deixa de animar.
-
-## Dados, CMS e persistência
-
-Não foram necessárias colunas, tabelas, buckets ou migrations. O objeto `hero.mobileEditorial` é uma nova propriedade estruturada do JSONB de conteúdo já existente, salva pela RPC administrativa `save_content_block_atomic`. Campos:
-
-- `enabled`, `headline`, `badgeText`.
-- `mobileImage`, `mobileAlt`, `mobileFraming` (foto independente; seleção/publicação pela Biblioteca de Mídia existente).
-- `top`: `background`, `fontFamily`, `supportFontFamily`, `textColor`, `accentColor`, `supportColor`, `headlineSize`, `paddingY`, `showHeadline`, `showSupport`.
-- `middle`: `background`, `fontFamily`, `textColor`, `badgeSize`, `paddingY`, `showBadge`.
-- `bottom`: `background`, `fontFamily`, `descriptionFontFamily`, `textColor`, `accentColor`, `descriptionColor`, `photoWidth`, `nameSize`, `yearsSize`, `paddingY`, `showPhoto`, `showName`, `showExperience`, `showArrow`.
-
-Os valores padrão ficam em `src/lib/mobile-profile-editorial.ts`; as famílias de fonte são selecionadas dentre Big Shoulders Display, Inter e Georgia. O acesso administrativo é `/admin` → seção **Perfil** → **Blocos e painéis** → **Painel A** → **Item 01** → **Abertura Editorial 360° — somente mobile**. O nome, a descrição profissional, o histórico de projetos e as demais seções continuam compartilhados e não são copiados.
-
-## Restrições e verificação
-
-- Não modificar a imagem desktop, seu texto, a composição das colunas ou `#perfil-b`.
-- Não criar fotografia sintética nem gravar a imagem de referência como foto publicada.
-- Não executar limpeza de Storage, alterações de RLS/Auth, configurações Vercel, migrations ou mudanças SEO.
-- Verificar `pnpm check`, prévia desktop/mobile, largura 320/360/390/430 px, rolagem, selo, fontes, botão `#perfil-b`, seleção e remoção da fotografia exclusiva, persistência e recuperação pelo CMS. Um CI bem-sucedido não substitui teste visual nem fluxo de gravação com JWT real.
-
-**Situação das provas:** implementação e configuração inicial sob execução em 06/11/2026. Não interpretar este documento como laudo de homologação até o relatório do SHA e dos testes correspondentes.
-
-## Leitura da auditoria P3 no novo layout
-
-O gate de conteúdo de LCP aceita, no mobile, elementos da própria abertura editorial (retrato móvel, título grande ou inscrição SVG do selo), pois a nova hierarquia altera o elemento elegível a maior conteúdo. No desktop, mantém a regra de retrato. A meta sintética de LCP mobile **não** é relaxada: mediana de três amostras ≤3,5 s, acessibilidade/SEO e CLS preservados. A execução P3 do commit `b027bec` identificou 6/6 tamanhos mobile da abertura sem overflow, porém registrou falhas em critérios da seção Experiências e em outras verificações anteriores ao novo escopo. Não tratar essa auditoria como aprovada nem atribuir as falhas de Experiências ao Perfil sem investigação separada.
+Informações antigas como P2 ainda não aplicada, coluna `media_assets.credit` existente ou pendências de homologação não descrevem a situação atual sem conferência do SHA.
