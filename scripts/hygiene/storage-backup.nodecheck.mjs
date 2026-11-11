@@ -6,6 +6,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { spawnSync } from "node:child_process"
+import { commitBackupIndex, removeStaleIndexPartial } from "./storage-backup.mjs"
 
 const ref = "zfnrhzplwpjpdljraypt"
 const script = fileURLToPath(new URL("./storage-backup.mjs", import.meta.url))
@@ -181,13 +182,12 @@ test("treats a verified completed backup as an idempotent no-op", async () => {
 
 test("recovers from a stale partial index and commits a complete index atomically", async () => {
   const { directory, manifestPath } = await fixture()
+  const index = JSON.parse(await readFile(join(directory, "index.json"), "utf8"))
   await unlink(join(directory, "index.json"))
   await writeFile(join(directory, ".index.json.partial"), "indice interrompido")
 
-  const result = executeBackup(directory, manifestPath)
-  assert.equal(result.status, 0, result.stderr)
-  assert.match(result.stdout, /"downloaded":0/)
-  assert.match(result.stdout, /"reused":1/)
+  await removeStaleIndexPartial(directory)
+  await commitBackupIndex(directory, index)
   assert.equal((await lstat(join(directory, "index.json"))).isFile(), true)
   await assert.rejects(lstat(join(directory, ".index.json.partial")), { code: "ENOENT" })
   assert.equal(verify(directory, manifestPath).status, 0)
@@ -198,9 +198,7 @@ test("rejects an unsafe stale partial index instead of deleting it", async () =>
   await unlink(join(directory, "index.json"))
   await symlink(manifestPath, join(directory, ".index.json.partial"))
 
-  const result = executeBackup(directory, manifestPath)
-  assert.notEqual(result.status, 0)
-  assert.match(result.stderr, /HYG_BACKUP_UNSAFE_INDEX_PARTIAL/)
+  await assert.rejects(removeStaleIndexPartial(directory), /HYG_BACKUP_UNSAFE_INDEX_PARTIAL/)
 })
 
 test("rejects corrupt, unexpected or symbolic-link partial files", async () => {

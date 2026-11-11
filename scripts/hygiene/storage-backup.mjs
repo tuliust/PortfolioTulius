@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs"
 import { chmod, link, lstat, mkdir, open, readFile, readdir, unlink, writeFile } from "node:fs/promises"
 import { createHash } from "node:crypto"
 import { isAbsolute, relative, resolve, sep, join, parse } from "node:path"
+import { fileURLToPath } from "node:url"
 import { loadManifest } from "./storage-plan.mjs"
 
 const sha = (buffer) => createHash("sha256").update(buffer).digest("hex")
@@ -10,7 +11,7 @@ const INDEX_FILE = "index.json"
 const INDEX_PARTIAL_FILE = ".index.json.partial"
 const backupFile = (bucket, path) => sha(Buffer.from(JSON.stringify([bucket, path]))) + ".bin"
 
-async function removeStaleIndexPartial(absolute) {
+export async function removeStaleIndexPartial(absolute) {
   const partial = join(absolute, INDEX_PARTIAL_FILE)
   try {
     const stat = await lstat(partial)
@@ -23,7 +24,7 @@ async function removeStaleIndexPartial(absolute) {
   }
 }
 
-async function commitBackupIndex(absolute, data) {
+export async function commitBackupIndex(absolute, data) {
   const partial = join(absolute, INDEX_PARTIAL_FILE)
   const target = join(absolute, INDEX_FILE)
   const handle = await open(partial, "wx", 0o600)
@@ -135,6 +136,7 @@ export async function inspectPartialBackup(absolute, manifest) {
   }
   return reusable
 }
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 const has = (s) => process.argv.includes(s)
 const arg = (s) => {
   const i = process.argv.indexOf(s)
@@ -264,4 +266,5 @@ if (inspectDirectory) {
       verification: "node scripts/hygiene/storage-backup.mjs --verify-backup " + absolute + " --manifest " + resolve(manifestPath),
     }))
   }
+}
 }
