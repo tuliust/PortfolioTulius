@@ -1,12 +1,47 @@
 import { readFileSync } from "node:fs"
-import { chmod, lstat, mkdir, readFile, readdir, writeFile } from "node:fs/promises"
+import { chmod, link, lstat, mkdir, open, readFile, readdir, unlink, writeFile } from "node:fs/promises"
 import { createHash } from "node:crypto"
 import { isAbsolute, relative, resolve, sep, join, parse } from "node:path"
 import { loadManifest } from "./storage-plan.mjs"
 
 const sha = (buffer) => createHash("sha256").update(buffer).digest("hex")
 const EXPECTED_REF = "zfnrhzplwpjpdljraypt"
+const INDEX_FILE = "index.json"
+const INDEX_PARTIAL_FILE = ".index.json.partial"
 const backupFile = (bucket, path) => sha(Buffer.from(JSON.stringify([bucket, path]))) + ".bin"
+
+async function removeStaleIndexPartial(absolute) {
+  const partial = join(absolute, INDEX_PARTIAL_FILE)
+  try {
+    const stat = await lstat(partial)
+    if (!stat.isFile() || stat.isSymbolicLink()) {
+      throw new Error("HYG_BACKUP_UNSAFE_INDEX_PARTIAL")
+    }
+    await unlink(partial)
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error
+  }
+}
+
+async function commitBackupIndex(absolute, data) {
+  const partial = join(absolute, INDEX_PARTIAL_FILE)
+  const target = join(absolute, INDEX_FILE)
+  const handle = await open(partial, "wx", 0o600)
+  try {
+    await handle.writeFile(JSON.stringify(data, null, 2))
+    await handle.sync()
+  } finally {
+    await handle.close()
+  }
+  try {
+    // link() creates the final name only when it does not already exist. This
+    // avoids replacing an index produced concurrently and keeps the commit
+    // atomic on the same private filesystem.
+    await link(partial, target)
+  } finally {
+    await unlink(partial).catch(() => {})
+  }
+}
 
 function validateBackupIndex(data) {
   if (!data || data.version !== 1 || data.projectRef !== EXPECTED_REF ||
@@ -60,11 +95,11 @@ async function readSafeBackupFile(target) {
 
 async function verifyBackupDirectory(absolute, manifest = null) {
   const { data, files } = validateBackupIndex(
-    JSON.parse(readFileSync(join(absolute, "index.json"), "utf8")),
+    JSON.parse(readFileSync(join(absolute, INDEX_FILE), "utf8")),
   )
   if (manifest) validateBackupAgainstManifest(data, manifest)
   const directoryEntries = await readdir(absolute)
-  const expectedEntries = new Set(["index.json", ...files])
+  const expectedEntries = new Set([INDEX_FILE, ...files])
   if (directoryEntries.length !== expectedEntries.size ||
       directoryEntries.some((name) => !expectedEntries.has(name))) {
     throw new Error("HYG_BACKUP_DIRECTORY_MISMATCH")
@@ -83,7 +118,7 @@ export async function inspectPartialBackup(absolute, manifest) {
     backupFile(item.bucket, item.path), item,
   ]))
   const entries = await readdir(absolute)
-  if (entries.includes("index.json")) throw new Error("HYG_BACKUP_INDEX_ALREADY_EXISTS")
+  if (entries.includes(INDEX_FILE)) throw new Error("HYG_BACKUP_INDEX_ALREADY_EXISTS")
   if (entries.some((name) => !expected.has(name))) {
     throw new Error("HYG_BACKUP_PARTIAL_DIRECTORY_MISMATCH")
   }
@@ -171,8 +206,9 @@ if (inspectDirectory) {
     if (absolute === parse(absolute).root || absolute === "/tmp") throw new Error("HYG_BACKUP_UNSAFE_DIRECTORY")
     await mkdir(absolute, { mode: 0o700, recursive: true })
     await chmod(absolute, 0o700)
+    await removeStaleIndexPartial(absolute)
     const entries = await readdir(absolute)
-    if (entries.includes("index.json")) {
+    if (entries.includes(INDEX_FILE)) {
       const completed = await verifyBackupDirectory(absolute, manifest)
       console.log(JSON.stringify({
         complete: true, alreadyComplete: true, backedUp: completed.items.length,
@@ -212,14 +248,14 @@ if (inspectDirectory) {
       }
       recorded.push({ bucket: item.bucket, path: item.path, file, bytes: content.byteLength, sha256: digest })
     }
-    await writeFile(join(absolute, "index.json"), JSON.stringify({
+    await commitBackupIndex(absolute, {
       version: 1,
       projectRef: manifest.projectRef,
       complete: true,
       expectedObjects: manifest.items.length,
       expectedBytes: manifest.items.reduce((total, item) => total + item.size, 0),
       items: recorded,
-    }, null, 2), { flag: "wx", mode: 0o600 })
+    })
     console.log(JSON.stringify({
       complete: true,
       backedUp: recorded.length,

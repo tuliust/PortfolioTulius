@@ -1,7 +1,7 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 import { createHash } from "node:crypto"
-import { mkdtemp, mkdir, readFile, symlink, unlink, writeFile } from "node:fs/promises"
+import { lstat, mkdtemp, mkdir, readFile, symlink, unlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -177,6 +177,30 @@ test("treats a verified completed backup as an idempotent no-op", async () => {
   assert.match(result.stdout, /"alreadyComplete":true/)
   assert.match(result.stdout, /"downloaded":0/)
   assert.match(result.stdout, /"reused":1/)
+})
+
+test("recovers from a stale partial index and commits a complete index atomically", async () => {
+  const { directory, manifestPath } = await fixture()
+  await unlink(join(directory, "index.json"))
+  await writeFile(join(directory, ".index.json.partial"), "indice interrompido")
+
+  const result = executeBackup(directory, manifestPath)
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /"downloaded":0/)
+  assert.match(result.stdout, /"reused":1/)
+  assert.equal((await lstat(join(directory, "index.json"))).isFile(), true)
+  await assert.rejects(lstat(join(directory, ".index.json.partial")), { code: "ENOENT" })
+  assert.equal(verify(directory, manifestPath).status, 0)
+})
+
+test("rejects an unsafe stale partial index instead of deleting it", async () => {
+  const { directory, manifestPath } = await fixture()
+  await unlink(join(directory, "index.json"))
+  await symlink(manifestPath, join(directory, ".index.json.partial"))
+
+  const result = executeBackup(directory, manifestPath)
+  assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /HYG_BACKUP_UNSAFE_INDEX_PARTIAL/)
 })
 
 test("rejects corrupt, unexpected or symbolic-link partial files", async () => {
