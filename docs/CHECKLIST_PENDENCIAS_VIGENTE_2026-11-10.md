@@ -1,3 +1,20 @@
+> **ATUALIZAÇÃO VIGENTE — 11/11/2026 00:51 BRT:** HEAD publicado `de797804639e91703c40db134231590aad466027`; [Validate #42949578058](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42949578058) e [P5 #42949578076](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42949578076) **SUCCESS na primeira tentativa**. P5 isolado **121/121** = 8 base + 13 P2 + 87 navegador/CMS + 8 mídia + 5 SEO, endpoint loopback e `cloudConnections: 0`. Os 13 contratos P2 agora incluem escrita por cliente legado após a migration e preservação de escrita posterior diante de replay obsoleto. Último P3 integral permanece [#42938878493](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42938878493) **SUCCESS**, LCP mobile mediano **3.439,002 ms**, sem alteração posterior no código do produto. Vercel Production `dpl_9SvTASXspRKTVgXnS6bjUymB52b3` READY para esse SHA. Supabase produtivo somente leitura: 9 migrations, 14 seções, 28 blocos, 56 placements, 75 mídias, 60 créditos; RPC/coluna P2 ausentes e coluna `credit` presente. Restore PostgreSQL 17, bytes dos 128 objetos Storage e ensaio sobre o restore real continuam gates; P2 e remoção de crédito não aplicadas.
+
+## Checklist incremental das oito frentes — 11/11/2026 00:51 BRT
+
+| Frente | Estado | Evidência / gate restante |
+|---|---|---|
+| 1. Backups | **PARCIAL** | Três SQLs, hashes e duas cópias privadas conferidos; restore PG17 e bytes/hash dos 128 objetos Storage não comprovados. |
+| 2. Migrations | **PARCIAL** | Nove remotas confirmadas; mídia `20261105101829` alinhada; baseline `202610220001` somente Git; nenhuma alteração em `schema_migrations`. |
+| 3. Recuperação/rollback | **PARCIAL** | P2 sintético 13/13 cobre CAS, falhas, autorização, cliente legado, retry e escrita posterior; falta repetir sobre restore real. |
+| 4. P2 produção | **BLOQUEADO** | Autorização humana existe; gates objetivos de restore, Storage e rollback real incompletos. |
+| 5. CMS/mídia | **CONCLUÍDO NO ESCOPO VIGENTE** | P5 atual 121/121; último P3 integral aprovado e código do produto inalterado desde então. |
+| 6. Crédito | **PARCIAL** | Consumidores removidos e migration staged; coluna e 60 valores preservados até recuperação comprovada. |
+| 7. Docs/evidências | **CONCLUÍDO NESTA RODADA** | Estado corrente e evidências convergidos; históricos preservados abaixo. |
+| 8. Encerramento integral | **BLOQUEADO** | Depende de restore real, Storage físico, rollback, P2 e remoção final do crédito. |
+
+---
+
 > **ATUALIZAÇÃO VIGENTE — 10/11/2026 22:24 BRT:** o SHA funcional `67bb01d02b4da7cc7d2f5f212c3e3a56716de0c5` foi publicado e aprovado em [Validate #42936867997](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42936867997) e [P3 #42936867884](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42936867884). O P3 terminou **SUCCESS**: quatro cenários públicos de falha parcial PASS, 38 capturas sem falha, RLS/SEO PASS e LCP mobile mediano **3.447,363 ms**, mantendo o teto ≤3.500 ms. A falha anterior era sincronização do teste com a leitura tardia `pages`, corrigida sem mudar UI, dados ou asserções. Produção Supabase permaneceu somente leitura: 9 migrations; 14 seções / 28 blocos / 56 placements / 75 mídias; 60 créditos preservados; 128 objetos Storage (72 públicos + 56 privados); P2 ausente. Restore PostgreSQL 17, bytes do Storage e rollback continuam gates obrigatórios.
 
 ## Checklist incremental das oito frentes — 10/11/2026 22:24 BRT
