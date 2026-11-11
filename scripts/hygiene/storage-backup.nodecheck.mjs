@@ -4,10 +4,11 @@ import { createHash } from "node:crypto"
 import { mkdtemp, mkdir, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
+import { fileURLToPath } from "node:url"
 import { spawnSync } from "node:child_process"
 
 const ref = "zfnrhzplwpjpdljraypt"
-const script = new URL("./storage-backup.mjs", import.meta.url)
+const script = fileURLToPath(new URL("./storage-backup.mjs", import.meta.url))
 const sha = (value) => createHash("sha256").update(value).digest("hex")
 const fileFor = (bucket, path) => sha(Buffer.from(JSON.stringify([bucket, path]))) + ".bin"
 
