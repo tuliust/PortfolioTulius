@@ -1,3 +1,20 @@
+> **ATUALIZAÇÃO VIGENTE — 10/11/2026 22:24 BRT:** o SHA funcional `67bb01d02b4da7cc7d2f5f212c3e3a56716de0c5` foi publicado e aprovado em [Validate #42936867997](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42936867997) e [P3 #42936867884](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42936867884). O P3 terminou **SUCCESS**: quatro cenários públicos de falha parcial PASS, 38 capturas sem falha, RLS/SEO PASS e LCP mobile mediano **3.447,363 ms**, mantendo o teto ≤3.500 ms. A falha anterior era sincronização do teste com a leitura tardia `pages`, corrigida sem mudar UI, dados ou asserções. Produção Supabase permaneceu somente leitura: 9 migrations; 14 seções / 28 blocos / 56 placements / 75 mídias; 60 créditos preservados; 128 objetos Storage (72 públicos + 56 privados); P2 ausente. Restore PostgreSQL 17, bytes do Storage e rollback continuam gates obrigatórios.
+
+## Checklist incremental das oito frentes — 10/11/2026 22:24 BRT
+
+| Frente | Estado | Evidência / gate restante |
+|---|---|---|
+| 1. Backups | **PARCIAL** | SQLs e duas cópias privadas com hashes conferidos; restore PG17 e bytes/hash dos 128 objetos Storage não comprovados. |
+| 2. Migrations | **PARCIAL** | 9 remotas; mídia `20261105101829` alinhada; baseline `202610220001` somente Git; não fazer replay/backfill arbitrário. |
+| 3. Recuperação/rollback | **BLOQUEADO** | Falta ensaio no restore real: CAS, falha pós-escrita, idempotência, autorização, cliente legado e preservação de escritas posteriores. |
+| 4. P2 produção | **BLOQUEADO** | Autorização humana existe; gates objetivos 1 e 3 continuam incompletos. Migration `20261109024100` não aplicada. |
+| 5. CMS/mídia | **CONCLUÍDO NO ESCOPO VIGENTE** | P5 sintético 119/119 no SHA anterior relevante e P3 público completo no SHA funcional `67bb01d0` SUCCESS. |
+| 6. Crédito | **PARCIAL** | Consumidores removidos e migration staged; coluna e 60 valores preservados até recuperação comprovada. |
+| 7. Docs/evidências | **CONCLUÍDO NESTA RODADA** | Checklist, estado e issues sincronizados em commit documental único; fontes privadas preservadas separadamente. |
+| 8. Encerramento integral | **BLOQUEADO** | Depende de restore, Storage físico, rollback, P2 e remoção final do crédito. |
+
+---
+
 > **Atualização verificada 10/11/2026 — continuidade da restauração:** HEAD pré-documental `ec754448`, GitHub Actions Validate/P5/Export concluídos com sucesso, Vercel Production READY; Supabase confirmado em leitura sem RPC P2 nem coluna `block_placements.updated_at`, 9 migrations, 60 créditos históricos. O arquivo original `roles.sql` foi inspecionado e o bloqueio do `GRANT SET ON PARAMETER log_min_messages` foi isolado; cópia adaptada **somente local** preparada/testada, sem restauração executada. Storage físico, teste de recuperação e rollback ainda são gates obrigatórios. Ver [diagnóstico de retomada](P2_RESTORE_CONTINUIDADE_2026-11-10.md). Não reaplicar baseline, não remover `credit` e não aplicar P2 antes dos gates. Os estados históricos abaixo permanecem preservados.\n\n---\n\n> **Migration de mídia reconciliada (10/11/2026):** o registro remoto `supabase_migrations.schema_migrations` versão `20261105101829` contém um único SQL de 7.899 caracteres, **idêntico byte a byte** ao arquivo Git anteriormente nomeado `20261105101500_delete_media_asset_everywhere.sql`. O arquivo Git foi **renomeado sem alterar conteúdo** para `20261105101829_delete_media_asset_everywhere.sql`, alinhando o versionamento ao que de fato foi aplicado. Nenhum comando SQL ou migration foi executado no remoto. O baseline `202610220001` permanece pendente de resolução segura e P2 continua não aplicada.
 
 ---
