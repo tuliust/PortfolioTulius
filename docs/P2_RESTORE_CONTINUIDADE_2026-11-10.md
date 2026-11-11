@@ -45,3 +45,13 @@ Ensaiar a migration P2 e o retorno no mesmo ambiente isolado: erros após update
 - Nenhuma mídia, texto, design, tipografia ou objeto de Storage foi modificado nesta rodada. Os documentos privados de produto/design e snapshots históricos não foram publicados no GitHub.
 
 **Próxima ação indispensável:** executar o restore **no ambiente isolado já existente** e incorporar o relatório de execução assinado por logs/hashes, então ensaiar P2 e a reversão. Não declarar finalizado antes desses gates.
+
+## Validação offline do relatório sanitizado
+
+Após a execução local produzir `restore-p2-isolated-evidence.json`, validar somente esse JSON — nunca os dumps ou `restore-p2-isolated-error.log` — com:
+
+```powershell
+node scripts/hygiene/restore-evidence.mjs --evidence 'C:\Users\Tulius\PortfolioTulius-backup\restore-p2-isolated-evidence.json'
+```
+
+O validador exige restore `COMMITTED`, projeto correto, hashes originais PASS, PostgreSQL 17, 25/25 contagens, zero violações de chave estrangeira e os indicadores estruturais do snapshot. Campos extras são rejeitados para impedir que logs, caminhos ou diagnósticos privados sejam confundidos com evidência compartilhável. Uma aprovação gera apenas um resumo sanitizado e mantém explicitamente `storageBytesGate`, `migrationHistoryGate` e `p2ProductionGate` como `BLOCKED`.
