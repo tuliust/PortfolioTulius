@@ -68,3 +68,6 @@ jobs:
           node --check scripts/p6-seo-publish-simulation.mjs
           node --check scripts/p6-seo-publish-simulation.check.mjs
           node --test scripts/p6-seo-publish-simulation.check.mjs
+          node --check scripts/hygiene/storage-backup.mjs
+          node --check scripts/hygiene/storage-backup.nodecheck.mjs
+          node --test scripts/hygiene/storage-backup.nodecheck.mjs
