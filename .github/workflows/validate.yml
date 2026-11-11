@@ -71,6 +71,9 @@ jobs:
           node --check scripts/hygiene/storage-backup.mjs
           node --check scripts/hygiene/storage-backup.nodecheck.mjs
           node --test scripts/hygiene/storage-backup.nodecheck.mjs
+          node --check scripts/hygiene/storage-evidence.mjs
+          node --check scripts/hygiene/storage-evidence.nodecheck.mjs
+          node --test scripts/hygiene/storage-evidence.nodecheck.mjs
           node --check scripts/hygiene/restore-evidence.mjs
           node --check scripts/hygiene/restore-evidence.nodecheck.mjs
           node --test scripts/hygiene/restore-evidence.nodecheck.mjs

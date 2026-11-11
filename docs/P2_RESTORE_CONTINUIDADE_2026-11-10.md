@@ -55,3 +55,19 @@ node scripts/hygiene/restore-evidence.mjs --evidence 'C:\Users\Tulius\PortfolioT
 ```
 
 O validador exige restore `COMMITTED`, projeto correto, hashes originais PASS, PostgreSQL 17, 25/25 contagens, zero violações de chave estrangeira e os indicadores estruturais do snapshot. Campos extras são rejeitados para impedir que logs, caminhos ou diagnósticos privados sejam confundidos com evidência compartilhável. Uma aprovação gera apenas um resumo sanitizado e mantém explicitamente `storageBytesGate`, `migrationHistoryGate` e `p2ProductionGate` como `BLOCKED`.
+
+## Validação offline da evidência física de Storage
+
+Depois de concluir a cópia privada, gere e valide somente o resumo sanitizado. O manifesto e o diretório de objetos permanecem locais:
+
+```powershell
+node scripts/hygiene/storage-backup.mjs `
+  --verify-backup 'C:\Users\Tulius\PortfolioTulius-backup\storage-objects' `
+  --manifest 'C:\Users\Tulius\PortfolioTulius-backup\storage-manifest.json' |
+  Set-Content -Encoding utf8 'C:\Users\Tulius\PortfolioTulius-backup\storage-backup-evidence.json'
+
+node scripts/hygiene/storage-evidence.mjs `
+  --evidence 'C:\Users\Tulius\PortfolioTulius-backup\storage-backup-evidence.json'
+```
+
+O segundo comando só aprova `storageBytesGate` com projeto `zfnrhzplwpjpdljraypt`, 128 objetos, 4.661.351 bytes, backup completo e vínculo ao manifesto. Campos extras são rejeitados para impedir exposição acidental de caminhos. Mesmo aprovado, banco, histórico, rollback e P2 continuam `BLOCKED`.
