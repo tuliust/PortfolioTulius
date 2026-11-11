@@ -43,3 +43,7 @@ A Vercel executa o build Vite (`pnpm build`). As variáveis `VITE_SUPABASE_URL` 
 ## Homologação isolada e performance (decisão 02/11/2026)
 
 Para staging, usar **somente Supabase CLI + Docker local**, `supabase/config.toml` com `seed.local.synthetic.sql`, nunca `supabase/seed.sql` ou `supabase link/db push`. O procedimento está em `docs/SUPABASE_STAGING_LOCAL_ISOLADO_2026-11-02.md`. A meta operacional vigente de LCP mobile é **≤3,5 s** (mediana de três Lighthouse), mantendo identidade visual intacta. Este guia não autoriza alterar produção, RLS, Auth ou mídias.
+
+## Roteamento documental vigente (11/11/2026)
+
+Ler [índice temático](docs/README.md) e o contrato do assunto antes de editar. O [estado consolidado](docs/01-projeto/ESTADO_ATUAL.md), o código `main` e os serviços reais por SHA prevalecem sobre relatórios datados. Itens em [standby](docs/06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas; seguir [guia de IA](docs/06-governanca/GUIA_USO_POR_IA.md). Preservar todas as demais regras de design, branch, segurança, segredos e deploy deste arquivo.

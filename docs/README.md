@@ -1,66 +1,36 @@
-# Atualização operacional — P2/P4, 09/11/2026
+# PortfolioTulius — documentação temática
 
-> **Atualização de continuidade — 09/11/2026.** Este trecho prevalece sobre quaisquer snapshots datados abaixo. Código inicialmente auditado em `7e8d7f82`, agora incluindo correção de fallback P2 (`4e739dbf`), suíte de mídia sintética (`630fb712`) e experimentos de prioridade da consulta inicial de Perfil (`b3dc0a5f` e `93176222`). **Não foi aplicada migration nem houve escrita de ensaio no Supabase de produção.** A migration `20261109024100_p2_composite_section_block_save.sql` existe em Git, mas `public.save_section_block_atomic` está **ausente no banco produtivo** (SELECT em `pg_proc`); usar o caminho legado até autorização separada. Veja [relatório de execução](P2_P4_RELATORIO_EXECUCAO_2026-11-09.md), [plano de aceite](P2_P4_PLANO_ACEITE_2026-11-08.md) e [mapa CMS → renderer](MAPA_CAMPOS_CMS_RENDERER.md).
+**ÍNDICE CANÔNICO | Revisão 11/11/2026 | baseline auditado `0627947`.** O site está finalizado. Os documentos nesta estrutura orientam manutenção; relatórios antigos são evidências de suas datas e SHAs, não estado vivo.
 
-## Entrada operacional de documentação e fontes
-**Ponto de entrada deste ciclo:** `ESTADO_ATUAL_VIGENTE.md`, `OPEN_ISSUES.md`, `P2_P4_PLANO_ACEITE_2026-11-08.md`, `MAPA_CAMPOS_CMS_RENDERER.md` e `P2_P4_RELATORIO_EXECUCAO_2026-11-09.md`. O conteúdo datado anterior deve ser interpretado como histórico no seu SHA e ambiente. As Fontes privadas do Projeto ChatGPT exigem substituição manual; não são atualizadas por push no GitHub.
+## Por assunto
 
----
-
-## Documento anterior preservado para rastreabilidade
-
-# Documentação técnica — PortfolioTulius
-
-> **Atualização posterior de 07/11/2026:** [Ajustes no Editor do Site: rótulos, três áreas e Depoimentos sem Acervo separado](AJUSTES_ADMIN_AREAS_DEPOIMENTOS_2026-11-07.md). A Etapa 4 anterior permanece documentada apenas como histórico.
-
-**Índice revisado em 07/11/2026.** A revisão adiciona documentação da nova frente de padronização do CMS, sem mudar a hierarquia dos estados e evidências datados de 05/11/2026.
-
-> **Frente atual — Etapas 1 a 5 executadas em 07/11/2026 (homologação parcial):** [Plano completo de padronização do CMS](PLANO_PADRONIZACAO_CMS_2026-11-07.md) · [Inventário de fontes, cores, tamanhos e dados de apresentação](INVENTARIO_ESTILOS_BASELINE_2026-11-07.md) · [Snapshot de estilos do Supabase](baselines/2026-11-07/cms-estilos-supabase.json) · [Declarações CSS indexadas](baselines/2026-11-07/css-declaracoes-de-estilo.csv) · [Referências visuais do SHA funcional anterior](baselines/2026-11-07/REFERENCIAS_VISUAIS.md). **Etapa 2:** [Catálogo Identidade, migração e contratos](IDENTIDADE_CATALOGO_ETAPA2_2026-11-07.md). **Etapa 3:** [Simplificação do Editor do Site](EDITOR_DO_SITE_ETAPA3_2026-11-07.md). **Etapa 4:** [Acervo Estruturado — navegação e vínculos](ACERVO_ESTRUTURADO_ETAPA4_2026-11-07.md). **Etapa 5:** [Relatório de homologação e pendências](HOMOLOGACAO_CMS_ETAPA5_2026-11-07.md). **A aprovação integral P3/visual ainda está pendente.**
-
-**Referência documental original em 05/11/2026.** Esta página distingue documentação **operacional**, **especificações de origem** e **evidências históricas**. Cada commit tem data e escopo; jamais interpretar um snapshot antigo como status corrente de `main`. A versão anterior deste índice está [arquivada](historico/INDICE_DOCUMENTACAO_ANTES_REORGANIZACAO_2026-11-05.md).
-
-> **Novo escopo de 06/11/2026:** [Perfil Editorial 360° — mobile](PERFIL_EDITORIAL_360_MOBILE_2026-11-06.md). A documentação anterior preserva o aceite e as evidências datadas de 05/11; esse novo pedido é restrito à abertura mobile.
-
-## Primeiro acesso — cinco referências essenciais
-
-| Finalidade | Fonte |
+| Necessidade | Fonte de referência |
 |---|---|
-| **Regras e proteção de dados** | [`AGENTS.md`](../AGENTS.md) |
-| **Estado técnico e evidências de CI/P3** | [Estado atual vigente](ESTADO_ATUAL_VIGENTE.md) |
-| **Interface administrativa atual** | [CMS](ADMIN_CMS.md) |
-| **Exibição pública responsiva a preservar** | [Layout responsivo](RESPONSIVE_LAYOUT.md) |
-| **Validações pendentes sem reabertura automática do projeto** | [Verificações técnicas](OPEN_ISSUES.md) |
+| Estado do projeto | [Estado atual](01-projeto/ESTADO_ATUAL.md) |
+| Componentes e dados | [Arquitetura](01-projeto/ARQUITETURA.md) |
+| Cores, tipografia, identidade | [Design](02-design/IDENTIDADE_VISUAL.md) |
+| Desktop, mobile e acessibilidade | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
+| Painel e ajustes de conteúdo | [CMS](03-cms/GUIA_ADMINISTRATIVO.md) |
+| Campos, tabelas e renderer | [Modelo de dados](03-cms/MODELO_DE_DADOS.md) |
+| Fotos, SVG, upload, Storage | [Mídias](03-cms/MIDIAS_E_STORAGE.md) |
+| Banco, migrations, RPCs, Auth | [Supabase](04-infraestrutura/SUPABASE.md) |
+| Permissões, políticas, chaves | [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
+| Domínios, publicação e SEO | [Vercel](04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
+| CI, Lighthouse, homologação | [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
+| Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
+| Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
+| O que já foi decidido | [Decisões](06-governanca/DECISOES_VIGENTES.md) |
+| Itens a não executar agora | [Backlog standby](06-governanca/BACKLOG_STANDBY.md) |
+| Consultas por ChatGPT/Codex | [Guia para IA](06-governanca/GUIA_USO_POR_IA.md) |
 
-**Baseline de aplicação** desta reorganização: [`79aa3c07`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/79aa3c07ce6c9106b1d504c1f574731bf70fb5d2), [CI `#42020574434` aprovado](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42020574434) e Vercel READY no mesmo SHA na consulta de 05/11. A última [P3 `#42020342275`](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/42020342275) foi **reprovada** no commit anterior `0873eeff`; **não há P3 própria localizada de `79aa3c07`**. Não atribuir resultado P3 a SHA diferente.
+## Política de leitura
 
-## Contratos por assunto
+Primeiro [`AGENTS.md`](../AGENTS.md), o guia temático e o código atual. Em conflitos: pedido vigente → código/serviços por SHA → CI do mesmo SHA → contratos canônicos → histórico datado. Distinguir teste sintético de escrita produtiva, deployment READY de CI verde e risco aceito de correção.
 
-| Domínio | Fonte principal |
-|---|---|
-| Arquitetura e carregamento | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
-| Entidades, seções, coleções e JSONB | [`CONTENT_MODEL.md`](CONTENT_MODEL.md) |
-| Design, cores, tipografia e tokens | [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) |
-| Interações, acessibilidade e motion | [`UX_UI_MOTION.md`](UX_UI_MOTION.md) |
-| Segurança, funções e RLS | [`SECURITY_RLS.md`](SECURITY_RLS.md) |
-| Deploy, SEO estático e versionamento | [`DEPLOYMENT.md`](DEPLOYMENT.md) |
-| Experiências e textos editoriais — snapshot | [`EXPERIENCIAS_UNIFICADAS_2026-10-31.md`](EXPERIENCIAS_UNIFICADAS_2026-10-31.md) |
-| Guia de precedência entre fontes GitHub/ChatGPT | [`GUIA_FONTES_CHATGPT.md`](GUIA_FONTES_CHATGPT.md) |
+**Informações superadas em relatórios antigos:** a RPC P2 está em produção; a coluna de crédito de mídia foi removida; o staging escolhido é Supabase CLI/Docker local. Os itens do [standby](06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas.
 
-## Evidências e marcos cronológicos
+## Histórico e próximas fases
 
-- [Auditoria dos pedidos recebidos em 05/11](AUDITORIA_PEDIDOS_CHAT_2026-11-05.md) e [reconciliação acumulada](RECONCILIACAO_IMPLEMENTACAO_CHAT_2026-11-05.md) — documentos **datados**, com SHAs próprios, não monitoramento em tempo real.
-- [Encerramento administrativo deliberado pelo proprietário](ENCERRAMENTO_OPERACIONAL_2026-11-05.md) — baixa histórica por decisão, distinta de homologação técnica posterior.
-- [Histórico e versões antigas completas](historico/README.md) — relatórios, handoffs, checklists e versões integrais antes da consolidação.
-- [`guidelines.md`](../guidelines.md) — **especificação original de 22/10**, não descrição do CMS atual.
-- [`plans/auditoria-portfolio-tulius.md`](../plans/auditoria-portfolio-tulius.md) — **diagnóstico de 23/10**, não backlog vigente.
+[Baseline pré-consolidação](historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md) e [CSV de 384 hashes Git](historico/preconsolidacao-2026-11-11/ARQUIVOS_GIT_PRE_CONSOLIDACAO.csv). [Arquivo histórico organizado](historico/README.md), [estilos/visual](baselines/2026-11-07/REFERENCIAS_VISUAIS.md), [evidência sanitizada](evidence/p2-backup-counts-2026-11-10.json).
 
-## Convenções de manutenção
-
-1. Contrato atual **curto e explícito**; evidências antigas mantidas no arquivo histórico e referenciadas por permalink de commit.
-2. Nunca copiar um cabeçalho de SHA antigo para fazê-lo parecer a versão de `main`. Sempre separar baseline funcional, commit exclusivamente documental, Vercel e P3.
-3. Não apagar decisões editoriais, dados de auditoria ou medições históricas. Ao arquivar, reparar os links relativos e manter fonte/commit de origem.
-4. Links Markdown relativos devem resolver no caminho onde o arquivo **está agora**. Se um snapshot for movido, seus links devem acompanhar a mudança.
-5. **A aparência publicada é a correta e deve permanecer intocada**; organização da documentação não autoriza mudanças em `src/`, CSS, Storage, Supabase, identidade ou SEO.
-
-A [versão anterior integral do índice](historico/INDICE_DOCUMENTACAO_ANTES_REORGANIZACAO_2026-11-05.md) preserva a seleção de fontes e os apontamentos originais.
-
+**Etapa 02:** criar contratos e índice. **Etapa 03:** arquivar documentos legados, revisar branches/workflows e corrigir referências. **Etapa 04:** substituir as Fontes privadas anexadas ao Projeto ChatGPT; elas não se sincronizam automaticamente com o GitHub.
