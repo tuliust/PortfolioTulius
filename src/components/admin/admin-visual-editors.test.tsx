@@ -42,7 +42,7 @@ describe("P3 — regressão dos formulários visuais extraídos", () => {
     const html = renderToStaticMarkup(<ProfileMobileEditorialEditor onChange={() => undefined} />)
     expect(html).toContain("Abertura Editorial 360°")
     expect(html).toContain("Área 1")
-    expect(html).toContain("Área 2")
+    expect(html).toContain("Selo do painel B · acima de Áreas de Atuação")
     expect(html).toContain("Área 3")
     expect(html).toContain("Fotografia exclusiva")
   })
