@@ -188,7 +188,8 @@ try {
           const panelA = document.querySelector("#perfil-a")
           const panelB = document.querySelector("#perfil-b")
           const portrait = panelA?.querySelector(".mobile-profile-hero img, .mobile360-photo img")
-          const badge = panelA?.querySelector(".badge-360")
+          const badge = panelB?.querySelector(".mobile360-middle .badge-360")
+          const oldBadge = panelA?.querySelector(".badge-360")
           const years = panelA?.querySelector(".profile-mobile-years, .mobile360-experience")
           const name = panelA?.querySelector(".mobile-name, .mobile360-person-name")
           const editorialHeadline = panelA?.querySelector(".mobile360-headline")
@@ -201,10 +202,11 @@ try {
             return Boolean(rect && rect.left >= -2 && rect.right <= innerWidth + 2)
           }
           const badgeRect = badge?.getBoundingClientRect()
-          const yearsRect = years?.getBoundingClientRect()
-          const overlap = badgeRect && yearsRect &&
-            badgeRect.left < yearsRect.right && badgeRect.right > yearsRect.left &&
-            badgeRect.top < yearsRect.bottom && badgeRect.bottom > yearsRect.top
+          const areasHeading = panelB?.querySelector(".profile-mobile-block-heading")
+          const badgeBeforeAreas = Boolean(badgeRect && areasHeading &&
+            badgeRect.bottom <= areasHeading.getBoundingClientRect().top + 2)
+          const arrowBelowPortrait = Boolean(arrow && portrait &&
+            arrow.getBoundingClientRect().top >= portrait.getBoundingClientRect().bottom - 2)
           return {
             areas: areas?.length ?? 0,
             careers: careers?.length ?? 0,
@@ -212,11 +214,12 @@ try {
             introHidden: !panelA?.querySelector(".mobile360") ||
               !panelA?.textContent?.includes("Foco em gerar conexões autênticas"),
             portraitLoaded: Boolean(portrait?.complete && portrait.naturalWidth > 0),
-            badgePresent: Boolean(badge),
+            badgePresent: Boolean(badge) && !oldBadge,
+            badgeBeforeAreas,
+            arrowBelowPortrait,
             arrowAccessible: Boolean(arrow?.getAttribute("aria-label")),
             nameFits: fitsWidth(name) && [...(name?.children ?? [])].every(fitsWidth),
             panelsFit: fitsWidth(panelA) && fitsWidth(panelB),
-            noOverlap: !overlap,
             careerVisible: careers?.length === 0 || Boolean(lastCareer && panelB &&
               lastCareer.getBoundingClientRect().bottom <= panelB.getBoundingClientRect().bottom + 2),
             noOldActions: !panelA?.textContent?.includes("EXPLORAR MINHA ATUAÇÃO") &&
@@ -228,7 +231,8 @@ try {
         if (result.areas !== 5 || result.careers !== 0 || !result.portraitLoaded ||
             !result.badgePresent || !result.editorialHeadline || !result.introHidden ||
             !result.arrowAccessible || !result.nameFits ||
-            !result.panelsFit || !result.noOverlap || !result.careerVisible ||
+            !result.panelsFit || !result.badgeBeforeAreas || !result.arrowBelowPortrait ||
+            !result.careerVisible ||
             !result.noOldActions || result.nextSection !== "sobre") {
           throw new Error("Responsive profile failed at " + viewport.width + "px")
         }

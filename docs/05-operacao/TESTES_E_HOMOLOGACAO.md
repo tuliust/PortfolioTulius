@@ -23,6 +23,10 @@ Os seis primeiros seguem em `.github/workflows/`. Os cinco seguintes foram **ret
 
 **Baseline `0627947`:** [Validate #43091103353](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43091103353), [P5 Admin #43091105469](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43091105469), [P5 Local #43091105553](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43091105553), [Export #43091105486](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43091105486) SUCCESS. [P3 #43091103365](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43091103365) FAILURE apenas no LCP mobile (mediana **3.627,065 ms** contra 3.500), desktop 893,194 ms, demais checks PASS. Risco aceito sem relaxar o gate.
 
+## Verificação mobile após a mudança editorial de 11/11/2026
+
+O `scripts/p3-browser-smoke.mjs` valida, de 320 a 430 px, que o selo existe **somente no painel B do Perfil**, acima do título “Áreas de Atuação”, e que o botão para avançar está abaixo da fotografia. As verificações anteriores que procuravam o selo no painel A foram atualizadas. As regressões desktop seguem cobertas pelo mesmo fluxo. O LCP mobile conserva o limite de mediana `≤3.500 ms` (três coletas): não afrouxar o gate para transformar em aprovação um resultado acima do orçamento.
+
 ## Após mudança futura
 Testar desktop/mobile/teclado/zoom; CMS `editar → salvar → reler → DB → renderer` em ambiente local sintético; autorização de não admin; Storage/alt; SEO em novo build. Registrar SHA, ambiente, método e resultado real. Resultados de outro commit não contam.
 
