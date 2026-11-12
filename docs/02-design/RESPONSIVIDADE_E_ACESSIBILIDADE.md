@@ -6,7 +6,7 @@ São 14 seções lógicas, 42 painéis cadastrados (desktop, mobile-a, mobile-b 
 
 Não limitar textos longos a `100dvh`/`overflow:hidden` que tornem conteúdo inacessível. O admin possui prévia mobile em referência **390 × 844**, sem substituir um aparelho real.
 
-## Ajustes mobile de 11/11/2026
+## Ajustes mobile de 11/11/2026 (registro histórico; refinado em 12/11)
 
 - **Perfil**: o painel A editorial contém título, apoio, fotografia, nome, experiência e a seta centralizada **abaixo** da composição; utiliza altura mínima da área visível do celular (`100svh`), sem cortar conteúdo em telas pequenas ou zoom. O selo agora é exibido antes de “Áreas de Atuação” no painel B, sem duplicar o JSONB.
 - **Selo**: os valores publicados específicos do mobile são fundo claro `#FAFAFA` e inscrição/contorno/seta `#FF5414`; o editor mobile continua controlando texto, cores, tamanho, fonte, espaçamento e visibilidade em `perfil`/A.

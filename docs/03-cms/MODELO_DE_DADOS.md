@@ -21,7 +21,7 @@ Snapshot: 14 seções, 42 painéis, 28 blocos, 56 placements, 75 mídias; 13 se�
 
 ## Fonte única do selo mobile (11/11/2026)
 
-`content_blocks.content_json.items[0].hero.mobileEditorial.middle` pertence ao bloco A da seção `perfil`. O renderer mobile reaproveita essa configuração no painel B, acima de “Áreas de Atuação”; ela não deve ser copiada para um bloco B. Fundo e cor do selo usam agora `#FAFAFA` e `#FF5414`, respectivamente, mantendo edição no admin e leitura do mesmo JSONB. Esse reposicionamento não muda `sections.sort_order`, `section_panels` ou o Hero desktop.
+`content_blocks.content_json.items[0].hero.mobileEditorial.middle` pertence ao bloco A da seção `perfil`. O renderer mobile reaproveita essa configuração no painel B, acima de “Áreas de Atuação”; ela não deve ser copiada para um bloco B. **Registro histórico de 11/11:** o fundo era `#FAFAFA` e a cor do selo `#FF5414`, com edição no admin e leitura do mesmo JSONB. **Estado vigente desde 12/11:** o fundo referencia `color.lightGray` no mesmo JSONB (o valor publicado inicial da paleta é `#ECECEC`); a cor da seta/selo continua independente e não foi substituída. Esse reposicionamento não muda `sections.sort_order`, `section_panels` ou o Hero desktop.
 
 O painel B do Contato passa a compor sua apresentação mobile a partir dos tokens publicados em `design_tokens`, sem alterar `sections.theme`. Altura, distribuição vertical, microtexto sticky e ocultação visual de competências são regras no React/CSS, sem migration ou campos novos.
 
