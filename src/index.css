@@ -2879,7 +2879,7 @@
   /* Keep every word of the introduction clear of the fixed scroll control. */
   .public-site #perfil-a.editorial360-mobile .mobile360-bottom-copy {
     align-self: end;
-    margin-block-end: clamp(4rem, 9.2svh, 5.5rem);
+    transform: translateY(calc(-1 * clamp(4rem, 9.2svh, 5.5rem)));
   }
 
   /* Perfil/B keeps a white body. The seal owns a full-bleed gray strip,
