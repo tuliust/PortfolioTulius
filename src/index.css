@@ -2726,7 +2726,7 @@
     font-size: clamp(2.7rem, 15.6vw, var(--mobile360-headline-size, 82px));
   }
   .public-site #perfil-a .mobile360-person-name {
-    font-size: clamp(1.35rem, 7.2vw, var(--mobile360-name-size, 48px));
+    font-size: clamp(1.35rem, 8vw, var(--mobile360-name-size, 48px));
     letter-spacing: -.04em;
   }
   .public-site #perfil-a .mobile360-bottom-grid {
