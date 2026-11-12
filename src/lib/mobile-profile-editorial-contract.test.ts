@@ -37,7 +37,7 @@ describe("Perfil Editorial 360 — exclusivo mobile", () => {
     expect(editor).toContain("Fotografia exclusiva da área 3 mobile")
     expect(editor).toContain("updateHero(index, { mobileEditorial })")
     expect(editor).toContain('label="Fundo da área 1"')
-    expect(editor).toContain('label="Fundo da área 2"')
+    expect(editor).toContain('label="Fundo do selo e da faixa superior do painel B"')
     expect(editor).toContain('label="Fundo da área 3"')
   })
   it("não aplica o cabeçalho escuro ao desktop e aceita redução de movimento", () => {
