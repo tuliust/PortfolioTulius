@@ -2769,14 +2769,13 @@
     padding-left: 2.6rem;
   }
 
-  /* The transparent lower edge of the portrait must not create an orange strip. */
-  .public-site #contato-a {
-    overflow: hidden;
-  }
+  /* The transparent lower pixels of the photo reveal the graphite continuation.
+     Do not translate the image outside the panel or crop its original file. */
   .public-site #contato-a .contact-mobile-photo {
-    overflow: hidden;
-  }
-  .public-site #contato-a .contact-mobile-photo img {
-    transform: translateY(clamp(1.4rem, 4.4svh, 3rem));
+    background: linear-gradient(
+      to bottom,
+      transparent calc(100% - clamp(1.4rem, 4.4svh, 3rem)),
+      var(--ink) 0
+    );
   }
 }
