@@ -27,6 +27,21 @@ Os seis primeiros seguem em `.github/workflows/`. Os cinco seguintes foram **ret
 
 O `scripts/p3-browser-smoke.mjs` valida, de 320 a 430 px, que o selo existe **somente no painel B do Perfil**, acima do título “Áreas de Atuação”, e que o botão para avançar está abaixo da fotografia. As verificações anteriores que procuravam o selo no painel A foram atualizadas. As regressões desktop seguem cobertas pelo mesmo fluxo. O LCP mobile conserva o limite de mediana `≤3.500 ms` (três coletas): não afrouxar o gate para transformar em aprovação um resultado acima do orçamento.
 
+
+## Homologação do ciclo mobile de 11/11/2026
+
+**Commit funcional e teste responsivo:** [`deb5c264`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/deb5c264d34865f0511c5c7d91c9d6b6a32db1af), sobre a implementação [`cc570bd`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/cc570bd066003950da0e7b27187e0d1dfb5ce6bc) e ajustes de testes [`2579a2d`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/2579a2da75bdc21ffa23f6763371736a02a40597).
+
+- [Validate #43135629576](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43135629576): **SUCCESS** (format, TypeScript, testes, build e smoke).
+- [P3 Lighthouse #43135629523](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43135629523): **SUCCESS**, com browser e âncoras mobile, seis viewports de abertura (**320×568 a 430×932**), **38 capturas** (13 desktop/25 mobile), regressão RLS/leitura pública e paridade SEO aprovadas.
+- P6 no mesmo run: LCP mobile mediano de três coletas **3.481,022 ms** (limite **≤3.500 ms**, **PASS**), desktop **993,549 ms** (**PASS**); faixa mobile próxima do orçamento, manter monitoramento apenas sob nova demanda.
+- [P5 Admin read-only #43135186239](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43135186239): **SUCCESS** no SHA `2579a2d`, que contém a mesma implementação de UI/CMS; a alteração subsequente a esse SHA foi só de teste browser/documentação.
+- Supabase produção `portfolio`: após a intervenção, foi relido o mesmo registro `perfil`/bloco A; `hero.mobileEditorial.middle.background=#FAFAFA` e `textColor=#FF5414`, sem mudança de schema, RLS ou dados compartilhados com desktop.
+- Vercel: deployment Production **READY** para `deb5c264`. O teste automatizado não substitui homologação subjetiva de composição em um dispositivo físico real.
+
+**Registro histórico do primeiro ensaio:** [P3 #43134949875](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43134949875) falhou por um teste antigo que ainda buscava o selo no painel A e por LCP mobile **3.593,519 ms**. O contrato de teste foi corrigido para validar o selo no B e o fluxo foi repetido no SHA `deb5c264` com sucesso; não reclassificar o ensaio anterior como PASS.
+
+
 ## Após mudança futura
 Testar desktop/mobile/teclado/zoom; CMS `editar → salvar → reler → DB → renderer` em ambiente local sintético; autorização de não admin; Storage/alt; SEO em novo build. Registrar SHA, ambiente, método e resultado real. Resultados de outro commit não contam.
 
