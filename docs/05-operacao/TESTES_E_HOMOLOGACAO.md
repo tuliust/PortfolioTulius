@@ -55,3 +55,17 @@ Testar desktop/mobile/teclado/zoom; CMS `editar → salvar → reler → DB → 
 - O último SHA de validação e exportação não acionou P3/P5; não proclamar CI integral verde para ele.
 
 [Termo de encerramento](../06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md).
+
+## Ajustes mobile e favicon de 12/11/2026
+
+**Implementação homologada:** `45c9f7868e5dd31ae0e231e48cbc3828d250d45a`, sobre os commits funcionais `8b29c78`, `144ae2f` e `1c341dd`. Escopo: retirada do aviso transitório de sincronização; favicon TT e ícone Apple, upload/seleção pelo admin SEO com persistência em `site_settings.seo_json.faviconUrl`; tipografia e fotografia na abertura mobile; separadores de Resultados; Formação; seleção e rolagem de projeto em Experiências; transição de Contato. Atualizações documentais em Responsividade, CMS, Modelo de Dados, Mídias e Vercel/SEO.
+
+- [Validate #43151247434](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43151247434): **SUCCESS** no SHA homologado — formatação, TypeScript, unitários, build, smoke offline e sintaxe das suítes browser.
+- [P3 Lighthouse #43151247628](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43151247628): **SUCCESS** no SHA homologado — browser/rotas/viewports (zero falhas), verificações de menu/âncora/seleção de projeto, **38 capturas editoriais** (13 desktop e 25 mobile, zero falhas), RLS público, falhas parciais de leitura, SEO e performance.
+- LCP mediano de **três amostras** nesse P3: mobile **3.339,318 ms** (performance 90; limite 3.500 ms; **PASS**), desktop **969,969 ms** (performance 98; **PASS**). Resultado sintético sujeito a variabilidade, não um SLA real.
+- [P5 Admin Read-Only #43150284881](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43150284881): **SUCCESS** sobre `144ae2f`; as mudanças subsequentes foram apenas CSS da foto/escala do nome. **Não houve teste de escrita produtiva via interface administrativa**: a gestão do favicon utiliza upload na biblioteca e a RPC de SEO já existentes.
+- Supabase produção: leitura após o `UPDATE` restrito confirmou `site_settings.seo_json.faviconUrl = /favicon.png`, `status=published` e `favicon_media_id=NULL`. Sem alteração de schema, RLS ou migrations.
+- Vercel: deployment do commit `45c9f78` informado como **READY**, ID `dpl_J5xtCGkjcwF4TxbQuGXZFusoay1v`. Preservada a configuração de domínio.
+- Histórico de correção nesta intervenção: o primeiro push falhou por formatação; um ensaio intermediário P3 falhou quando a foto de Contato ultrapassou o limite do painel e apresentou LCP mobile de **3.505,136 ms**. O CSS foi corrigido sem modificar a imagem original e a medição final passou. Não reclassificar as execuções anteriores como sucesso.
+
+A avaliação da composição em aparelho iPhone físico continua distinta dos testes Chrome automatizados; validar especialmente aparência de favicon/ícone Apple, ajuste da linha inferior da fotografia e rolagem com barras nativas do navegador.
