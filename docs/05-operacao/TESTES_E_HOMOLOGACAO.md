@@ -73,3 +73,13 @@ A avaliação da composição em aparelho iPhone físico continua distinta dos t
 ## Contrato de regressão da primeira dobra mobile (12/11/2026)
 
 Em `scripts/p3-browser-smoke.mjs`, a checagem `P3_PROFILE_MOBILE` deve garantir, em seis viewports de 320 a 430 px, que a seta é legível e totalmente visível no viewport inicial, que a foto toca a borda inferior do painel A e que a primeira linha do nome tem de 55% a 85% da largura da segunda. A regra antiga `arrowBelowPortrait` foi removida: o botão agora **pode sobrepor a foto**. Verificar também `#formacao-b` (centralização entre régua e Inglês) e `#contato-a` (grafite contínuo de ponta a ponta), sem comprometer o desktop. O orçamento LCP mobile de 3.500 ms continua obrigatório e não foi alterado.
+
+## Homologação do ajuste de primeira dobra em ade1552 (12/11/2026)
+
+- **Implementação:** [`ade1552`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/ade1552280d2ea2a9362535da23d054329c60a24), somente mobile. Respiro do Perfil alterado em `content_blocks.content_json.items[0].hero.mobileEditorial`: `top.paddingY=18`, `bottom.paddingY=0`; retorno da atualização confirmou os dois valores, sem alterar outros campos, schema ou RLS.
+- [Validate #43162980720](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43162980720): **SUCCESS**, incluindo formatação, TypeScript, unitários, build e smoke.
+- [Audit P3 Lighthouse #43162980664](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43162980664): **SUCCESS**. Os seis viewports do Perfil entre **320×568** e **430×932** confirmaram `arrowVisibleOnLoad=true`, `portraitFlushWithPanel=true`, `firstNameProportional=true`; `P3_BROWSER_AUDIT.failures=0`. As **38 capturas editoriais** (13 desktop + 25 mobile) não registraram falhas.
+- Mediana de três coletas de LCP: **mobile 3.381,864 ms**, performance 87 (**PASS** contra limite 3.500 ms); **desktop 937,195 ms**, performance 99 (**PASS**). CLS mobile **0,000217**. A execução é sintética; manter verificação visual no Safari real.
+- Vercel production: implantação do SHA funcional `ade1552` verificada **READY** (deployment `dpl_HuaSKKeBfaSUapXxCs6P6jrDceHz`). A seção Contato utiliza cor grafite em largura inteira na transição; nenhuma imagem foi alterada no Storage.
+
+**Limites de evidência:** a centralização estética de “Idiomas e Formação Complementar” e o alinhamento de pixels transparentes da foto de Contato ainda merecem conferência subjetiva no dispositivo físico; o teste P3 e os screenshots sintéticos não garantem percepção idêntica em todas as versões do Safari.
