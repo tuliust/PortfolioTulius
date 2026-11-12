@@ -51,3 +51,7 @@ Viewports históricos: **1920×1080, 1440×900, 1366×768, 768×1024, 720×450, 
 - **Formação/B:** “Idiomas e Formação Complementar” recebe leve aumento de tamanho (`clamp(1.5rem, 6.4vw, 2rem)`) e peso **900** da família já existente. A posição/ordem e as informações educacionais publicadas permanecem intactas.
 - **Contato/B:** removida somente a borda horizontal no início do painel inferior, acima de “Canais de Contato”, e ampliado o subtítulo (`clamp(1.52rem, 6.6vw, 2rem)`, peso 900), preservando os separadores internos dos canais de contato e o desktop.
 - **Verificação:** preservar os seis viewports mobile de 320 a 430 px, os conteúdos legíveis sem horizontal overflow, o contraste do selo, a navegação, os dados compartilhados com desktop e o orçamento LCP mediano de até 3,5 s.
+
+## Decodificação do retrato na abertura mobile (12/11/2026)
+
+O único `ApprovedProfileImage` da abertura editorial mobile recebe `syncDecode`, que usa `decoding="sync"` para priorizar a apresentação do retrato LCP; chamadas do mesmo componente no desktop e em outras seções mantêm `decoding="async"`. A alteração não modifica arquivo, crop, art direction, `fetchPriority="high"`, carregamento `eager` nem os dados do CMS. Comparar as três medições Lighthouse e confirmar que a mudança não piorou o carregamento; não afrouxar o orçamento de 3,5 segundos.

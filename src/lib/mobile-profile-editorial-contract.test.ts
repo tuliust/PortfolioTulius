@@ -29,6 +29,8 @@ describe("Perfil Editorial 360 — exclusivo mobile", () => {
     }
     expect(publicSource).toContain("mobileEditorialLines(config.headline)")
     expect(publicSource).toContain("config.mobileImage")
+    expect(publicSource).toContain('decoding={syncDecode ? "sync" : "async"}')
+    expect(publicSource).toContain("syncDecode")
     expect(publicSource).toContain("splitProfileTitle(section.title)")
     expect(publicSource).not.toContain("CONEXÕES AUTÊNTICAS. INOVAÇÃO.")
   })

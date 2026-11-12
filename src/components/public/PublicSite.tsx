@@ -266,11 +266,13 @@ function ApprovedProfileImage({
   src,
   alt,
   mobile = false,
+  syncDecode = false,
   style,
 }: {
   src?: string
   alt?: string
   mobile?: boolean
+  syncDecode?: boolean
   style?: React.CSSProperties
 }) {
   const image = (
@@ -280,7 +282,7 @@ function ApprovedProfileImage({
       style={style}
       loading="eager"
       fetchPriority="high"
-      decoding="async"
+      decoding={syncDecode ? "sync" : "async"}
     />
   )
   if (src !== APPROVED_PROFILE_PORTRAIT) return image
@@ -567,6 +569,7 @@ function ProfileMobileEditorial({
                 src={portrait}
                 alt={config.mobileImage ? config.mobileAlt : profile.alt}
                 mobile
+                syncDecode
                 style={imageFramingStyle(
                   config.mobileImage ? config.mobileFraming : profile.mediaFraming,
                 )}
