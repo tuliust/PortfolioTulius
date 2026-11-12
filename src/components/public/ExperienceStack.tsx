@@ -853,6 +853,11 @@ export function ExperienceStack({
             <span className="experience-index-name">{section.title}</span>
           </a>
         ))}
+        {isMobile && (
+          <span className="experience-index-hint" aria-hidden={!isIndexStuck}>
+            SELECIONE UMA EMPRESA ACIMA
+          </span>
+        )}
       </nav>
       {displayedSections.map((section, index) => (
         <ExperienceCard

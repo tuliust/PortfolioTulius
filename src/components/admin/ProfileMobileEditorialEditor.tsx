@@ -143,12 +143,12 @@ export function ProfileMobileEditorialEditor({
         </div>
       </fieldset>
       <fieldset className="mobile360-admin-zone">
-        <legend>Área 2 · Selo central laranja</legend>
+        <legend>Selo do painel B · acima de Áreas de Atuação</legend>
         <div className="field-grid compact-grid">
           <ColorField
             label="Fundo da área 2"
             value={current.middle.background}
-            fallback="#FF5414"
+            fallback="#FAFAFA"
             onChange={(background) => updateMiddle({ background })}
           />
           <MobileEditorialFontField
@@ -159,7 +159,7 @@ export function ProfileMobileEditorialEditor({
           <ColorField
             label="Cor do selo e da seta"
             value={current.middle.textColor}
-            fallback="#171617"
+            fallback="#FF5414"
             onChange={(textColor) => updateMiddle({ textColor })}
           />
           <NumericField

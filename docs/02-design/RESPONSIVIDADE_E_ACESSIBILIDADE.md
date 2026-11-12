@@ -6,6 +6,16 @@ São 14 seções lógicas, 42 painéis cadastrados (desktop, mobile-a, mobile-b 
 
 Não limitar textos longos a `100dvh`/`overflow:hidden` que tornem conteúdo inacessível. O admin possui prévia mobile em referência **390 × 844**, sem substituir um aparelho real.
 
+## Ajustes mobile de 11/11/2026
+
+- **Perfil**: o painel A editorial contém título, apoio, fotografia, nome, experiência e a seta centralizada **abaixo** da composição; utiliza altura mínima da área visível do celular (`100svh`), sem cortar conteúdo em telas pequenas ou zoom. O selo agora é exibido antes de “Áreas de Atuação” no painel B, sem duplicar o JSONB.
+- **Selo**: os valores publicados específicos do mobile são fundo claro `#FAFAFA` e inscrição/contorno/seta `#FF5414`; o editor mobile continua controlando texto, cores, tamanho, fonte, espaçamento e visibilidade em `perfil`/A.
+- **Resultados**: a visão geral distribui quatro indicadores no espaço vertical restante e o seletor tem respiro maior; outros temas continuam com altura conforme o conteúdo.
+- **Formação**: os painéis A/B ocupam juntos no mínimo `100svh`, com maior respiro após os títulos e distribuição dos itens. Conteúdo extenso nunca deve ser cortado.
+- **Experiências**: ao atingir a posição sticky, a fileira laranja de logos revela o microtexto “SELECIONE UMA EMPRESA ACIMA”; competências/badges são ocultas apenas na visualização mobile, preservadas no CMS e desktop.
+- **Contato**: somente o painel B utiliza grafite (`--ink`), títulos e detalhes brancos/laranjas (`--paper`/`--orange`) e rodapé centralizado; painel A e desktop mantêm o visual aprovado.
+- As regras de composição estão restritas a telas de até 767 px; verificar leitura, âncoras, foco, rolagem, safe-area e redução de movimento. Deploy READY não substitui homologação mobile real.
+
 ## Navegação e interação
 Conservar âncoras/hash, rolagem nativa, `scroll-margin` para header fixo, menu acessível, fechamento por Escape, foco/Tab, Voltar e visibilidade da seção ativa. [`ExperienceStack.tsx`](../../src/components/public/ExperienceStack.tsx) mantém logos/identidade sticky somente dentro das seis experiências, sem rolagem interna; em altura **≤620 px**, o header editorial pode deixar de ficar sticky.
 

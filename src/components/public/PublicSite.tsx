@@ -443,6 +443,36 @@ function ProfileDesktop({
 }
 
 /** A separate mobile-only composition; desktop keeps ProfileDesktop and its original data. */
+/** A single Perfil/A CMS seal is rendered above the Perfil/B mobile areas list. */
+function ProfileMobileBadge({ profile }: { profile?: ContentItem }) {
+  if (!profile?.hero?.mobileEditorial?.enabled) return null
+  const config = mobileProfileEditorial(profile.hero.mobileEditorial)
+  if (config.middle.showBadge === false) return null
+  return (
+    <div
+      className="mobile360-middle"
+      style={
+        {
+          backgroundColor: config.middle.background,
+          paddingBlock: `${config.middle.paddingY}px`,
+          "--hero-badge-background": "transparent",
+          "--hero-badge-color": config.middle.textColor,
+          "--mobile360-badge-font": mobileEditorialFont(config.middle.fontFamily),
+          "--mobile360-badge-size": `${config.middle.badgeSize}px`,
+        } as React.CSSProperties
+      }
+    >
+      <Badge360
+        config={{
+          ...profile.hero,
+          badgeVisible: true,
+          badgeText: config.badgeText || profile.hero.badgeText,
+        }}
+      />
+    </div>
+  )
+}
+
 function ProfileMobileEditorial({
   section,
   profile,
@@ -506,29 +536,6 @@ function ProfileMobileEditorial({
           >
             {positioning}
           </p>
-        )}
-      </div>
-      <div
-        className="mobile360-middle"
-        style={
-          {
-            backgroundColor: config.middle.background,
-            paddingBlock: `${config.middle.paddingY}px`,
-            "--hero-badge-background": "transparent",
-            "--hero-badge-color": config.middle.textColor,
-            "--mobile360-badge-font": mobileEditorialFont(config.middle.fontFamily),
-            "--mobile360-badge-size": `${config.middle.badgeSize}px`,
-          } as React.CSSProperties
-        }
-      >
-        {config.middle.showBadge !== false && (
-          <Badge360
-            config={{
-              ...profile.hero,
-              badgeVisible: true,
-              badgeText: config.badgeText || profile.hero?.badgeText,
-            }}
-          />
         )}
       </div>
       <div
@@ -601,18 +608,18 @@ function ProfileMobileEditorial({
                 )}
               </div>
             )}
-            {config.bottom.showArrow !== false && (
-              <a
-                className="mobile360-down"
-                href="#perfil-b"
-                aria-label="Ir para áreas de atuação e experiências"
-                title="Ir para áreas de atuação e experiências"
-              >
-                <Icon name="down" size={27} />
-              </a>
-            )}
           </div>
         </div>
+        {config.bottom.showArrow !== false && (
+          <a
+            className="mobile360-down"
+            href="#perfil-b"
+            aria-label="Ir para áreas de atuação e experiências"
+            title="Ir para áreas de atuação e experiências"
+          >
+            <Icon name="down" size={27} />
+          </a>
+        )}
       </div>
     </div>
   )
@@ -710,16 +717,19 @@ function ProfileMobilePresentation({
 
 function ProfileMobileDetails({
   items,
+  profile,
   publishedSlugs,
   onSelectTheme,
 }: {
   items: ContentItem[]
+  profile?: ContentItem
   publishedSlugs: string[]
   onSelectTheme: (themeKey: string) => void
 }) {
   const areas = items.slice(0, 5)
   return (
     <div className="profile-mobile-details">
+      <ProfileMobileBadge profile={profile} />
       <header className="profile-mobile-block-heading">
         <h2>Áreas de atuação</h2>
       </header>
@@ -827,6 +837,7 @@ function MobilePanel({
       ) : isProfile && panel === "b" ? (
         <ProfileMobileDetails
           items={items}
+          profile={section.panelA[0]}
           publishedSlugs={publishedSlugs}
           onSelectTheme={onSelectTheme}
         />
@@ -1218,7 +1229,11 @@ function ResultsMobile({
   onSelectTheme: (themeKey: string | null) => void
 }) {
   return (
-    <div className="mobile-panel results-mobile-panel" id="resultados-a" data-panel="a">
+    <div
+      className={`mobile-panel results-mobile-panel${selectedTheme ? " is-theme" : " is-overview"}`}
+      id="resultados-a"
+      data-panel="a"
+    >
       <header className="panel-heading">
         <h2>{section.title}</h2>
         {section.intro && <p className="section-intro">{section.intro}</p>}

@@ -2585,3 +2585,137 @@
 
 /* Optional CMS anchor alias: preserves the canonical #perfil hash and public layout. */
 .portfolio-anchor-alias { position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; pointer-events: none; }
+
+/* Mobile-only refinement 11/11/2026. Identity colors remain CMS tokens. */
+@media (max-width: 767px) {
+  .public-site #perfil-a.editorial360-mobile {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
+  .public-site #perfil-a .mobile360 {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: calc(100svh - var(--header));
+  }
+  .public-site #perfil-a .mobile360-top { flex: 0 0 auto; }
+  .public-site #perfil-a .mobile360-bottom {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .public-site #perfil-a .mobile360-bottom-grid {
+    flex: 1 1 auto;
+    align-items: center;
+  }
+  .public-site #perfil-a .mobile360-down {
+    flex: 0 0 auto;
+    align-self: center;
+    margin: clamp(.6rem, 1.8svh, 1rem) auto 0;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-width: 1px;
+  }
+  .public-site #perfil-b .mobile360-middle {
+    margin: calc(-1 * clamp(.6rem, 2svh, 1.15rem)) calc(-1 * var(--gutter)) clamp(1rem, 3svh, 2rem);
+    padding-inline: var(--gutter);
+  }
+
+  .public-site #resultados-a.results-mobile-panel {
+    display: flex;
+    flex-direction: column;
+  }
+  .public-site #resultados-a .results-mobile-selector {
+    margin-top: clamp(.65rem, 2.3svh, 1.15rem);
+    margin-bottom: clamp(1rem, 3svh, 1.75rem);
+  }
+  .public-site #resultados-a.is-overview .results-center {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+  .public-site #resultados-a.is-overview .results-metrics-grid {
+    flex: 1 1 auto;
+    grid-template-rows: repeat(2, minmax(min-content, 1fr));
+    align-items: center;
+    row-gap: clamp(1.1rem, 3svh, 2rem);
+  }
+
+  .public-site #formacao .mobile-panels {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
+  .public-site #formacao .mobile-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .public-site #formacao-a .panel-heading {
+    margin-bottom: clamp(1rem, 3svh, 2rem);
+  }
+  .public-site #formacao-b {
+    flex: 1 1 auto;
+    padding-top: clamp(1rem, 2.5svh, 1.8rem);
+  }
+  .public-site #formacao-b .mobile-panel-secondary-heading {
+    margin-bottom: clamp(1.25rem, 4svh, 2.6rem);
+  }
+  .public-site #formacao-b .mobile-items {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: clamp(.6rem, 2svh, 1.25rem);
+  }
+
+  .public-site .experience-stack {
+    --experience-index-height: 4.1rem;
+  }
+  .public-site .experience-stack > .experience-index {
+    grid-template-rows: 2.6rem .8rem;
+    height: var(--experience-index-height);
+    align-content: center;
+    overflow: hidden;
+  }
+  .public-site .experience-index-hint {
+    grid-column: 1 / -1;
+    display: block;
+    align-self: center;
+    justify-self: center;
+    visibility: hidden;
+    color: var(--ink);
+    font: 700 .57rem/1.1 var(--font-body);
+    letter-spacing: .07em;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .public-site .experience-index.is-stuck .experience-index-hint {
+    visibility: visible;
+  }
+  .public-site .experience-mobile-copy .experience-competencies {
+    display: none;
+  }
+
+  .public-site #contato-b {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .public-site #contato-b .mobile-panel-subheading,
+  .public-site #contato-b .item-label {
+    color: var(--orange);
+  }
+  .public-site #contato-b .content-item h3,
+  .public-site #contato-b .content-item .item-value {
+    color: var(--paper);
+  }
+  .public-site #contato-b .contact-footer {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
+    text-align: center;
+  }
+}
