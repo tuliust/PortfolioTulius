@@ -453,8 +453,8 @@ function ProfileMobileBadge({ profile }: { profile?: ContentItem }) {
       className="mobile360-middle"
       style={
         {
-          backgroundColor: config.middle.background,
-          paddingBlock: `${config.middle.paddingY}px`,
+          backgroundColor: heroColor(config.middle.background) ?? "var(--light-gray)",
+          "--mobile360-badge-padding": `${config.middle.paddingY}px`,
           "--hero-badge-background": "transparent",
           "--hero-badge-color": config.middle.textColor,
           "--mobile360-badge-font": mobileEditorialFont(config.middle.fontFamily),
@@ -1605,6 +1605,7 @@ export function PublicSite({
     "--orange": tokens.orange,
     "--ink": tokens.ink,
     "--paper": tokens.paper,
+    "--light-gray": tokens.lightGray,
     "--cream": tokens.cream,
     "--muted": tokens.muted,
     "--orange-dark": tokens.orangeDark,

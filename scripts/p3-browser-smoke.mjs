@@ -218,6 +218,16 @@ try {
           const firstNameProportional = Boolean(firstNameRect && surnameRect &&
             firstNameRect.width >= surnameRect.width * .55 &&
             firstNameRect.width <= surnameRect.width * .85)
+          const copy = panelA?.querySelector(".mobile360-bottom-copy")
+          const photoBox = panelA?.querySelector(".mobile360-photo")
+          const sealZone = panelB?.querySelector(".mobile360-middle")
+          const copyAboveArrow = Boolean(copy && arrowRect &&
+            copy.getBoundingClientRect().bottom <= arrowRect.top - 3)
+          const portraitFlushLeft = Boolean(photoBox &&
+            Math.abs(photoBox.getBoundingClientRect().left) <= 2)
+          const grayEndsAtOrangeRule = Boolean(sealZone && areasHeading &&
+            Math.abs(sealZone.getBoundingClientRect().bottom -
+              areasHeading.getBoundingClientRect().top) <= 2)
           return {
             areas: areas?.length ?? 0,
             careers: careers?.length ?? 0,
@@ -230,6 +240,9 @@ try {
             arrowVisibleOnLoad,
             portraitFlushWithPanel,
             firstNameProportional,
+            copyAboveArrow,
+            portraitFlushLeft,
+            grayEndsAtOrangeRule,
             arrowAccessible: Boolean(arrow?.getAttribute("aria-label")),
             nameFits: fitsWidth(name) && [...(name?.children ?? [])].every(fitsWidth),
             panelsFit: fitsWidth(panelA) && fitsWidth(panelB),
@@ -246,7 +259,9 @@ try {
             !result.arrowAccessible || !result.nameFits ||
             !result.panelsFit || !result.badgeBeforeAreas ||
             !result.arrowVisibleOnLoad || !result.portraitFlushWithPanel ||
-            !result.firstNameProportional || !result.careerVisible ||
+            !result.firstNameProportional || !result.copyAboveArrow ||
+            !result.portraitFlushLeft || !result.grayEndsAtOrangeRule ||
+            !result.careerVisible ||
             !result.noOldActions || result.nextSection !== "sobre") {
           throw new Error("Responsive profile failed at " + viewport.width + "px")
         }

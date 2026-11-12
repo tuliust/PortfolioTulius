@@ -213,6 +213,7 @@ export type DesignTokens = {
   orange: string
   ink: string
   paper: string
+  lightGray: string
   cream: string
   muted: string
   orangeDark: string

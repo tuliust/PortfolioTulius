@@ -23,7 +23,7 @@ export const MOBILE_PROFILE_EDITORIAL_DEFAULTS = {
     showSupport: true,
   },
   middle: {
-    background: "#FAFAFA",
+    background: "color.lightGray",
     fontFamily: "Big Shoulders Display",
     textColor: "#FF5414",
     badgeSize: 240,

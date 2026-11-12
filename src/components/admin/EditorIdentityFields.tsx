@@ -15,6 +15,7 @@ const colorVariables: Record<string, string> = {
   "color.orange": "--orange",
   "color.ink": "--ink",
   "color.paper": "--paper",
+  "color.lightGray": "--light-gray",
   "color.cream": "--cream",
   "color.muted": "--muted",
   "color.orangeDark": "--orange-dark",

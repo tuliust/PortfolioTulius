@@ -38,6 +38,15 @@ export const IDENTITY_CATALOG_DEFAULTS: readonly IdentityTokenRow[] = [
     style_config: {},
   },
   {
+    token_key: "color.lightGray",
+    display_name: "Cinza claro",
+    token_value: "#ECECEC",
+    value_type: "color",
+    scope: "global",
+    status: "published",
+    style_config: {},
+  },
+  {
     token_key: "color.cream",
     display_name: "Creme",
     token_value: "#F8F4F1",
@@ -282,6 +291,7 @@ export const IDENTITY_COLOR_KEYS = [
   "color.orange",
   "color.ink",
   "color.paper",
+  "color.lightGray",
   "color.cream",
   "color.muted",
   "color.orangeDark",

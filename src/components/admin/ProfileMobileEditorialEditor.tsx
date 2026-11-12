@@ -146,9 +146,9 @@ export function ProfileMobileEditorialEditor({
         <legend>Selo do painel B · acima de Áreas de Atuação</legend>
         <div className="field-grid compact-grid">
           <ColorField
-            label="Fundo da área 2"
+            label="Fundo do selo e da faixa superior do painel B"
             value={current.middle.background}
-            fallback="#FAFAFA"
+            fallback={MOBILE_PROFILE_EDITORIAL_DEFAULTS.middle.background}
             onChange={(background) => updateMiddle({ background })}
           />
           <MobileEditorialFontField

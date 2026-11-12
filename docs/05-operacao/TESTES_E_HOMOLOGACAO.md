@@ -83,3 +83,7 @@ Em `scripts/p3-browser-smoke.mjs`, a checagem `P3_PROFILE_MOBILE` deve garantir,
 - Vercel production: implantação do SHA funcional `ade1552` verificada **READY** (deployment `dpl_HuaSKKeBfaSUapXxCs6P6jrDceHz`). A seção Contato utiliza cor grafite em largura inteira na transição; nenhuma imagem foi alterada no Storage.
 
 **Limites de evidência:** a centralização estética de “Idiomas e Formação Complementar” e o alinhamento de pixels transparentes da foto de Contato ainda merecem conferência subjetiva no dispositivo físico; o teste P3 e os screenshots sintéticos não garantem percepção idêntica em todas as versões do Safari.
+
+## Contratos de regressão dos ajustes mobile (12/11/2026)
+
+No `scripts/p3-browser-smoke.mjs`, `P3_PROFILE_MOBILE` mantém as verificações anteriores de seta e fotografia e acrescenta: **`copyAboveArrow`** (coluna de textos sem sobreposição ao botão), **`portraitFlushLeft`** (imagem alinhada à borda esquerda, tolerância 2 px) e **`grayEndsAtOrangeRule`** (fundo do selo termina no topo do cabeçalho de Áreas, tolerância 2 px). A checagem abrange seis viewports de 320 a 430 px. Os testes unitários de Identidade e mobileEditorial incluem a nova cor `color.lightGray`, com fallback e resolução de variável CSS. Os valores de referência continuam: **sem falhas de navegação/overflow** e LCP mobile mediano ≤3.500 ms, sem afrouxamento da meta. A composição deve ser verificada também no Safari real do iPhone.

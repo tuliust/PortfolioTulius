@@ -43,3 +43,11 @@ Viewports históricos: **1920×1080, 1440×900, 1366×768, 768×1024, 720×450, 
 - **Formação:** deslocamento visual leve do subtítulo “IDIOMAS E FORMAÇÃO COMPLEMENTAR” para equilibrar o respiro entre a linha divisória superior e o primeiro idioma; fontes e registros do CMS não mudam.
 - **Contato:** removido o gradiente estreito que pintava apenas o contêiner da foto; a faixa grafite ocupa agora toda a largura do painel A, começando na base visível do retrato e encontrando a área B sem lateral laranja. PNG e enquadramento originais mantidos.
 - Após publicar, checar em dispositivo iOS real a seta com barras do Safari visíveis, a composição do nome e a transição de cor; os testes Chrome e Lighthouse são evidência automatizada separada.
+
+## Correções mobile adicionais após capturas de 12/11/2026
+
+- **Perfil/A:** todos os textos da coluna à direita da fotografia (`TULIUS TSANGAROPULOS`, experiência e descrição) têm respiro inferior suficiente para não sobrepor o botão de descer, sem modificar o próprio botão. Na primeira dobra, o `overflow` do grid da foto passa a ser visível para que a margem negativa existente alcance a borda esquerda, sem recortar a imagem nem alterar o desktop.
+- **Perfil/B:** o fundo do selo, inclusive a área superior até a borda do painel, recebe a cor da identidade `color.lightGray` (`--light-gray`, `#ECECEC` inicialmente). O fundo cinza termina exatamente onde começa a régua horizontal laranja sobre “Áreas de Atuação”; a partir daí, a lista mantém fundo `color.paper`. O CSS transfere o espaço de cabeçalho do painel para a faixa do selo sem duplicar o valor da cor.
+- **Formação/B:** “Idiomas e Formação Complementar” recebe leve aumento de tamanho (`clamp(1.5rem, 6.4vw, 2rem)`) e peso **900** da família já existente. A posição/ordem e as informações educacionais publicadas permanecem intactas.
+- **Contato/B:** removida somente a borda horizontal no início do painel inferior, acima de “Canais de Contato”, e ampliado o subtítulo (`clamp(1.52rem, 6.6vw, 2rem)`, peso 900), preservando os separadores internos dos canais de contato e o desktop.
+- **Verificação:** preservar os seis viewports mobile de 320 a 430 px, os conteúdos legíveis sem horizontal overflow, o contraste do selo, a navegação, os dados compartilhados com desktop e o orçamento LCP mediano de até 3,5 s.

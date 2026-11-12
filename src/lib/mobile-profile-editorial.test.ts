@@ -24,7 +24,7 @@ describe("Perfil editorial 360 mobile", () => {
     expect(result.enabled).toBe(true)
     expect(result.top.background).toBe("#000000")
     expect(result.top.showSupport).toBe(false)
-    expect(result.middle.background).toBe("#FAFAFA")
+    expect(result.middle.background).toBe("color.lightGray")
     expect(result.middle.textColor).toBe("#FF5414")
     expect(result.bottom.photoWidth).toBe(35)
     expect(mobileEditorialLines(result.headline)).toEqual(["UM", "NOVO", "TÍTULO"])

@@ -13,3 +13,7 @@ Abertura com nome monumental, retrato, indicador de experiência, selo laranja, 
 
 ## Regras
 Antes de modificar visual, localizar CSS/renderer/tokens e verificar desktop/mobile, altura baixa, foco, contraste e `prefers-reduced-motion`. Não redesenhar ou substituir mídia por inferência. [Responsividade](RESPONSIVIDADE_E_ACESSIBILIDADE.md), [referências visuais](../baselines/2026-11-07/REFERENCIAS_VISUAIS.md).
+
+## Cinza claro da faixa do selo (12/11/2026)
+
+O token canônico `color.lightGray` (nome exibido **Cinza claro**, referência `#ECECEC`) complementa os sete tons existentes sem alterar Creme (`#F8F4F1`) ou Papel (`#FAFAFA`). É administrado em **Identidade → Cores da marca** e persistido em `design_tokens` com `status=published`, `scope=global` e `value_type=color`. O renderer expõe `--light-gray` a partir do valor publicado e aplica a referência apenas à faixa de selo de Perfil/B **no mobile**, mantendo o fundo branco abaixo da linha laranja. Não altera as cores do desktop nem outras seções.

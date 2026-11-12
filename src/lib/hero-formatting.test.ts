@@ -13,6 +13,7 @@ describe("Seção 01 — estilos sem alterar o layout público original", () => 
     expect(heroColor("transparent")).toBe("transparent")
     expect(heroColor("color.ink")).toBe("var(--ink)")
     expect(heroColor("color.orange")).toBe("var(--orange)")
+    expect(heroColor("color.lightGray")).toBe("var(--light-gray)")
     expect(heroColor("color.inexistente")).toBeUndefined()
     expect(heroColor("url(javascript:alert(1))")).toBeUndefined()
     expect(heroFont("font.heading")).toBe("var(--font-heading)")

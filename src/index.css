@@ -2864,3 +2864,60 @@
     height: auto;
   }
 }
+
+/* Mobile adjustments: seal token, hierarchy, heading and contact (12/11/2026).
+   No desktop selectors are changed. Palette remains canonical in Supabase. */
+@media (max-width: 767px) {
+  /* The portrait retains its approved crop and height; the negative gutter
+     must not be clipped by its grid, otherwise a white strip remains at left. */
+  .public-site #perfil-a.editorial360-mobile .mobile360-bottom-grid {
+    overflow: visible;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-photo {
+    margin-inline-start: calc(-1 * var(--gutter));
+  }
+  /* Keep every word of the introduction clear of the fixed scroll control. */
+  .public-site #perfil-a.editorial360-mobile .mobile360-bottom-copy {
+    align-self: end;
+    margin-block-end: clamp(4rem, 9.2svh, 5.5rem);
+  }
+
+  /* Perfil/B keeps a white body. The seal owns a full-bleed gray strip,
+     including the safe space above it, ending exactly at the orange rule. */
+  .public-site #perfil-b.mobile-panel {
+    padding-block-start: 0;
+    border-block-start: 0;
+    background: var(--paper);
+  }
+  .public-site #perfil-b .profile-mobile-details {
+    padding-block-start: calc(var(--header) + clamp(.6rem, 2svh, 1.15rem));
+  }
+  .public-site #perfil-b .mobile360-middle {
+    margin:
+      calc(-1 * (var(--header) + clamp(.6rem, 2svh, 1.15rem)))
+      calc(-1 * var(--gutter)) 0;
+    padding:
+      calc(
+        var(--header) + clamp(.6rem, 2svh, 1.15rem) +
+          var(--mobile360-badge-padding, 26px)
+      )
+      var(--gutter)
+      calc(
+        clamp(1rem, 3svh, 2rem) +
+          var(--mobile360-badge-padding, 26px)
+      );
+  }
+
+  .public-site #formacao-b .mobile-panel-subheading {
+    font-size: clamp(1.5rem, 6.4vw, 2rem);
+    font-weight: 900;
+  }
+
+  .public-site #contato-b.mobile-panel {
+    border-block-start: 0;
+  }
+  .public-site #contato-b .mobile-panel-subheading {
+    font-size: clamp(1.52rem, 6.6vw, 2rem);
+    font-weight: 900;
+  }
+}

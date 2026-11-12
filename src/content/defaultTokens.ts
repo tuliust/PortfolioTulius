@@ -5,6 +5,7 @@ export const defaultTokens: DesignTokens = {
   orange: "#FF5414",
   ink: "#171617",
   paper: "#FAFAFA",
+  lightGray: "#ECECEC",
   cream: "#F8F4F1",
   muted: "#514742",
   orangeDark: "#BC390C",

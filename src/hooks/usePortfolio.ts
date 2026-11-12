@@ -446,7 +446,7 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
                 }
                 const key = t.token_key.replace("color.", "")
                 if (
-                  ["orange", "ink", "paper", "cream", "muted", "orangeDark", "white"].includes(key)
+                  ["orange", "ink", "paper", "lightGray", "cream", "muted", "orangeDark", "white"].includes(key)
                 )
                   Object.assign(next, { [key]: t.token_value })
                 if (t.token_key === "font.heading")

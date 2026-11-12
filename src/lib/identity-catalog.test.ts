@@ -16,6 +16,7 @@ describe("biblioteca central de Identidade — etapa 2", () => {
     expect(catalog["font.body"].token_value).toBe("Inter")
     expect(catalog["font.serif"].token_value).toBe("Georgia")
     expect(catalog["color.white"].token_value).toBe("#FFFFFF")
+    expect(catalog["color.lightGray"].token_value).toBe("#ECECEC")
     expect(IDENTITY_TYPOGRAPHY_KEYS.length).toBe(7)
   })
 
@@ -68,6 +69,6 @@ describe("biblioteca central de Identidade — etapa 2", () => {
     expect(identityTokenError(color, all)).toBeTruthy()
     expect(identityTokenError(font, all)).toBeTruthy()
     expect(identityTokenError(style, all)).toBeTruthy()
-    expect(IDENTITY_CATALOG_DEFAULTS.length).toBe(21)
+    expect(IDENTITY_CATALOG_DEFAULTS.length).toBe(22)
   })
 })
