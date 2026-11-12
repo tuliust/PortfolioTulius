@@ -411,6 +411,25 @@ function ExperienceMobileBody({
     if (projects[index]?.slideIndices.length) {
       onSlideChange(projects[index].slideIndices[0])
     }
+    // React first commits the new accordion panel. Scroll its heading into
+    // view below the fixed site header, company index and sticky company copy.
+    requestAnimationFrame(() => {
+      const content = document.getElementById(`${section.slug}-mobile-project-${index}`)
+      const item = content?.closest<HTMLElement>(".experience-project")
+      if (!item) return
+      const headerBottom =
+        document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().bottom ?? 0
+      const indexBottom =
+        document.querySelector<HTMLElement>(".experience-stack > .experience-index")
+          ?.getBoundingClientRect().bottom ?? 0
+      const companyBottom =
+        document.getElementById(`${section.slug}-a`)?.getBoundingClientRect().bottom ?? 0
+      const offset = Math.max(headerBottom, indexBottom, companyBottom) + 8
+      window.scrollTo({
+        top: Math.max(0, window.scrollY + item.getBoundingClientRect().top - offset),
+        behavior: "instant",
+      })
+    })
   }
   const showTrajectory = view === "trajectory" && Boolean(detail?.trim())
 

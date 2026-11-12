@@ -25,3 +25,12 @@ Evitar animações pesadas e respeitar `prefers-reduced-motion`. Imagens precisa
 Viewports históricos: **1920×1080, 1440×900, 1366×768, 768×1024, 720×450, 390×844, 360×800, 320×700**. Conferir imagens, overflow, menu, âncoras, foco, altura reduzida e mobile. P3 mede também LCP, mas aceite estético e orçamento de performance são evidências separadas.
 
 [Design](IDENTIDADE_VISUAL.md) · [CI](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+## Refinamentos após conferência no iPhone (12/11/2026)
+
+- **Todas as telas:** o status transitório “Sincronizando conteúdo…” deixou de ser um toast fixo no canto inferior. Avisos reais de erro e o estado vazio continuam distintos.
+- **Abertura mobile (≤767 px):** título “CONEXÕES / AUTÊNTICAS. / INOVAÇÃO.” e nome em duas linhas ampliados por `clamp()` (o tamanho máximo e demais propriedades existentes ainda são definidos pelo editor do Hero). A fotografia fica alinhada à borda esquerda e à base de sua grade; o botão de rolar mantém sua posição independente abaixo da composição. Conferir os dispositivos mais estreitos para não haver overflow.
+- **Resultados:** somente os separadores horizontais dos indicadores 03 e 04 foram deslocados para cima; não há mudança nos valores ou na altura efetiva dos cards.
+- **Formação:** bordas superiores do primeiro item de cada painel removidas visualmente; o subtítulo de idiomas ganha maior distância e fonte, e as linhas de instituições/períodos recebem tipografia menor. Os dados continuam no CMS.
+- **Experiências:** a numeração de cada projeto fica afastada da régua esquerda; ao selecionar outro projeto, o conteúdo aberto é alinhado abaixo de cabeçalho, índice de empresas e cabeçalho sticky da experiência. Acessibilidade e clique nos outros projetos precisam permanecer operacionais.
+- **Contato:** a imagem em PNG com margem transparente inferior é deslocada/clippada dentro do painel A para encostar visualmente na transição grafite; o desktop permanece igual. A arte não foi recortada/destruída no Storage.

@@ -27,3 +27,7 @@ O painel B do Contato passa a compor sua apresentação mobile a partir dos toke
 
 ## Escrita
 `save_section_block_atomic` P2 instalada: CAS e rollback para seção/bloco/placements. `save_home_seo_atomic` para SEO; Storage exige fluxo separado. A coluna `credit` não existe mais. [Mapa antigo](../MAPA_CAMPOS_CMS_RENDERER.md) é evidência histórica, não schema vigente.
+
+## Contrato do favicon (12/11/2026)
+
+A fonte única da seleção editável é `site_settings.seo_json.faviconUrl`, texto HTTPS publicado na biblioteca de mídia ou `/favicon.png` (padrão local); atualizado pela RPC de SEO existente e lido pelo cliente público no carregamento diferido de metadados. `src/lib/site-icons.ts` aplica a URL de maneira segura e `scripts/generate-seo.mjs` define os links `icon` e `apple-touch-icon` no HTML do build. O upload utiliza as tabelas/políticas existentes da biblioteca `media_assets` e o bucket `portfolio-public`; nenhum schema, FK, migração ou RLS foi alterado. `site_settings.favicon_media_id` permanece sem uso neste contrato, evitando duas referências editáveis contraditórias.

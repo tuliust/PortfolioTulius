@@ -25,6 +25,7 @@ import { parseCardRadius } from "../lib/design-tokens"
 import { publicEditorAnchor } from "../lib/editor-anchor"
 import type { FormationPilotEducationRow } from "../lib/formation-pilot-preview"
 import { synchronizePublishedMediaAlts, type PublishedMediaAlt } from "../lib/media-alt-sync"
+import { applySiteIcons } from "../lib/site-icons"
 
 type SectionResult = {
   id: string
@@ -500,8 +501,10 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
                   ogImage?: string
                   canonical?: string
                   robots?: string
+                  faviconUrl?: string
                 }
               | undefined
+            applySiteIcons(seo?.faviconUrl)
             if (seo?.ogImage?.startsWith("https://")) {
               setMeta("og:image", seo.ogImage, "property")
               setMeta("twitter:image", seo.ogImage)

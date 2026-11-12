@@ -17,6 +17,7 @@ export function PublishedMediaPicker({
   guidanceAsInfo = true,
   iconOnlyActions = true,
   allowFraming = true,
+  allowStaticSiteIcon = false,
 }: {
   label: string
   value: string
@@ -28,6 +29,7 @@ export function PublishedMediaPicker({
   guidanceAsInfo?: boolean
   iconOnlyActions?: boolean
   allowFraming?: boolean
+  allowStaticSiteIcon?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [previewFailed, setPreviewFailed] = useState(false)
@@ -46,7 +48,7 @@ export function PublishedMediaPicker({
         )}
       </div>
       {!guidanceAsInfo && <p className="published-media-guidance">Área de destino: {guidance}</p>}
-      {value && isSafeEditorialImage(value) && !previewFailed ? (
+      {value && (isSafeEditorialImage(value) || (allowStaticSiteIcon && value === "/favicon.png")) && !previewFailed ? (
         <div className="published-media-current">
           <img
             src={value}

@@ -14,3 +14,7 @@ A cópia privada de origem, a pública promovida e o catálogo podem não coinci
 Auditoria anterior aponta **19 SVGs** de versões diferentes entre Git e Storage e dois PNGs usados como logos, com proveniência/licença não certificadas. Preservar versões e originais privados, sem deduplicação automática. [Investigação original](../P1_INVESTIGACAO_HIGIENE_2026-10-28.md).
 
 Backup histórico de 11/11: 128/128 objetos, 4.661.351 bytes; bytes e hashes individuais privados, fora do Git. [Recuperação](../05-operacao/BACKUP_E_RECUPERACAO.md). **Não excluir objetos ou executar workflows de mídia por tarefa documental.**
+
+## Ícone do site (12/11/2026)
+
+O favicon TT fornecido pelo proprietário é empacotado como `public/favicon.png`, com versão Apple 180×180 em `public/apple-touch-icon.png`. São arquivos estáticos versionados, não novos registros artificiais em `media_assets`. No admin, o seletor de favicon em SEO reutiliza `PublishedMediaPicker` e seu diálogo de upload/publicação; novos arquivos entram no bucket `portfolio-public` com metadados em `media_assets`, e a URL selecionada é salva em `site_settings.seo_json.faviconUrl`. Não modificar ou excluir mídias anteriores para ativar esse recurso. URLs inseguras são rejeitadas no runtime/build.

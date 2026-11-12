@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { withOpenGraphImage } from "../../lib/media-selection"
+import { FALLBACK_FAVICON, withSiteFavicon } from "../../lib/site-icons"
 import { registerAdminSaveAction } from "./AdminConfirmationHost"
 import { AdminNotice } from "./AdminNotice"
 import { FloatingSaveButton } from "./FloatingSaveButton"
@@ -135,6 +136,28 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
               <small>
                 Selecione uma imagem publicada. A alteração dos metadados HTML será aplicada no
                 próximo deploy após salvar o SEO.
+              </small>
+            </div>
+            <div className="field-wide">
+              <PublishedMediaPicker
+                label="Favicon e ícone de início (Apple)"
+                guidance="Imagem quadrada, preferencialmente PNG. Clique em Escolher da biblioteca e use Enviar mídia para fazer o upload. O mesmo arquivo será utilizado como favicon e ícone Apple após salvar."
+                ratio="1 / 1"
+                value={settings.seo_json?.faviconUrl || FALLBACK_FAVICON}
+                allowFraming={false}
+                allowStaticSiteIcon
+                iconOnlyActions={false}
+                onChange={(faviconUrl) =>
+                  setSettings({
+                    ...settings,
+                    seo_json: withSiteFavicon(settings.seo_json, faviconUrl),
+                  })
+                }
+              />
+              <small>
+                O arquivo enviado entra no catálogo público de mídias. Salve o SEO para persistir
+                a seleção no Supabase. O favicon é atualizado na página aberta; o HTML de
+                atalhos e robôs é atualizado no próximo build/publicação.
               </small>
             </div>
             <label className="field-wide">

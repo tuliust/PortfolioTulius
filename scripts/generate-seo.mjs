@@ -17,6 +17,19 @@ function secureHttps(value) {
     return url.protocol === "https:" ? url.href : null
   } catch { return null }
 }
+function safeFavicon(value) {
+  if (typeof value !== "string" || !value.trim()) return null
+  const candidate = value.trim()
+  if (/^\/[a-zA-Z0-9/_-]+(?:\.[a-zA-Z0-9_-]+)?$/.test(candidate) && !candidate.includes(".."))
+    return candidate
+  return candidate.startsWith("https://") && !candidate.includes("\\")
+    ? secureHttps(candidate) : null
+}
+function replaceIconLink(html, rel, url) {
+  const tag = `<link rel="${rel}" href="${escapeHtml(url)}" />`
+  const regex = new RegExp(`<link\\s+[^>]*\\brel=["']${rel}["'][^>]*>`, "i")
+  return regex.test(html) ? html.replace(regex, tag) : html.replace("</head>", `  ${tag}\n  </head>`)
+}
 // A loopback exception is available only in explicit isolated P4 CI runs.
 function allowSyntheticLocalSeo(base) {
   return process.env.P4_LOCAL_SYNTHETIC_SEO === "true" &&
@@ -57,6 +70,7 @@ async function run() {
   let canonical = fallbackCanonical
   let robots = "index,follow"
   let image = null
+  let favicon = "/favicon.png"
   let locale = "pt_BR"
   try {
     const [page, settings] = await Promise.all([
@@ -69,6 +83,7 @@ async function run() {
     else if (settings?.description?.trim()) description = settings.description.trim()
     canonical = secureHttps(settings?.seo_json?.canonical) ?? fallbackCanonical
     image = secureHttps(settings?.seo_json?.ogImage)
+    favicon = safeFavicon(settings?.seo_json?.faviconUrl) ?? favicon
     robots = /^(index|noindex),(follow|nofollow)$/.test(settings?.seo_json?.robots ?? "")
       ? settings.seo_json.robots : robots
     if (settings?.locale && /^[a-z]{2}-[A-Z]{2}$/.test(settings.locale))
@@ -85,6 +100,11 @@ async function run() {
   html = replaceMeta(html, "twitter:description", description)
   html = replaceMeta(html, "robots", robots)
   html = replaceCanonical(html, canonical)
+  html = replaceIconLink(html, "icon", favicon)
+  html = replaceIconLink(
+    html, "apple-touch-icon",
+    favicon === "/favicon.png" ? "/apple-touch-icon.png" : favicon,
+  )
   if (image) {
     html = replaceMeta(html, "og:image", image, "property")
     html = replaceMeta(html, "twitter:image", image)

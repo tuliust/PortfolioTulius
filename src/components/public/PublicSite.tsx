@@ -1634,7 +1634,6 @@ export function PublicSite({
         current={current}
         brandTitle={sections.find((section) => section.slug === "perfil")?.title}
       />
-      {loading && <div className="data-status">Sincronizando conteúdo…</div>}
       {error && (
         <div className="data-error" role="status">
           {error}
