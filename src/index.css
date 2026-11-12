@@ -2779,3 +2779,88 @@
     );
   }
 }
+
+/* 12 Nov · iPhone first-fold/formation/contact corrections, mobile only.
+ * Editorial padding still comes from the Perfil mobile CMS fields. */
+@media (max-width: 767px) {
+  /* Reserve the first *visible* viewport; the scroll affordance must not
+     consume a row beneath the photograph. Tiny/zoomed views remain scrollable. */
+  .public-site #perfil-a.editorial360-mobile {
+    position: relative;
+    height: 100svh;
+    min-height: 100svh;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360 {
+    position: relative;
+    height: calc(100svh - var(--header));
+    min-height: 0;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-bottom {
+    position: relative;
+    min-height: 0;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-bottom-grid {
+    min-height: 0;
+    overflow: hidden;
+    margin-top: clamp(.45rem, 1.35svh, .9rem);
+    align-items: end;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-photo {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-down {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-end: clamp(.55rem, 1.5svh, 1rem);
+    z-index: 5;
+    margin: 0;
+    transform: translateX(-50%);
+    background-color: var(--paper);
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-down:hover,
+  .public-site #perfil-a.editorial360-mobile .mobile360-down:focus-visible {
+    transform: translate(-50%, -3px);
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-person-name > span {
+    font-size: 1.38em;
+    line-height: .9;
+  }
+
+  /* Center the second Formação heading visually between its top rule
+     and the first language label, without moving the content or adding a rule. */
+  .public-site #formacao-b .mobile-panel-secondary-heading {
+    transform: translateY(clamp(.8rem, 2.25svh, 1.35rem));
+  }
+
+  /* Previously the graphite strip was applied to the *inner* portrait box,
+     leaving orange gutters. Continue graphite across the full panel width. */
+  .public-site #contato-a {
+    background: linear-gradient(
+      to bottom,
+      var(--orange) calc(100% - clamp(1.4rem, 4.4svh, 3rem)),
+      var(--ink) 0
+    );
+  }
+  .public-site #contato-a .contact-mobile-photo {
+    background: transparent;
+  }
+}
+
+/* Short phones and high zoom: keep content readable rather than clipping it. */
+@media (max-width: 767px) and (max-height: 560px) {
+  .public-site #perfil-a.editorial360-mobile {
+    height: auto;
+    min-height: 100svh;
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360 {
+    height: auto;
+    min-height: calc(100svh - var(--header));
+  }
+  .public-site #perfil-a.editorial360-mobile .mobile360-photo {
+    aspect-ratio: 3 / 4;
+    height: auto;
+  }
+}

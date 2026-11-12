@@ -34,3 +34,12 @@ Viewports históricos: **1920×1080, 1440×900, 1366×768, 768×1024, 720×450, 
 - **Formação:** bordas superiores do primeiro item de cada painel removidas visualmente; o subtítulo de idiomas ganha maior distância e fonte, e as linhas de instituições/períodos recebem tipografia menor. Os dados continuam no CMS.
 - **Experiências:** a numeração de cada projeto fica afastada da régua esquerda; ao selecionar outro projeto, o conteúdo aberto é alinhado abaixo de cabeçalho, índice de empresas e cabeçalho sticky da experiência. Acessibilidade e clique nos outros projetos precisam permanecer operacionais.
 - **Contato:** os pixels transparentes do limite inferior da imagem em PNG revelam um fundo grafite em degradê abrupto no painel A, sem transladar a imagem para fora do painel; o desktop permanece igual. A arte não foi recortada/destruída no Storage.
+
+## Ajuste da primeira dobra, Formação e Contato no iPhone (12/11/2026)
+
+- **Somente mobile (≤767 px).** Na abertura `#perfil-a`, a primeira dobra corresponde a `100svh`; o botão `#perfil-b` é ancorado no rodapé da coluna inferior como elemento absoluto, mantendo-se visível sem rolar e podendo sobrepor a fotografia. A fotografia termina na base do painel, sem o antigo espaço reservado pela seta. Em telas muito baixas (≤560 px) o conteúdo conserva rolagem natural para não cortar texto.
+- A primeira linha **TULIUS** recebe escala tipográfica de `1.38em` sobre a fonte mobile do CMS, para aproximar sua largura da primeira letra “O” do sobrenome **TSANGAROPULOS**, sem alterar a segunda linha.
+- Os campos já existentes no editor **Perfil → Abertura Editorial 360°** têm os valores publicados `top.paddingY=18` e `bottom.paddingY=0`. A primeira linha da abertura, a fotografia, o nome, o histórico e a seta usam a mesma configuração `hero.mobileEditorial`; não criar segunda cópia nem alterar CSS desktop.
+- **Formação:** deslocamento visual leve do subtítulo “IDIOMAS E FORMAÇÃO COMPLEMENTAR” para equilibrar o respiro entre a linha divisória superior e o primeiro idioma; fontes e registros do CMS não mudam.
+- **Contato:** removido o gradiente estreito que pintava apenas o contêiner da foto; a faixa grafite ocupa agora toda a largura do painel A, começando na base visível do retrato e encontrando a área B sem lateral laranja. PNG e enquadramento originais mantidos.
+- Após publicar, checar em dispositivo iOS real a seta com barras do Safari visíveis, a composição do nome e a transição de cor; os testes Chrome e Lighthouse são evidência automatizada separada.

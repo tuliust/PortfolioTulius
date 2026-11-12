@@ -69,3 +69,7 @@ Testar desktop/mobile/teclado/zoom; CMS `editar → salvar → reler → DB → 
 - Histórico de correção nesta intervenção: o primeiro push falhou por formatação; um ensaio intermediário P3 falhou quando a foto de Contato ultrapassou o limite do painel e apresentou LCP mobile de **3.505,136 ms**. O CSS foi corrigido sem modificar a imagem original e a medição final passou. Não reclassificar as execuções anteriores como sucesso.
 
 A avaliação da composição em aparelho iPhone físico continua distinta dos testes Chrome automatizados; validar especialmente aparência de favicon/ícone Apple, ajuste da linha inferior da fotografia e rolagem com barras nativas do navegador.
+
+## Contrato de regressão da primeira dobra mobile (12/11/2026)
+
+Em `scripts/p3-browser-smoke.mjs`, a checagem `P3_PROFILE_MOBILE` deve garantir, em seis viewports de 320 a 430 px, que a seta é legível e totalmente visível no viewport inicial, que a foto toca a borda inferior do painel A e que a primeira linha do nome tem de 55% a 85% da largura da segunda. A regra antiga `arrowBelowPortrait` foi removida: o botão agora **pode sobrepor a foto**. Verificar também `#formacao-b` (centralização entre régua e Inglês) e `#contato-a` (grafite contínuo de ponta a ponta), sem comprometer o desktop. O orçamento LCP mobile de 3.500 ms continua obrigatório e não foi alterado.

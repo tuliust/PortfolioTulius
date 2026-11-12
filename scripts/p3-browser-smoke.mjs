@@ -205,8 +205,19 @@ try {
           const areasHeading = panelB?.querySelector(".profile-mobile-block-heading")
           const badgeBeforeAreas = Boolean(badgeRect && areasHeading &&
             badgeRect.bottom <= areasHeading.getBoundingClientRect().top + 2)
-          const arrowBelowPortrait = Boolean(arrow && portrait &&
-            arrow.getBoundingClientRect().top >= portrait.getBoundingClientRect().bottom - 2)
+          const arrowRect = arrow?.getBoundingClientRect()
+          const portraitRect = portrait?.getBoundingClientRect()
+          const panelRect = panelA?.getBoundingClientRect()
+          const firstNameRect = name?.firstElementChild?.getBoundingClientRect()
+          const surnameRect = name?.lastElementChild?.getBoundingClientRect()
+          const arrowVisibleOnLoad = Boolean(arrowRect &&
+            arrowRect.top >= -2 && arrowRect.bottom <= innerHeight + 2 &&
+            arrowRect.left >= -2 && arrowRect.right <= innerWidth + 2)
+          const portraitFlushWithPanel = Boolean(portraitRect && panelRect &&
+            Math.abs(portraitRect.bottom - panelRect.bottom) <= 3)
+          const firstNameProportional = Boolean(firstNameRect && surnameRect &&
+            firstNameRect.width >= surnameRect.width * .55 &&
+            firstNameRect.width <= surnameRect.width * .85)
           return {
             areas: areas?.length ?? 0,
             careers: careers?.length ?? 0,
@@ -216,7 +227,9 @@ try {
             portraitLoaded: Boolean(portrait?.complete && portrait.naturalWidth > 0),
             badgePresent: Boolean(badge) && !oldBadge,
             badgeBeforeAreas,
-            arrowBelowPortrait,
+            arrowVisibleOnLoad,
+            portraitFlushWithPanel,
+            firstNameProportional,
             arrowAccessible: Boolean(arrow?.getAttribute("aria-label")),
             nameFits: fitsWidth(name) && [...(name?.children ?? [])].every(fitsWidth),
             panelsFit: fitsWidth(panelA) && fitsWidth(panelB),
@@ -231,8 +244,9 @@ try {
         if (result.areas !== 5 || result.careers !== 0 || !result.portraitLoaded ||
             !result.badgePresent || !result.editorialHeadline || !result.introHidden ||
             !result.arrowAccessible || !result.nameFits ||
-            !result.panelsFit || !result.badgeBeforeAreas || !result.arrowBelowPortrait ||
-            !result.careerVisible ||
+            !result.panelsFit || !result.badgeBeforeAreas ||
+            !result.arrowVisibleOnLoad || !result.portraitFlushWithPanel ||
+            !result.firstNameProportional || !result.careerVisible ||
             !result.noOldActions || result.nextSection !== "sobre") {
           throw new Error("Responsive profile failed at " + viewport.width + "px")
         }
