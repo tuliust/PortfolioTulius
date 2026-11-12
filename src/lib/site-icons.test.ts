@@ -7,7 +7,12 @@ describe("favicon gerenciado por SEO", () => {
     expect(safeSiteIconUrl("https://example.com/icon.png")).toBe("https://example.com/icon.png")
   })
   it("rejeita URL insegura e preserva as demais configurações", () => {
-    for (const url of ["javascript:alert(1)", "//evil.test/icon.png", "/../secret.png", "http://example.com/icon.png"]) {
+    for (const url of [
+      "javascript:alert(1)",
+      "//evil.test/icon.png",
+      "/../secret.png",
+      "http://example.com/icon.png",
+    ]) {
       expect(safeSiteIconUrl(url)).toBeNull()
     }
     expect(withSiteFavicon({ canonical: "https://tulius.work/" }, "")).toEqual({

@@ -5,10 +5,7 @@ export const FALLBACK_APPLE_ICON = "/apple-touch-icon.png"
 export function safeSiteIconUrl(value: unknown): string | null {
   if (typeof value !== "string" || !value.trim()) return null
   const candidate = value.trim()
-  if (
-    /^\/[a-zA-Z0-9/_-]+(?:\.[a-zA-Z0-9_-]+)?$/.test(candidate) &&
-    !candidate.includes("..")
-  )
+  if (/^\/[a-zA-Z0-9/_-]+(?:\.[a-zA-Z0-9_-]+)?$/.test(candidate) && !candidate.includes(".."))
     return candidate
   if (!candidate.startsWith("https://")) return null
   try {

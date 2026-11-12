@@ -420,7 +420,8 @@ function ExperienceMobileBody({
       const headerBottom =
         document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect().bottom ?? 0
       const indexBottom =
-        document.querySelector<HTMLElement>(".experience-stack > .experience-index")
+        document
+          .querySelector<HTMLElement>(".experience-stack > .experience-index")
           ?.getBoundingClientRect().bottom ?? 0
       const companyBottom =
         document.getElementById(`${section.slug}-a`)?.getBoundingClientRect().bottom ?? 0

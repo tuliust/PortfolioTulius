@@ -48,7 +48,9 @@ export function PublishedMediaPicker({
         )}
       </div>
       {!guidanceAsInfo && <p className="published-media-guidance">Área de destino: {guidance}</p>}
-      {value && (isSafeEditorialImage(value) || (allowStaticSiteIcon && value === "/favicon.png")) && !previewFailed ? (
+      {value &&
+      (isSafeEditorialImage(value) || (allowStaticSiteIcon && value === "/favicon.png")) &&
+      !previewFailed ? (
         <div className="published-media-current">
           <img
             src={value}

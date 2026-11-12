@@ -155,9 +155,9 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
                 }
               />
               <small>
-                O arquivo enviado entra no catálogo público de mídias. Salve o SEO para persistir
-                a seleção no Supabase. O favicon é atualizado na página aberta; o HTML de
-                atalhos e robôs é atualizado no próximo build/publicação.
+                O arquivo enviado entra no catálogo público de mídias. Salve o SEO para persistir a
+                seleção no Supabase. O favicon é atualizado na página aberta; o HTML de atalhos e
+                robôs é atualizado no próximo build/publicação.
               </small>
             </div>
             <label className="field-wide">
