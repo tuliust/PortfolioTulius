@@ -103,3 +103,7 @@ O Lighthouse P3 do SHA funcional `b28b9d5`, [execução #43166775065](https://gi
 - Vercel production: deploy do SHA `e24e91f` **READY**, ID `dpl_9vcK3cbhkELm1QwkfuKexgdLDGQL`; nenhuma mídia foi modificada.
 
 **Limitação:** o primeiro workflow de leitura administrativa P5 do commit `2d04e5e` falhou por timeout do seletor de login, sem evidência de falha de escrita/persistência. Não foi realizado teste autenticado de alteração de cor via interface do admin; a leitura/gravação direta do token via Supabase e os testes estáticos do catálogo foram verificados. Recomenda-se conferência visual no Safari físico e teste autenticado de edição da nova cor numa próxima operação autorizada, sem inserir dados sintéticos em produção.
+
+## Contrato P5 pós-refinamentos desktop (12/11/2026)
+
+A suíte read-only `scripts/p5-admin-readonly.mjs` foi ajustada para exigir **oito** cores publicadas em Identidade — incluindo o token `color.lightGray` já existente — em vez da expectativa histórica de sete. Também verifica, sem salvar dados reais, que os controles numéricos da frase e dos quatro destaques desktop de Perfil/Esquerda e dos seis títulos de empresas de Perfil/Direita são exibidos e preenchidos no editor. Isso não altera o esquema, o CMS ou os tokens; limita-se a atualizar o contrato de homologação à estrutura atualmente publicada. Os resultados do workflow devem ser associados ao SHA da execução, não inferidos a partir do teste editado.

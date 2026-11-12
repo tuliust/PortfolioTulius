@@ -118,7 +118,7 @@ try {
       .some((select) => [...select.options].some((option) => option.textContent?.includes("px"))),
     error: document.querySelector(".identity-catalog .admin-notice")?.textContent ?? "",
   }))
-  assert(identity.colors === 7 && identity.fonts === 3 && identity.styles === 7 &&
+  assert(identity.colors === 8 && identity.fonts === 3 && identity.styles === 7 &&
     identity.names && identity.responsiveChoices, "Biblioteca de Identidade incompleta: " + JSON.stringify(identity))
   report("IDENTITY_CATALOG", { colors: identity.colors, fonts: identity.fonts, styles: identity.styles })
 
@@ -282,6 +282,18 @@ try {
   report("HERO_HIGHLIGHTS", { group: "Itens de Destaque",
     count: highlights.children, preservedLegacyItems: true })
 
+  const desktopIntro = await page.evaluate(() => [...document.querySelectorAll(".hero-left-editor label")]
+    .filter((node) => node.textContent?.includes("Tamanho da frase no desktop"))
+    .map((node) => Number(node.querySelector("input[type=number]")?.value)))
+  const desktopHighlights = await page.evaluate(() =>
+    [...document.querySelectorAll(".hero-highlight-entry")].map((row) =>
+      [...row.querySelectorAll('input[type=number]')].map((field) => Number(field.value))))
+  assert(desktopIntro.length === 1 && desktopIntro[0] >= 8 && desktopIntro[0] <= 48 &&
+    desktopHighlights.length === 4 &&
+    desktopHighlights.every((row) => row.length === 3 && row.every((value) => value >= 0)),
+    "Os controles desktop de Perfil/Esquerda não refletem o CMS.")
+  report("HERO_DESKTOP_LEFT", { intro: true, highlightGroups: desktopHighlights.length })
+
   await page.evaluate(() =>
     document.querySelector(".hero-left-editor button[aria-label='Fundo do selo']")?.click())
   await page.waitForSelector(".hero-swatch-grid button", { timeout: 10000 })
@@ -352,6 +364,16 @@ try {
     heroRight.title && heroRight.secondary && heroRight.bottomButton &&
     heroRight.genericCardsAbsent && heroRight.originalBlockCount === 2,
     "Agrupamentos da Direita incompletos: " + JSON.stringify(heroRight))
+  const desktopCompanies = await page.evaluate(() =>
+    [...document.querySelectorAll(".hero-right-group[aria-label='Área de Destaques'] .hero-right-entry")]
+      .map((row) => [...row.querySelectorAll("label")].find((label) =>
+        label.textContent?.includes("Tamanho do título da empresa no desktop"))
+        ?.querySelector("input[type=number]")?.value))
+  assert(desktopCompanies.length === 6 &&
+    desktopCompanies.every((size) => Number(size) >= 8 && Number(size) <= 120),
+    "Títulos desktop das empresas não expostos no editor.")
+  report("HERO_DESKTOP_RIGHT", { companies: desktopCompanies.length })
+
   await page.evaluate(() =>
     document.querySelector(".hero-right-editor .hero-format-trigger")?.click())
   await page.waitForSelector(".hero-format-popover select", { timeout: 10000 })
