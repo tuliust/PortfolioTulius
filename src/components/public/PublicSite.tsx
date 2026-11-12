@@ -423,23 +423,23 @@ function ProfileDesktop({
             />
           ))}
         </div>
-        {nextSectionSlug && (
-          <a
-            className="profile-next-section"
-            style={{
-              color: heroColor(rightHero?.nextColor),
-              backgroundColor: heroColor(rightHero?.nextBackground),
-            }}
-            href={`#${rightHero?.nextTarget && publishedSlugs.includes(rightHero.nextTarget) ? rightHero.nextTarget : nextSectionSlug}`}
-            aria-label="Ir para a próxima seção"
-            title="Ir para a próxima seção"
-          >
-            {rightHero?.nextIcon !== "none" && (
-              <Icon name={(rightHero?.nextIcon ?? "down") as MetricIconName} size={28} />
-            )}
-          </a>
-        )}
       </div>
+      {nextSectionSlug && (
+        <a
+          className="profile-next-section"
+          style={{
+            color: heroColor(rightHero?.nextColor),
+            backgroundColor: heroColor(rightHero?.nextBackground),
+          }}
+          href={`#${rightHero?.nextTarget && publishedSlugs.includes(rightHero.nextTarget) ? rightHero.nextTarget : nextSectionSlug}`}
+          aria-label="Ir para a próxima seção"
+          title="Ir para a próxima seção"
+        >
+          {rightHero?.nextIcon !== "none" && (
+            <Icon name={(rightHero?.nextIcon ?? "down") as MetricIconName} size={28} />
+          )}
+        </a>
+      )}
     </div>
   )
 }

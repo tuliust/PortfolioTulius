@@ -1,6 +1,7 @@
 import type { ContentItem, HeroTextFormat } from "../../types/content"
 import type { IdentityTokenRow } from "../../lib/identity-catalog"
 import { HeroItemFields } from "./HeroItemFields"
+import { NumericField } from "./AdminVisualFields"
 import { Icon } from "../ui/Icons"
 import "./HeroHighlightsEditor.css"
 
@@ -52,6 +53,38 @@ export function HeroHighlightsEditor({
                   onUpdate={(patch) => onUpdate(index, patch)}
                   onFormat={(key, next) => onFormat(index, key, next)}
                 />
+                <fieldset className="field-wide">
+                  <legend>Tipografia e espaçamento · desktop</legend>
+                  <div className="field-grid">
+                    <NumericField
+                      label="Título desktop (px)"
+                      value={item.desktop?.titleSize}
+                      min={8}
+                      max={120}
+                      onChange={(titleSize) =>
+                        onUpdate(index, { desktop: { ...item.desktop, titleSize } })
+                      }
+                    />
+                    <NumericField
+                      label="Descrição desktop (px)"
+                      value={item.desktop?.textSize}
+                      min={8}
+                      max={72}
+                      onChange={(textSize) =>
+                        onUpdate(index, { desktop: { ...item.desktop, textSize } })
+                      }
+                    />
+                    <NumericField
+                      label="Espaçamento desktop (px)"
+                      value={item.desktop?.spacing}
+                      min={0}
+                      max={120}
+                      onChange={(spacing) =>
+                        onUpdate(index, { desktop: { ...item.desktop, spacing } })
+                      }
+                    />
+                  </div>
+                </fieldset>
                 <fieldset className="hero-highlight-icon-choice field-wide">
                   <legend>Ícone do destaque</legend>
                   <div className="hero-highlight-icon-buttons">

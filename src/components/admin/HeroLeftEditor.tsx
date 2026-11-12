@@ -5,6 +5,7 @@ import { HeroHighlightsEditor } from "./HeroHighlightsEditor"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 import { PublishedMediaPicker } from "./PublishedMediaPicker"
+import { NumericField } from "./AdminVisualFields"
 import "./HeroLeftEditor.css"
 
 type Catalog = Record<string, IdentityTokenRow>
@@ -136,6 +137,13 @@ export function HeroLeftEditor({
               onChange={(event) => onIntroChange(event.target.value)}
             />
           </label>
+          <NumericField
+            label="Tamanho da frase no desktop (px)"
+            value={hero?.desktop?.introSize}
+            min={8}
+            max={48}
+            onChange={(introSize) => onUpdateHero({ desktop: { ...hero?.desktop, introSize } })}
+          />
         </div>
       </fieldset>
 

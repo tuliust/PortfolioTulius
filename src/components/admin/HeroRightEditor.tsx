@@ -1,6 +1,7 @@
 import type { ContentItem, HeroTextFormat, HeroVisualConfig } from "../../types/content"
 import type { IdentityTokenRow } from "../../lib/identity-catalog"
 import { HeroItemFields } from "./HeroItemFields"
+import { NumericField } from "./AdminVisualFields"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 import { Icon } from "../ui/Icons"
@@ -209,6 +210,15 @@ export function HeroRightEditor({
                     catalog={catalog}
                     onUpdate={(patch) => onUpdateItem(index, patch)}
                     onFormat={(key, next) => onFormat(index, key, next)}
+                  />
+                  <NumericField
+                    label="Tamanho do título da empresa no desktop (px)"
+                    value={item.desktop?.titleSize}
+                    min={8}
+                    max={120}
+                    onChange={(titleSize) =>
+                      onUpdateItem(index, { desktop: { ...item.desktop, titleSize } })
+                    }
                   />
                   <label className="field-wide">
                     Link do destaque / empresa de destino

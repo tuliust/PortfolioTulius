@@ -55,3 +55,12 @@ Viewports históricos: **1920×1080, 1440×900, 1366×768, 768×1024, 720×450, 
 ## Decodificação do retrato na abertura mobile (12/11/2026)
 
 O único `ApprovedProfileImage` da abertura editorial mobile recebe `syncDecode`, que usa `decoding="sync"` para priorizar a apresentação do retrato LCP; chamadas do mesmo componente no desktop e em outras seções mantêm `decoding="async"`. A alteração não modifica arquivo, crop, art direction, `fetchPriority="high"`, carregamento `eager` nem os dados do CMS. Comparar as três medições Lighthouse e confirmar que a mudança não piorou o carregamento; não afrouxar o orçamento de 3,5 segundos.
+
+## Refinamentos exclusivos do desktop — 12/11/2026
+
+- **Perfil:** frase editorial e quatro destaques da coluna escura usam tamanhos e espaçamentos próprios do desktop; os seis títulos das empresas respeitam `items[].desktop.titleSize`. Aumento de fontes combinado com compactação vertical; textos, imagens, cores e links mantidos.
+- **Seta:** o link da próxima seção é filho direto de `profile-desktop` e centralizado a 50% da **tela inteira**, não da coluna direita. Em alturas compactas, o conteúdo pode crescer e rolar em vez de ser cortado.
+- **Resultados:** título/indicadores e indicadores/seletor usam o mesmo `--results-column-gap` horizontal, preservando valores e filtragem.
+- **Formação:** títulos dos cursos e idiomas respeitam `items[].desktop.titleSize`; o CSS tem fallback ampliado apenas quando não definido no CMS.
+- **Sobre (“Olá!”):** a foto desktop já publicada é deslocada dentro do contêiner, eliminando a faixa inferior laranja sem substituir ou editar o arquivo no Storage.
+- **Isolamento:** regras novas limitadas a `@media (min-width: 768px)` e ao `ProfileDesktop`. Os componentes mobile e `hero.mobileEditorial` não foram alterados. Validar também alturas baixas, zoom, navegação e 320–430 px mobile.
