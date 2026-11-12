@@ -64,3 +64,7 @@ O único `ApprovedProfileImage` da abertura editorial mobile recebe `syncDecode`
 - **Formação:** títulos dos cursos e idiomas respeitam `items[].desktop.titleSize`; o CSS tem fallback ampliado apenas quando não definido no CMS.
 - **Sobre (“Olá!”):** a foto desktop já publicada é deslocada dentro do contêiner, eliminando a faixa inferior laranja sem substituir ou editar o arquivo no Storage.
 - **Isolamento:** regras novas limitadas a `@media (min-width: 768px)` e ao `ProfileDesktop`. Os componentes mobile e `hero.mobileEditorial` não foram alterados. Validar também alturas baixas, zoom, navegação e 320–430 px mobile.
+
+### Ajuste fino após auditoria da composição desktop (12/11/2026)
+
+Em janelas desktop de altura até 760 px, o indicador de experiência da primeira tela recebe recuo superior de até 24 px para não tocar o selo circular — sem modificar dimensão ou arquivo da fotografia. O retrato de Sobre permanece recortado pelo próprio contêiner com `overflow:hidden`; seu elemento pode se estender até abaixo da borda para compensar a faixa transparente, mas o conteúdo visível termina na borda da seção. A seta central deve coincidir com o meio do viewport desktop.

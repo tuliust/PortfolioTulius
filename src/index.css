@@ -2960,3 +2960,8 @@
   }
   .profile-sidebar-content { overflow: visible; }
 }
+
+/* Keep the years caption clear of the seal in short desktop viewports. */
+@media (min-width: 768px) and (max-height: 760px) {
+  .years { top: max(0px, calc(var(--hero-desktop-years-y, 10%) - 1.5rem)); }
+}

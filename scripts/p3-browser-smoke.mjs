@@ -792,6 +792,7 @@ try {
         return {
           aboutBottom: about?.getBoundingClientRect().bottom ?? null,
           portraitBottom: portrait?.getBoundingClientRect().bottom ?? null,
+          aboutClip: about ? getComputedStyle(about).overflowY : null,
           count: projects?.querySelectorAll(".experience-project").length ?? 0,
           competenceBadges: document.querySelectorAll("#invest-rs .desktop-panel .experience-competencies li").length,
           trajectoryButton: Boolean(projects?.querySelector(".experience-view-trajectory")),
@@ -804,7 +805,10 @@ try {
       console.log("P3_ABOUT_INVEST_FIT " + JSON.stringify(composition))
       const fits = composition.aboutBottom !== null &&
         composition.portraitBottom !== null &&
-        Math.abs(composition.portraitBottom - composition.aboutBottom) <= 2 &&
+        // The approved transparent desktop photo is shifted inside a clipped frame.
+        // Its visible bottom must touch the section even if its element extends below.
+        composition.portraitBottom >= composition.aboutBottom - 2 &&
+        composition.aboutClip === "hidden" &&
         // The current published Invest RS has six competencies approved in CMS.
         composition.count === 4 &&
         composition.competenceBadges === 6 &&
@@ -1074,6 +1078,12 @@ try {
             const el = document.querySelector(selector)
             return el ? Number.parseFloat(getComputedStyle(el).fontSize) : null
           }
+          const arrow = rect(".profile-next-section")
+          const resultsHeading = rect("#resultados .results-editorial > .section-heading")
+          const resultsCenter = rect("#resultados .results-center")
+          const resultsChooser = rect("#resultados .results-theme-list")
+          const formationTitleSizes = [...document.querySelectorAll("#formacao .desktop-panel .content-item h3")]
+            .map((node) => parseFloat(getComputedStyle(node).fontSize))
           const badge = rect(".profile-portrait .badge-360")
           const yearsCopy = rect(".years span")
           const overlap = badge && yearsCopy
@@ -1082,6 +1092,11 @@ try {
             : null
           return {
             headerHeight: rect(".site-header")?.bottom ?? null,
+            arrowCenterX: arrow ? (arrow.left + arrow.right) / 2 : null,
+            resultsColumnGaps: resultsHeading && resultsCenter && resultsChooser
+              ? [resultsCenter.left - resultsHeading.right, resultsChooser.left - resultsCenter.right]
+              : null,
+            formationMinTitlePx: formationTitleSizes.length ? Math.min(...formationTitleSizes) : null,
             nameTop: rect(".name-lockup")?.top ?? null,
             nameFontPx: heading ? Math.round(parseFloat(getComputedStyle(heading).fontSize)) : null,
             introFontPx: computedFont(".profile-intro"),
@@ -1105,7 +1120,11 @@ try {
           density.highlightTextFontPx !== null && density.highlightTextFontPx >= 11.5 &&
           density.careerTextFontPx !== null && density.careerTextFontPx >= 11.5 &&
           density.cardLabelFontPx !== null && density.cardLabelFontPx >= 9.7 &&
-          density.badgeYearsOverlapPx2 !== null && density.badgeYearsOverlapPx2 < 200
+          density.badgeYearsOverlapPx2 !== null && density.badgeYearsOverlapPx2 < 200 &&
+          density.arrowCenterX !== null && Math.abs(density.arrowCenterX - width / 2) <= 2 &&
+          density.resultsColumnGaps !== null &&
+          Math.abs(density.resultsColumnGaps[0] - density.resultsColumnGaps[1]) <= 3 &&
+          density.formationMinTitlePx !== null && density.formationMinTitlePx >= 28
         if (!compact) {
           failures++
           console.log("P3_DESKTOP_DENSITY_REGRESSION " + JSON.stringify({ result: "FAIL", density }))

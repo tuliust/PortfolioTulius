@@ -107,3 +107,7 @@ O Lighthouse P3 do SHA funcional `b28b9d5`, [execução #43166775065](https://gi
 ## Contrato P5 pós-refinamentos desktop (12/11/2026)
 
 A suíte read-only `scripts/p5-admin-readonly.mjs` foi ajustada para exigir **oito** cores publicadas em Identidade — incluindo o token `color.lightGray` já existente — em vez da expectativa histórica de sete. Também verifica, sem salvar dados reais, que os controles numéricos da frase e dos quatro destaques desktop de Perfil/Esquerda e dos seis títulos de empresas de Perfil/Direita são exibidos e preenchidos no editor. Isso não altera o esquema, o CMS ou os tokens; limita-se a atualizar o contrato de homologação à estrutura atualmente publicada. Os resultados do workflow devem ser associados ao SHA da execução, não inferidos a partir do teste editado.
+
+### Novas verificações P3 de composição desktop (12/11/2026)
+
+O smoke de `scripts/p3-browser-smoke.mjs` avalia em 1512×691: ausência de interseção entre selo e legenda do indicador de anos, seta centralizada em relação ao viewport, espaços iguais entre título/indicadores/seletor de Resultados e títulos de Formação com fonte desktop ampliada. Na seção Sobre, usa o **limite visível** da fotografia no contêiner `overflow:hidden`, e não a borda geométrica do elemento deslocado além da máscara. A cobertura de mobile e a meta LCP ≤3,5 s permanecem as mesmas. Em `p5-admin-readonly.mjs` o total de etapas read-only passou a ser 21 após a inclusão das duas verificações de campos desktop; não confundir um contador desatualizado com regressão do CMS.
