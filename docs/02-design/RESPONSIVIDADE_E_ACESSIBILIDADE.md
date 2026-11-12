@@ -68,3 +68,9 @@ O único `ApprovedProfileImage` da abertura editorial mobile recebe `syncDecode`
 ### Ajuste fino após auditoria da composição desktop (12/11/2026)
 
 Em janelas desktop de altura até 760 px, o indicador de experiência da primeira tela recebe recuo superior de até 24 px para não tocar o selo circular — sem modificar dimensão ou arquivo da fotografia. O retrato de Sobre permanece recortado pelo próprio contêiner com `overflow:hidden`; seu elemento pode se estender até abaixo da borda para compensar a faixa transparente, mas o conteúdo visível termina na borda da seção. A seta central deve coincidir com o meio do viewport desktop.
+
+### Evidência objetiva do refinamento desktop (12/11/2026)
+
+Em 1512 × 691 px, [P3 #43197029431](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43197029431) registrou: seta centralizada em **X = 756 px**, lacunas entre as três colunas de Resultados de **24 / 24 px**, menor título em Formação com **29 px**, frase editorial com **24 px**, texto dos destaques com **16 px** e sobreposição entre selo e indicador de anos de **0 px²**. A fotografia de Sobre usa `overflow: hidden` no contêiner e deslocamento em `#sobre .about-portrait.has-custom-image img`; a caixa da imagem pode estender-se abaixo da seção sem extravasar visualmente.
+
+O desktop aplica os novos estilos a partir de **768 px**; o ajuste do indicador cobre alturas até **760 px**, e o fallback para crescimento/rolagem cobre alturas até **700 px**. O mobile (até 767 px) não recebeu novas regras nem edição dos seus dados nesta intervenção. A auditoria de navegador passou com **0 falhas** e **38 capturas** sem falhas (13 desktop, 25 mobile), mas **o job P3 completo ficou FAILURE** pelo LCP mobile (mediana 3.670,965 ms contra limite de 3.500 ms). Verificações geométricas não substituem inspeção subjetiva em navegador real. [Homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md).

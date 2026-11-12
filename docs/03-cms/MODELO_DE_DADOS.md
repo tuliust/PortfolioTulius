@@ -39,3 +39,17 @@ A tabela existente `public.design_tokens` contém uma linha publicada adicional:
 ## Estilos desktop dos ajustes de 12/11/2026
 
 Sem mudança de schema. A escala de Perfil e Formação usa `content_blocks.content_json.items[].desktop`; a frase editorial usa `items[0].hero.desktop.introSize`. Os objetos `mobile` e `hero.mobileEditorial` permanecem independentes. Centralização da seta, distâncias entre colunas de Resultados e posição da foto em Sobre são CSS/renderer, sem migração, nova tabela ou token global.
+
+### Mapeamento dos registros desktop efetivamente publicados (releitura de 12/11/2026)
+
+| Seção | `content_blocks.sort_order` | Campo em `content_json` | Valor |
+|---|---:|---|---|
+| `perfil` | 1 | `items[0].hero.desktop.introSize` | `24` |
+| `perfil` | 1 | `items[1..4].desktop.{titleSize,textSize,spacing}` | `17,16,2` por destaque |
+| `perfil` | 2 | `items[5..10].desktop.titleSize` | `23` por empresa |
+| `formacao` | 1 | `items[0..2].desktop.titleSize` | `30` por curso |
+| `formacao` | 2 | `items[0..1].desktop.titleSize` | `29` por instituição |
+
+São **quatro blocos publicados** alterados com configuração desktop, sem mudança de `items[].mobile`, `hero.mobile` ou `hero.mobileEditorial`. Itens fora desses índices, `resultados` e `sobre` não receberam novos valores no banco. A gravação inicial foi SQL restrito em `content_blocks.content_json`, com checagem de cardinalidade/ausência de overrides e atualização de `updated_at`, seguida de releitura; **não** foi uma gravação demonstrada pela interface do CMS. Para edições futuras, continuar usando a RPC/CAS existente.
+
+O renderer `PublicSite.tsx` e `src/index.css` aplicam `--item-desktop-title-size`, `--item-desktop-text-size` e `--hero-desktop-intro-size`. Resultados (`--results-column-gap`), seta e foto de Sobre são geometria do renderer/CSS, não colunas ou parâmetros extras do modelo.

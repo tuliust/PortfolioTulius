@@ -24,3 +24,16 @@
 Staging aprovado é Supabase CLI + Docker **local e sintético**, via [`config.toml`](../../supabase/config.toml) e `seed.local.synthetic.sql`. **Não executar `supabase/seed.sql`, `supabase link` ou `db push` como parte de testes locais.**
 
 [Segurança](SEGURANCA_E_ACESSOS.md) · [Backup](../05-operacao/BACKUP_E_RECUPERACAO.md).
+
+## Registro operacional de conteúdo desktop — 12/11/2026
+
+**Serviço de produção:** projeto `portfolio` (`zfnrhzplwpjpdljraypt`), esquema `public`. O refinamento visual desktop alterou **somente `content_blocks.content_json` e `updated_at` de quatro blocos publicados**, encontrados por `sections.slug` + `content_blocks.sort_order` + `status='published'`. A escrita direta SQL verificou, antes do UPDATE, as cardinalidades de `items` e a ausência de valores `desktop` concorrentes, exigindo exatamente quatro blocos; a leitura posterior confirmou os dados.
+
+| Bloco | Alteração JSONB confirmada |
+|---|---|
+| `perfil`/1 (5 itens) | `items[0].hero.desktop.introSize=24`; `items[1..4].desktop={titleSize:17,textSize:16,spacing:2}` |
+| `perfil`/2 (11 itens) | `items[5..10].desktop.titleSize=23` |
+| `formacao`/1 (3 itens) | `items[0..2].desktop.titleSize=30` |
+| `formacao`/2 (2 itens) | `items[0..1].desktop.titleSize=29` |
+
+A releitura de 12/11 confirmou os quatro blocos e nenhuma configuração `items[].mobile` adicionada; `resultados` e `sobre` permaneceram sem novas configurações desktop persistidas. **Não houve migration, DDL, RPC, permissão/RLS, Storage ou Auth alterados.** A geometria das seções restantes é tratada pelo código desktop. Essa intervenção não autoriza repetir SQL direto em futuras edições: preferir **CMS → `save_section_block_atomic`**, guardas administrativas e controle de concorrência. O P5 de homologação foi exclusivamente **read-only**; não declarar escrita testada via interface. [Modelo de dados](../03-cms/MODELO_DE_DADOS.md) · [CMS](../03-cms/GUIA_ADMINISTRATIVO.md).
