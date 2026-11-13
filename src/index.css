@@ -2965,3 +2965,27 @@
 @media (min-width: 768px) and (max-height: 760px) {
   .years { top: max(0px, calc(var(--hero-desktop-years-y, 10%) - 1.5rem)); }
 }
+
+/* Desktop-only composition fine-tuning approved on 13 Nov 2026.
+ * Preserve the CMS sizes, mobile panels and existing short-height safeguards. */
+@media (min-width: 1101px) {
+  /* Give the years caption breathing room above the 360-degree seal. */
+  .profile-portrait .badge-360 {
+    top: calc(var(--hero-desktop-badge-y, 74%) - clamp(1.6rem, 4.5dvh, 2.5rem) + clamp(.6rem, 1.4dvh, 1rem));
+  }
+  /* The introductory line and all four highlights move together. */
+  .profile-sidebar-content {
+    padding-top: calc(clamp(.75rem, 1.65dvh, 1.25rem) + clamp(.65rem, 1.5dvh, 1rem));
+  }
+  /* The published custom image has a transparent lower inset. Keep clipping at the section edge. */
+  #sobre .about-portrait.has-custom-image img {
+    top: clamp(3.75rem, 9.8dvh, 6rem);
+  }
+  #sobre .about-heading .section-intro {
+    font-size: clamp(.95rem, 1vw, 1.0625rem);
+  }
+  /* Align the visible left heading with the center indicators; both gutters retain the same token. */
+  .results-editorial {
+    grid-template-columns: minmax(19rem, 1.1fr) minmax(0, 2.8fr);
+  }
+}
