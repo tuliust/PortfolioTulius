@@ -100,3 +100,9 @@ Somente a partir de `768px`, no Perfil desktop (`src/index.css`), foram realizad
 3. `.site-header.header-profile .brand-button` recebe `font-size: clamp(1.125rem, 1.08vw, 1.25rem)` e `line-height: 1`. O aumento da assinatura `TULIUS TSANGAROPULOS` não muda `--header`, `.site-header` nem o tamanho da área clicável, e vale somente enquanto a primeira seção estiver ativa no desktop.
 
 A fotografia, os textos, o selo, os tamanhos editáveis e demais componentes do CMS, o mobile (até 767 px) e os estilos das outras seções não foram modificados. O ajuste é de CSS e não precisa de atualização SQL, migração ou armazenamento de mídia. Validar após publicação o encaixe do filete em larguras desktop (inclusive 768–1100 px) e o centro visual da legenda; CI, Vercel READY e verificação em navegador são evidências distintas.
+
+## Estado vigente e aceite visual — Perfil desktop em 13/11/2026
+
+A nova revisão mantém a mesma composição, mas reduz a **frase editorial em itálico para 18 px** e o **filete laranja abaixo da foto para 2 px**. O primeiro ajuste persiste no CMS (`content_blocks.content_json.items[0].hero.desktop.introSize = 18`) e no CSS `.profile-intro` com piso de `1.125rem`; o segundo altera apenas `height: 2px` no pseudo-elemento `#perfil .profile-portrait::after`. O breakpoint permanece `@media (min-width: 768px)`. A largura da linha, as demais propriedades da foto, o layout mobile e a marca no header não foram alterados.
+
+**Aceite visual:** o proprietário considera a homologação visual desta revisão concluída. É aprovação expressa do proprietário, não execução independente de teste browser/pixel-a-pixel. Conferir CI, performance e publicação do SHA separadamente. As descrições anteriores de 20 px e 3 px são histórico das revisões precedentes, não a configuração vigente.

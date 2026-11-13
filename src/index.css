@@ -2927,7 +2927,7 @@
   .profile-desktop { position: relative; }
   .profile-intro {
     max-width: min(100%, 25rem);
-    font-size: clamp(1.15rem, var(--hero-desktop-intro-size, 1.45rem), 1.65rem);
+    font-size: clamp(1.125rem, var(--hero-desktop-intro-size, 1.45rem), 1.65rem);
   }
   .profile-highlights { align-content: center; gap: clamp(.15rem, .48dvh, .4rem); }
   .profile-highlights .content-item { padding-block: calc(var(--item-desktop-spacing, .35rem) * .6); }
@@ -2997,14 +2997,14 @@
     text-align: center;
   }
 
-  /* 3px orange rule touching the portrait's lower edge and extending beyond the image. */
+  /* 2px orange rule touching the portrait's lower edge and extending beyond the image. */
   #perfil .profile-portrait::after {
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: min(100%, calc(var(--hero-desktop-image-width, 52%) + 1.5rem));
-    height: 3px;
+    height: 2px;
     background: var(--orange);
     pointer-events: none;
     z-index: 2;

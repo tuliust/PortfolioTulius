@@ -28,7 +28,7 @@ A escala abaixo está **persistida** nos blocos de conteúdo existentes (não em
 
 | Elemento | Valor publicado | Referência |
 |---|---:|---|
-| Frase “Foco em gerar conexões autênticas e projetos inovadores.” | 20 px (vigente em 13/11/2026) | `perfil` A, `items[0].hero.desktop.introSize` |
+| Frase “Foco em gerar conexões autênticas e projetos inovadores.” | **18 px** (vigente após novo ajuste de 13/11/2026) | `perfil` A, `items[0].hero.desktop.introSize` |
 | Quatro destaques laterais: título / texto / espaçamento | 13 px / 15 px / 10 px (vigentes em 13/11/2026) | `perfil` A, `items[1..4].desktop` |
 | Títulos das seis empresas (Invest RS, Prefeitura etc.) | 23 px | `perfil` B, `items[5..10].desktop.titleSize` |
 | Três títulos de cursos | 30 px | `formacao` bloco 1, `items[0..2].desktop.titleSize` |
@@ -55,3 +55,9 @@ Exclusivamente no desktop amplo (largura **a partir de 1101 px**), o parágrafo 
 Na primeira seção (`#perfil`), a assinatura do cabeçalho `TULIUS TSANGAROPULOS` recebeu `font-size: clamp(1.125rem, 1.08vw, 1.25rem)` e `line-height: 1`, aplicada apenas em `@media (min-width: 768px)` à `.site-header.header-profile .brand-button`. Foi preservada a família condensada original, o logo bipartido, as cores, o foco do botão e a altura fixa do cabeçalho, controlada por `--header`. Não há alteração na assinatura das outras seções nem no mobile.
 
 No bloco de retrato da mesma seção, uma linha horizontal usa o laranja existente `var(--orange)`, com altura de **3 px**, ancoragem na borda inferior (`bottom: 0`) e largura igual à foto publicada `var(--hero-desktop-image-width)` acrescida de **1,5 rem**, limitada a 100% da coluna. É um pseudo-elemento CSS; não cria mídia ou token novo. A legenda de “+15 ANOS” é centralizada no próprio contêiner de experiência via `text-align: center` sem editar o conteúdo ou os campos publicados no CMS. Detalhes de isolamento e revisão estão em [Responsividade](RESPONSIVIDADE_E_ACESSIBILIDADE.md).
+
+## Revisão da frase e do filete aprovada pelo proprietário — 13/11/2026
+
+A frase itálica “Foco em gerar conexões autênticas e projetos inovadores.” foi reduzida de **20 px para 18 px** no campo CMS de Perfil/A `items[0].hero.desktop.introSize`. Para efetivar 18 px, o limite inferior do `clamp` em `src/index.css` mudou de `1.15rem` (18,4 px, na base padrão de 16 px) para `1.125rem` (18 px), exclusivamente no desktop. Permanecem iguais o conteúdo, a família tipográfica, o peso, a cor, o alinhamento e os campos mobile.
+
+O filete horizontal laranja sob a foto da abertura passou de **3 px para 2 px**, preservando posição `bottom: 0`, largura dependente de `--hero-desktop-image-width`, cor `var(--orange)` e a fotografia aprovada. A menção a 3 px em registros anteriores corresponde ao histórico. **Homologação visual declarada concluída pelo proprietário** para esses ajustes; não equivale a teste de navegador executado pelo agente.
