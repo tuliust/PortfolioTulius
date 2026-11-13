@@ -48,14 +48,25 @@ Em **Formação**, o editor genérico já oferece **Desktop → Título (px)**; 
 
 ### Valores publicados e roteiro de edição desktop (12/11/2026)
 
-1. **Editor do site → Perfil → Esquerda → Apresentação:** `Tamanho da frase no desktop (px)` está em **22** (desde 13/11/2026). Esse controle atualiza `items[0].hero.desktop.introSize` do bloco A. A frase e o retrato permanecem no conteúdo original.
-2. **Perfil → Esquerda → Itens de Destaque:** abrir cada uma das quatro entradas; o grupo **Tipografia e espaçamento · desktop** contém **Título desktop (16 px)**, **Descrição desktop (15 px)** e **Espaçamento desktop (2 px)**, armazenados em `items[1..4].desktop` no mesmo bloco A.
+1. **Editor do site → Perfil → Esquerda → Apresentação:** `Tamanho da frase no desktop (px)` está em **20** (valor vigente desde o ajuste posterior de 13/11/2026). Esse controle atualiza `items[0].hero.desktop.introSize` do bloco A. A frase e o retrato permanecem no conteúdo original.
+2. **Perfil → Esquerda → Itens de Destaque:** abrir cada uma das quatro entradas; o grupo **Tipografia e espaçamento · desktop** contém **Título desktop (13 px)**, **Descrição desktop (15 px)** e **Espaçamento desktop (10 px)**, armazenados em `items[1..4].desktop` no mesmo bloco A.
 3. **Perfil → Direita → Área de Destaques:** abrir cada empresa (Invest RS, Prefeitura de São Paulo, Vale, Grupo InPress, TV Globo/SporTV, CDI Comunicação). O campo **Tamanho do título da empresa no desktop (px)** vale **23** e grava `items[5..10].desktop.titleSize` do bloco B.
 4. **Editor do site → Formação:** o editor genérico já contém **Desktop → Título (px)**. Os três cursos do bloco 1 estão em **30 px**; Swan Training Institute e Instituto Rojas, no bloco 2, em **29 px**.
 5. **Resultados** (gaps iguais), **Perfil** (seta centralizada e não sobreposição do selo) e **Sobre/Olá!** (foto alinhada ao limite inferior) são ajustes de CSS/renderer desktop, **sem novos campos** no admin ou atualização das métricas/fotografia no banco.
 
 **Persistência e cuidado operacional:** os valores iniciais foram configurados por **SQL UPDATE restrito** nos quatro blocos publicados e relidos no Supabase; o P5 [#43197029455](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43197029455) validou a **exibição read-only** de 21/21 etapas, **zero escritas**, incluindo controles desktop da abertura. Não houve teste autenticado `editar → salvar` em produção; alterações editoriais futuras usam o botão Salvar e a RPC/CAS existentes. Não tocar os controles **Mobile**, a identidade global nem registros de outras seções para reproduzir o layout.
 
-## Atualização editorial dos tamanhos desktop do Perfil — 13/11/2026
+## Histórico: primeira redução dos tamanhos desktop do Perfil — 13/11/2026
 
 No Supabase de produção, `content_blocks.id = a2f4770b-7964-4f3c-b816-c778b66ac15c` (Perfil, bloco A publicado), foram reduzidos exclusivamente `items[0].hero.desktop.introSize` de 24 para **22 px**, `items[1..4].desktop.titleSize` de 17 para **16 px** e `items[1..4].desktop.textSize` de 16 para **15 px**. Todos os quatro `desktop.spacing` permaneceram em 2 px. A operação foi condicionada à versão anterior do registro e os valores novos foram confirmados por `UPDATE ... RETURNING` no banco em 13/11/2026. Os valores pertencem ao CMS, não a constantes globais do CSS. Nenhum controle mobile, conteúdo textual, bloco B, outra seção, tabela ou migration foi alterado. A aplicação pública lê os valores diretamente do CMS; não foi necessário publicar novo bundle para refletir a mudança. A revisão ocorreu por leitura de banco; não se trata de teste visual end-to-end em navegador.
+
+## Valores vigentes do Perfil desktop — segunda revisão de 13/11/2026
+
+A pedido do proprietário, a alteração feita em produção no bloco A de Perfil (`content_blocks.id = a2f4770b-7964-4f3c-b816-c778b66ac15c`) ajustou somente propriedades desktop do JSONB do CMS:
+
+- `content_json.items[0].hero.desktop.introSize`: **22 → 20 px** (frase editorial itálica).
+- `content_json.items[1..4].desktop.titleSize`: **16 → 13 px** (quatro títulos laranja).
+- `content_json.items[1..4].desktop.textSize`: **15 px**, sem alteração (descrições brancas).
+- `content_json.items[1..4].desktop.spacing`: **2 → 10 px** (maior distância visual entre os destaques).
+
+O controle de espaçamento do CMS alimenta a variável `--item-desktop-spacing`, aplicada por `src/index.css` ao `padding-block` dos itens; a solicitação não introduziu uma propriedade `margin-bottom` separada. A operação utilizou correspondência de ID, status, `updated_at`, estrutura e valores anteriores; o banco retornou os quatro itens com os novos tamanhos, textos em 15 px e spacing em 10 px. Sem alteração do bloco B, dos campos mobile, de migrations, de RLS ou de componentes React; o conteúdo publicado é consultado pelo renderer, sem exigir nova compilação do site para a mudança editorial. As demais seções seguem com seus valores anteriores. Inspeção de layout pixel a pixel em navegador não foi realizada nesta intervenção.
