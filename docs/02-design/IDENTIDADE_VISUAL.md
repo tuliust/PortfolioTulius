@@ -28,10 +28,14 @@ A escala abaixo está **persistida** nos blocos de conteúdo existentes (não em
 
 | Elemento | Valor publicado | Referência |
 |---|---:|---|
-| Frase “Foco em gerar conexões autênticas e projetos inovadores.” | 24 px | `perfil` A, `items[0].hero.desktop.introSize` |
-| Quatro destaques laterais: título / texto / espaçamento | 17 px / 16 px / 2 px | `perfil` A, `items[1..4].desktop` |
+| Frase “Foco em gerar conexões autênticas e projetos inovadores.” | 22 px (reduzido em 13/11/2026) | `perfil` A, `items[0].hero.desktop.introSize` |
+| Quatro destaques laterais: título / texto / espaçamento | 16 px / 15 px / 2 px (reduzidos em 13/11/2026) | `perfil` A, `items[1..4].desktop` |
 | Títulos das seis empresas (Invest RS, Prefeitura etc.) | 23 px | `perfil` B, `items[5..10].desktop.titleSize` |
 | Três títulos de cursos | 30 px | `formacao` bloco 1, `items[0..2].desktop.titleSize` |
 | Duas instituições de idiomas | 29 px | `formacao` bloco 2, `items[0..1].desktop.titleSize` |
 
 Cores, famílias tipográficas, conteúdo, logo e fotos originais não foram substituídos. O CMS pode modificar esses tamanhos desktop sem atualizar o campo mobile. As regras CSS devem permanecer subordinadas aos valores desktop explícitos. A foto de Sobre usa deslocamento vertical **dentro do contêiner com máscara**; não há crop salvo no Storage. Referência visual e evidências em [Responsividade](RESPONSIVIDADE_E_ACESSIBILIDADE.md).
+
+## Redução localizada da tipografia do Perfil desktop — 13/11/2026
+
+No bloco A publicado de `perfil` (`content_blocks.id = a2f4770b-7964-4f3c-b816-c778b66ac15c`), os valores do CMS foram alterados em produção, preservando os campos mobile e o restante do JSONB: `items[0].hero.desktop.introSize: 24 → 22`; `items[1..4].desktop.titleSize: 17 → 16`; `items[1..4].desktop.textSize: 16 → 15`. `items[1..4].desktop.spacing` continua 2 px. Aplicação por atualização condicionada do registro publicado e releitura dos valores via retorno do banco em 13/11/2026; nenhuma mudança no CSS, nas famílias tipográficas, nas cores, na coluna direita ou em outras seções. A renderização lê essas propriedades desktop pelo `ProfileDesktop` e por `itemStyle` em `src/components/public/PublicSite.tsx`; os seletores desktop existentes em `src/index.css` usam as variáveis do CMS. Esta alteração foi editorial no Supabase, sem novo build do frontend.
