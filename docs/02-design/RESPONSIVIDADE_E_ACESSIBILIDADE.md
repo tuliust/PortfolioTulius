@@ -90,3 +90,13 @@ Na faixa **`@media (min-width: 1101px)`**, o CSS de `src/index.css` preserva os 
 - **Resultados:** `.results-editorial` passa a `minmax(19rem, 1.1fr) minmax(0, 2.8fr)`, diminuindo a largura reservada ao título esquerdo. Os espaços entre esquerda/indicadores e indicadores/seletor permanecem exatamente iguais em nível de grade, pois ambas as lacunas usam `--results-column-gap` no contêiner externo e em `.desktop-content`.
 
 **Escopo e verificação:** mudança restrita a CSS e documentação, sem alteração em React, Supabase, fotos, dados editoriais, navegação, Vercel ou configurações mobile. Ajuste preparado sobre `main` no SHA `e245284cb524cc4afbc4eb1d35c6905fb4646b0a`; revisão estática dos seletores e do escopo desktop antes do commit. A eficácia óptica do encaixe da foto, a ausência de overflow em alturas baixas e a igualdade visual das lacunas dependem de conferência no navegador após o deployment do novo SHA; deploy READY isolado não substitui CI/QA nem a meta histórica de LCP mobile.
+
+## Perfil — legenda, filete fotográfico e marca do cabeçalho desktop (13/11/2026)
+
+Somente a partir de `768px`, no Perfil desktop (`src/index.css`), foram realizados três ajustes localizados:
+
+1. `#perfil .profile-portrait .years span { text-align: center; }` centraliza o texto “de experiência em Comunicação, Marketing e Conteúdo.” na largura do mesmo bloco posicionado que contém o indicador “+15 ANOS”, sem mudar sua posição, texto ou tamanho.
+2. `#perfil .profile-portrait::after` desenha um filete de **3 px**, `bottom: 0`, `left: 0`, com `width: min(100%, calc(var(--hero-desktop-image-width, 52%) + 1.5rem))` e fundo `var(--orange)`. Assim começa na borda esquerda e ultrapassa ligeiramente a largura visível da foto, respeitando sua largura desktop editável, sem novo arquivo nem transbordamento da coluna. `pointer-events: none` evita interceptar controles.
+3. `.site-header.header-profile .brand-button` recebe `font-size: clamp(1.125rem, 1.08vw, 1.25rem)` e `line-height: 1`. O aumento da assinatura `TULIUS TSANGAROPULOS` não muda `--header`, `.site-header` nem o tamanho da área clicável, e vale somente enquanto a primeira seção estiver ativa no desktop.
+
+A fotografia, os textos, o selo, os tamanhos editáveis e demais componentes do CMS, o mobile (até 767 px) e os estilos das outras seções não foram modificados. O ajuste é de CSS e não precisa de atualização SQL, migração ou armazenamento de mídia. Validar após publicação o encaixe do filete em larguras desktop (inclusive 768–1100 px) e o centro visual da legenda; CI, Vercel READY e verificação em navegador são evidências distintas.

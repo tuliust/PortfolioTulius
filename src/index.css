@@ -2989,3 +2989,30 @@
     grid-template-columns: minmax(19rem, 1.1fr) minmax(0, 2.8fr);
   }
 }
+
+/* 13 Nov 2026: profile-only desktop refinements; header height stays unchanged. */
+@media (min-width: 768px) {
+  /* Center the caption within the same CMS-positioned block as +15 ANOS. */
+  #perfil .profile-portrait .years span {
+    text-align: center;
+  }
+
+  /* 3px orange rule touching the portrait's lower edge and extending beyond the image. */
+  #perfil .profile-portrait::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: min(100%, calc(var(--hero-desktop-image-width, 52%) + 1.5rem));
+    height: 3px;
+    background: var(--orange);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Enlarge the header signature without changing --header, its padding or layout. */
+  .site-header.header-profile .brand-button {
+    font-size: clamp(1.125rem, 1.08vw, 1.25rem);
+    line-height: 1;
+  }
+}
