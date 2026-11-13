@@ -37,3 +37,13 @@ Staging aprovado é Supabase CLI + Docker **local e sintético**, via [`config.t
 | `formacao`/2 (2 itens) | `items[0..1].desktop.titleSize=29` |
 
 A releitura de 12/11 confirmou os quatro blocos e nenhuma configuração `items[].mobile` adicionada; `resultados` e `sobre` permaneceram sem novas configurações desktop persistidas. **Não houve migration, DDL, RPC, permissão/RLS, Storage ou Auth alterados.** A geometria das seções restantes é tratada pelo código desktop. Essa intervenção não autoriza repetir SQL direto em futuras edições: preferir **CMS → `save_section_block_atomic`**, guardas administrativas e controle de concorrência. O P5 de homologação foi exclusivamente **read-only**; não declarar escrita testada via interface. [Modelo de dados](../03-cms/MODELO_DE_DADOS.md) · [CMS](../03-cms/GUIA_ADMINISTRATIVO.md).
+
+## Auditoria read-only de conectividade — 13/11/2026
+
+**Ambiente consultado:** produção `portfolio` (ref `zfnrhzplwpjpdljraypt`, organização `tuliustsangaropulos` / `gupklckstcjwwitbnrdo`). O conector retornou `ACTIVE_HEALTHY` e o SQL somente de leitura `SELECT 1` respondeu com sucesso; PostgreSQL reportado pela conexão: **17.11**.
+
+- A listagem atual do esquema `public` apresentou **22 tabelas**, todas com `rls_enabled=true`. Isso confirma a presença de RLS, **não** equivale a auditoria completa das políticas ou permissões efetivas.
+- Consultas `COUNT(*)` read-only retornaram **1 página**, **1 registro** em `site_settings` e **28 blocos** em `content_blocks`, apenas como evidência de leitura e inventário pontual; nenhum conteúdo de registros foi publicado.
+- `get_advisors(type=health)` retornou **0 avisos** (`lints=[]`). As contagens de policies/objetos Storage e a condição da Edge Function acima permanecem evidências históricas de 11/11 e não foram revalidadas neste teste.
+- A organização continua denominada `tuliustsangaropulos`. A identidade da sessão Supabase e o papel de Owner de `tuliust@gmail.com` não puderam ser verificados por estes endpoints; **não declarar transferência concluída**.
+- Nenhuma escrita, migration, RLS, Auth, Storage ou configuração foi alterada. Não executar teste de gravação no banco de produção para verificar conector.

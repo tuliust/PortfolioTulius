@@ -132,3 +132,26 @@ O smoke de `scripts/p3-browser-smoke.mjs` avalia em 1512×691: ausência de inte
 O registro da intervenção desktop foi incluído na `main` por [`858a2f09`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/858a2f09ec2529a2ed04f68c5c88dfa976c14ea9), [`a6e7ff8c`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/a6e7ff8c9142bcbd9f349d8ba5fa40a043a977c7), [`ebda0aab`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/ebda0aabda776a8513cad963df184199ed0a6e53) e documentação de homologação [`0926e6af`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/0926e6afe6068db5b8addacfe805f413bf534a9b). Os workflows disparados **apenas pelo commit documental** `0926e6af` concluíram [Validate #43198028076](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43198028076) e [Export Docs #43198028034](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43198028034) em **SUCCESS**. P3 e P5 não foram repetidos nesse SHA, e a aprovação funcional deriva de `ebda0aab` (P5 **SUCCESS**; P3 navegador **PASS**, LCP desktop **PASS**, LCP mobile **FAIL**).
 
 A validação P5 foi **somente leitura**: os 21 testes de autenticação, agrupamentos, novos `NumericField` desktop e proteção de edição passaram, com `cmsWrites=0`. Os valores iniciais do CMS foram persistidos via SQL restrito e relidos no Supabase, não pelo formulário. A captura P3 confirmou geometria (seta X=756 em 1512 px, gaps de Resultados 24/24 px, sobreposição selo/anos = 0, menor título de Formação 29 px, 38 capturas sem falhas). A mediana LCP mobile **3.670,965 ms** viola a meta **3.500 ms**; o resultado continua classificado como **FAILURE**, sem correção silenciosa ou aceite novo. Verificar aparência subjetiva em desktop real se houver nova demanda visual.
+
+## Auditoria read-only dos conectores — 13/11/2026
+
+**Referência de código anterior ao registro:** `main` em `9834fc3a05cf03e26336cea42f08498841b3b0f1`. Os testes abaixo foram **consultas via conectores**, não reexecução de `pnpm check`, Lighthouse, P3 ou P5 nem publicação manual.
+
+| Verificação realizada | Evidência / resultado |
+|---|---|
+| GitHub: conta, repositório e permissões | `tuliust`, `tuliust/PortfolioTulius`, branch `main`, ID `1431748857`, permissão `admin` — **PASS** |
+| GitHub: guias da `main` | `AGENTS.md`, `docs/README.md`, protocolo e guias temáticos legíveis — **PASS** |
+| GitHub ↔ Vercel: status do SHA `9834fc3` | Contexto `Vercel` com status **success** — **PASS histórico** |
+| Vercel: autenticação/projeto | `tuliust@gmail.com`, equipe `tuliust`, projeto original `prj_FVB5Cnk3428OSrWhEyskoqhWOCVW` — **PASS** |
+| Vercel: último deployment observado antes do commit documental | Produção `READY`, `dpl_24KMLj6Q395ANdVFVaK8LoiuhQiP`, commit `9834fc3` — **PASS de estado** |
+| Vercel: domínios | `tulius.work` e `www.tulius.work`, ambos `verified=true` — **PASS** |
+| Vercel: variáveis | Dois nomes necessários disponíveis como `encrypted` em Development, Preview e Production; valores não lidos — **PASS de presença** |
+| Vercel: repositório na interface/API | Captura de Git Settings aponta `tuliust/PortfolioTulius`; API ainda aponta proprietário anterior e `search_repo` retorna `installation_not_found` — **DIVERGÊNCIA / acompanhamento**, sem declarar integração quebrada |
+| Supabase: API e SQL | Projeto `portfolio` `ACTIVE_HEALTHY`; `SELECT 1` retorna 1; PostgreSQL 17.11 — **PASS** |
+| Supabase: metadados read-only | 22 tabelas públicas com RLS habilitada; 1 página, 1 registro de configuração, 28 blocos; health advisors `lints=[]` — **PASS de leitura**, não auditoria exaustiva |
+| Supabase: titularidade da conta nova | Organização ainda `tuliustsangaropulos`; Owner da conta nova **NÃO VERIFICADO** |
+| Publicação automática de push novo pós-transferência | **NÃO EXECUTADA / NÃO COMPROVADA**; não se criou commit artificial nem deploy manual para o teste |
+
+**Resultados históricos reconsultados, vinculados ao SHA funcional `ebda0aab`:** [Validate #43197029438](https://github.com/tuliust/PortfolioTulius/actions/runs/43197029438) **SUCCESS**; [P5 Admin Read-Only #43197029455](https://github.com/tuliust/PortfolioTulius/actions/runs/43197029455) **SUCCESS**; [P3 Lighthouse #43197029431](https://github.com/tuliust/PortfolioTulius/actions/runs/43197029431) **FAILURE**, pelo LCP mobile mediano de **3.670,965 ms** versus teto **3.500 ms**. A consulta de jobs apenas confirmou esses estados; não reclassificar nem atribuir ao SHA documental `9834fc3` ou ao futuro commit deste registro.
+
+**Escopo:** nenhuma edição de produção, dados, schema, credenciais, arquivos de código ou configuração Vercel/Supabase durante a auditoria. O registro documental por si só pode disparar CI/deployment via automação da `main`; conferir resultados do novo SHA separadamente. Pendências anteriores em standby não foram reabertas.
