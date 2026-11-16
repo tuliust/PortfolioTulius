@@ -231,6 +231,16 @@ function ExperienceContent({
   }
   const slides = section.experienceMedia?.slides ?? []
   const projectSlides = matchExperienceSlides(slides, items)
+  // Text cards are independent from the gallery: five editorial projects may
+  // coexist with three or four already-approved illustrative slides.
+  const projectItems = items.filter((item) => !item.value)
+  const [activeProject, setActiveProject] = useState(0)
+  useEffect(() => {
+    const linkedItem = projectSlides.find((slide) => slide.slideIndex === activeSlide)?.item
+    if (!linkedItem) return
+    const index = projectItems.indexOf(linkedItem)
+    if (index >= 0) setActiveProject(index)
+  }, [activeSlide, section.slug])
   const extraMetrics = items.filter(
     (item) => Boolean(item.value) && !projectSlides.some(({ item: selected }) => selected === item),
   )
@@ -271,22 +281,26 @@ function ExperienceContent({
       </div>
       <div id={`${section.slug}-experience-content`} className="experience-view-body">
         {showingTrajectory ? (
-          <ExperienceDetails description={detail!} slug={section.slug} />
+          <ExperienceDetails description={detail!} slug={section.slug} complete />
         ) : (
           <>
-            {projectSlides.map(({ title, item, slideIndex }) => (
+            {projectItems.map((item, projectIndex) => (
               <article
                 className={
-                  slideIndex === activeSlide ? "experience-project is-active" : "experience-project"
+                  projectIndex === activeProject ? "experience-project is-active" : "experience-project"
                 }
-                key={`${title}-${slideIndex}`}
+                key={`${item.title}-${projectIndex}`}
               >
                 <button
                   type="button"
                   className="experience-project-choice"
-                  aria-label={`Exibir imagem de ${title}`}
-                  aria-current={slideIndex === activeSlide ? "true" : undefined}
-                  onClick={() => onSlideChange(slideIndex)}
+                  aria-label={`Selecionar projeto ${item.title}`}
+                  aria-current={projectIndex === activeProject ? "true" : undefined}
+                  onClick={() => {
+                    setActiveProject(projectIndex)
+                    const linkedSlide = projectSlides.find((slide) => slide.item === item)
+                    if (linkedSlide) onSlideChange(linkedSlide.slideIndex)
+                  }}
                 >
                   {item?.meta && (
                     <span
@@ -309,7 +323,7 @@ function ExperienceContent({
                     role="heading"
                     aria-level={3}
                   >
-                    {title}
+                    {item.title}
                   </span>
                   {item?.value && (
                     <strong

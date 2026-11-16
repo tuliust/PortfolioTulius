@@ -140,3 +140,8 @@ O slug `resultados` recebe `.results-center.is-compact` **somente** ao seleciona
 - **Regressão:** [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) (`9915964`) percorreu os cinco temas com quatro cards e voltou à visão geral em 320, 390, 430 e 1440 px, sem overflow e com foco acessível. **SUCCESS**; isto não substitui inspeção humana em monitor e aparelho físico. LCP mobile tem variabilidade entre SHAs (ver [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md)); manter limite ≤3.500 ms.
 
 Os campos editoriais anteriores permanecem no CMS, embora ocultos no modo compacto. Conferir [modelo](../03-cms/MODELO_DE_DADOS.md) e [guia administrativo](../03-cms/GUIA_ADMINISTRATIVO.md).
+
+
+## Densidade editorial de Experiências — 16/11/2026
+
+A aba Projetos e Realizações passa a exibir **cinco resumos por empresa** em desktop e mobile, independentemente dos três/quatro slides aprovados. Cada resumo tem `title` e `text`; a apresentação aplica limite visual de duas linhas ao parágrafo do projeto, mantendo texto completo no DOM e no CMS. Selecionar item sem slide não deve deslocar a galeria para imagem não correspondente. Preservar foco e teclado dos botões e a navegação de galeria. Trajetória exibe abertura seguida por bullets com rótulos em negrito, com leitura integral e rolagem natural. Validar alturas pequenas e mobile sem overflow ou corte irreversível.

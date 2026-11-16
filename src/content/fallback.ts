@@ -1,9 +1,10 @@
 import type { PortfolioSection } from "../types/content"
 import { resultThemeContent } from "./resultThemes"
+import { experienceProjectsFallback } from "./experienceEditorial"
 
 export { defaultTokens } from "./defaultTokens"
 
-export const sections: PortfolioSection[] = [
+const seededSections: PortfolioSection[] = [
   {
     id: "seed-perfil",
     slug: "perfil",
@@ -324,18 +325,18 @@ export const sections: PortfolioSection[] = [
         showInOverview: false,
       },
       {
-        title: "Participações ao Vivo",
-        value: "100+ ao vivo",
-        text: "Entradas na programação da TV Globo e do SporTV.",
+        title: "Rede de imprensa e opinião",
+        value: "400+",
+        text: "Jornalistas, articulistas e formadores de opinião regionais e nacionais em mailing pessoal atualizado.",
         metricIcon: "newspaper",
         relatedThemeKeys: ["imprensa"],
         showInOverview: true,
         overviewOrder: 3,
       },
       {
-        title: "Cobertura Esportiva",
-        value: "200+",
-        text: "Jogos cobertos em mais de 20 cidades brasileiras.",
+        title: "Relacionamento com influenciadores",
+        value: "32 influenciadores",
+        text: "Pesquisa, estratégia, briefing, cocriação e mensuração de resultados na CDI, InPress e Vale.",
         metricIcon: "chart",
         relatedThemeKeys: ["imprensa"],
         showInOverview: false,
@@ -995,3 +996,17 @@ export const sections: PortfolioSection[] = [
     ],
   },
 ]
+
+/** Keep legacy seed objects intact; project cards use the editorial revision mirror. */
+export const sections: PortfolioSection[] = seededSections.map((section) => {
+  const projects = experienceProjectsFallback[section.slug]
+  if (!projects) return section
+  const competency = [...section.panelA, ...section.panelB].find(
+    (item) => item.title.toLowerCase() === "competências aplicadas",
+  )
+  return {
+    ...section,
+    panelA: [...(competency ? [competency] : []), ...projects.slice(0, 3)],
+    panelB: projects.slice(3),
+  }
+})

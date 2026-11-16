@@ -96,3 +96,10 @@ Todos os campos seguem o salvamento CAS/RPC `save_section_block_atomic` do edito
 ## Revisão do campo +15 ANOS — 16/11/2026
 
 No **Perfil → Coluna esquerda → Apresentação**, o campo existente **“Tamanho de +15 ANOS no desktop (px)”** agora tem valor publicado **51 px** (anteriormente 55 px), armazenado em `content_blocks.content_json.items[0].hero.desktop.yearsSize`. Não foi criado campo novo. As alterações geométricas do selo são CSS desktop e continuam respeitando o valor editável `hero.desktop.badgeSize` quando fornecido. O conteúdo editorial, `hero.mobile`, `hero.mobileEditorial` e a edição mobile não mudam. Edite os tamanhos do título pelo CMS normalmente; a modificação SQL desta entrega foi protegida por checagem da versão do bloco, sem testar gravação pela interface.
+
+
+## Experiências — cinco projetos e Trajetória padronizada (16/11/2026)
+
+Nas seis seções de experiência, editar **cinco itens visíveis** com `title` e `text` (resumo de até duas linhas na apresentação). A quantidade de slides em `experienceMedia.slides` pode continuar menor: texto não depende de imagem e novas imagens não são necessárias. Os itens históricos com `isHidden=true` não devem ser eliminados por conveniência. A interface mantém os controles de edição no bloco da seção, com salvamento normal via `save_section_block_atomic` e releitura; não replicar Trajetória nesse JSONB.
+
+A aba **Trajetória** lê `career_experiences.description`: um parágrafo introdutório seguido por linhas `• Tema: explicação`. O renderer destaca o título até os dois-pontos e exibe a descrição integral tanto no desktop quanto no mobile. Formatação apenas visual em duas linhas nos resumos dos projetos; não truncar os valores salvos no CMS. Estados confirmados: Invest RS/Guia e Plataforma realizados; a estratégia CRM foi entregue como estratégia (sem implicar integrações não documentadas); Prefeitura/SUBPI entregue, com dashboards e relatórios. `status=published` não equivale a estado de execução.

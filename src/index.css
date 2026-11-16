@@ -3213,3 +3213,15 @@
   outline: 2px solid var(--orange-dark);
   outline-offset: 3px;
 }
+
+/* Experiências: cinco resumos independentes da quantidade de slides ilustrativos.
+ * Texto integral permanece no CMS e acessível; line-clamp é apenas apresentação visual.
+ */
+.experience-project-choice > p,
+.experience-mobile-project-detail > p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}

@@ -68,3 +68,12 @@ A seção `resultados` conserva os mesmos dois `content_blocks` publicados, sem 
 No bloco B, os cinco temas existentes mantêm `themeKey`, `themeAxis`, `themeTitle`, `themeSubtitle` e os campos editoriais originais. A propriedade opcional `themePresentation: "metrics" | "editorial"` controla a grade compacta sem excluir os textos antigos. `src/lib/result-metrics.ts` centraliza a seleção dos quatro cards gerais e os quatro cartões de cada tema. A edição permanece em `src/components/admin/AdminModules.tsx`, o renderer em `src/components/public/PublicSite.tsx`, e `src/content/fallback.ts`/`src/content/resultThemes.ts` reproduzem o conteúdo para indisponibilidade do Supabase.
 
 **Estado publicado relido em 16/11/2026:** 20 itens no A, quatro por cada `themeKey` (`corporativa`, `projetos`, `eventos`, `marketing`, `imprensa`) e quatro `showInOverview=true`, ordenados independentemente como R$ 12 milhões, +225%, 100+ ao vivo, 25 eventos. Os cinco itens do B têm `themePresentation="metrics"`. A atualização inicial foi feita por SQL JSONB transacional com guardas de versão, não por migração nem por salvamento via UI; os blocos permanecem independentes no CMS. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
+## Contrato editorial de Experiências — 16/11/2026
+
+`content_blocks.content_json.items` nas seis seções mantém competências e cinco itens com `title`/`text` não ocultos. Registros históricos não selecionados permanecem como `isHidden=true`. `experienceMedia.slides` permanece com os slides aprovados (três ou quatro) e pode ter cardinalidade diferente da lista textual. Para itens sem slide associado, o renderer permite seleção sem alterar a galeria.
+
+O texto integral de Trajetória permanece em `career_experiences.description`, com abertura e linhas `• Rótulo: corpo`. O frontend desktop deixa de suprimir bullets por prefixos legados e usa o mesmo texto do mobile. `portfolio_projects.project_status` distingue o estado de execução de `portfolio_projects.status`; Guia, Plataforma e SUBPI foram confirmadas como entregues pelo proprietário e devem ter seu estado e seus resumos coerentes. A estratégia CRM reside em bloco editorial existente, sem linha normalizada obrigatória.
+
+A seção `resultados` mantém 20 itens no bloco A e cinco categorias no B. Substituídos somente os itens 19 e 20, preservando `relatedThemeKeys=['imprensa']` e `overviewOrder=3` no item 19.

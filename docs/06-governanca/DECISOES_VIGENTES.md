@@ -26,3 +26,8 @@ O aceite do site não transforma CI falho em PASS; um documento de migration nã
 [Estado atual](../01-projeto/ESTADO_ATUAL.md) · [Standby](BACKLOG_STANDBY.md) · [encerramento histórico](../ENCERRAMENTO_OPERACIONAL_2026-11-05.md).
 
 [Termo final com evidências e falhas observadas](ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md).
+
+
+## Escopo autorizado pelo proprietário — revisão editorial (16/11/2026)
+
+Aprovação explícita para duas substituições no tema Imprensa e Influenciadores de Resultados e padronização das seis experiências: cinco projetos por empresa e Trajetória com abertura/bullets em negrito. O restante do site (em especial Perfil, Sobre, outros indicadores, design e mídias) deve ser preservado. Dados fornecidos pelo proprietário: 32 influenciadores distintos ao longo de CDI/InPress/Vale; mailing pessoal atual com mais de 400 contatos únicos; Invest RS/Guia, plataforma de eventos e estratégia CRM concluídos e entregues; destaque a Expointer, Mercopar e SIAL; Prefeitura/Plataforma SUBPI entregue para cerca de 1.000 servidores e terceirizados com dashboards/relatórios, ranking institucional 12º→2º e referência editorial de aproximadamente dois milhões de cidadãos atendidos. Não transformar contribuição individual em causalidade de resultados institucionais. A ordem atual e mídias aprovadas permanecem.
