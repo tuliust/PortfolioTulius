@@ -50,10 +50,17 @@ export default function PdfExportPanel({
     setPrintError("")
     if (!canPreview) return
     const onReady = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin || event.source !== printFrame.current?.contentWindow) {
+      if (
+        event.origin !== window.location.origin ||
+        event.source !== printFrame.current?.contentWindow
+      ) {
         return
       }
-      const payload = event.data as { type?: string; device?: string; includedSlugs?: string[] } | null
+      const payload = event.data as {
+        type?: string
+        device?: string
+        includedSlugs?: string[]
+      } | null
       if (
         payload?.type === "portfolio-pdf-ready" &&
         payload.device === device &&
@@ -247,12 +254,16 @@ export default function PdfExportPanel({
                 : "Carregando fontes, imagens e Trajetórias…"}
           </span>
         </div>
-        {printError && <p role="alert" className="pdf-export-print-error">{printError}</p>}
+        {printError && (
+          <p role="alert" className="pdf-export-print-error">
+            {printError}
+          </p>
+        )}
         <p className="pdf-export-help">
-          Clique em <strong>Gerar PDF</strong> e escolha <strong>Salvar como PDF</strong> no
-          diálogo do navegador. Os textos e links permanecem pesquisáveis e clicáveis;
-          cada seção selecionada ocupa uma página de altura adaptada ao conteúdo.
-          Desative cabeçalhos e rodapés de impressão, se disponíveis.
+          Clique em <strong>Gerar PDF</strong> e escolha <strong>Salvar como PDF</strong> no diálogo
+          do navegador. Os textos e links permanecem pesquisáveis e clicáveis; cada seção
+          selecionada ocupa uma página de altura adaptada ao conteúdo. Desative cabeçalhos e rodapés
+          de impressão, se disponíveis.
         </p>
       </section>
     </div>

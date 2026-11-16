@@ -32,9 +32,12 @@ function PdfPrintReady({
     const prepare = async () => {
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
       await document.fonts.ready
-      const images = Array.from(document.querySelectorAll<HTMLImageElement>(".pdf-portfolio img"))
-        .filter((image) => image.getClientRects().length > 0)
-      images.forEach((image) => { image.loading = "eager" })
+      const images = Array.from(
+        document.querySelectorAll<HTMLImageElement>(".pdf-portfolio img"),
+      ).filter((image) => image.getClientRects().length > 0)
+      images.forEach((image) => {
+        image.loading = "eager"
+      })
       const loaded = Promise.all(
         images.map(async (image) => {
           if (!image.complete) {
