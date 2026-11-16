@@ -111,10 +111,7 @@ describe("formação e experiência profissional em camadas", () => {
     for (const slug of companies) {
       const section = sections.find((item) => item.slug === slug)
       const visible = [...(section?.panelA ?? []), ...(section?.panelB ?? [])].filter(
-        (item) =>
-          item.title !== "Competências aplicadas" &&
-          !item.value &&
-          item.isHidden !== true,
+        (item) => item.title !== "Competências aplicadas" && !item.value && item.isHidden !== true,
       )
       expect(visible).toHaveLength(5)
     }
