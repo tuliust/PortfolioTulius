@@ -276,8 +276,12 @@ try {
     descriptions: [...document.querySelectorAll(".hero-highlight-entry .hero-highlight-caption")]
       .map((node) => node.textContent?.trim()),
   }))
+  // Editor copy is mutable: validate grouping, cardinality and distinct non-empty
+  // captions without pinning an outdated historical headline.
   assert(highlights.group?.includes("Itens de Destaque") && highlights.children === 4 &&
-    highlights.descriptions.includes("Experiência em grandes empresas"),
+    highlights.descriptions.length === 4 &&
+    highlights.descriptions.every((caption) => Boolean(caption) && caption !== "Sem título") &&
+    new Set(highlights.descriptions).size === 4,
     "Destaques do Hero não foram agrupados: " + JSON.stringify(highlights))
   report("HERO_HIGHLIGHTS", { group: "Itens de Destaque",
     count: highlights.children, preservedLegacyItems: true })

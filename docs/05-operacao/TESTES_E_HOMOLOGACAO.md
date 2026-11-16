@@ -164,3 +164,10 @@ O proprietário declarou **homologação visual concluída** para a redução da
 ## Escopo de verificação do refinamento visual — 16/11/2026
 
 Intervenção sobre a referência de código `b99696608febd7f06296aa2638aef6db2bdc9f82`. Inspecionar as quatro áreas desktop (Perfil, Olá!, Resultados e seis Experiências), inclinações da seta e alvo navegável em desktop/mobile, `prefers-reduced-motion`, valores desktop no CMS/Supabase, manutenção da composição mobile, testes `pnpm check`, P3 Lighthouse, P5 read-only e deployment pelo SHA que receber o commit. Os resultados dos workflows **não são declarados aprovados antecipadamente**; devem ser vinculados ao SHA novo após sua execução, preservando FAILURE quando ocorrer.
+
+
+### Diagnóstico do P5 read-only no primeiro SHA da intervenção — 16/11/2026
+
+O commit funcional `9e534af393e4cb4bb0fa7e4347e09aba8d677fff` teve `Validate` **SUCCESS** ([#43804663293](https://github.com/tuliust/PortfolioTulius/actions/runs/43804663293)), `Export Docs` **SUCCESS** ([#43804663256](https://github.com/tuliust/PortfolioTulius/actions/runs/43804663256)) e produção Vercel **READY**. O P5 read-only [#43804663291](https://github.com/tuliust/PortfolioTulius/actions/runs/43804663291) deu **FAILURE**: a verificação do agrupamento dos quatro destaques comparava uma legenda histórica exata (“Experiência em grandes empresas”), mas o CMS atualmente publica “Experiência em grandes organizações”. O login, a leitura de identidade, o descarte administrativo, a navegação de seções e a apresentação do grupo de quatro registros foram todos verificados antes da falha. Não se observou erro nos ajustes tipográficos.
+
+O teste P5 foi corrigido de modo restrito em `scripts/p5-admin-readonly.mjs`: verifica agora título do agrupamento, cardinalidade de quatro itens, legendas não vazias e distintas, sem exigir texto editorial congelado. A cobertura dos controles e dos quatro itens permanece. **A falha do run original continua histórica e não se converte em sucesso.** A homologação do commit corretivo depende da execução separada do novo run.
