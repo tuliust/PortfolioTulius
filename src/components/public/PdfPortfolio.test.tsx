@@ -65,34 +65,37 @@ describe("PdfPortfolio read-only renderer", () => {
   }
 
   for (const device of ["desktop", "mobile"] as const) {
-    it("keeps results continuous, trajectory visible and testimonials complete on " + device, () => {
-      const html = renderToStaticMarkup(
-        <PdfPortfolio
-          sections={[testimonials, experience, results]}
-          tokens={defaultTokens}
-          careerDescriptions={{
-            "invest-rs": "Atuação profissional.\n• Projetos institucionais: Entregas concluídas.",
-          }}
-          device={device}
-          colorMode="clean"
-        />,
-      )
+    it(
+      "keeps results continuous, trajectory visible and testimonials complete on " + device,
+      () => {
+        const html = renderToStaticMarkup(
+          <PdfPortfolio
+            sections={[testimonials, experience, results]}
+            tokens={defaultTokens}
+            careerDescriptions={{
+              "invest-rs": "Atuação profissional.\n• Projetos institucionais: Entregas concluídas.",
+            }}
+            device={device}
+            colorMode="clean"
+          />,
+        )
 
-      expect(html.indexOf('id="resultados"')).toBeLessThan(html.indexOf('id="invest-rs"'))
-      expect(html.indexOf('id="invest-rs"')).toBeLessThan(html.indexOf('id="depoimentos"'))
-      expect(html).toContain("Visão geral — indicadores")
-      expect(html).toContain("Comunicação que conecta")
-      expect(html.match(/400\+/g)?.length).toBe(2)
-      expect(html).toContain("Guia de Boas-Vindas")
-      expect(html).toContain("Projetos institucionais")
-      expect(html).toContain("Depoimento integral e completo")
-      expect(html).not.toContain("Registro antigo")
-      expect(html).not.toContain("Ler depoimento completo")
-      expect(html).not.toContain("experience-index")
-      expect(html).not.toContain("experience-gallery")
-      expect(html).not.toContain("site-header")
-      expect(html).not.toContain("results-theme-list")
-      expect(html).toContain("pdf-portfolio--clean")
-    })
+        expect(html.indexOf('id="resultados"')).toBeLessThan(html.indexOf('id="invest-rs"'))
+        expect(html.indexOf('id="invest-rs"')).toBeLessThan(html.indexOf('id="depoimentos"'))
+        expect(html).toContain("Visão geral — indicadores")
+        expect(html).toContain("Comunicação que conecta")
+        expect(html.match(/400\+/g)?.length).toBe(2)
+        expect(html).toContain("Guia de Boas-Vindas")
+        expect(html).toContain("Projetos institucionais")
+        expect(html).toContain("Depoimento integral e completo")
+        expect(html).not.toContain("Registro antigo")
+        expect(html).not.toContain("Ler depoimento completo")
+        expect(html).not.toContain("experience-index")
+        expect(html).not.toContain("experience-gallery")
+        expect(html).not.toContain("site-header")
+        expect(html).not.toContain("results-theme-list")
+        expect(html).toContain("pdf-portfolio--clean")
+      },
+    )
   }
 })
