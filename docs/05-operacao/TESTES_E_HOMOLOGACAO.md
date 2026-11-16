@@ -359,3 +359,14 @@ Arquivos: `.github/workflows/pdf-export-visual.yml`, `scripts/pdf-export-visual-
 `PdfExportPanel.tsx`, `PdfExportPanel.css`, `PdfPreviewPage.tsx`, `pdf-preview-config.ts`, `useAdminGuard.ts` e testes foram adicionados. `AdminApp.tsx` e `routes.tsx` integram o módulo, e P3 testa também o redirecionamento anônimo de `/admin/pdf-preview`. A QA visual da Etapa 3, [#43863504846](https://github.com/tuliust/PortfolioTulius/actions/runs/43863504846), terminou **SUCCESS** nas quatro variantes com dados fallback e Trajetórias sintéticas no SHA `9d2c2e9`. Não prova fidelidade ao CMS real.
 
 O download físico não foi implementado. Registrar Validate, P3 e deployment por SHA; os testes autenticados do painel e a verificação visual do iframe com CMS real permanecem pendentes.
+
+### Evidência de CI da Etapa 4 — 16/11/2026
+
+**SHA funcional validado:** [bd0d394](https://github.com/tuliust/PortfolioTulius/commit/bd0d3946bb1d7938d1ecf7c641054e066a265a3e), que corrige apenas a formatação do commit funcional inicial `9ad10ad`. [Validate #43865563509](https://github.com/tuliust/PortfolioTulius/actions/runs/43865563509) **SUCCESS**: formatação, TypeScript, **62 arquivos e 276 testes PASS**, build e smoke. [P5 Admin Read-Only E2E #43865563550](https://github.com/tuliust/PortfolioTulius/actions/runs/43865563550) **SUCCESS**. Vercel production `dpl_DcD1yQahUGtr2RxQME27dTnBpQki` **READY** para `bd0d394`.
+
+[P3 #43865351440](https://github.com/tuliust/PortfolioTulius/actions/runs/43865351440), SHA `9ad10ad`, **SUCCESS**: `/admin/pdf-preview` redirecionou acesso anônimo a `/admin/login` com `noindex`, auditoria browser **0 falhas**, **38 capturas PASS**, LCP mobile mediano **3.375,495 ms PASS** (meta ≤3.500 ms) e desktop **982,503 ms PASS**. Isso não demonstra autenticação real do módulo nem corrige retrospectivamente falhas anteriores de LCP.
+
+[P5 Local Transactional #43865351550](https://github.com/tuliust/PortfolioTulius/actions/runs/43865351550), SHA `9ad10ad`, **FAILURE global** na etapa E2E sintética de CMS: `TimeoutError 15000ms` na checagem de reordenação de itens de Navegação em `scripts/p4-local-admin-browser.mjs:689`. Os testes anteriores de login local, save/RPC, leitura pública, mídia e guarda de alterações foram PASS no mesmo job. Não se demonstrou nexo causal com a interface PDF; a falha **não é considerada resolvida** nem reclassificada. O Validate de `9ad10ad` inicialmente falhou em formatação, corrigida por `bd0d394`.
+
+**Ainda não executados:** ensaio autenticado real da prévia PDF no admin, paridade com conteúdo e mídias produtivos na nova rota e geração física do PDF com links e paginação. A etapa 4 entrega apenas o painel de configuração e prévia protegida.
+
