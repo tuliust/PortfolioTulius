@@ -270,3 +270,7 @@ Não classificar o workflow completo como aprovado. A falha de interação mobil
 Escopo: somente dois indicadores em Resultados e as seis experiências; Perfil/Olá e os outros indicadores são invariantes. Conferir no Supabase 20 métricas, cinco temas, visão geral na ordem 1/2/3/4, 30 projetos visíveis (cinco por empresa), descrições não vazias e marcadores de trajetória. Confrontar os dois estados `status` e `project_status` dos projetos normalizados. Validar por releitura dos registros antes/depois.
 
 Teste funcional de React: seleção dos cinco projetos desktop e mobile, projetos sem slide, galeria e acessibilidade. Teste CMS autenticado: editar→salvar→reler no ambiente sintético local, sem CRUD de ensaio na produção. Gates `format:check`, `typecheck`, `test`, `build` e jobs GitHub Actions devem ser vinculados ao SHA efetivamente publicado; `READY` sozinho não é aceite de CI. Registrar resultados reais em atualização posterior, nunca presumir SUCCESS.
+
+### Evidência do primeiro commit da revisão
+
+`04373cef`: Validate #43840555522 **FAILURE** no gate de formatação (`ExperienceStack.tsx`, `experienceEditorial.ts`); as etapas posteriores de TypeScript/testes/build foram **não executadas** nesse job. A correção estritamente de formatação foi preparada no commit consecutivo; o resultado desse commit deve ser verificado pelo próprio workflow, sem herdar o estado anterior.

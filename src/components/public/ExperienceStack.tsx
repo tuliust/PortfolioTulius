@@ -287,7 +287,9 @@ function ExperienceContent({
             {projectItems.map((item, projectIndex) => (
               <article
                 className={
-                  projectIndex === activeProject ? "experience-project is-active" : "experience-project"
+                  projectIndex === activeProject
+                    ? "experience-project is-active"
+                    : "experience-project"
                 }
                 key={`${item.title}-${projectIndex}`}
               >
