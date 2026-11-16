@@ -241,9 +241,7 @@ function ExperienceContent({
   const linkedItem = projectSlides.find((slide) => slide.slideIndex === activeSlide)?.item
   const linkedIndex = linkedItem ? projectItems.indexOf(linkedItem) : -1
   const activeProject =
-    manualSelection?.slideIndex === activeSlide
-      ? manualSelection.index
-      : Math.max(0, linkedIndex)
+    manualSelection?.slideIndex === activeSlide ? manualSelection.index : Math.max(0, linkedIndex)
   useEffect(() => setManualSelection(null), [activeSlide, section.slug])
   const extraMetrics = items.filter(
     (item) => Boolean(item.value) && !projectSlides.some(({ item: selected }) => selected === item),
