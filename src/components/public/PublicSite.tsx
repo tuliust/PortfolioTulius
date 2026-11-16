@@ -1129,7 +1129,9 @@ function ResultsCenter({
               <p>{topic.themeTopics}</p>
             </div>
           )}
-          {!compact && topic.themeSummary && <p className="results-summary">{topic.themeSummary}</p>}
+          {!compact && topic.themeSummary && (
+            <p className="results-summary">{topic.themeSummary}</p>
+          )}
           {!compact && Boolean(topic.inheritedHighlights?.length) && (
             <div className="results-inherited">
               <strong>Competências e experiência</strong>

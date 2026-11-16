@@ -195,8 +195,7 @@ export const sections: PortfolioSection[] = [
       {
         title: "Reputação Corporativa",
         value: "+12%",
-        text:
-          "Avanço no sentimento positivo da sociedade em relação à Vale, entre resultados coletivos.",
+        text: "Avanço no sentimento positivo da sociedade em relação à Vale, entre resultados coletivos.",
         metricIcon: "chart",
         relatedThemeKeys: ["corporativa"],
         showInOverview: false,
@@ -204,8 +203,7 @@ export const sections: PortfolioSection[] = [
       {
         title: "Cultura e Pertencimento",
         value: "+28%",
-        text:
-          "Evolução do sentimento de pertencimento de empregados LGBT+ da Vale, entre resultados coletivos.",
+        text: "Evolução do sentimento de pertencimento de empregados LGBT+ da Vale, entre resultados coletivos.",
         metricIcon: "chart",
         relatedThemeKeys: ["corporativa"],
         showInOverview: false,
@@ -222,8 +220,7 @@ export const sections: PortfolioSection[] = [
       {
         title: "Soluções Digitais",
         value: "3 plataformas",
-        text:
-          "Iniciativas de desenvolvimento de ferramentas para eventos, relacionamento e processos internos.",
+        text: "Iniciativas de desenvolvimento de ferramentas para eventos, relacionamento e processos internos.",
         metricIcon: "chart",
         relatedThemeKeys: ["projetos"],
         showInOverview: false,
@@ -313,8 +310,7 @@ export const sections: PortfolioSection[] = [
       {
         title: "Seleção Nacional",
         value: "8 entre ~8 mil",
-        text:
-          "Um dos oito repórteres selecionados para a Globo/SporTV entre aproximadamente oito mil candidatos.",
+        text: "Um dos oito repórteres selecionados para a Globo/SporTV entre aproximadamente oito mil candidatos.",
         metricIcon: "chart",
         relatedThemeKeys: ["imprensa"],
         showInOverview: false,

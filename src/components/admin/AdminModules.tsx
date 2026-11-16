@@ -2324,8 +2324,12 @@ export function ContentStudio({
                                               })
                                             }
                                           >
-                                            <option value="editorial">Editorial (textos e indicadores)</option>
-                                            <option value="metrics">Compacta (abertura e quatro indicadores)</option>
+                                            <option value="editorial">
+                                              Editorial (textos e indicadores)
+                                            </option>
+                                            <option value="metrics">
+                                              Compacta (abertura e quatro indicadores)
+                                            </option>
                                           </select>
                                         </label>
                                         <label>
@@ -2783,7 +2787,11 @@ export function ContentStudio({
                         ),
                       )}
                       {experienceSlug === "resultados" && draft.mobile_panel === "a" && (
-                        <button type="button" className="secondary-button" onClick={addResultMetric}>
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          onClick={addResultMetric}
+                        >
                           Adicionar indicador
                         </button>
                       )}
