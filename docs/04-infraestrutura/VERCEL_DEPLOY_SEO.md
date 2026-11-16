@@ -7,7 +7,13 @@
 - Deployment histórico da baseline `0627947`: `dpl_JAMsVoXAsrQHAAzDE7aEKjt6rY5E` READY. Para versão pública atual, consultar o marcador SHA servido no domínio e a auditoria correspondente, sem reutilizar o ID de 11/11.
 - Variáveis cifradas para Development/Preview/Production: `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`; registrar nomes, não valores.
 
-## Publicação efetivamente verificada após a transferência — 16/11/2026
+## Publicação da revisão editorial concluída — 16/11/2026
+
+A consulta autenticada da Vercel confirmou deployment **`dpl_5BmipgLgR4BRdcVJTy6X6kghV9vN` = READY**, ambiente `production`, branch `main`, SHA `ad5863c0dbb1386d41482a6d9bbe9dc9a9ba60fc`. Foi um commit **documental** após código funcional `aeffc5f`; [Validate #43843735514](https://github.com/tuliust/PortfolioTulius/actions/runs/43843735514) e [Export #43843735639](https://github.com/tuliust/PortfolioTulius/actions/runs/43843735639) têm **SUCCESS** para `ad5863c`; [Validate #43842658739](https://github.com/tuliust/PortfolioTulius/actions/runs/43842658739) **SUCCESS** para `aeffc5f`. O [P3 #43842659962](https://github.com/tuliust/PortfolioTulius/actions/runs/43842659962) de `aeffc5f` **FAILURE**, com duas assertivas obsoletas de quatro projetos e LCP mobile **3.609,314 ms** acima da meta 3.500 ms. Nenhuma evidência transforma READY em P3 SUCCESS.
+
+O proprietário encerrou e aceitou a revisão editorial com risco residual conhecido. Não houve deploy manual, mudança de domínio, variáveis ou flags para esta auditoria. Para novos pushes, consultar Vercel por SHA e registrar estado atualizado, sem inferir a partir do deployment de `ad5863c`.
+
+## Publicação efetivamente verificada após a transferência — histórico anterior à revisão de Experiências (16/11/2026)
 
 A auditoria [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) confirmou `P3_DEPLOYMENT_GATE sha=9915964f54a37d209b25c778c6d2c50faddf4f77 production=verified` em `https://tulius.work/`. O GitHub `main` apontava para o mesmo SHA na consulta de 16/11, com [Validate #43817188756](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188756) e [Export Docs #43817188776](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188776) **SUCCESS**. P3 **SUCCESS**, LCP mobile mediano de **3.458,135 ms** (limite 3.500 ms). O teste prova entrega pública do SHA, **não comprova uma leitura recente do ID/status READY pela API administrativa da Vercel**.
 

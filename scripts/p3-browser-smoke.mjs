@@ -917,11 +917,11 @@ try {
         // Its visible bottom must touch the section even if its element extends below.
         composition.portraitBottom >= composition.aboutBottom - 2 &&
         composition.aboutClip === "hidden" &&
-        // The current published Invest RS has six competencies approved in CMS.
-        composition.count === 4 &&
+        // Five projects are the owner-approved editorial contract.
+        composition.count === 5 &&
         composition.competenceBadges === 6 &&
         composition.trajectoryButton &&
-        // The four published projects may scroll inside their existing bounded column.
+        // The five published projects may scroll inside their existing bounded column.
         composition.listHeight > 0 && composition.listScrollHeight >= composition.listHeight &&
         composition.headingLogoBorder === "0px" &&
         composition.indexLogoBorder !== null &&
@@ -989,7 +989,7 @@ try {
         !trajectoryState.hasText ||
         trajectoryState.selected !== "true" ||
         parseFloat(trajectoryState.trajectoryFont) <= parseFloat(trajectoryState.projectsFont) ||
-        projectsRestored.projects !== 4 ||
+        projectsRestored.projects !== 5 ||
         projectsRestored.selected !== "true"
       ) {
         failures++

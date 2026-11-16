@@ -1,6 +1,6 @@
 # PortfolioTulius — documentação temática
 
-**ÍNDICE CANÔNICO | Revisão 16/11/2026 | última homologação funcional consultada [`9915964`](https://github.com/tuliust/PortfolioTulius/commit/9915964f54a37d209b25c778c6d2c50faddf4f77).** A baseline `0627947` (11/11) permanece histórica. O produto está finalizado, com manutenção autorizada e documentada em 16/11; relatos antigos são evidência da própria data e SHA, não retrato do estado vivo.
+**ÍNDICE CANÔNICO | Revisão 16/11/2026 | revisão editorial encerrada por aceite do proprietário.** Código funcional [`aeffc5f`](https://github.com/tuliust/PortfolioTulius/commit/aeffc5feabc7dfeab426046eb9748e5b8ef81c45), Validate **SUCCESS**; [P3 #43842659962](https://github.com/tuliust/PortfolioTulius/actions/runs/43842659962) **FAILURE** por duas assertivas obsoletas de quatro projetos (agora cinco) e LCP mobile de 3.609,314 ms. Commit documental pré-encerramento [`ad5863c`](https://github.com/tuliust/PortfolioTulius/commit/ad5863c0dbb1386d41482a6d9bbe9dc9a9ba60fc). Baseline `0627947` (11/11) permanece histórica; conferir sempre a `main` atual.
 
 ## Por assunto
 
@@ -58,7 +58,13 @@ Este índice reúne **ajustes já registrados** nos contratos canônicos, sem cr
 
 **Homologação por SHA:** [`2b573ca` / P3 #43815314121](https://github.com/tuliust/PortfolioTulius/actions/runs/43815314121) **SUCCESS**, LCP mobile **3.261,879 ms**; [`652dea0` / P3 #43816204987](https://github.com/tuliust/PortfolioTulius/actions/runs/43816204987) **FAILURE**, LCP mobile **3.746,315 ms**; [`9915964` / P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) **SUCCESS**, LCP mobile **3.458,135 ms**. O teste responsivo validou cinco categorias com quatro cards, sem transbordamento, e o SHA final foi confirmado em produção. A variabilidade do LCP permanece sob risco conhecido, sem converter falhas históricas em PASS. [Evidências detalhadas](05-operacao/TESTES_E_HOMOLOGACAO.md).
 
-**Limite editorial:** os indicadores são dados publicados no CMS, não prova documental independente de cada número; as descrições de Experiências Profissionais ainda precisam de reconciliação editorial com os relatos de 16/11. As cinco fontes privadas do Projeto ChatGPT são snapshots externos e **não são atualizadas automaticamente** por este Git. Não reabrir o [standby](06-governanca/BACKLOG_STANDBY.md).
+**Limite editorial:** os indicadores são dados publicados no CMS, não prova documental independente de cada número. A revisão autorizada das seis Experiências foi aplicada ao Supabase e ao renderer no ciclo posterior de 16/11 (cinco projetos visíveis por empresa, abertura + bullets de Trajetória e histórico preservado). As cinco fontes privadas do Projeto ChatGPT são snapshots externos e **não são atualizadas automaticamente** por este Git. Não reabrir o [standby](06-governanca/BACKLOG_STANDBY.md).
+
+## Encerramento da revisão de Experiências — 16/11/2026
+
+O proprietário confirmou o **aceite editorial e o encerramento de escopo**, sem reclassificar falhas históricas de CI. O Supabase foi relido: 20 indicadores, 5 categorias, 30 projetos visíveis nas seis empresas e três projetos normalizados com `project_status=realizado`; o conteúdo histórico foi preservado. As métricas de imprensa agora incluem mailing pessoal `400+` e `32 influenciadores`.
+
+A auditoria P3 do código funcional identificou duas expectativas obsoletas de **quatro** projetos na Invest RS, que foram alinhadas ao padrão aprovado de **cinco** em `scripts/p3-browser-smoke.mjs`. O LCP mobile mediano **3.609,314 ms** no P3 da revisão excedeu o orçamento **3.500 ms**. O resultado daquele run continua **FAILURE**; o risco foi aceito sem alteração de Hero/Olá nem relaxamento do orçamento. [Estado atual](01-projeto/ESTADO_ATUAL.md) · [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) · [Decisões](06-governanca/DECISOES_VIGENTES.md).
 
 ## Histórico organizado e fases
 

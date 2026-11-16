@@ -3,7 +3,7 @@
 
 | ID | Tema registrado | Eventual gatilho |
 |---|---|---|
-| ST-01 | Oscilação de LCP mobile: baseline 11/11 **3.627,065 ms (FAILURE)**; P3 16/11 em `2b573ca` **3.261,879 ms (SUCCESS)**, em `652dea0` **3.746,315 ms (FAILURE)** e em `9915964` **3.458,135 ms (SUCCESS)**. Limite **3.500 ms** permanece. | Pedido explícito de otimização; não agir só pela oscilação |
+| ST-01 | Oscilação de LCP mobile: baseline 11/11 **3.627,065 ms (FAILURE)**; P3 16/11 em `2b573ca` **3.261,879 ms (SUCCESS)**, `652dea0` **3.746,315 ms (FAILURE)**, `9915964` **3.458,135 ms (SUCCESS)** e revisão editorial `aeffc5f` **3.609,314 ms (FAILURE)**. Limite **3.500 ms**; risco residual aceito, não corrigido. | Pedido explícito de otimização; não agir só pela oscilação |
 | ST-02 | 7 avisos de funções `SECURITY DEFINER` autenticadas | Revisão de autorização |
 | ST-03 | 19 políticas permissivas / 8 índices sem uso | Auditoria de banco |
 | ST-04 | Proteção de senhas vazadas desligada, custo recusado | Nova decisão de custo |
@@ -22,4 +22,4 @@
 
 As Etapas 01–05 foram concluídas na esfera documental; ver [termo de encerramento](ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md). A documentação de uma falha não é um aceite técnico da falha.
 
-**Separação de escopos:** a solicitação de 16/11 autorizou a nova apresentação de Resultados e os campos do editor (P3 público **SUCCESS** em `9915964`), sem encerrar genericamente ST-09 nem executar ST-10. A curadoria de `career_experiences` e a comprovação de indicadores continuam **fora da higiene documental** e dependem de revisão editorial específica. Testes P5 sintéticos/read-only anteriores não comprovam salvamento autenticado de todos os novos indicadores no SHA final.
+**Separação de escopos:** a solicitação de 16/11 autorizou a nova apresentação de Resultados e os campos do editor (P3 público **SUCCESS** em `9915964`), sem encerrar genericamente ST-09 nem executar ST-10. A curadoria editorial específica de `career_experiences` foi **realizada e aceita no ciclo posterior de 16/11**, com cinco projetos por empresa e Trajetórias revisadas; não criar novo item de backlog. A comprovação independente das métricas e qualquer ensaio autenticado integral do CMS são temas diferentes, **não executados nesta auditoria**. Os P5 sintéticos/read-only anteriores não comprovam gravação autenticada dos registros atuais. Aceite do proprietário não converte P3 FAILURE em PASS.

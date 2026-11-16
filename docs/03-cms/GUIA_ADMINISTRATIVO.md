@@ -1,5 +1,5 @@
 # Guia operacional do CMS
-**Status:** contrato administrativo vigente · **Revisão:** 16/11/2026. Campos temáticos de Resultados implementados; distinguir a leitura pública homologada da edição autenticada ainda não revalidada integralmente no último SHA.
+**Status:** contrato administrativo vigente · **Revisão:** 16/11/2026. Resultados e Experiências revisados no CMS; aceite editorial do proprietário concluído. A gravação autenticada integral editar→salvar→reler **não foi executada** neste ciclo e não pode ser inferida do aceite ou da leitura pública.
 
 ## Resultados — operação vigente do editor (16/11/2026)
 

@@ -1,11 +1,19 @@
 # Testes, CI e homologação
-**Status:** roteiro de manutenção · **Revisão:** 16/11/2026. Última auditoria **P3 funcional**: SHA `9915964` (SUCCESS). Último commit **somente documental** consultado: `06af944` (Validate/Export SUCCESS; sem P3 nova). Relatórios históricos continuam vinculados aos respectivos SHAs.
+**Status:** roteiro de manutenção e aceite editorial · **Revisão:** 16/11/2026. Código funcional da revisão `aeffc5f` (Validate SUCCESS; P3 #43842659962 FAILURE), com commit documental anterior `ad5863c` (Validate/Export SUCCESS; Vercel READY). Aceite do proprietário não reclassifica resultado técnico; relatórios históricos continuam vinculados aos respectivos SHAs.
 
-## Estado vigente — Resultados (16/11/2026)
+## Fotografia anterior à revisão de Experiências — Resultados (16/11/2026)
 
 A última P3 **funcional** disponível é [#43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772), SHA `9915964`, com **SUCCESS** em navegação, cinco temas compactos, SEO/RLS e LCP mobile mediano **3.458,135 ms** (limite 3.500 ms). Houve falhas em SHAs anteriores; consultar o [quadro por commit](#seção-03--implantação-auditorias-e-lições-de-16112026) antes de avaliar regressões.
 
 O commit posterior [`06af944`](https://github.com/tuliust/PortfolioTulius/commit/06af9444955297a6ee93c9934b369598198afd69), **somente documental**, passou em Validate e Export Docs e recebeu status GitHub `Vercel: success`, **sem P3 própria**. P5 read-only e transacional sintético têm evidência em SHA anterior; não afirmar cobertura autenticada do salvamento dos 20 indicadores em `9915964`.
+
+## Auditoria global do P3 e correção de contrato do teste — 16/11/2026
+
+O [P3 #43842659962](https://github.com/tuliust/PortfolioTulius/actions/runs/43842659962) do código funcional `aeffc5f` terminou **FAILURE** nas etapas **Browser routes and responsive viewports** e **Enforce conservative P6 Lighthouse regression budgets**. O script `scripts/p3-browser-smoke.mjs` imprimiu `P3_BROWSER_AUDIT {"failures":2}`; as duas falhas identificáveis são `P3_ABOUT_INVEST_FIT_REGRESSION` e `P3_EXPERIENCE_SWITCH_REGRESSION`, ambas porque ainda exigiam **4** projetos em Invest RS quando a regra editorial vigente e verificada no banco é **5**. Os asserts foram atualizados para cinco, sem modificação do renderer, CSS, conteúdo público ou imagens. Isso **corrige o teste**, não converte o P3 anterior em sucesso.
+
+Na mesma execução foram **PASS**: teste projeto→galeria→projeto, proteção de `/admin` e `/admin/preview`, navegação entre seis empresas, seletor dos cinco temas de Resultados, 38 capturas editoriais (`P4_EDITORIAL_SUMMARY failures=0`), testes RLS anônimos e verificações SEO/read-only. A etapa de **performance P6 permanece FAILURE**, pois o LCP mobile mediano foi **3.609,314 ms** (orçamento **≤3.500 ms**), com mediana desktop **921,675 ms** (PASS).
+
+**Aceite do proprietário:** revisão editorial e validação funcional declaradas concluídas para este escopo, com o risco P3 conhecido **aceito, não corrigido**. Não reabrir Hero/Olá, reduzir orçamento LCP ou executar o backlog por inferência. Teste completo autenticado de edição→salvamento→releitura pelo CMS com seed sintética **não executado** nesta rodada; não converter o aceite em teste técnico. Conferir novos resultados por SHA de cada execução. [Estado atual](../01-projeto/ESTADO_ATUAL.md) · [Standby](../06-governanca/BACKLOG_STANDBY.md).
 
 ## Desenvolvimento local
 `pnpm install --frozen-lockfile`; `pnpm format:check`; `pnpm typecheck`; `pnpm test`; `pnpm build`; `pnpm check`; `pnpm smoke:build`. O [`package.json`](../../package.json) é fonte dos comandos. Não usar formatador que reescreva código para uma tarefa só documental.
