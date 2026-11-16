@@ -234,13 +234,17 @@ function ExperienceContent({
   // Text cards are independent from the gallery: five editorial projects may
   // coexist with three or four already-approved illustrative slides.
   const projectItems = items.filter((item) => !item.value)
-  const [activeProject, setActiveProject] = useState(0)
-  useEffect(() => {
-    const linkedItem = projectSlides.find((slide) => slide.slideIndex === activeSlide)?.item
-    if (!linkedItem) return
-    const index = projectItems.indexOf(linkedItem)
-    if (index >= 0) setActiveProject(index)
-  }, [activeSlide, section.slug])
+  const [manualSelection, setManualSelection] = useState<{
+    index: number
+    slideIndex: number
+  } | null>(null)
+  const linkedItem = projectSlides.find((slide) => slide.slideIndex === activeSlide)?.item
+  const linkedIndex = linkedItem ? projectItems.indexOf(linkedItem) : -1
+  const activeProject =
+    manualSelection?.slideIndex === activeSlide
+      ? manualSelection.index
+      : Math.max(0, linkedIndex)
+  useEffect(() => setManualSelection(null), [activeSlide, section.slug])
   const extraMetrics = items.filter(
     (item) => Boolean(item.value) && !projectSlides.some(({ item: selected }) => selected === item),
   )
@@ -303,9 +307,13 @@ function ExperienceContent({
                   }
                   aria-current={projectIndex === activeProject ? "true" : undefined}
                   onClick={() => {
-                    setActiveProject(projectIndex)
                     const linkedSlide = projectSlides.find((slide) => slide.item === item)
-                    if (linkedSlide) onSlideChange(linkedSlide.slideIndex)
+                    if (linkedSlide) {
+                      setManualSelection(null)
+                      onSlideChange(linkedSlide.slideIndex)
+                    } else {
+                      setManualSelection({ index: projectIndex, slideIndex: activeSlide })
+                    }
                   }}
                 >
                   {item?.meta && (
