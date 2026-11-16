@@ -109,6 +109,37 @@ try {
           "; manifest=" + JSON.stringify(manifest.pages) + "; pageStarts=" + JSON.stringify(entries),
         )
       }
+      // Verify that every section starts on its own physical PDF page.
+      const titles = {
+        perfil: "TULIUS",
+        sobre: "PRAZER",
+        resultados: "RESULTADOS",
+        formacao: "FORMACAO",
+        "invest-rs": "INVEST RS",
+        "prefeitura-sp": "PREFEITURA",
+        vale: "VALE",
+        "globo-sportv": "GLOBO",
+        inpress: "INPRESS",
+        cdi: "CDI",
+        ferramentas: "FERRAMENTAS",
+        depoimentos: "DEPOIMENTOS",
+        contato: "CONTATO",
+      }
+      for (let index = 0; index < sections.length; index++) {
+        const text = execFileSync(
+          "pdftotext",
+          ["-f", String(index + 1), "-l", String(index + 1), file, "-"],
+          { encoding: "utf8", maxBuffer: 5 * 1024 * 1024 },
+        )
+        const normalized = text
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase()
+          .replace(/\s+/g, " ")
+        if (!normalized.includes(titles[sections[index]])) {
+          throw new Error("Section " + sections[index] + " missing on page " + (index + 1))
+        }
+      }
       const searchable = execFileSync("pdftotext", ["-layout", file, "-"], {
         encoding: "utf8",
         maxBuffer: 25 * 1024 * 1024,
