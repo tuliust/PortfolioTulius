@@ -15,7 +15,7 @@
 | PAT histórico | Decisão anterior de não revogação; revogação não comprovada |
 | Storage | Não excluir originais/duplicatas sem estudo e operação específica |
 | Pendências | Itens do **backlog histórico** continuam em standby; as solicitações novas de manutenção de 16/11 foram autorizadas e executadas no escopo de Resultados |
-| Fontes privadas | Cinco fontes consolidadas ativas e oito anteriores retiradas **conforme verificação de 11/11**; os snapshots privados ainda precisam ser sincronizados com a manutenção de 16/11, em etapa separada do GitHub |
+| Fontes privadas | **Cinco fontes consolidadas, revisadas em 16/11/2026 e confirmadas como únicas fontes privadas ativas do Projeto ChatGPT**; as oito anteriores permanecem fora das fontes ativas, conforme fechamento de 11/11. A substituição foi realizada pelo proprietário. Essas fontes são **snapshots privados, sem sincronização automática** com o GitHub; seu conteúdo não foi publicado no repositório. |
 | Branches históricas | **Excluídas pelo proprietário**, somente `main` verificada via GitHub |
 | Etapas 01–05 | **Consolidação documental e higiene encerradas** em 11/11; novo ciclo de manutenção autorizado em 16/11 não reabre as etapas anteriores |
 | Resultados · seção 03 | Em 16/11, implementação autorizada dos cinco temas compactos e 20 indicadores (quatro por tema), com quatro métricas na visão geral. **Publicação técnica** não significa comprovação independente dos números nem conclusão da revisão de Experiências Profissionais. |
