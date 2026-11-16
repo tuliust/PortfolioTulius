@@ -965,6 +965,7 @@ function heroStyle(config?: HeroVisualConfig) {
     "--hero-desktop-years-x": toPercent(desktop?.yearsX),
     "--hero-desktop-years-y": toPercent(desktop?.yearsY),
     "--hero-desktop-years-width": toPercent(desktop?.yearsWidth),
+    "--hero-desktop-years-size": toPixels(desktop?.yearsSize),
     "--hero-desktop-badge-size": toPercent(desktop?.badgeSize),
     "--hero-desktop-badge-x": toPercent(desktop?.badgeX),
     "--hero-desktop-badge-y": toPercent(desktop?.badgeY),

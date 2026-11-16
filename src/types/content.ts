@@ -24,6 +24,7 @@ export type HeroDeviceStyle = {
   yearsX?: number
   yearsY?: number
   yearsWidth?: number
+  yearsSize?: number
   badgeSize?: number
   badgeX?: number
   badgeY?: number

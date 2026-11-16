@@ -74,3 +74,10 @@ O controle de espaçamento do CMS alimenta a variável `--item-desktop-spacing`,
 ## Terceira revisão da tipografia do Perfil desktop — 13/11/2026
 
 No Supabase de produção, bloco A publicado de `perfil` (`content_blocks.id = a2f4770b-7964-4f3c-b816-c778b66ac15c`), o campo `items[0].hero.desktop.introSize` foi alterado de **20 para 18 px** por SQL restrito ao ID, status, versão `updated_at`, seção, cinco itens e valores anteriores. `UPDATE ... RETURNING` confirmou 18 px e preservação dos quatro destaques em **13/15/10 px** e da configuração mobile (checksum conferido). Nenhuma migration, outro bloco, tabela ou campo mobile foi modificado. A redução do limite inferior do CSS de 18,4 px para 18 px garante a aplicação exata desse valor pelo renderer. O filete de **2 px** é somente CSS, sem controle ou gravação adicional no CMS. O histórico de 20 px em seção anterior corresponde ao estado anterior.
+
+
+## Campos desktop utilizados na revisão de 16/11/2026
+
+Em **Editor do site → Perfil → Coluna esquerda → Apresentação**, os campos `Tamanho da frase no desktop (px)` e o novo `Tamanho de +15 ANOS no desktop (px)` escrevem no mesmo objeto `items[0].hero.desktop`, respectivamente `introSize=15` e `yearsSize=55`. Os seis títulos de empresas no bloco Perfil/B usam o controle já existente `Tamanho do título da empresa no desktop (px)` (`items[5..10].desktop.titleSize=21`). Para “Olá!” → bloco B, os cinco itens utilizam **Ajustes de apresentação desktop → Texto (px)** (`items[*].desktop.textSize=14`), sem novos blocos, migrations ou tabelas.
+
+Todos os campos seguem o salvamento CAS/RPC `save_section_block_atomic` do editor; ajustes de margem, grade de Resultados e animação do botão são CSS e não novas entradas no CMS. O frontend lê os estilos desktop, mantendo `items[].mobile` e `hero.mobileEditorial` inalterados. Confrontar sempre os valores atuais no banco antes de futuras edições: a documentação anterior de 13/11 mostrava 18 px na frase, mas o valor vivo de 16/11 antes desta intervenção já havia sido reduzido para 16 px por edição posterior.

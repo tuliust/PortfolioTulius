@@ -144,6 +144,13 @@ export function HeroLeftEditor({
             max={48}
             onChange={(introSize) => onUpdateHero({ desktop: { ...hero?.desktop, introSize } })}
           />
+          <NumericField
+            label="Tamanho de +15 ANOS no desktop (px)"
+            value={hero?.desktop?.yearsSize}
+            min={32}
+            max={90}
+            onChange={(yearsSize) => onUpdateHero({ desktop: { ...hero?.desktop, yearsSize } })}
+          />
         </div>
       </fieldset>
 

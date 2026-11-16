@@ -159,3 +159,8 @@ A validação P5 foi **somente leitura**: os 21 testes de autenticação, agrupa
 ## Aceite do proprietário — revisão do Perfil desktop, 13/11/2026
 
 O proprietário declarou **homologação visual concluída** para a redução da frase em itálico do Perfil de 20 px para **18 px** e para a redução da linha laranja sob a foto de 3 px para **2 px**, exclusivamente no desktop. Registrar como **aceite visual pelo proprietário**, não como teste visual independente do agente. O CMS de produção confirmou a alteração da frase; os ajustes em CSS e as atualizações canônicas foram versionados na mesma entrega. CI, Lighthouse, resultados históricos de P3 e confirmação da versão servida pela Vercel permanecem verificações técnicas distintas e devem ser avaliados para o SHA da entrega; não reclassificar falhas ou budgets históricos com base na aprovação visual.
+
+
+## Escopo de verificação do refinamento visual — 16/11/2026
+
+Intervenção sobre a referência de código `b99696608febd7f06296aa2638aef6db2bdc9f82`. Inspecionar as quatro áreas desktop (Perfil, Olá!, Resultados e seis Experiências), inclinações da seta e alvo navegável em desktop/mobile, `prefers-reduced-motion`, valores desktop no CMS/Supabase, manutenção da composição mobile, testes `pnpm check`, P3 Lighthouse, P5 read-only e deployment pelo SHA que receber o commit. Os resultados dos workflows **não são declarados aprovados antecipadamente**; devem ser vinculados ao SHA novo após sua execução, preservando FAILURE quando ocorrer.

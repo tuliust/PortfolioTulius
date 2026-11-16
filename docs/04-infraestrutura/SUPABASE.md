@@ -47,3 +47,8 @@ A releitura de 12/11 confirmou os quatro blocos e nenhuma configuração `items[
 - `get_advisors(type=health)` retornou **0 avisos** (`lints=[]`). As contagens de policies/objetos Storage e a condição da Edge Function acima permanecem evidências históricas de 11/11 e não foram revalidadas neste teste.
 - A organização continua denominada `tuliustsangaropulos`. A identidade da sessão Supabase e o papel de Owner de `tuliust@gmail.com` não puderam ser verificados por estes endpoints; **não declarar transferência concluída**.
 - Nenhuma escrita, migration, RLS, Auth, Storage ou configuração foi alterada. Não executar teste de gravação no banco de produção para verificar conector.
+
+
+## Ajustes editoriais desktop em produção — 16/11/2026
+
+Intervenção aprovada no projeto `portfolio` (`zfnrhzplwpjpdljraypt`), restrita a três registros existentes de `content_blocks` via UPDATE JSONB sob verificações de `updated_at` e valores anteriores: Perfil/A (`hero.desktop.introSize` 16→15 e novo `yearsSize=55`); Perfil/B (seis `desktop.titleSize` 23→21); Sobre/B (cinco `desktop.textSize=14`). A intenção é manter a fonte única de verdade no CMS. Não há DDL, migration, alterações em RLS, Auth, Storage ou outros JSONB. O registro do procedimento não substitui a verificação SQL pós-execução. A atualização do código segue na `main`, com documentação no mesmo ciclo.

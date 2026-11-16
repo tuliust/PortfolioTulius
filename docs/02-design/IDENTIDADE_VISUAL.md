@@ -61,3 +61,8 @@ No bloco de retrato da mesma seção, uma linha horizontal usa o laranja existen
 A frase itálica “Foco em gerar conexões autênticas e projetos inovadores.” foi reduzida de **20 px para 18 px** no campo CMS de Perfil/A `items[0].hero.desktop.introSize`. Para efetivar 18 px, o limite inferior do `clamp` em `src/index.css` mudou de `1.15rem` (18,4 px, na base padrão de 16 px) para `1.125rem` (18 px), exclusivamente no desktop. Permanecem iguais o conteúdo, a família tipográfica, o peso, a cor, o alinhamento e os campos mobile.
 
 O filete horizontal laranja sob a foto da abertura passou de **3 px para 2 px**, preservando posição `bottom: 0`, largura dependente de `--hero-desktop-image-width`, cor `var(--orange)` e a fotografia aprovada. A menção a 3 px em registros anteriores corresponde ao histórico. **Homologação visual declarada concluída pelo proprietário** para esses ajustes; não equivale a teste de navegador executado pelo agente.
+
+
+## Refinamento de hierarquia desktop — 16/11/2026
+
+Nova intervenção aprovada: os títulos das seis empresas do Perfil usam `items[5..10].desktop.titleSize = 21` px (eram 23 px); o subtítulo “Experiência e atuação” mantém hierarquia maior por CSS desktop. A frase editorial usa `hero.desktop.introSize = 15` px (era 16 px na releitura imediatamente anterior à alteração), com entrelinha 1,18. “+15 ANOS” utiliza `hero.desktop.yearsSize = 55` px como teto responsivo no desktop, sem mudar o formato mobile. A marca principal `TULIUS TSANGAROPULOS` não foi reduzida: o encaixe foi tratado pelo espaço inferior reservado ao botão. Os cinco textos descritivos de “Olá!” passam a `items[*].desktop.textSize = 14` px. Cores, tipografias, títulos e textos permanecem os já publicados; não há fonte nova nem hierarquia global de design.

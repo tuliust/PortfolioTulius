@@ -53,3 +53,10 @@ Sem mudança de schema. A escala de Perfil e Formação usa `content_blocks.cont
 São **quatro blocos publicados** alterados com configuração desktop, sem mudança de `items[].mobile`, `hero.mobile` ou `hero.mobileEditorial`. Itens fora desses índices, `resultados` e `sobre` não receberam novos valores no banco. A gravação inicial foi SQL restrito em `content_blocks.content_json`, com checagem de cardinalidade/ausência de overrides e atualização de `updated_at`, seguida de releitura; **não** foi uma gravação demonstrada pela interface do CMS. Para edições futuras, continuar usando a RPC/CAS existente.
 
 O renderer `PublicSite.tsx` e `src/index.css` aplicam `--item-desktop-title-size`, `--item-desktop-text-size` e `--hero-desktop-intro-size`. Resultados (`--results-column-gap`), seta e foto de Sobre são geometria do renderer/CSS, não colunas ou parâmetros extras do modelo.
+
+
+## Contrato desktop do indicador de anos — 16/11/2026
+
+O modelo TypeScript `HeroDeviceStyle` recebeu a propriedade opcional **`yearsSize?: number`**, persistida sem DDL em `content_blocks.content_json.items[0].hero.desktop.yearsSize` do Perfil/A. `PublicSite.heroStyle` propaga o valor para `--hero-desktop-years-size`, e o CSS aplica um `clamp()` que conserva adaptação em larguras menores; o campo é editável no `HeroLeftEditor`. Não existe campo novo em `sections`, `design_tokens` ou `block_placements`.
+
+Persistência adicional desta intervenção: Perfil/A `hero.desktop.introSize=15`; Perfil/B seis valores `items[5..10].desktop.titleSize=21`; Sobre/B cinco valores `items[0..4].desktop.textSize=14`. As propriedades móveis não foram substituídas. A leitura de `desktop.textSize` de Sobre/B já fazia parte de `itemStyle`, mas `src/index.css` agora respeita `--item-desktop-text-size` para essa coluna.

@@ -106,3 +106,12 @@ A fotografia, os textos, o selo, os tamanhos editáveis e demais componentes do 
 A nova revisão mantém a mesma composição, mas reduz a **frase editorial em itálico para 18 px** e o **filete laranja abaixo da foto para 2 px**. O primeiro ajuste persiste no CMS (`content_blocks.content_json.items[0].hero.desktop.introSize = 18`) e no CSS `.profile-intro` com piso de `1.125rem`; o segundo altera apenas `height: 2px` no pseudo-elemento `#perfil .profile-portrait::after`. O breakpoint permanece `@media (min-width: 768px)`. A largura da linha, as demais propriedades da foto, o layout mobile e a marca no header não foram alterados.
 
 **Aceite visual:** o proprietário considera a homologação visual desta revisão concluída. É aprovação expressa do proprietário, não execução independente de teste browser/pixel-a-pixel. Conferir CI, performance e publicação do SHA separadamente. As descrições anteriores de 20 px e 3 px são histórico das revisões precedentes, não a configuração vigente.
+
+
+## Respiros e navegação do desktop — 16/11/2026
+
+No Perfil, `profile-desktop` conserva `min-height: 100dvh` e passa a crescer com o conteúdo quando necessário, sem `overflow: hidden` no contêiner principal. `profile-main` reserva espaço inferior para o botão, que recebe diâmetro de 2,6 rem e sobe/desce como elemento completo em looping de 1,9 s; o SVG não anima separadamente. A legenda de “+15 ANOS” ganha distância do selo pelo reposicionamento responsivo do selo e pela redução do indicador. A frase editorial fica com entrelinha 1,18; o título da área continua acima dos títulos das empresas.
+
+Na seção “Olá!”, os textos da coluna direita passam a ler a variável de estilo desktop dos itens, em vez de ignorá-la. Em Resultados (≥1101 px), a grade central de indicadores fica mais estreita, com aumento das duas separações horizontais; de 768 a 1100 px há apenas reforço moderado de espaçamento. Na coluna esquerda das seis Experiências, margens de título, função, período e competências foram ampliadas somente no contêiner `experience-desktop`.
+
+**Única exceção mobile:** o botão `.mobile360-down` (e o fallback `.profile-mobile-next`) preserva 44 px de alvo, recebe o mesmo movimento suave do círculo inteiro e deixa de animar o SVG isoladamente. Os demais estilos e dados mobile permanecem iguais. Para `prefers-reduced-motion: reduce`, a animação é desligada. Confirmar viewport, altura curta, navegação, foco e ausência de clipping no ciclo de testes desta intervenção.

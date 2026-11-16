@@ -3016,3 +3016,118 @@
     line-height: 1;
   }
 }
+
+
+/* 16/11/2026 — focused editorial adjustments. Mobile changes only the
+   scroll-button animation/diameter; all other refinements are desktop-only.
+   Typeface sizes are read from existing CMS desktop fields, never duplicated. */
+@keyframes profile-button-bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 5px; }
+}
+
+@media (min-width: 768px) {
+  /* Retain a full-height first fold when content fits; allow natural growth
+     instead of clipping content or covering the final career entries. */
+  .public-site #perfil .profile-desktop {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .public-site #perfil .profile-main {
+    padding-bottom: clamp(4.75rem, 9dvh, 5.75rem);
+  }
+  .public-site #perfil .profile-next-section {
+    width: 2.6rem;
+    height: 2.6rem;
+    bottom: clamp(.5rem, 1.3dvh, .9rem);
+    animation: profile-button-bob 1.9s ease-in-out infinite;
+  }
+  .public-site #perfil .profile-next-section svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    animation: none;
+  }
+  /* The section heading remains slightly larger than every company title. */
+  .public-site #perfil .profile-main > h2 {
+    font-size: clamp(1.38rem, 1.55vw, 1.65rem);
+  }
+  .public-site #perfil .career-grid .content-item h3 {
+    font-size: var(--item-desktop-title-size, clamp(1.15rem, 1.28vw, 1.32rem));
+  }
+  .public-site #perfil .profile-intro {
+    font-size: var(--hero-desktop-intro-size, 1rem);
+    line-height: 1.18;
+  }
+  .public-site #perfil .years strong {
+    font-size: clamp(2.5rem, min(3.8vw, var(--hero-desktop-years-size, 55px)), 4.6rem);
+  }
+  .public-site #perfil .profile-portrait .badge-360 {
+    top: calc(var(--hero-desktop-badge-y, 74%) - clamp(.25rem, 1.3dvh, .7rem));
+  }
+  /* Descriptions in Sobre: ItemCard already reads desktop.textSize; the
+     prior selector ignored this CMS variable. */
+  .public-site #sobre .about-statements .content-item p {
+    font-size: var(--item-desktop-text-size, clamp(.78rem, 1.1vw, .94rem));
+  }
+  /* Increase the rhythm between the logo, name, role, dates and tags for
+     all six desktop experience cards without affecting their mobile panels. */
+  .public-site .experience-desktop > .experience-heading h2 {
+    margin-top: clamp(1.25rem, 2.2dvh, 1.8rem);
+    margin-bottom: clamp(.85rem, 1.55dvh, 1.2rem);
+  }
+  .public-site .experience-desktop > .experience-heading .experience-eyebrow {
+    margin-bottom: clamp(.5rem, 1.2dvh, .85rem);
+  }
+  .public-site .experience-desktop > .experience-heading > p:not(.experience-eyebrow) {
+    margin-top: clamp(.45rem, 1dvh, .7rem);
+  }
+  .public-site .experience-desktop > .experience-heading .experience-period {
+    margin-top: .3rem;
+  }
+  .public-site .experience-desktop > .experience-heading .experience-competencies {
+    margin-top: clamp(1.1rem, 2.4dvh, 1.7rem);
+  }
+}
+@media (min-width: 1101px) {
+  /* Narrow the indicators' combined footprint and distribute recovered
+     horizontal space to both the left and right editorial gutters. */
+  .public-site #resultados .results-editorial {
+    grid-template-columns: minmax(18rem, 1.22fr) minmax(0, 2.65fr);
+    column-gap: clamp(2.75rem, 4vw, 5rem);
+  }
+  .public-site #resultados .results-editorial .desktop-content {
+    grid-template-columns: minmax(0, 1.26fr) minmax(15rem, .98fr);
+    column-gap: clamp(2.5rem, 3.6vw, 4.5rem);
+  }
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  .public-site #resultados .results-editorial {
+    column-gap: clamp(1.4rem, 2.5vw, 2.3rem);
+  }
+  .public-site #resultados .results-editorial .desktop-content {
+    column-gap: clamp(1.4rem, 2.5vw, 2.3rem);
+  }
+}
+/* Both first-fold navigation variants use the same whole-button motion.
+   The 44px mobile hit target is preserved. */
+@media (max-width: 767px) {
+  .public-site #perfil-a .mobile360-down,
+  .public-site #perfil-a .profile-mobile-next {
+    width: 2.75rem;
+    height: 2.75rem;
+    animation: profile-button-bob 1.9s ease-in-out infinite;
+  }
+  .public-site #perfil-a .mobile360-down svg,
+  .public-site #perfil-a .profile-mobile-next svg {
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-site #perfil .profile-next-section,
+  .public-site #perfil-a .mobile360-down,
+  .public-site #perfil-a .profile-mobile-next {
+    animation: none;
+    translate: none;
+  }
+}
