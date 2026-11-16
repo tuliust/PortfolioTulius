@@ -986,6 +986,7 @@ try {
     [1101, 800],
     [1100, 800],
     [1366, 768],
+    [900, 600], // Short desktop: override the legacy static arrow fallback.
     [768, 1024],
     [720, 450], // CSS viewport equivalent to a 1440px screen at ~200% zoom; not native zoom
     [390, 844],

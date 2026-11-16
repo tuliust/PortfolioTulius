@@ -3040,8 +3040,14 @@
   .public-site #perfil .profile-next-section {
     /* Anchor to the first visible fold, not the bottom of a growing Hero.
        This stays in the section flow and scrolls away with the Hero. */
+    position: absolute;
     top: calc(100dvh - 3.4rem);
     bottom: auto;
+    /* Override a legacy static-placement fallback at ≤640px desktop height. */
+    grid-column: auto;
+    justify-self: auto;
+    margin: 0;
+    transform: translateX(-50%);
     z-index: 3;
     width: 2.6rem;
     height: 2.6rem;
