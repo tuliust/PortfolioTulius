@@ -1,0 +1,79 @@
+name: PDF Renderer Visual QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/pdf-export-visual.yml
+      - pdf-export-qa.html
+      - src/pdf-export-qa.tsx
+      - scripts/pdf-export-visual-smoke.mjs
+      - src/components/public/PdfPortfolio.tsx
+      - src/components/public/PdfPortfolio.css
+      - src/components/public/PublicSite.tsx
+      - src/components/public/ExperienceStack.tsx
+      - src/content/fallback.ts
+      - src/lib/pdf-export-options.ts
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node.js 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24.16.0"
+      - name: Install pnpm
+        run: npm install --global pnpm@10.34.8
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check browser script syntax
+        run: node --check scripts/pdf-export-visual-smoke.mjs
+      - name: Start isolated Vite fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          (pnpm dev --host 127.0.0.1 --port 4177 --strictPort > "$RUNNER_TEMP/pdf-vite.log" 2>&1 &)
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent --show-error "http://127.0.0.1:4177/pdf-export-qa.html" > /dev/null; then
+              echo "PDF_FIXTURE_READY"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/pdf-vite.log"
+          exit 1
+      - name: Capture four modes with Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/pdf-visual"
+          cd "$RUNNER_TEMP/pdf-visual"
+          npm install --no-audit --no-fund --no-save puppeteer-core@25.16.0
+          cp "$GITHUB_WORKSPACE/scripts/pdf-export-visual-smoke.mjs" visual.mjs
+          PDF_QA_SHOTS="$RUNNER_TEMP/pdf-visual-shots" PDF_QA_BASE="http://127.0.0.1:4177" node visual.mjs
+      - name: Verify QA page is not published
+        shell: bash
+        run: |
+          pnpm build
+          test ! -e dist/pdf-export-qa.html
+          echo "PDF_QA_NOT_PUBLISHED PASS"
+      - name: Upload synthetic screenshots and JSON
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pdf-renderer-fixture
+          path: |
+            ${{ runner.temp }}/pdf-visual-shots
+            ${{ runner.temp }}/pdf-vite.log
+          if-no-files-found: ignore
+          retention-days: 14

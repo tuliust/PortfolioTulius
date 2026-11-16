@@ -335,3 +335,7 @@ O teste `src/components/public/PdfPortfolio.test.tsx` usa React SSR sintético p
 ## Etapa 3 do PDF — teste de contrato de dispositivo (16/11/2026)
 
 Foram adicionados testes unitários para os viewports Desktop 1440×900 e Mobile 390×844 e atualizados os testes de SSR do renderer para `data-pdf-section`, tamanho de referência e depoimentos sem botões. O PDF físico e a comparação visual com produção continuam pendentes. Verificar o `Validate` do SHA que introduziu os testes antes de declarar sucesso.
+
+## Etapa 3 — workflow visual de PDF (16/11/2026)
+
+Arquivos: `.github/workflows/pdf-export-visual.yml`, `scripts/pdf-export-visual-smoke.mjs`, `pdf-export-qa.html` e `src/pdf-export-qa.tsx`. Os testes usam Puppeteer/Chrome e fixture sem dados produtivos, avaliam as quatro modalidades e geram PNGs/JSON do resultado; o workflow também comprova que o HTML de QA não integra `dist`. O resultado efetivo deverá ser registrado por SHA após execução. O relatório de fixture não atesta paridade pixel-a-pixel com produção, métricas LCP ou sucesso da paginação PDF final.

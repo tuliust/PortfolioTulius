@@ -60,3 +60,7 @@ O renderer reutiliza `Section`, `ResultsCenter`, `RESULT_THEME_KEYS` e `Testimon
 `src/lib/pdf-export-options.ts` define as referências 1440×900 CSS px para Desktop e 390×844 CSS px para Mobile. `PdfPortfolio` publica os atributos `data-pdf-reference-width/height`; a futura geração deve configurar o viewport real do Chromium, pois uma classe CSS não ativa media queries do navegador. `Section` recebeu `pdfExport` opcional, marcando `data-pdf-section` somente na exportação; `ResultsCenter` recebeu `staticForExport` para retirar o foco/ARIA da navegação temática em modo estático.
 
 Os depoimentos exportados passam a ser elementos `article` em lugar de botões. O comportamento padrão da página pública permanece inalterado. Esta etapa ainda não introduz rota, tela administrativa ou serviço de geração de PDF.
+
+## Fixture visual isolada da Etapa 3 (16/11/2026)
+
+`pdf-export-qa.html` e `src/pdf-export-qa.tsx` criam entrada exclusiva do servidor Vite de desenvolvimento. Usam `src/content/fallback.ts` e Trajetórias sintéticas, **não** Supabase de produção. O build padrão tem somente `index.html` como entrada e o workflow QA verifica que `dist/pdf-export-qa.html` não existe. O script `scripts/pdf-export-visual-smoke.mjs` utiliza Chromium em quatro modalidades e o workflow `.github/workflows/pdf-export-visual.yml` publica capturas como artefato interno do CI. Nenhuma rota de PDF foi adicionada ao app publicado.

@@ -157,3 +157,7 @@ A aba Projetos e Realizações passa a exibir **cinco resumos por empresa** em d
 As referências de captura da exportação são Desktop 1440×900 e Mobile 390×844, sem escala artificial do desktop. A versão mobile preserva as composições A/B do `Section`; na seção Resultados, até 420 CSS px a lista de indicadores mantém uma coluna, como no site público. Resultados e Trajetória não usam rolagem interna; a exportação de depoimentos usa artigos estáticos. `data-pdf-section` marca as seções lógicas para uma futura composição de uma página física por seção.
 
 **Não comprovado nesta mudança:** paridade visual por screenshots com CMS e mídia de produção, dimensões finais de página PDF e ausência de recorte no arquivo PDF. Os testes de estrutura não substituem essa homologação.
+
+## Evidência visual em ambiente isolado — Etapa 3 (16/11/2026)
+
+O workflow `PDF Renderer Visual QA` monta a mesma árvore React do renderer em viewports Chromium **1440×900** e **390×844**, Original/Clean. Verifica seções lógicas, 4+20 cards de Resultados, experiências e Trajetória, depoimentos integrais, links do Hero, fundos Clean, ausência de navegação e overflow horizontal detectável. Produz 16 capturas de Perfil/Resultados/Invest RS/Depoimentos e relatório JSON no artefato do workflow. São fixtures de fallback com Trajetórias sintéticas; não substituem revisão visual de CMS/mídias produtivas nem certificam páginas físicas do PDF.
