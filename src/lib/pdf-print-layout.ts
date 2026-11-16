@@ -51,6 +51,13 @@ export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): 
         "px !important; break-before: auto !important; break-after: page !important; overflow: visible !important; }",
     )
     .join("\n")
+  // In print, 100svh follows the variable PDF page height rather than the
+  // 844px mobile reference. Freeze only these PDF-specific viewport elements.
+  const mobileViewportFreeze =
+    device === "mobile"
+      ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: 844px !important; min-height: 844px !important; }\\n" +
+        ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\\n"
+      : ""
   return (
     declarations +
     "\n@media print {\n" +
@@ -64,6 +71,7 @@ export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): 
     "px !important; max-width: none !important; height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }\n" +
     ".pdf-portfolio .portfolio-section:last-child { break-after: auto !important; }\n" +
     assignments +
+    "\n" + mobileViewportFreeze +
     "\n}\n"
   )
 }
