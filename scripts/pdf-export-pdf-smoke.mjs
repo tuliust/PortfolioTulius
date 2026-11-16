@@ -36,6 +36,7 @@ try {
     try {
       const width = device === "desktop" ? 1440 : 390
       const height = device === "desktop" ? 900 : 844
+      await page.setCacheEnabled(false)
       await page.setViewport({
         width,
         height,
@@ -47,7 +48,9 @@ try {
         origin + "/pdf-export-qa.html?device=" + device + "&palette=" + palette,
         { waitUntil: "networkidle0", timeout: 45000 },
       )
-      if (response?.status() !== 200) throw new Error("Fixture returned " + response?.status())
+      if (response?.status() !== 200 && response?.status() !== 304) {
+        throw new Error("Fixture returned " + response?.status())
+      }
       await page.waitForFunction(() => document.documentElement.dataset.pdfQaReady === "true")
 
       const manifest = await page.evaluate(async (slugs, mobileOrDesktop) => {
@@ -94,7 +97,17 @@ try {
       const info = execFileSync("pdfinfo", [file], { encoding: "utf8" })
       const actualPages = Number(info.match(/^Pages:\s*(\d+)/m)?.[1])
       if (actualPages !== sections.length) {
-        throw new Error("Physical PDF pages " + actualPages + ", requested " + sections.length)
+        const entries = []
+        for (let number = 1; number <= actualPages; number++) {
+          const text = execFileSync("pdftotext", [
+            "-f", String(number), "-l", String(number), file, "-",
+          ], { encoding: "utf8" })
+          entries.push({ page: number, text: text.replace(/\s+/g, " ").slice(0, 110) })
+        }
+        throw new Error(
+          "Physical PDF pages " + actualPages + ", requested " + sections.length +
+          "; manifest=" + JSON.stringify(manifest.pages) + "; pageStarts=" + JSON.stringify(entries),
+        )
       }
       const searchable = execFileSync("pdftotext", ["-layout", file, "-"], {
         encoding: "utf8",
