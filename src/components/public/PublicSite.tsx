@@ -1271,7 +1271,13 @@ function ResultsMobile({
   )
 }
 
-export function TestimonialCards({ items, expandedForExport = false }: { items: ContentItem[]; expandedForExport?: boolean }) {
+export function TestimonialCards({
+  items,
+  expandedForExport = false,
+}: {
+  items: ContentItem[]
+  expandedForExport?: boolean
+}) {
   const [expanded, setExpanded] = useState<string | null>(null)
 
   return (

@@ -2,12 +2,7 @@ import type { CSSProperties } from "react"
 import type { DesignTokens, PortfolioSection } from "../../types/content"
 import { heroColor, heroFont } from "../../lib/hero-formatting"
 import { selectPublishedPdfSections } from "../../lib/pdf-export-sections"
-import {
-  RESULT_THEME_KEYS,
-  ResultsCenter,
-  Section,
-  TestimonialCards,
-} from "./PublicSite"
+import { RESULT_THEME_KEYS, ResultsCenter, Section, TestimonialCards } from "./PublicSite"
 import { EXPERIENCE_SLUGS, PdfExperienceSection } from "./ExperienceStack"
 import "./PdfPortfolio.css"
 
@@ -63,7 +58,13 @@ function pdfSiteStyle(tokens: DesignTokens, colorMode: PdfColorMode): CSSPropert
   } as CSSProperties
 }
 
-function PdfResultsSection({ section, isMobile }: { section: PortfolioSection; isMobile: boolean }) {
+function PdfResultsSection({
+  section,
+  isMobile,
+}: {
+  section: PortfolioSection
+  isMobile: boolean
+}) {
   const topics = isMobile ? section.panelB : (section.desktopPanelB ?? section.panelB)
   return (
     <section
@@ -143,7 +144,9 @@ export function PdfPortfolio({
 
   return (
     <div
-      className={"public-site pdf-portfolio pdf-portfolio--" + device + " pdf-portfolio--" + colorMode}
+      className={
+        "public-site pdf-portfolio pdf-portfolio--" + device + " pdf-portfolio--" + colorMode
+      }
       data-pdf-device={device}
       data-pdf-palette={colorMode}
       style={pdfSiteStyle(tokens, colorMode)}

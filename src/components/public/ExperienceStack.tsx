@@ -773,17 +773,36 @@ export function PdfExperienceSection({
             {projects.map((item, index) => (
               <article className="experience-project" key={item.title + "-" + index}>
                 {item.meta && (
-                  <span className={"experience-project-meta " + (heroSizeClass(item.fieldFormats?.meta) ?? "")} style={heroTextStyle(item.fieldFormats?.meta)}>
+                  <span
+                    className={
+                      "experience-project-meta " + (heroSizeClass(item.fieldFormats?.meta) ?? "")
+                    }
+                    style={heroTextStyle(item.fieldFormats?.meta)}
+                  >
                     {item.meta}
                   </span>
                 )}
-                <h4 className={"experience-project-heading " + (heroSizeClass(item.fieldFormats?.title) ?? "")} style={heroTextStyle(item.fieldFormats?.title)}>
+                <h4
+                  className={
+                    "experience-project-heading " + (heroSizeClass(item.fieldFormats?.title) ?? "")
+                  }
+                  style={heroTextStyle(item.fieldFormats?.title)}
+                >
                   {isMobile && (
-                    <span className="pdf-experience-project-number">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="pdf-experience-project-number">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   )}
                   {item.title}
                 </h4>
-                {item.text && <p className={heroSizeClass(item.fieldFormats?.text)} style={heroTextStyle(item.fieldFormats?.text)}>{item.text}</p>}
+                {item.text && (
+                  <p
+                    className={heroSizeClass(item.fieldFormats?.text)}
+                    style={heroTextStyle(item.fieldFormats?.text)}
+                  >
+                    {item.text}
+                  </p>
+                )}
                 {item.tags?.length ? <p>{item.tags.join(" · ")}</p> : null}
               </article>
             ))}
@@ -799,7 +818,10 @@ export function PdfExperienceSection({
             )}
           </div>
         </div>
-        <aside className="pdf-experience-trajectory" data-pdf-missing-trajectory={detail?.trim() ? undefined : "true"}>
+        <aside
+          className="pdf-experience-trajectory"
+          data-pdf-missing-trajectory={detail?.trim() ? undefined : "true"}
+        >
           <h3 className="pdf-experience-column-heading">Trajetória</h3>
           {detail?.trim() ? (
             <ExperienceDetails description={detail} slug={section.slug} complete />

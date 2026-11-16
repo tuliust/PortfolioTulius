@@ -118,7 +118,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: start;
-  gap: clamp(.6rem, 1.5vw, 1.5rem);
+  gap: clamp(0.6rem, 1.5vw, 1.5rem);
 }
 
 .pdf-portfolio .pdf-results-group .results-topic {
@@ -127,7 +127,7 @@
 
 .pdf-portfolio .pdf-experience-layout {
   display: grid;
-  grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.05fr);
   gap: clamp(1rem, 2.5vw, 3rem);
   max-width: var(--container);
   min-height: 100svh;
@@ -142,7 +142,7 @@
 
 .pdf-portfolio .pdf-experience-column-heading {
   margin: 0 0 1rem;
-  padding: .6rem 0;
+  padding: 0.6rem 0;
   border-top: 1px solid var(--line);
   font: 800 clamp(1.45rem, 2vw, 2rem) / 1 var(--font-display);
   text-transform: uppercase;
@@ -150,32 +150,32 @@
 
 .pdf-portfolio .pdf-experience-project-list {
   display: grid;
-  gap: .8rem;
+  gap: 0.8rem;
 }
 
 .pdf-portfolio .pdf-experience-projects .experience-project {
   position: static;
   display: block;
   width: 100%;
-  padding: .7rem 0;
+  padding: 0.7rem 0;
   border-bottom: 1px solid var(--line);
 }
 
 .pdf-portfolio .pdf-experience-projects .experience-project-heading {
   display: block;
-  margin: 0 0 .4rem;
+  margin: 0 0 0.4rem;
   font: 750 clamp(1.2rem, 1.6vw, 1.7rem) / 1.05 var(--font-display);
   text-transform: uppercase;
 }
 
 .pdf-portfolio .pdf-experience-projects .experience-project p {
-  font-size: clamp(.82rem, .95vw, 1rem);
+  font-size: clamp(0.82rem, 0.95vw, 1rem);
   line-height: 1.45;
 }
 
 .pdf-portfolio .pdf-experience-project-number {
   display: inline-block;
-  margin-right: .75rem;
+  margin-right: 0.75rem;
   color: var(--orange-dark);
 }
 
@@ -184,7 +184,7 @@
 }
 
 .pdf-portfolio .pdf-experience-trajectory .experience-full-body p {
-  font-size: clamp(.82rem, .95vw, 1rem);
+  font-size: clamp(0.82rem, 0.95vw, 1rem);
   line-height: 1.55;
   overflow-wrap: anywhere;
 }
@@ -258,7 +258,9 @@
   filter: grayscale(1) !important;
 }
 
-.pdf-portfolio--clean .portfolio-section :is(.item-label, .item-value, .results-axis, .experience-eyebrow) {
+.pdf-portfolio--clean
+  .portfolio-section
+  :is(.item-label, .item-value, .results-axis, .experience-eyebrow) {
   color: #454545 !important;
 }
 
