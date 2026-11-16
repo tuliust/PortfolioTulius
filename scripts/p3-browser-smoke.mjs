@@ -11,6 +11,30 @@ const browser = await puppeteer.launch({
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 })
 let failures = 0
+
+// A viewport capture made during the CMS entrance animation looks artificially
+// washed out. Capture the settled visual state without disabling the approved
+// motion, and fail loudly if that state is never reached.
+async function screenshotSettledResults(page, selector, filename) {
+  await page.evaluate((target) => {
+    document.querySelector(target)?.scrollIntoView({ behavior: "instant", block: "start" })
+  }, selector)
+  await page.waitForFunction((target) => {
+    const section = document.querySelector("#resultados")
+    const panel = document.querySelector(target)
+    if (!section || !panel) return false
+    const sectionOpacity = Number.parseFloat(getComputedStyle(section).opacity)
+    const onScreen = [...panel.querySelectorAll(".results-metrics-grid .content-item")]
+      .filter((card) => {
+        const box = card.getBoundingClientRect()
+        return box.bottom > 0 && box.top < innerHeight
+      })
+    return sectionOpacity >= .99 &&
+      onScreen.length > 0 &&
+      onScreen.every((card) => Number.parseFloat(getComputedStyle(card).opacity) >= .98)
+  }, { timeout: 8000 }, selector)
+  await page.screenshot({ path: path.join(shots, filename), fullPage: false })
+}
 try {
   for (const route of ["/admin", "/admin/preview"]) {
     const page = await browser.newPage()
@@ -383,12 +407,7 @@ try {
               viewport.width + "px for " + theme.key + ": " + JSON.stringify(geometry))
           }
           if (viewport.width === 390) {
-            await page.evaluate(() =>
-              document.querySelector("#resultados-a")?.scrollIntoView({ behavior: "instant", block: "start" }))
-            await page.screenshot({
-              path: path.join(shots, "p3-results-" + theme.key + "-390.png"),
-              fullPage: false,
-            })
+            await screenshotSettledResults(page, "#resultados-a", "p3-results-" + theme.key + "-390.png")
           }
         }
       }
@@ -792,12 +811,7 @@ try {
         if (state.count !== 4 || !state.scrollAccessible || !state.noOverflow) {
           throw new Error("Desktop compact metrics regression for " + theme.key + ": " + JSON.stringify(state))
         }
-        await page.evaluate(() =>
-          document.querySelector("#resultados")?.scrollIntoView({ behavior: "instant", block: "start" }))
-        await page.screenshot({
-          path: path.join(shots, "p3-results-" + theme.key + "-1440.png"),
-          fullPage: false,
-        })
+        await screenshotSettledResults(page, "#resultados", "p3-results-" + theme.key + "-1440.png")
       }
       stage = "restore overview"
       await page.click("#resultados .desktop-panel .results-theme-list button:first-child")
