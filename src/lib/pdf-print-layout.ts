@@ -71,7 +71,8 @@ export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): 
     "px !important; max-width: none !important; height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }\n" +
     ".pdf-portfolio .portfolio-section:last-child { break-after: auto !important; }\n" +
     assignments +
-    "\n" + mobileViewportFreeze +
+    "\n" +
+    mobileViewportFreeze +
     "\n}\n"
   )
 }
