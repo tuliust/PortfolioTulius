@@ -296,7 +296,11 @@ function ExperienceContent({
                 <button
                   type="button"
                   className="experience-project-choice"
-                  aria-label={`Selecionar projeto ${item.title}`}
+                  aria-label={
+                    projectSlides.some((slide) => slide.item === item)
+                      ? `Exibir imagem de ${item.title}`
+                      : `Selecionar projeto ${item.title}`
+                  }
                   aria-current={projectIndex === activeProject ? "true" : undefined}
                   onClick={() => {
                     setActiveProject(projectIndex)

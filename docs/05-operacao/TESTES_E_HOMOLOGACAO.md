@@ -278,3 +278,7 @@ Teste funcional de React: seleção dos cinco projetos desktop e mobile, projeto
 ### Evidência do segundo commit
 
 `5efbd8e`: Validate #43840799944 **FAILURE** após `format:check` e TypeScript **SUCCESS**; `fallback.test.ts` teve duas expectativas desatualizadas (terceiro indicador geral e itens históricos ocultos no fallback). Foi preparada correção que mantém os itens históricos como `isHidden=true`, conserva cinco itens visíveis e atualiza o teste do novo indicador. Validar novamente pelo próximo SHA.
+
+### Evidência P3 preliminar e restauração de contrato acessível — 16/11/2026
+
+Em `5efbd8e`, [P3 #43840800020](https://github.com/tuliust/PortfolioTulius/actions/runs/43840800020) terminou **FAILURE**: teste de interação procurava o rótulo acessível legado `Exibir imagem de Organização de eventos` (renomeado indevidamente no primeiro código); a análise também identificou timeout de 15 s na rota anônima `/admin` e mediana LCP mobile de **3.545,158 ms** (limite 3.500 ms), com desktop PASS. O renderer voltou a usar o rótulo legado nos projetos associados a slides e usa `Selecionar projeto` nos itens sem imagem, sem modificar o desenho do componente nem a autorização administrativa. Falhas de rota e performance são evidência desse SHA, não autorização para reabrir backlog; repetir P3 no próximo SHA e registrar seu resultado real.
