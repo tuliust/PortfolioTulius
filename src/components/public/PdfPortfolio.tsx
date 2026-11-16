@@ -81,7 +81,12 @@ function PdfResultsSection({
         <div className="pdf-results-flow">
           <div className="pdf-results-group pdf-results-overview">
             <h3 className="pdf-results-group-heading">Visão geral — indicadores</h3>
-            <ResultsCenter section={section} selectedTheme={null} mobile={isMobile} staticForExport />
+            <ResultsCenter
+              section={section}
+              selectedTheme={null}
+              mobile={isMobile}
+              staticForExport
+            />
           </div>
           {topics.map((topic, index) => (
             <div className="pdf-results-group" key={topic.themeKey || index}>

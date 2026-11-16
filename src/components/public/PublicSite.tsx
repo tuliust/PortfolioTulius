@@ -1123,7 +1123,9 @@ export function ResultsCenter({
       className={`results-center${compact ? " is-compact" : ""}`}
       aria-live={staticForExport ? undefined : "polite"}
       role={compact && !mobile && !staticForExport ? "region" : undefined}
-      aria-label={compact && !mobile && !staticForExport ? `Indicadores de ${topic?.title}` : undefined}
+      aria-label={
+        compact && !mobile && !staticForExport ? `Indicadores de ${topic?.title}` : undefined
+      }
       tabIndex={compact && !mobile && !staticForExport ? 0 : undefined}
     >
       {topic && (

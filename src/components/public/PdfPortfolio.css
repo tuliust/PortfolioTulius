@@ -288,12 +288,13 @@
 }
 
 /* PDF layout: text columns are never sticky or internally scrollable. */
-.pdf-portfolio :is(
-  .pdf-experience-layout,
-  .pdf-experience-layout > *,
-  .pdf-results-page,
-  .pdf-testimonials-page
-) {
+.pdf-portfolio
+  :is(
+    .pdf-experience-layout,
+    .pdf-experience-layout > *,
+    .pdf-results-page,
+    .pdf-testimonials-page
+  ) {
   position: relative;
   top: auto;
   max-height: none;
