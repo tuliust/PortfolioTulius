@@ -55,8 +55,8 @@ export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): 
   // 844px mobile reference. Freeze only these PDF-specific viewport elements.
   const mobileViewportFreeze =
     device === "mobile"
-      ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: 844px !important; min-height: 844px !important; }\\n" +
-        ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\\n"
+      ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: 844px !important; min-height: 844px !important; }\n" +
+        ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\n"
       : ""
   return (
     declarations +
