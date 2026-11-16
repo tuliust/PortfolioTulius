@@ -339,3 +339,5 @@ Foram adicionados testes unitários para os viewports Desktop 1440×900 e Mobile
 ## Etapa 3 — workflow visual de PDF (16/11/2026)
 
 Arquivos: `.github/workflows/pdf-export-visual.yml`, `scripts/pdf-export-visual-smoke.mjs`, `pdf-export-qa.html` e `src/pdf-export-qa.tsx`. Os testes usam Puppeteer/Chrome e fixture sem dados produtivos, avaliam as quatro modalidades e geram PNGs/JSON do resultado; o workflow também comprova que o HTML de QA não integra `dist`. O resultado efetivo deverá ser registrado por SHA após execução. O relatório de fixture não atesta paridade pixel-a-pixel com produção, métricas LCP ou sucesso da paginação PDF final.
+
+**Primeira execução da QA visual** [#43862394922](https://github.com/tuliust/PortfolioTulius/actions/runs/43862394922), SHA `de65def`: **FAILURE por assertiva incorreta de seleção dos links mobile**, não por ausência de links; Desktop Original e Clean **PASS**, mobile com ordem, 24 indicadores, 6×5 projetos, Trajetórias, depoimentos, fundo Clean, overflow e clipping **PASS**. O seletor foi corrigido em revisão posterior; reexecutar e registrar novo resultado por SHA.

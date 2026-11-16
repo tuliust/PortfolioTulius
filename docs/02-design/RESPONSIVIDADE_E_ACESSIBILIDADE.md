@@ -161,3 +161,5 @@ As referências de captura da exportação são Desktop 1440×900 e Mobile 390×
 ## Evidência visual em ambiente isolado — Etapa 3 (16/11/2026)
 
 O workflow `PDF Renderer Visual QA` monta a mesma árvore React do renderer em viewports Chromium **1440×900** e **390×844**, Original/Clean. Verifica seções lógicas, 4+20 cards de Resultados, experiências e Trajetória, depoimentos integrais, links do Hero, fundos Clean, ausência de navegação e overflow horizontal detectável. Produz 16 capturas de Perfil/Resultados/Invest RS/Depoimentos e relatório JSON no artefato do workflow. São fixtures de fallback com Trajetórias sintéticas; não substituem revisão visual de CMS/mídias produtivas nem certificam páginas físicas do PDF.
+
+A seta interna `profile-mobile-next` (rolagem entre painéis do Perfil mobile) é ocultada apenas no PDF; links dos cinco eixos de atuação permanecem acionáveis. O script Chromium conta esses links pela marcação mobile `.profile-mobile-area-list a` e pela classe desktop `.area-card-link`, sem exigir classes iguais para layouts diferentes.

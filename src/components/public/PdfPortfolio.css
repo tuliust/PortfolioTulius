@@ -309,3 +309,8 @@
   position: static;
   top: auto;
 }
+
+/* The mobile downward chevron is a navigation control, not PDF content. */
+.pdf-portfolio .profile-mobile-next {
+  display: none !important;
+}

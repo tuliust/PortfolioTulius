@@ -114,10 +114,16 @@ try {
             unwantedControls: document.querySelectorAll(
               ".site-header, .experience-index, .experience-gallery, .results-theme-list, .testimonial-action",
             ).length,
-            profileArrowHidden: [...document.querySelectorAll(".profile-next-section")].every(
+            profileArrowHidden: [
+              ...document.querySelectorAll(".profile-next-section, .profile-mobile-next"),
+            ].every(
               (el) => getComputedStyle(el).display === "none",
             ),
-            heroLinks: document.querySelectorAll("#perfil a.area-card-link").length,
+            heroLinks: [...document.querySelectorAll("#perfil a[href^='#']")].filter(
+              (anchor) =>
+                anchor.classList.contains("area-card-link") ||
+                Boolean(anchor.closest(".profile-mobile-area-list")),
+            ).length,
             textClipping: clipping.length,
             horizontalOverflowPx: Math.max(0, document.documentElement.scrollWidth - innerWidth),
           }
