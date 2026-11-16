@@ -262,7 +262,8 @@ export default function PdfExportPanel({
         <p className="pdf-export-help">
           Clique em <strong>Gerar PDF</strong> e escolha <strong>Salvar como PDF</strong> no diálogo
           do navegador. Os textos e links permanecem pesquisáveis e clicáveis; cada seção
-          selecionada ocupa uma página de altura adaptada ao conteúdo. Ative gráficos de fundo para preservar as cores e desative cabeçalhos e rodapés de impressão.
+          selecionada ocupa uma página de altura adaptada ao conteúdo. Ative gráficos de fundo para
+          preservar as cores e desative cabeçalhos e rodapés de impressão.
         </p>
       </section>
     </div>
