@@ -5,6 +5,8 @@
 
 ## Conteúdo publicado de Resultados — releitura de produção em 16/11/2026
 
+**Releitura de produção em 16/11, repetida sem escrita na consolidação posterior:** o bloco A permanece com 20 itens (quatro selecionados para visão geral) e o B com cinco temas compactos, sem mudança de schema ou status. Os totais são contagens do conteúdo publicado, não validação externa dos números das campanhas.
+
 A seção `resultados` manteve **dois registros publicados** em `content_blocks`: **bloco A com 20 itens** (quatro por categoria `corporativa`, `projetos`, `eventos`, `marketing`, `imprensa`) e **bloco B com cinco temas**, todos `themePresentation="metrics"`. Quatro métricas do A têm `showInOverview=true`, na ordem R$ 12 milhões, +225%, 100+ ao vivo e 25 eventos. No B, `corporativa` tem o eixo “Estratégia e Reputação”, título interno “Comunicação que conecta” e subtítulo editorial atualizado; os demais títulos temáticos foram mantidos. Os dados foram relidos após a atualização de produção.
 
 A escrita inicial desses dois JSONB foi **UPDATE restrito em transação com guardas de `updated_at` e hash do estado anterior**, sem DDL, migration, alteração de grants, RLS, Auth, Storage ou novas tabelas. Os textos editoriais preexistentes dos temas foram preservados. Edições futuras devem seguir o fluxo normal de CMS/RPC `save_section_block_atomic`, com salvamento e controle de concorrência independentes por bloco; não presumir que editar A+B via painel seja transação única. [Modelo de dados](../03-cms/MODELO_DE_DADOS.md) · [guia administrativo](../03-cms/GUIA_ADMINISTRATIVO.md).
@@ -33,7 +35,7 @@ Staging aprovado é Supabase CLI + Docker **local e sintético**, via [`config.t
 
 [Segurança](SEGURANCA_E_ACESSOS.md) · [Backup](../05-operacao/BACKUP_E_RECUPERACAO.md).
 
-## Registro operacional de conteúdo desktop — 12/11/2026
+## Registro histórico de conteúdo desktop — 12/11/2026 (substituído parcialmente por ajustes de 16/11)
 
 **Serviço de produção:** projeto `portfolio` (`zfnrhzplwpjpdljraypt`), esquema `public`. O refinamento visual desktop alterou **somente `content_blocks.content_json` e `updated_at` de quatro blocos publicados**, encontrados por `sections.slug` + `content_blocks.sort_order` + `status='published'`. A escrita direta SQL verificou, antes do UPDATE, as cardinalidades de `items` e a ausência de valores `desktop` concorrentes, exigindo exatamente quatro blocos; a leitura posterior confirmou os dados.
 
@@ -57,11 +59,11 @@ A releitura de 12/11 confirmou os quatro blocos e nenhuma configuração `items[
 - Nenhuma escrita, migration, RLS, Auth, Storage ou configuração foi alterada. Não executar teste de gravação no banco de produção para verificar conector.
 
 
-## Ajustes editoriais desktop em produção — 16/11/2026
+## Ajustes editoriais do Perfil/Sobre em produção — 16/11/2026 (histórico do ciclo)
 
-Intervenção aprovada no projeto `portfolio` (`zfnrhzplwpjpdljraypt`), restrita a três registros existentes de `content_blocks` via UPDATE JSONB sob verificações de `updated_at` e valores anteriores: Perfil/A (`hero.desktop.introSize` 16→15 e novo `yearsSize=55`); Perfil/B (seis `desktop.titleSize` 23→21); Sobre/B (cinco `desktop.textSize=14`). A intenção é manter a fonte única de verdade no CMS. Não há DDL, migration, alterações em RLS, Auth, Storage ou outros JSONB. O registro do procedimento não substitui a verificação SQL pós-execução. A atualização do código segue na `main`, com documentação no mesmo ciclo.
+Intervenção aprovada no projeto `portfolio` (`zfnrhzplwpjpdljraypt`), restrita a três registros existentes de `content_blocks` via UPDATE JSONB sob verificações de `updated_at` e valores anteriores: Perfil/A (`hero.desktop.introSize` 16→15 e novo `yearsSize=55`); Perfil/B (seis `desktop.titleSize` 23→21); Sobre/B (cinco `desktop.textSize=14`). A intenção é manter a fonte única de verdade no CMS. Não há DDL, migration, alterações em RLS, Auth, Storage ou outros JSONB. A atualização foi tratada separadamente do ensaio autenticado de salvamento pelo admin. Para os valores realmente vigentes, conferir `content_json` na produção: os números da operação de 12/11 são históricos, pois parte deles foi alterada em 16/11.
 
 
 ## Tamanho editorial do Hero desktop — 16/11/2026
 
-No projeto produtivo `portfolio`, o bloco publicado `perfil`/A (sort_order=1, ID `a2f4770b-7964-4f3c-b816-c778b66ac15c`) teve **somente** `content_json.items[0].hero.desktop.yearsSize` alterado de **55 para 51**, com verificação do `updated_at` e valores anteriores, preservando todas as demais propriedades JSONB e valores mobile. A alteração foi solicitada e é lida tanto pelo frontend quanto pelo controle existente do painel. A subida e redução discreta do selo são CSS, sem atualização de dados, Storage, Auth, RLS, schema ou migrations. Verificar o valor pós-escrita e o SHA de publicação ao concluir; este registro não equivale a teste de salvamento pela interface administrativa.
+No projeto produtivo `portfolio`, o bloco publicado `perfil`/A (sort_order=1, ID `a2f4770b-7964-4f3c-b816-c778b66ac15c`) teve **somente** `content_json.items[0].hero.desktop.yearsSize` alterado de **55 para 51**, com verificação do `updated_at` e valores anteriores, preservando todas as demais propriedades JSONB e valores mobile. A alteração foi solicitada e é lida tanto pelo frontend quanto pelo controle existente do painel. A subida e redução discreta do selo são CSS, sem atualização de dados, Storage, Auth, RLS, schema ou migrations. A alteração foi conferida no ciclo original com registro de CI e publicação nos documentos de [homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md). Este histórico não equivale a teste de salvamento pela interface administrativa nem a uma nova verificação desses valores nesta rodada.

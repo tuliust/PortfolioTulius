@@ -1,11 +1,15 @@
 # Guia operacional do CMS
 **Status:** contrato administrativo vigente · **Revisão:** 16/11/2026. Campos temáticos de Resultados implementados; distinguir a leitura pública homologada da edição autenticada ainda não revalidada integralmente no último SHA.
 
-## Resumo operacional vigente — Resultados (16/11/2026)
+## Resultados — operação vigente do editor (16/11/2026)
 
-Na seção 03, **Centro/A** é a fonte única dos 20 indicadores e **Direita/B** contém cinco categorias. Cada categoria exibida em `metrics` seleciona quatro itens por `relatedThemeKeys`; a visão geral usa `showInOverview` e `overviewOrder` (quatro itens). Os campos editoriais antigos são mantidos, mas não renderizados no modo compacto. Não duplicar indicadores no bloco B nem recriar tabelas/placements. O site publicado foi auditado no SHA `9915964` pela [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772), com **SUCCESS** de navegação e responsividade.
+**Editor do site → Resultados e projetos em destaque:** `Centro` (bloco A) é a **fonte única dos 20 indicadores**; `Direita` (bloco B) reúne **cinco categorias**. O editor do bloco A permite **Adicionar indicador**, editar valor/título/descrição/ícone, ordenar, marcar os temas vinculados por `relatedThemeKeys`, escolher **Exibir também na visão geral** (`showInOverview`) e definir **Ordem na visão geral** (`overviewOrder`). Quatro indicadores permanecem na visão geral, independentemente da ordem temática. Propriedade `showInOverview` ausente mantém a visibilidade legada do item.
 
-**Nível de evidência do editor:** os controles foram implementados; P5 Admin read-only e P5 transacional sintético **SUCCESS** no SHA intermediário `cb953dad`. Nenhum ensaio completo de escrita autenticada dos 20 indicadores no **SHA `9915964`** foi apresentado. A primeira carga de conteúdo foi aplicada por SQL com guardas e confirmada por releitura em produção. O CMS usa RPC/CAS e persiste A e B separadamente; não tratar o fluxo como transação única. [Modelo](MODELO_DE_DADOS.md) · [homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+Cada categoria do bloco B tem `themeKey` estável e o seletor **Apresentação da categoria**: `editorial` (legado) ou `metrics` (compacta). Em `metrics`, aparecem **eixo, título, subtítulo e quatro indicadores**, preservando no CMS os campos antigos `themeTopics`, `themeSummary` e `inheritedHighlights` sem renderizá-los. Em produção, todas as cinco categorias usam `metrics`; Comunicação Corporativa tem eixo “Estratégia e Reputação” e título “Comunicação que conecta”.
+
+**Persistência e limites:** o Centro e a Direita são dois blocos independentes, salvos separadamente pela RPC/CAS administrativa `save_section_block_atomic`, sem transação única entre ambos. A carga inicial dos dois JSONB foi feita por **SQL restrito com guardas de versão e releitura**, não por salvamento autenticado no painel. No SHA intermediário `cb953dad`, P5 read-only e P5 sintético foram **SUCCESS**; no último SHA funcional `9915964`, a auditoria pública P3 foi **SUCCESS**, mas não foi demonstrado um teste integral autenticado de editar→salvar→reler os 20 itens nesse SHA. Não duplicar itens no B ou executar CRUD de testes em produção.
+
+[Modelo de dados](MODELO_DE_DADOS.md) · [Arquitetura](../01-projeto/ARQUITETURA.md) · [Homologação por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).
 
 ## Acesso e áreas
 `/admin/login` autentica pelo Supabase Auth, com autorização pela tabela `admin_users`. `/admin` abriga o editor; `/admin/preview` exige autenticação. Módulos: Visão geral, Editor do site, Identidade, Mídia, Navegação, SEO, Revisões e Prévia.
@@ -92,15 +96,3 @@ Todos os campos seguem o salvamento CAS/RPC `save_section_block_atomic` do edito
 ## Revisão do campo +15 ANOS — 16/11/2026
 
 No **Perfil → Coluna esquerda → Apresentação**, o campo existente **“Tamanho de +15 ANOS no desktop (px)”** agora tem valor publicado **51 px** (anteriormente 55 px), armazenado em `content_blocks.content_json.items[0].hero.desktop.yearsSize`. Não foi criado campo novo. As alterações geométricas do selo são CSS desktop e continuam respeitando o valor editável `hero.desktop.badgeSize` quando fornecido. O conteúdo editorial, `hero.mobile`, `hero.mobileEditorial` e a edição mobile não mudam. Edite os tamanhos do título pelo CMS normalmente; a modificação SQL desta entrega foi protegida por checagem da versão do bloco, sem testar gravação pela interface.
-
-## Resultados com indicadores compactos — 16/11/2026
-
-**Editor do site → Resultados e projetos em destaque → Centro (bloco A):** permite adicionar indicadores sem editar JSON, alterar valor, título, texto, ícone, ordenar os itens e marcar categorias em `relatedThemeKeys`. O controle **Exibir também na visão geral** grava `showInOverview`; **Ordem na visão geral** grava `overviewOrder`, preservando a ordem dos quatro cards gerais separada da ordem temática.
-
-**Direita (bloco B):** cada uma das cinco categorias pode escolher **Apresentação da categoria**: `editorial` ou `metrics` (compacta). No modo compacto, somente eixo, título, subtítulo e indicadores aparecem no site. `themeTopics`, `themeSummary` e `inheritedHighlights` continuam no CMS, sem exclusão. A categoria corporativa adota “Estratégia e Reputação” e “Comunicação que conecta”. Os identificadores `themeKey` continuam estáveis para os vínculos com o Hero.
-
-O Centro e a Direita são **dois blocos independentes**, salvos separadamente pela RPC de conteúdo já existente; não há falsa promessa de transação conjunta. Os 20 indicadores temáticos são mantidos somente no bloco A, e quatro deles participam também da visão geral. Verificar edição, salvar e reler cada bloco.
-
-### Estado editorial verificado em produção — 16/11/2026
-
-O Supabase publicou e confirmou por leitura posterior os **20 indicadores** do bloco A de Resultados (quatro por categoria), **quatro selecionados para a visão geral**, e os cinco itens do bloco B no modo compacto. A categoria Comunicação Corporativa usa o eixo “Estratégia e Reputação”, título “Comunicação que conecta” e os quatro indicadores de 14 países, 1.000+, +12% e +28%. As demais quatro categorias mantêm seus títulos existentes e exibem quatro indicadores cada. Os campos anteriores (`themeTopics`, `themeSummary`, `inheritedHighlights`) foram preservados, embora não apareçam no modo compacto. A transação de conteúdo foi protegida por condição de versão dos dois blocos; não alterou schema ou RLS. Evidência de CI e ressalvas do P3 estão registradas em [Testes e homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md).
