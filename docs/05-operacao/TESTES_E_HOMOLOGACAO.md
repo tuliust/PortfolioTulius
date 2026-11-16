@@ -274,3 +274,7 @@ Teste funcional de React: seleção dos cinco projetos desktop e mobile, projeto
 ### Evidência do primeiro commit da revisão
 
 `04373cef`: Validate #43840555522 **FAILURE** no gate de formatação (`ExperienceStack.tsx`, `experienceEditorial.ts`); as etapas posteriores de TypeScript/testes/build foram **não executadas** nesse job. A correção estritamente de formatação foi preparada no commit consecutivo; o resultado desse commit deve ser verificado pelo próprio workflow, sem herdar o estado anterior.
+
+### Evidência do segundo commit
+
+`5efbd8e`: Validate #43840799944 **FAILURE** após `format:check` e TypeScript **SUCCESS**; `fallback.test.ts` teve duas expectativas desatualizadas (terceiro indicador geral e itens históricos ocultos no fallback). Foi preparada correção que mantém os itens históricos como `isHidden=true`, conserva cinco itens visíveis e atualiza o teste do novo indicador. Validar novamente pelo próximo SHA.

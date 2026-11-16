@@ -86,7 +86,7 @@ describe("interação da seção 03 e remoção da seção 04", () => {
     expect(selectResultMetrics(metrics).map((item) => item.value)).toEqual([
       "R$ 12 milhões",
       "+225%",
-      "100+ ao vivo",
+      "400+",
       "25 eventos",
     ])
     expect(results?.panelB.map((theme) => selectResultMetrics(metrics, theme).length)).toEqual([
@@ -106,6 +106,25 @@ describe("interação da seção 03 e remoção da seção 04", () => {
 
 describe("formação e experiência profissional em camadas", () => {
   const companies = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"]
+
+  it("apresenta cinco projetos visíveis por empresa sem apagar itens históricos", () => {
+    for (const slug of companies) {
+      const section = sections.find((item) => item.slug === slug)
+      const visible = [...(section?.panelA ?? []), ...(section?.panelB ?? [])].filter(
+        (item) =>
+          item.title !== "Competências aplicadas" &&
+          !item.value &&
+          item.isHidden !== true,
+      )
+      expect(visible).toHaveLength(5)
+    }
+    const globo = sections.find((section) => section.slug === "globo-sportv")
+    const visibleTexts = [...(globo?.panelA ?? []), ...(globo?.panelB ?? [])]
+      .filter((item) => item.isHidden !== true)
+      .map((item) => item.text)
+    expect(visibleTexts.some((text) => text?.includes("100 participações"))).toBe(true)
+    expect(visibleTexts.some((text) => text?.includes("200 jogos"))).toBe(true)
+  })
 
   it("usa identidade escura na formação e papel branco nas seis empresas", () => {
     expect(sections.find((section) => section.slug === "formacao")?.theme).toBe("ink")

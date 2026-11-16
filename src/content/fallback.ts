@@ -1004,9 +1004,22 @@ export const sections: PortfolioSection[] = seededSections.map((section) => {
   const competency = [...section.panelA, ...section.panelB].find(
     (item) => item.title.toLowerCase() === "competências aplicadas",
   )
+  const publishedTitles = new Set(projects.map((item) => item.title.toLowerCase()))
+  const preservedHiddenItems = (items: PortfolioSection["panelA"]) =>
+    items
+      .filter(
+        (item) =>
+          item.title.toLowerCase() !== "competências aplicadas" &&
+          !publishedTitles.has(item.title.toLowerCase()),
+      )
+      .map((item) => ({ ...item, isHidden: true }))
   return {
     ...section,
-    panelA: [...(competency ? [competency] : []), ...projects.slice(0, 3)],
-    panelB: projects.slice(3),
+    panelA: [
+      ...(competency ? [competency] : []),
+      ...projects.slice(0, 3),
+      ...preservedHiddenItems(section.panelA),
+    ],
+    panelB: [...projects.slice(3), ...preservedHiddenItems(section.panelB)],
   }
 })
