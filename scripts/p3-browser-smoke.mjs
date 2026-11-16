@@ -23,6 +23,10 @@ async function screenshotSettledResults(page, selector, filename) {
     const section = document.querySelector("#resultados")
     const panel = document.querySelector(target)
     if (!section || !panel) return false
+    // Wait for IntersectionObserver to activate the section before checking
+    // opacity: immediately after scrolling, opacity may still be 1 because
+    // the entrance animation has not started yet.
+    if (!section.classList.contains("cms-section-entered")) return false
     const sectionOpacity = Number.parseFloat(getComputedStyle(section).opacity)
     const onScreen = [...panel.querySelectorAll(".results-metrics-grid .content-item")]
       .filter((card) => {
