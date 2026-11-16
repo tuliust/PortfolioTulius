@@ -130,7 +130,10 @@ try {
       if (selected.has("contato") && !contact.includes("<a href=")) {
         throw new Error("Missing clickable Contact links")
       }
-      if (sections.length < allSections.length && !hero.includes("https://tulius.work/")) {
+      const excludedHeroLinks = await page.evaluate(() =>
+        document.querySelectorAll("#perfil a[data-pdf-print-original-href]").length,
+      )
+      if (excludedHeroLinks > 0 && !hero.includes("https://tulius.work/")) {
         throw new Error("Excluded-section Hero links should open the live site")
       }
       const record = {
