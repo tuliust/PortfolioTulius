@@ -319,3 +319,7 @@ Em `5efbd8e`, [P3 #43840800020](https://github.com/tuliust/PortfolioTulius/actio
 Implementação isolada: `PdfPortfolio.tsx`, `PdfPortfolio.css`, `PdfExperienceSection` e seleção pura `pdf-export-sections.ts`, com três testes de ordem, visibilidade e seleção. A integração e o serviço de PDF não foram executados nesta etapa. Verificar `pnpm check` no CI do commit pertinente, distinguindo sucesso e falha reais.
 
 **Ainda pendente:** renderização em navegador das 13 seções, desktop/mobile, Original/Clean, sem truncamento, fontes e fotografias reais, hyperlinks Hero/Contato, páginas de altura variável e comparativos visuais. A prova de conceito isolada da Etapa 1 não comprova fidelidade deste renderer. A P3 histórica de `8ed19b0` permanece FAILURE por LCP mobile.
+
+### Validação adicional de estrutura HTML — Etapa 2
+
+O teste `src/components/public/PdfPortfolio.test.tsx` usa React SSR sintético para confirmar, em desktop e mobile, a ordem de três seções, visão geral e tema contínuos, projetos visíveis, Trajetória integral, depoimentos sem botão e ausência de menus/galerias. Esses testes **não** validam dimensões físicas de páginas, fotos nem paridade visual com produção; tais condições continuam para as etapas posteriores.
