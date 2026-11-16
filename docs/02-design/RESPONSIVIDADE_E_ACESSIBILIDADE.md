@@ -115,3 +115,12 @@ No Perfil, `profile-desktop` conserva `min-height: 100dvh` e passa a crescer com
 Na seção “Olá!”, os textos da coluna direita passam a ler a variável de estilo desktop dos itens, em vez de ignorá-la. Em Resultados (≥1101 px), a grade central de indicadores fica mais estreita, com aumento das duas separações horizontais; de 768 a 1100 px há apenas reforço moderado de espaçamento. Na coluna esquerda das seis Experiências, margens de título, função, período e competências foram ampliadas somente no contêiner `experience-desktop`.
 
 **Única exceção mobile:** o botão `.mobile360-down` (e o fallback `.profile-mobile-next`) preserva 44 px de alvo, recebe o mesmo movimento suave do círculo inteiro e deixa de animar o SVG isoladamente. Os demais estilos e dados mobile permanecem iguais. Para `prefers-reduced-motion: reduce`, a animação é desligada. Confirmar viewport, altura curta, navegação, foco e ausência de clipping no ciclo de testes desta intervenção.
+
+
+## Botão de navegação do Hero visível na primeira dobra — 16/11/2026
+
+Depois da validação visual de 16/11/2026, o proprietário observou que a seta desktop ficava **abaixo da área visível** porque `.profile-desktop` pode crescer verticalmente (comportamento necessário para não cortar as experiências). A posição inferior absoluta (`bottom`) calculada em relação ao contêiner inteiro não é adequada para esse caso.
+
+A regra final em `src/index.css` fixa a posição **dentro da seção, na altura da primeira dobra**, por `top: calc(100dvh - 3.4rem)` e `bottom: auto`, com `z-index: 3`. Em desktop amplo (**≥1101 px**), o centro horizontal do círculo fica em **63,5% da largura total do Hero**, seguindo a marcação visual do proprietário; entre **768–1100 px**, mantém a centralização horizontal anterior. O link continua descendente de `ProfileDesktop`, navegando pela mesma âncora; não usa `position: fixed`, portanto desaparece naturalmente ao rolar para outras seções. O botão mantém **2,6 rem**, animação de movimento suave do círculo inteiro e regra `prefers-reduced-motion`.
+
+A alteração **não modifica** o mobile (≤767 px), o conteúdo das duas colunas, o tamanho do Hero, os campos do CMS nem os blocos no Supabase. Os registros antigos que mencionam centralização no viewport e posicionamento inferior descrevem versões anteriores e são superados para desktop amplo por esta decisão posterior.

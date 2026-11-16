@@ -3038,9 +3038,13 @@
     padding-bottom: clamp(4.75rem, 9dvh, 5.75rem);
   }
   .public-site #perfil .profile-next-section {
+    /* Anchor to the first visible fold, not the bottom of a growing Hero.
+       This stays in the section flow and scrolls away with the Hero. */
+    top: calc(100dvh - 3.4rem);
+    bottom: auto;
+    z-index: 3;
     width: 2.6rem;
     height: 2.6rem;
-    bottom: clamp(.5rem, 1.3dvh, .9rem);
     animation: profile-button-bob 1.9s ease-in-out infinite;
   }
   .public-site #perfil .profile-next-section svg {
@@ -3087,6 +3091,13 @@
   }
   .public-site .experience-desktop > .experience-heading .experience-competencies {
     margin-top: clamp(1.1rem, 2.4dvh, 1.7rem);
+  }
+}
+@media (min-width: 1101px) {
+  /* The owner's indicated spot is near the center of the white content area,
+     slightly left of its midpoint; do not affect tablet or mobile. */
+  .public-site #perfil .profile-next-section {
+    left: 63.5%;
   }
 }
 @media (min-width: 1101px) {

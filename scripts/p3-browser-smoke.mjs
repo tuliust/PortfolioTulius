@@ -1016,6 +1016,12 @@ try {
           nameLockupFontSize: document.querySelector(".name-lockup")
             ? parseFloat(getComputedStyle(document.querySelector(".name-lockup")).fontSize)
             : null,
+          firstFoldArrow: (() => {
+            const arrow = document.querySelector(".profile-next-section")
+            if (!arrow) return null
+            const bounds = arrow.getBoundingClientRect()
+            return { top: Math.round(bounds.top), bottom: Math.round(bounds.bottom) }
+          })(),
           documentWidth: document.documentElement.scrollWidth,
           overflowPx: Math.max(0, document.documentElement.scrollWidth - window.innerWidth),
           desktopDisplay: desktop ? getComputedStyle(desktop).display : null,
@@ -1093,6 +1099,8 @@ try {
           return {
             headerHeight: rect(".site-header")?.bottom ?? null,
             arrowCenterX: arrow ? (arrow.left + arrow.right) / 2 : null,
+            arrowTop: arrow?.top ?? null,
+            arrowBottom: arrow?.bottom ?? null,
             resultsColumnGaps: resultsHeading && resultsCenter && resultsChooser
               ? [resultsCenter.left - resultsHeading.right, resultsChooser.left - resultsCenter.right]
               : null,
@@ -1121,7 +1129,11 @@ try {
           density.careerTextFontPx !== null && density.careerTextFontPx >= 11.5 &&
           density.cardLabelFontPx !== null && density.cardLabelFontPx >= 9.7 &&
           density.badgeYearsOverlapPx2 !== null && density.badgeYearsOverlapPx2 < 200 &&
-          density.arrowCenterX !== null && Math.abs(density.arrowCenterX - width / 2) <= 2 &&
+          // Owner-approved position: ~63.5% of the broad desktop Hero,
+          // fully visible within the FIRST fold despite vertically growing content.
+          density.arrowCenterX !== null && Math.abs(density.arrowCenterX - width * .635) <= 5 &&
+          density.arrowTop !== null && density.arrowTop >= height - 85 &&
+          density.arrowBottom !== null && density.arrowBottom <= height - 4 &&
           density.resultsColumnGaps !== null &&
           // The approved tighter indicator grid adds breathing room on both
           // sides; judge balanced generous gutters, not pixel-identical gaps.
@@ -1141,6 +1153,18 @@ try {
         console.log("P3_DESKTOP_ZOOM_REGRESSION " + JSON.stringify({
           width, siteZoom: findings.siteZoom, siteTransform: findings.siteTransform, result: "FAIL",
         }))
+      }
+      // The Hero may exceed 100dvh to avoid clipping content; its desktop
+      // next-section button must nevertheless remain entirely in the first fold.
+      const firstFoldArrowFits = width < 768 ||
+        Boolean(findings.firstFoldArrow &&
+          findings.firstFoldArrow.top >= 0 &&
+          findings.firstFoldArrow.bottom <= height - 2)
+      if (!firstFoldArrowFits) {
+        console.log("P3_PROFILE_ARROW_FIRST_FOLD_REGRESSION " + JSON.stringify({
+          width, height, arrow: findings.firstFoldArrow, result: "FAIL",
+        }))
+        failures++
       }
       // The mobile employer selector mounts one active company (two panels).
       // Desktop still mounts all six; only the inactive responsive tree is omitted.
