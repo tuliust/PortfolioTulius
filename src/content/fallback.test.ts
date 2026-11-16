@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { selectResultMetrics } from "../lib/result-metrics"
 import { sections } from "./fallback"
 
 const expectedSlugs = [
@@ -59,7 +60,7 @@ describe("conteúdo da seção 02 e especialidades da seção 03", () => {
     const specialties = results?.panelB.map((item) => item.title.toLowerCase())
     expect(specialties).toEqual(opening)
     expect(results?.panelB).toHaveLength(5)
-    expect(results?.panelA).toHaveLength(4)
+    expect(results?.panelA).toHaveLength(20)
     expect(results?.panelB.some((item) => item.placeholder)).toBe(false)
   })
 })
@@ -79,17 +80,20 @@ describe("interação da seção 03 e remoção da seção 04", () => {
     )
   })
 
-  it("preserva quatro métricas com ícones editáveis e associação temática", () => {
-    expect(results?.panelA).toHaveLength(4)
-    expect(results?.panelA.map((item) => item.metricIcon)).toEqual([
-      "chart",
-      "trending",
-      "newspaper",
-      "megaphone",
+  it("distribui vinte métricas entre cinco temas e mantém quatro na visão geral", () => {
+    expect(results?.panelA).toHaveLength(20)
+    const metrics = results?.panelA ?? []
+    expect(selectResultMetrics(metrics).map((item) => item.value)).toEqual([
+      "R$ 12 milhões",
+      "+225%",
+      "100+ ao vivo",
+      "25 eventos",
     ])
-    expect(results?.panelA.every((item) => !item.label && Boolean(item.relatedThemeKeys))).toBe(
-      true,
-    )
+    expect(results?.panelB.map((theme) => selectResultMetrics(metrics, theme).length)).toEqual([
+      4, 4, 4, 4, 4,
+    ])
+    expect(metrics.every((item) => !item.label && Boolean(item.relatedThemeKeys))).toBe(true)
+    expect(results?.panelB.every((item) => item.themePresentation === "metrics")).toBe(true)
   })
 
   it("aproveita a seção 04 e a oculta sem apagar seu conteúdo histórico", () => {
