@@ -224,3 +224,19 @@ O resultado **global do workflow P3 permaneceu FAILURE exclusivamente pelo gate 
 ## Regressão de encaixe do selo na primeira dobra desktop — 16/11/2026
 
 O proprietário enviou captura do Perfil desktop mostrando o selo laranja **cortado na borda inferior do retrato**. Implementação: reduzir `hero.desktop.yearsSize` no Supabase de 55 para 51 px e ajustar `src/index.css` para subir e reduzir levemente o selo no desktop. A suíte `scripts/p3-browser-smoke.mjs` foi reforçada na referência **1512×691 px**: registra `badgePortraitBottomGap` e `badgeYearsVerticalGap`, exigindo **≥8 px** de separação entre selo e limite inferior do retrato, e entre legenda de anos e selo. O teste antigo de sobreposição também permanece. Conferir resultado de CI da nova revisão por SHA (sem declarar sucesso antecipado) e preservar a meta mobile LCP ≤3,5 s sem intervenção mobile.
+
+
+### Evidências por SHA — selo do Hero desktop em 16/11/2026
+
+O commit funcional [`e94d89c`](https://github.com/tuliust/PortfolioTulius/commit/e94d89cd643bae5df43d586378d9e4c65de1062c) atualizou somente `src/index.css`, o gate geométrico P3 e os cinco guias canônicos pertinentes. O Supabase de produção confirmou `perfil`/A `items[0].hero.desktop.yearsSize=51` (antes 55), `introSize=15`, cinco itens e `mobileEditorial` preservado. A publicação Vercel de produção foi **READY**, deployment `dpl_G7eVGjgpJ4Dbrf876NhoCdQsXBrT`. [Validate #43810117578](https://github.com/tuliust/PortfolioTulius/actions/runs/43810117578) e [Export Docs #43810117478](https://github.com/tuliust/PortfolioTulius/actions/runs/43810117478) foram **SUCCESS**.
+
+A auditoria [P3 #43810117498](https://github.com/tuliust/PortfolioTulius/actions/runs/43810117498) foi executada **duas vezes para o mesmo SHA**, sem alterações no código entre tentativas. Em ambas, a referência **desktop 1512×691** apresentou `badgePortraitBottomGap=12` px, `badgeYearsVerticalGap=18` px e `badgeYearsOverlapPx2=0`: o **novo gate geométrico de selo passou**, com folga superior e inferior maior que o mínimo de 8 px, nome/indicadores/área desktop preservados e botão com centro X=960 px. Em ambas, as **38 capturas editoriais** foram concluídas sem falhas, a paridade SEO e RLS pública passaram.
+
+**O status GLOBAL de P3 foi FAILURE em ambas as tentativas** por duas verificações não relacionadas ao layout desktop alterado:
+
+| Tentativa | Interação mobile | P6 LCP mobile | P6 LCP desktop |
+|---|---|---|---|
+| 1ª | FAIL — timeout de 10 s no estágio “about and results editorial mobile verification” | FAIL — mediana 3.512,692 ms (meta ≤3.500 ms) | PASS — 894,851 ms |
+| 2ª | FAIL — mesmo timeout de 10 s | FAIL — mediana 3.526,064 ms (meta ≤3.500 ms) | PASS — 896,065 ms |
+
+Não classificar o workflow completo como aprovado. A falha de interação mobile repetida merece diagnóstico em tarefa específica, mas **não autoriza** reabrir o backlog geral em standby, afrouxar o orçamento LCP ou modificar o mobile nesta intervenção solicitada apenas para a primeira coluna do Hero desktop. CI PASS, Vercel READY, dados gravados e gate geométrico PASS são evidências distintas. Esta nota documental posterior não altera a aplicação nem o Supabase.
