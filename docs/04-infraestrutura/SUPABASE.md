@@ -1,7 +1,15 @@
 # Supabase — configuração de produção
-**Status:** referência em 11/11/2026. Projeto `portfolio`, ref `zfnrhzplwpjpdljraypt`, região `us-east-1`, PostgreSQL 17, `ACTIVE_HEALTHY`.
+**Status:** referência de infraestrutura em 11/11/2026, com atualização editorial verificada em **16/11/2026**. Projeto `portfolio`, ref `zfnrhzplwpjpdljraypt`, região `us-east-1`, PostgreSQL 17. Estado `ACTIVE_HEALTHY` corresponde às consultas informadas; reconferir a saúde em intervenções futuras.
 
 22 tabelas públicas com RLS, 41 policies; Auth com vínculo em `admin_users`; Storage `portfolio-public` (72 objetos) e `portfolio-private` (56). Edge Function `portfolio-illustrative-import-20261026` permanecia ACTIVE v2; auditoria antiga aponta HTTP 410 sem importação, mas não remover sem avaliar dependências. Nenhuma branch cloud Supabase identificada.
+
+## Conteúdo publicado de Resultados — releitura de produção em 16/11/2026
+
+A seção `resultados` manteve **dois registros publicados** em `content_blocks`: **bloco A com 20 itens** (quatro por categoria `corporativa`, `projetos`, `eventos`, `marketing`, `imprensa`) e **bloco B com cinco temas**, todos `themePresentation="metrics"`. Quatro métricas do A têm `showInOverview=true`, na ordem R$ 12 milhões, +225%, 100+ ao vivo e 25 eventos. No B, `corporativa` tem o eixo “Estratégia e Reputação”, título interno “Comunicação que conecta” e subtítulo editorial atualizado; os demais títulos temáticos foram mantidos. Os dados foram relidos após a atualização de produção.
+
+A escrita inicial desses dois JSONB foi **UPDATE restrito em transação com guardas de `updated_at` e hash do estado anterior**, sem DDL, migration, alteração de grants, RLS, Auth, Storage ou novas tabelas. Os textos editoriais preexistentes dos temas foram preservados. Edições futuras devem seguir o fluxo normal de CMS/RPC `save_section_block_atomic`, com salvamento e controle de concorrência independentes por bloco; não presumir que editar A+B via painel seja transação única. [Modelo de dados](../03-cms/MODELO_DE_DADOS.md) · [guia administrativo](../03-cms/GUIA_ADMINISTRATIVO.md).
+
+A coleção `career_experiences` mantém **seis registros publicados**; datas de atualização anteriores à revisão de indicadores desta conversa (Invest RS: 05/11; Vale, Prefeitura, Globo/SporTV e Grupo InPress: 31/10; CDI: 31/10). As descrições ainda precisam de **curadoria editorial** para reconciliar os relatos, valores e atribuições. Isso **não** é uma alteração já realizada na coleção. Indicadores publicados não substituem documentação comprobatória de suas fontes.
 
 ## Ledger produtivo (12)
 | Versão | Identificação |

@@ -1,11 +1,20 @@
 # Estado atual — PortfolioTulius
-**Status:** produto finalizado, com exceções técnicas aceitas. **Data da verificação:** 11/11/2026. **Baseline funcional/documental auditado:** [`0627947`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/0627947897f04635a1dfe720e4d771cf12e3e705). Não pressupor que é o último SHA da `main`.
+**Status:** produto finalizado, com manutenção autorizada concluída na seção 03 e riscos residuais documentados. **Última verificação funcional:** 16/11/2026, SHA [`9915964`](https://github.com/tuliust/PortfolioTulius/commit/9915964f54a37d209b25c778c6d2c50faddf4f77). A baseline [`0627947`](https://github.com/tuliust/PortfolioTulius/commit/0627947897f04635a1dfe720e4d771cf12e3e705) é registro histórico de 11/11, não a versão atual.
 
-## Serviços e inventário
+## Estado operacional verificado em 16/11/2026
+
+- **GitHub:** [`tuliust/PortfolioTulius`](https://github.com/tuliust/PortfolioTulius), apenas a branch `main` listada na consulta de 16/11. As duas branches `fix/*` foram excluídas anteriormente; o inventário de 384 arquivos pertence à fotografia pré-consolidação de 11/11.
+- **Produção e CI:** [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) confirmou o SHA `9915964` servido por `https://tulius.work/`, com **SUCCESS**; [Validate #43817188756](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188756) e [Export Docs #43817188776](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188776) **SUCCESS**. Isso comprova o SHA no domínio e os gates executados, não uma nova consulta administrativa `READY` à API da Vercel.
+- **Performance:** mediana LCP mobile de **3.458,135 ms** em três Lighthouse (meta ≤3.500 ms); desktop **887,824 ms**. A P3 anterior de `652dea0` foi **FAILURE** em mobile (**3.746,315 ms**). Variabilidade de laboratório permanece, sem reabrir automaticamente o standby.
+- **Resultados:** a leitura de produção confirmou dois blocos publicados, A com **20 indicadores** (quatro por cada uma das cinco categorias, quatro `showInOverview=true`) e B com **cinco categorias** `themePresentation="metrics"`. `corporativa` usa “Estratégia e Reputação” / “Comunicação que conecta”. Não houve migration, modificação de RLS ou Storage nesta atualização editorial.
+- **Experiências Profissionais:** seis registros publicados permanecem na coleção estruturada, com descrições anteriores aos relatos adicionais deste chat. A conciliação detalhada de números, contextos e comprovações é **revisão editorial pendente**, não atualização executada na coleção.
+- **Admin:** novos campos e seleção dos indicadores implementados; P5 read-only e transacional sintético tiveram **SUCCESS** no SHA intermediário `cb953dad`. Não há comprovação específica de novo ciclo completo de gravação autenticada do admin no SHA `9915964`.
+
+## Serviços e inventário — fotografia de 11/11/2026
 | Fonte | Estado verificado |
 |---|---|
 | Site | [tulius.work](https://tulius.work/), identidade visual aprovada |
-| GitHub | `main`; duas branches históricas; 384 arquivos pré-consolidação |
+| GitHub | `main` e duas branches históricas **à época do inventário**; 384 arquivos pré-consolidação. **Atualmente somente `main`** (ver acima) |
 | Vercel | projeto `portfolio-tulius`; deployment baseline `dpl_JAMsVoXAsrQHAAzDE7aEKjt6rY5E` READY |
 | Supabase | `portfolio` / `zfnrhzplwpjpdljraypt`, PostgreSQL 17, ACTIVE_HEALTHY |
 | Banco | 12 migrations, 22 tabelas públicas com RLS, 41 policies |

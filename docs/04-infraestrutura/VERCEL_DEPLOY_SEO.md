@@ -1,11 +1,17 @@
 # Vercel, publicação e SEO
-**Status:** contrato operacional · **Revisão:** 13/11/2026.
+**Status:** contrato operacional · **Revisão:** 16/11/2026. As evidências de 13/11 foram preservadas como históricas; ver a publicação confirmada abaixo.
 
 ## Identificação
 - Projeto `portfolio-tulius`, ID `prj_FVB5Cnk3428OSrWhEyskoqhWOCVW`, equipe `tuliust` (ID `team_lhnlR7FccWqxK1lK8HTem57S`).
 - Vite, `pnpm build`, saída `dist`; domínios `tulius.work` (verificado) e `www.tulius.work`.
-- Deployment do SHA auditado `0627947`: `dpl_JAMsVoXAsrQHAAzDE7aEKjt6rY5E` READY. Commits documentais posteriores geram novo SHA/deployment.
+- Deployment histórico da baseline `0627947`: `dpl_JAMsVoXAsrQHAAzDE7aEKjt6rY5E` READY. Para versão pública atual, consultar o marcador SHA servido no domínio e a auditoria correspondente, sem reutilizar o ID de 11/11.
 - Variáveis cifradas para Development/Preview/Production: `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`; registrar nomes, não valores.
+
+## Publicação efetivamente verificada após a transferência — 16/11/2026
+
+A auditoria [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) confirmou `P3_DEPLOYMENT_GATE sha=9915964f54a37d209b25c778c6d2c50faddf4f77 production=verified` em `https://tulius.work/`. O GitHub `main` apontava para o mesmo SHA na consulta de 16/11, com [Validate #43817188756](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188756) e [Export Docs #43817188776](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188776) **SUCCESS**. P3 **SUCCESS**, LCP mobile mediano de **3.458,135 ms** (limite 3.500 ms). O teste prova entrega pública do SHA, **não comprova uma leitura recente do ID/status READY pela API administrativa da Vercel**.
+
+O diagnóstico da integração em 13/11 tinha divergência de metadados antigos e consulta por API sem resultado conclusivo. Os pushes legítimos posteriores mostram que o caminho de publicação está funcional. **Não** reconectar Git, recriar deployment, alterar DNS, variáveis ou equipe apenas para eliminar metadados históricos. Para status/IDs de deployment individual, consultar Vercel com acesso apropriado. [Testes por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md) · [integrações](../06-governanca/CONFIGURACOES_E_INTEGRACOES.md).
 
 ## Código e publicação
 [`vercel.json`](../../vercel.json) contém SPA rewrite, cache imutável de assets e cabeçalhos `X-Robots-Tag: noindex` para `/admin`. `src/main.tsx` separa o carregamento público da rota admin.
@@ -38,4 +44,4 @@ O commit funcional [`ebda0aab`](https://github.com/tuliustsangaropulos/Portfolio
 - **Deployment observado antes desta atualização documental:** `dpl_24KMLj6Q395ANdVFVaK8LoiuhQiP`, produção `READY`, SHA `9834fc3a05cf03e26336cea42f08498841b3b0f1` na branch `main`. O GitHub retornou status de commit `Vercel: success` para o SHA. Essa evidência confirma a publicação histórica, não uma homologação integral de CI nem um novo deploy pós-transferência.
 - **Configuração de ambiente:** `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` presentes como variáveis cifradas nos alvos Development, Preview e Production; valores não acessados.
 - **Integração Git — evidências diferentes:** a captura fornecida do painel *Project Settings → Git* mostra `tuliust/PortfolioTulius` como repositório conectado. A API de contexto ainda lista `tuliustsangaropulos/PortfolioTulius`; a busca de repositórios pela API retorna HTTP 400 `installation_not_found` mesmo quando o namespace `tuliust` aparece. Não desconectar/reconectar nem alterar projeto, DNS ou secrets por inferência dessa diferença.
-- **Limite da verificação:** não houve novo push de `main` nem novo ensaio do webhook/deployment automático pós-transferência; a consulta ao endpoint público `p3-deployment.json` não foi homologada nesta auditoria. Um próximo push legítimo poderá fornecer evidência específica, sem criar commit artificial para testar. A homologação P3 do SHA funcional `ebda0aab` segue **FAILURE no LCP mobile**, conforme [testes](../05-operacao/TESTES_E_HOMOLOGACAO.md), independentemente de `READY`.
+- **Limite da verificação feita em 13/11 (histórico):** naquela data ainda não havia ensaio pós-transferência documentado. **Superado em 16/11** pelo gate P3 do SHA `9915964` descrito acima. A P3 do SHA histórico `ebda0aab` permanece **FAILURE no LCP mobile**, sem reclassificação.

@@ -1,5 +1,5 @@
 # Arquitetura do PortfolioTulius
-**Status:** referência canônica · **Atualizado:** 11/11/2026. Stack: React 19, TypeScript, Vite, Tailwind CSS v4, Supabase e Vercel.
+**Status:** referência canônica · **Atualizado:** 16/11/2026. Stack: React 19, TypeScript, Vite, Tailwind CSS v4, Supabase e Vercel.
 
 ## Camadas
 - [`src/main.tsx`](../../src/main.tsx): carrega o site público; roteador administrativo lazy.
@@ -7,6 +7,7 @@
 - [`PublicSite.tsx`](../../src/components/public/PublicSite.tsx), [`Navigation.tsx`](../../src/components/public/Navigation.tsx), [`ExperienceStack.tsx`](../../src/components/public/ExperienceStack.tsx): páginas, âncoras e experiência editorial.
 - [`AdminApp.tsx`](../../src/components/admin/AdminApp.tsx), [`AdminModules.tsx`](../../src/components/admin/AdminModules.tsx) e editores extraídos: CMS e prévia.
 - [`usePortfolio.ts`](../../src/hooks/usePortfolio.ts), [`placements.ts`](../../src/lib/placements.ts), [`media-alt-sync.ts`](../../src/lib/media-alt-sync.ts): consultas, composição, metadados de mídia.
+- [`result-metrics.ts`](../../src/lib/result-metrics.ts): filtro dos indicadores por categoria e ordenação independente da visão geral.
 - [`public-read.ts`](../../src/lib/public-read.ts): PostgREST público independente do SDK completo de Auth/Storage.
 - [`supabase.ts`](../../src/lib/supabase.ts), [`p2-composite-save.ts`](../../src/lib/p2-composite-save.ts): autenticação, cliente e persistência.
 - [`generate-seo.mjs`](../../scripts/generate-seo.mjs), [`vercel.json`](../../vercel.json): SEO de build e deploy.
@@ -19,6 +20,14 @@ Admin: Auth → vínculo `admin_users`/guarda administrativa → editores → CA
 O arquivo autogerado legado `utils/supabase/info.tsx` foi removido da árvore atual por não ser a fonte vigente de configuração; o [cliente efetivo](../../src/lib/supabase.ts) recebe URL e chave publicável por variáveis `VITE_*`. O valor público embutido no arquivo histórico não foi copiado para a documentação. Ver [arquivo de origem](../historico/figma-make-2026-11-11/README.md).
 
 A página inicial não deve carregar antecipadamente o roteador de administração. `src/content/fallback.ts` serve como fallback controlado, não substituto de dados produtivos.
+
+## Seção 03 — Resultados e projetos (contrato vigente desde 16/11)
+
+A fonte de verdade de `resultados` permanece em **dois blocos JSONB já existentes**: A contém os 20 indicadores (`title`, `value`, `text`, `metricIcon`, `relatedThemeKeys`, `showInOverview` e `overviewOrder`); B contém as cinco categorias (`themeKey`, `themeAxis`, `themeTitle`, `themeSubtitle`, `themePresentation` e campos editoriais preservados).
+
+O caminho é **CMS/Supabase → `usePortfolio` → `selectResultMetrics` → `ResultsCenter` → desktop/mobile**. `showInOverview=false` exclui o indicador da abertura geral, sem excluí-lo das categorias; a propriedade omitida conserva o comportamento legado. `themePresentation="metrics"` exibe eixo/título/subtítulo e grade compacta; o texto editorial original continua persistido. O admin no [`AdminModules.tsx`](../../src/components/admin/AdminModules.tsx) permite inclusão, edição, associação, ordem e modo de apresentação. O fallback em [`fallback.ts`](../../src/content/fallback.ts) e [`resultThemes.ts`](../../src/content/resultThemes.ts) acompanha o contrato, mas **não substitui** o estado vivo do CMS.
+
+A atualização inicial de produção foi feita por SQL JSONB com guardas de versão dos dois registros, seguida de releitura. O salvamento normal no admin continua via RPC/CAS, **separadamente por bloco**, sem transação conjunta presumida entre A e B. Não foram introduzidas migrations ou alterações de Auth/RLS/Storage. Detalhes: [modelo de dados](../03-cms/MODELO_DE_DADOS.md), [CMS](../03-cms/GUIA_ADMINISTRATIVO.md) e [testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
 
 ## Proteções
 Preservar aparência, conteúdo, fotos, responsividade, A11y, SEO e RLS. Não executar migrations nem reformatar UI sem pedido concreto. [Modelo de dados](../03-cms/MODELO_DE_DADOS.md), [CMS](../03-cms/GUIA_ADMINISTRATIVO.md).

@@ -1,6 +1,6 @@
 # PortfolioTulius — portfólio editorial e CMS
 
-Site profissional de comunicação, jornalismo, estratégia e projetos em [tulius.work](https://tulius.work/). O produto foi **finalizado e validado pelo proprietário**; esta fase reorganiza a documentação sem alterar seu funcionamento.
+Site profissional de comunicação, jornalismo, estratégia e projetos em [tulius.work](https://tulius.work/). O produto foi **finalizado e validado pelo proprietário**. Em 16/11/2026 recebeu manutenção autorizada na seção de Resultados (frontend, CMS, conteúdo e testes), sem reconstruir o produto nem reabrir automaticamente pendências antigas.
 
 **Stack:** React 19, TypeScript, Vite, Tailwind CSS v4, Supabase (PostgreSQL/Auth/Storage) e Vercel. Repositório público na branch `main`.
 
@@ -30,6 +30,6 @@ Requer Node 24 compatível e pnpm. Configurar somente variáveis publicáveis de
 
 ## Estado e publicação
 
-A Vercel publica a partir da `main`; **push documental também pode gerar deploy**. No baseline de 11/11/2026, o site estava READY e as suítes funcionais passaram, com exceção de mediana LCP mobile em um Lighthouse acima de 3,5 s, **risco aceito sem transformar FAILURE em PASS**. Não usar estados de 05–09/11 como se fossem atuais; verificar SHA, CI e deployment.
+A Vercel publica a partir da `main`; **push documental também pode gerar deploy**. A baseline de 11/11/2026 é histórica e incluiu uma falha de LCP mobile acima de 3,5 s. No ciclo funcional mais recente, o SHA [`9915964`](https://github.com/tuliust/PortfolioTulius/commit/9915964f54a37d209b25c778c6d2c50faddf4f77) foi confirmado no domínio por [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) (**SUCCESS**), com LCP mobile mediano de **3.458,135 ms** e cinco categorias de Resultados com quatro indicadores cada. Uma auditoria intermediária foi **FAILURE** por LCP mobile; a oscilação permanece registrada, sem relaxar o limite de 3.500 ms. Conferir sempre o SHA atual antes de afirmar o estado de publicação.
 
 [Fotografia anterior ao projeto documental](docs/historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md). Fontes privadas do Projeto ChatGPT e dumps/binaries não pertencem ao Git público.

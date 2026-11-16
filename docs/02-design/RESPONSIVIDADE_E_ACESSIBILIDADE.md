@@ -1,5 +1,5 @@
 # Responsividade, UX e acessibilidade
-**Status:** contrato de apresentação · **Revisão:** 11/11/2026.
+**Status:** contrato de apresentação · **Revisão:** 16/11/2026.
 
 ## Modelo
 São 14 seções lógicas, 42 painéis cadastrados (desktop, mobile-a, mobile-b para cada seção), mas 13 seções publicadas e visíveis; `competencias` permanece oculta, não excluída. A apresentação mobile A/B é editorialmente distinta do desktop, com conteúdo compartilhado e placements próprios.
@@ -141,3 +141,5 @@ No desktop, os quatro indicadores são apresentados em duas colunas. No mobile, 
 O conteúdo compacto de Resultados usa uma região identificada e focável no desktop, com `outline` de foco visível, pois possui `max-height` e rolagem vertical própria. O seletor no mobile permanece o mecanismo de interação; o contêiner mobile não introduz um tab stop adicional. A grade compacta mantém uma coluna até 420 px e duas colunas a partir de 421 px, sem truncar números e textos.
 
 O roteiro P3 percorre **todas as cinco categorias** em 320, 390, 430 e 1440 px, confirmando quatro cards por tema, sem estouro horizontal, e gera capturas de cada categoria em 390 e 1440 px. A visão geral conserva quatro indicadores e seu estilo prévio; o teste não deve confundir quantidade de dados publicados no bloco A com quantidade exibida na visão geral.
+
+**Homologação pública do comportamento compacto:** [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) no SHA `9915964` confirmou cinco categorias × quatro cards em 320, 390, 430 e 1440 px, sem transbordamento horizontal e com rolagem/foco da região no desktop. O helper de captura aguarda o fim da animação; a animação efetiva do site não foi desativada. A auditoria completa foi **SUCCESS**, mas houve variabilidade de LCP mobile entre SHAs; consultar [testes](../05-operacao/TESTES_E_HOMOLOGACAO.md) em vez de tratar um único ensaio como garantia de performance. Não substituir a inspeção humana em aparelhos físicos por captura automatizada.

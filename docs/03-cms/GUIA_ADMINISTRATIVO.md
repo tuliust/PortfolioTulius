@@ -1,5 +1,11 @@
 # Guia operacional do CMS
-**Status:** contrato administrativo vigente · **Revisão:** 11/11/2026.
+**Status:** contrato administrativo vigente · **Revisão:** 16/11/2026. Campos temáticos de Resultados implementados; distinguir a leitura pública homologada da edição autenticada ainda não revalidada integralmente no último SHA.
+
+## Resumo operacional vigente — Resultados (16/11/2026)
+
+Na seção 03, **Centro/A** é a fonte única dos 20 indicadores e **Direita/B** contém cinco categorias. Cada categoria exibida em `metrics` seleciona quatro itens por `relatedThemeKeys`; a visão geral usa `showInOverview` e `overviewOrder` (quatro itens). Os campos editoriais antigos são mantidos, mas não renderizados no modo compacto. Não duplicar indicadores no bloco B nem recriar tabelas/placements. O site publicado foi auditado no SHA `9915964` pela [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772), com **SUCCESS** de navegação e responsividade.
+
+**Nível de evidência do editor:** os controles foram implementados; P5 Admin read-only e P5 transacional sintético **SUCCESS** no SHA intermediário `cb953dad`. Nenhum ensaio completo de escrita autenticada dos 20 indicadores no **SHA `9915964`** foi apresentado. A primeira carga de conteúdo foi aplicada por SQL com guardas e confirmada por releitura em produção. O CMS usa RPC/CAS e persiste A e B separadamente; não tratar o fluxo como transação única. [Modelo](MODELO_DE_DADOS.md) · [homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md).
 
 ## Acesso e áreas
 `/admin/login` autentica pelo Supabase Auth, com autorização pela tabela `admin_users`. `/admin` abriga o editor; `/admin/preview` exige autenticação. Módulos: Visão geral, Editor do site, Identidade, Mídia, Navegação, SEO, Revisões e Prévia.

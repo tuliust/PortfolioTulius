@@ -1,5 +1,17 @@
 # Testes, CI e homologação
-**Status:** roteiro de manutenção · **Revisão:** 11/11/2026.
+**Status:** roteiro de manutenção · **Revisão:** 16/11/2026. Última auditoria funcional consultada: SHA `9915964`, com SUCCESS; relatórios por SHA abaixo preservados.
+
+## Último aceite técnico da seção Resultados — 16/11/2026
+
+| SHA funcional auditado | Run P3 | LCP mobile (mediana de 3) | Desfecho |
+|---|---|---:|---|
+| `2b573ca` | [#43815314121](https://github.com/tuliust/PortfolioTulius/actions/runs/43815314121) | **3.261,879 ms** | **SUCCESS** |
+| `652dea0` | [#43816204987](https://github.com/tuliust/PortfolioTulius/actions/runs/43816204987) | **3.746,315 ms** | **FAILURE** (gate mobile, limite 3.500 ms) |
+| `9915964` | [#43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) | **3.458,135 ms** | **SUCCESS** |
+
+Na P3 final de `9915964`: gate de **SHA servido em `tulius.work` passou**, navegação responsiva dos cinco temas com quatro indicadores cada passou em 320/390/430/1440 px, sem transbordamento; o retorno à visão geral com quatro cards passou; a captura passou a aguardar ativação da animação para registrar o estado visual estabilizado. LCP desktop mediano **887,824 ms**. [Validate #43817188756](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188756) e [Export #43817188776](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188776) **SUCCESS**.
+
+**Limites:** métricas Lighthouse são ensaios sintéticos variáveis, não SLA; a falha intermediária permanece. [P5 Admin Read-Only #43813045041](https://github.com/tuliust/PortfolioTulius/actions/runs/43813045041) e [P5 Local Transactional #43813045094](https://github.com/tuliust/PortfolioTulius/actions/runs/43813045094) passaram no SHA **`cb953dad`**, intermediário; não representam ensaio integral autenticado de `editar → salvar → reler` dos 20 itens no SHA final. A atualização inicial de JSONB em produção foi feita por SQL protegido, não por navegação autenticada do editor. Reconciliação editorial das seis experiências permanece sob validação do proprietário.
 
 ## Desenvolvimento local
 `pnpm install --frozen-lockfile`; `pnpm format:check`; `pnpm typecheck`; `pnpm test`; `pnpm build`; `pnpm check`; `pnpm smoke:build`. O [`package.json`](../../package.json) é fonte dos comandos. Não usar formatador que reescreva código para uma tarefa só documental.
@@ -267,4 +279,4 @@ As capturas individuais feitas logo após trocar o tema ficaram artificialmente 
 
 No SHA [`652dea0`](https://github.com/tuliust/PortfolioTulius/commit/652dea0daa811accfda7bd5873fac92d9b3b6149), o [P3 #43816204987](https://github.com/tuliust/PortfolioTulius/actions/runs/43816204987) confirmou novamente a versão publicada e **PASS** em browser responsivo/temas, SEO, RLS e capturas. O gate global foi **FAILURE somente no orçamento P6 de LCP mobile**, mediana **3.746,3145 ms**, enquanto o SHA anterior `2b573ca` passou com **3.261,879 ms**. Os dois valores são resultados reais de laboratório para SHAs diferentes: não representar a mediana mais baixa como garantia de estabilidade, não alterar o limite de 3.500 ms, nem reinterpretar falha como aprovação. O perfil mobile continua sendo o elemento LCP; fotografia já recebe preload de alta prioridade. Diagnóstico de `652dea0`: amostras 4.061,457 / 3.498,361 / 3.746,3145 ms; desempenho desktop mediano 883,768 ms.
 
-A inspeção das capturas de `652dea0` mostrou cores finais normais no desktop e em quatro temas mobile, mas a **primeira captura mobile** ainda podia ocorrer antes da ativação de `cms-section-entered` pelo IntersectionObserver, e, por isso, aparecer esmaecida. O helper agora espera **a classe de entrada efetivamente aplicada** e a opacidade final antes de capturar. Essa correção é do roteiro de evidência, não altera o estilo de entrada no frontend. Sua confirmação depende da próxima execução específica, sem herdar PASS do SHA anterior.
+A inspeção das capturas de `652dea0` mostrou cores finais normais no desktop e em quatro temas mobile, mas a **primeira captura mobile** ainda podia ocorrer antes da ativação de `cms-section-entered` pelo IntersectionObserver, e, por isso, aparecer esmaecida. O helper agora espera **a classe de entrada efetivamente aplicada** e a opacidade final antes de capturar. Essa correção é do roteiro de evidência, não altera o estilo de entrada no frontend. Naquele momento (antes do SHA `9915964`), sua confirmação dependia de nova execução. **Posteriormente, a P3 #43817188772 do SHA `9915964` terminou SUCCESS**, incluindo capturas estabilizadas e gate mobile; ver o quadro de estado vigente no início deste documento.

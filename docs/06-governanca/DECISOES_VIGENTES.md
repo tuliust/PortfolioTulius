@@ -1,5 +1,5 @@
 # Decisões vigentes do proprietário
-**Status:** aceites e limites de manutenção · **Revisão:** 11/11/2026.
+**Status:** aceites e limites de manutenção · **Revisão:** 16/11/2026. Decisões antigas permanecem vigentes salvo autorização posterior explícita.
 
 | Tema | Decisão consolidada |
 |---|---|
@@ -14,10 +14,12 @@
 | Auth | `Leaked Password Protection` não habilitada por custo recusado, risco aceito |
 | PAT histórico | Decisão anterior de não revogação; revogação não comprovada |
 | Storage | Não excluir originais/duplicatas sem estudo e operação específica |
-| Pendências | **Todas em standby**, não executar automaticamente |
-| Fontes privadas | **Cinco fontes consolidadas ativas no Projeto ChatGPT**, oito antigas removidas das fontes ativas, verificado em 11/11/2026 |
+| Pendências | Itens do **backlog histórico** continuam em standby; as solicitações novas de manutenção de 16/11 foram autorizadas e executadas no escopo de Resultados |
+| Fontes privadas | Cinco fontes consolidadas ativas e oito anteriores retiradas **conforme verificação de 11/11**; os snapshots privados ainda precisam ser sincronizados com a manutenção de 16/11, em etapa separada do GitHub |
 | Branches históricas | **Excluídas pelo proprietário**, somente `main` verificada via GitHub |
-| Etapas 01–05 | **Consolidação documental e higiene encerradas**, sem reabrir o backlog |
+| Etapas 01–05 | **Consolidação documental e higiene encerradas** em 11/11; novo ciclo de manutenção autorizado em 16/11 não reabre as etapas anteriores |
+| Resultados · seção 03 | Em 16/11, implementação autorizada dos cinco temas compactos e 20 indicadores (quatro por tema), com quatro métricas na visão geral. **Publicação técnica** não significa comprovação independente dos números nem conclusão da revisão de Experiências Profissionais. |
+| Performance do ciclo 16/11 | Manter LCP mobile mediano ≤3.500 ms; auditorias por SHA registram **SUCCESS** e **FAILURE**, sem encobrir a oscilação. |
 
 O aceite do site não transforma CI falho em PASS; um documento de migration não é prova de aplicação; deployment READY não é teste de gravação administrativa. Nenhuma dessas decisões concede autorização para mudanças invisíveis de segurança, conteúdo ou mídia nesta organização documental.
 

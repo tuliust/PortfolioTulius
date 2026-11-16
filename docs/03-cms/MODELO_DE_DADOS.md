@@ -1,5 +1,5 @@
 # Contrato CMS → Supabase → renderer
-**Status:** referência canônica · **Revisão:** 11/11/2026. Conferir [migrations](../../supabase/migrations/), [tipos](../../src/types/content.ts) e banco real antes de mudar schema.
+**Status:** referência canônica · **Revisão:** 16/11/2026. Conferir [migrations](../../supabase/migrations/), [tipos](../../src/types/content.ts) e banco real antes de mudar schema.
 
 ## Grupos de tabelas públicas (22 com RLS)
 | Finalidade | Tabelas |
@@ -36,7 +36,7 @@ A fonte única da seleção editável é `site_settings.seo_json.faviconUrl`, te
 
 A tabela existente `public.design_tokens` contém uma linha publicada adicional: `token_key='color.lightGray'`, `token_value='#ECECEC'`, `display_name='Cinza claro'`, `value_type='color'`, `scope='global'`, `style_config={}`. A referência é persistida em `content_blocks.content_json.items[0].hero.mobileEditorial.middle.background='color.lightGray'` **somente no bloco A publicado de Perfil**, que continua sendo a única fonte de configuração do selo exibido no painel B. O frontend lê os tokens publicados pelo fluxo já existente, `defaultTokens.lightGray` funciona como fallback e `PublicSite` injeta a variável CSS `--light-gray`; `heroColor`/admin reconhecem o novo token. A geometria do fundo cinza até a linha laranja está no CSS mobile, não na tabela de painéis. Nenhuma migration, coluna, tabela, policy ou duplicação de registro é necessária.
 
-## Estilos desktop dos ajustes de 12/11/2026
+## Estilos desktop dos ajustes de 12/11/2026 (snapshot histórico; valores revisados em 16/11)
 
 Sem mudança de schema. A escala de Perfil e Formação usa `content_blocks.content_json.items[].desktop`; a frase editorial usa `items[0].hero.desktop.introSize`. Os objetos `mobile` e `hero.mobileEditorial` permanecem independentes. Centralização da seta, distâncias entre colunas de Resultados e posição da foto em Sobre são CSS/renderer, sem migração, nova tabela ou token global.
 
@@ -66,3 +66,5 @@ Persistência adicional desta intervenção: Perfil/A `hero.desktop.introSize=15
 A seção `resultados` conserva os mesmos dois `content_blocks`, sem migration ou alteração de RLS. No bloco A, os itens de indicadores continuam usando `title`, `value`, `text`, `metricIcon`, `relatedThemeKeys`, e passam a admitir `showInOverview?: boolean` e `overviewOrder?: number`. A omissão de `showInOverview` mantém itens antigos na visão geral; `false` os restringe às categorias. A visão geral aplica a ordem `overviewOrder` enquanto cada categoria segue a ordem dos itens no array.
 
 No bloco B, os cinco temas existentes mantêm `themeKey`, `themeAxis`, `themeTitle`, `themeSubtitle` e os campos editoriais originais. A propriedade opcional `themePresentation: "metrics" | "editorial"` controla a grade compacta sem excluir os textos antigos. `src/lib/result-metrics.ts` centraliza a seleção dos quatro cards gerais e os quatro cartões de cada tema. A edição permanece em `src/components/admin/AdminModules.tsx`, o renderer em `src/components/public/PublicSite.tsx`, e `src/content/fallback.ts`/`src/content/resultThemes.ts` reproduzem o conteúdo para indisponibilidade do Supabase.
+
+**Estado publicado relido em 16/11/2026:** 20 itens no A, quatro por cada `themeKey` (`corporativa`, `projetos`, `eventos`, `marketing`, `imprensa`) e quatro `showInOverview=true`, ordenados independentemente como R$ 12 milhões, +225%, 100+ ao vivo, 25 eventos. Os cinco itens do B têm `themePresentation="metrics"`. A atualização inicial foi feita por SQL JSONB transacional com guardas de versão, não por migração nem por salvamento via UI; os blocos permanecem independentes no CMS. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
