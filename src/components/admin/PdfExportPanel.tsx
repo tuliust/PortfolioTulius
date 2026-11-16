@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { PDF_EXPORT_VIEWPORTS, type PdfColorMode, type PdfDevice } from "../../lib/pdf-export-options"
+import {
+  PDF_EXPORT_VIEWPORTS,
+  type PdfColorMode,
+  type PdfDevice,
+} from "../../lib/pdf-export-options"
 import { buildPdfPreviewUrl } from "../../lib/pdf-preview-config"
 import "./PdfExportPanel.css"
 
@@ -101,7 +105,9 @@ export default function PdfExportPanel({
         </div>
         <div className="pdf-export-selection-heading">
           <h2>Seções incluídas</h2>
-          <span aria-live="polite">{included.length} de {visible.length}</span>
+          <span aria-live="polite">
+            {included.length} de {visible.length}
+          </span>
         </div>
         <p className="pdf-export-help">
           A ordem segue a página pública. Desmarcar uma seção não altera sua publicação.

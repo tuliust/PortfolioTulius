@@ -14,7 +14,9 @@ describe("PDF admin preview configuration", () => {
   })
 
   it("rejects invalid options or an empty selection", () => {
-    expect(buildPdfPreviewUrl({ device: "mobile", colorMode: "clean", includedSlugs: [] })).toBeNull()
+    expect(
+      buildPdfPreviewUrl({ device: "mobile", colorMode: "clean", includedSlugs: [] }),
+    ).toBeNull()
     expect(parsePdfPreviewConfig("?device=mobile&palette=clean")).toBeNull()
     expect(parsePdfPreviewConfig("?device=tablet&palette=clean&section=perfil")).toBeNull()
     expect(parsePdfPreviewConfig("?device=mobile&palette=blue&section=perfil")).toBeNull()
