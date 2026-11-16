@@ -313,3 +313,9 @@ Em `5efbd8e`, [P3 #43840800020](https://github.com/tuliust/PortfolioTulius/actio
 **Integração:** fallback acompanha as duas alterações de métricas e os cinco resumos das seis empresas, mas publicação efetiva continua a partir do Supabase; registros antigos do fallback foram mantidos ocultos. O front-end independente das imagens associa os cinco textos aos três/quatro slides aprovados. Não criar imagens, coleções ou estados de publicação a partir de legendas.
 
 **Governança:** os cinco anexos privados do Projeto ChatGPT são snapshots não sincronizados. Substituir os pertinentes após o encerramento operacional por iniciativa do proprietário, sem publicar conteúdo confidencial no GitHub.
+
+## Plano de homologação do renderer PDF — Etapa 2 (16/11/2026)
+
+Implementação isolada: `PdfPortfolio.tsx`, `PdfPortfolio.css`, `PdfExperienceSection` e seleção pura `pdf-export-sections.ts`, com três testes de ordem, visibilidade e seleção. A integração e o serviço de PDF não foram executados nesta etapa. Verificar `pnpm check` no CI do commit pertinente, distinguindo sucesso e falha reais.
+
+**Ainda pendente:** renderização em navegador das 13 seções, desktop/mobile, Original/Clean, sem truncamento, fontes e fotografias reais, hyperlinks Hero/Contato, páginas de altura variável e comparativos visuais. A prova de conceito isolada da Etapa 1 não comprova fidelidade deste renderer. A P3 histórica de `8ed19b0` permanece FAILURE por LCP mobile.

@@ -77,3 +77,7 @@ No bloco B, os cinco temas existentes mantêm `themeKey`, `themeAxis`, `themeTit
 O texto integral de Trajetória permanece em `career_experiences.description`, com abertura e linhas `• Rótulo: corpo`. O frontend desktop deixa de suprimir bullets por prefixos legados e usa o mesmo texto do mobile. `portfolio_projects.project_status` distingue o estado de execução de `portfolio_projects.status`; Guia, Plataforma e SUBPI foram confirmadas como entregues pelo proprietário e devem ter seu estado e seus resumos coerentes. A estratégia CRM reside em bloco editorial existente, sem linha normalizada obrigatória.
 
 A seção `resultados` mantém 20 itens no bloco A e cinco categorias no B. Substituídos somente os itens 19 e 20, preservando `relatedThemeKeys=['imprensa']` e `overviewOrder=3` no item 19.
+
+## Renderer de PDF — Etapa 2 (16/11/2026)
+
+A entrada é `PortfolioSection[]`, `DesignTokens` e `careerDescriptions` por slug estável. `selectPublishedPdfSections` usa `status=published`, `visible=true` e `number` (`sections.sort_order`) sem gravações. Resultados reaproveita `ResultsCenter/selectResultMetrics` em sequência (4 indicadores no overview e 20 distribuídos nos cinco temas). As experiências utilizam itens publicados de A/B com `isHidden!==true`, Trajetória de `career_experiences.description`, e ocultam slides somente no renderer. Depoimentos reutilizam os itens compostos por placements e são expandidos. Nenhum schema/migration/RLS/Storage alterado.

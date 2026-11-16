@@ -46,3 +46,11 @@ O fluxo regular **admin → RPC `save_section_block_atomic` → leitura → rend
 A seção Resultados conserva vinte métricas e cinco temas; somente duas entradas do tema `imprensa` mudam: `100+ ao vivo` → mailing pessoal `400+` e `200+` → `32 influenciadores`. A primeira permanece na terceira posição da visão geral. Os indicadores anteriores continuam representados na experiência Globo/SporTV. `perfil` e `sobre` não são alterados.
 
 As seis experiências apresentam cinco projetos textuais por empresa, independentemente da quantidade (três ou quatro) de slides ilustrativos. O renderer associa a galeria somente quando há título correspondente; a galeria e suas imagens permanecem preservadas. Textos publicados vêm de `content_blocks.content_json.items`, trajetórias de `career_experiences.description` e estados editoriais de projetos de `portfolio_projects`. O mirror `src/content/experienceEditorial.ts` existe somente como fallback quando a publicação não tem banco configurado; o Supabase continua sendo fonte vigente. O frontend público e o editor leem os registros do banco, sem segunda escrita no site.
+
+## Renderer estático de exportação PDF — Etapa 2 (16/11/2026)
+
+Foi criado `src/components/public/PdfPortfolio.tsx` como componente read-only, sem rota, tela de admin ou geração de arquivo nesta etapa. Recebe `sections`, `tokens`, `careerDescriptions`, `device`, `colorMode` e `includedSlugs`, sem acesso a serviços e sem salvar dados. `src/lib/pdf-export-sections.ts` seleciona apenas seções publicadas/visíveis ordenadas por `number` (oriundo de `sort_order`).
+
+O renderer reutiliza `Section`, `ResultsCenter`, `RESULT_THEME_KEYS` e `TestimonialCards` de `PublicSite.tsx`; `expandedForExport` exibe depoimentos integrais. `PdfExperienceSection` em `ExperienceStack.tsx` reutiliza marca, introdução e `ExperienceDetails complete`, exibe projetos e Trajetória simultaneamente e não monta galerias nem menu de empresas. `PdfPortfolio.css` só é importado pelo componente de exportação.
+
+**Pendente:** carregamento consistente do CMS e Trajetórias, viewport real, PDF de uma página física por seção, links finais e paridade visual. Nenhuma rota pública, schema, Auth/RLS, Storage ou configuração Vercel mudou.

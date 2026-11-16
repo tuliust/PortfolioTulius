@@ -145,3 +145,9 @@ Os campos editoriais anteriores permanecem no CMS, embora ocultos no modo compac
 ## Densidade editorial de Experiências — 16/11/2026
 
 A aba Projetos e Realizações passa a exibir **cinco resumos por empresa** em desktop e mobile, independentemente dos três/quatro slides aprovados. Cada resumo tem `title` e `text`; a apresentação aplica limite visual de duas linhas ao parágrafo do projeto, mantendo texto completo no DOM e no CMS. Selecionar item sem slide não deve deslocar a galeria para imagem não correspondente. Preservar foco e teclado dos botões e a navegação de galeria. Trajetória exibe abertura seguida por bullets com rótulos em negrito, com leitura integral e rolagem natural. Validar alturas pequenas e mobile sem overflow ou corte irreversível.
+
+## Exportação visual isolada — Etapa 2 (16/11/2026)
+
+`PdfPortfolio` recebe `desktop`/`mobile` e `original`/`clean`; seu CSS restringe as alterações ao escopo `.pdf-portfolio`. Remove conteúdo interativo apenas na composição PDF, amplia alturas dos blocos e depoimentos, e aplica fundos brancos e escala cinza no modo Clean. A seção lógica mobile mantém painéis A/B na mesma página editorial.
+
+**Não homologado:** a fidelidade pixel-a-pixel, ausência de cortes em PDF e media queries em viewport real; a etapa de geração deverá usar a largura efetiva do dispositivo e páginas de altura adaptativa.

@@ -1097,9 +1097,9 @@ function AboutDesktop({ section }: { section: PortfolioSection }) {
   )
 }
 
-const RESULT_THEME_KEYS = ["corporativa", "projetos", "eventos", "marketing", "imprensa"]
+export const RESULT_THEME_KEYS = ["corporativa", "projetos", "eventos", "marketing", "imprensa"]
 
-function ResultsCenter({
+export function ResultsCenter({
   section,
   selectedTheme,
   mobile = false,
@@ -1271,14 +1271,14 @@ function ResultsMobile({
   )
 }
 
-function TestimonialCards({ items }: { items: ContentItem[] }) {
+export function TestimonialCards({ items, expandedForExport = false }: { items: ContentItem[]; expandedForExport?: boolean }) {
   const [expanded, setExpanded] = useState<string | null>(null)
 
   return (
     <div className="testimonials-grid">
       {items.map((item, index) => {
         const key = item.title + "-" + index
-        const isExpanded = expanded === key
+        const isExpanded = expandedForExport || expanded === key
         return (
           <button
             type="button"
@@ -1286,7 +1286,7 @@ function TestimonialCards({ items }: { items: ContentItem[] }) {
             className={`testimonial-card${isExpanded ? " is-expanded" : ""}`}
             aria-expanded={isExpanded}
             aria-label={`${isExpanded ? "Recolher" : "Expandir"} depoimento de ${item.title}`}
-            onClick={() => setExpanded(isExpanded ? null : key)}
+            onClick={expandedForExport ? undefined : () => setExpanded(isExpanded ? null : key)}
           >
             <div className="testimonial-person">
               {item.image && (
@@ -1303,9 +1303,11 @@ function TestimonialCards({ items }: { items: ContentItem[] }) {
               </div>
             </div>
             <p className="testimonial-quote">{item.text}</p>
-            <span className="testimonial-action">
-              {isExpanded ? "Recolher −" : "Ler depoimento completo +"}
-            </span>
+            {!expandedForExport && (
+              <span className="testimonial-action">
+                {isExpanded ? "Recolher −" : "Ler depoimento completo +"}
+              </span>
+            )}
           </button>
         )
       })}
@@ -1368,7 +1370,7 @@ function ContactDesktop({ section }: { section: PortfolioSection }) {
   )
 }
 
-function Section({
+export function Section({
   section,
   nextSectionSlug,
   publishedSlugs,

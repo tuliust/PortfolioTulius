@@ -1,0 +1,279 @@
+/*
+ * Isolated PDF-only styling. No route or public-side import.
+ * The capture engine must use a viewport matching data-pdf-device.
+ * Each logical section will receive one physical PDF page from that engine.
+ */
+.pdf-portfolio {
+  width: 100%;
+  margin: 0;
+  overflow: visible;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.pdf-portfolio .portfolio-section {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  scroll-snap-align: none;
+  break-after: page;
+}
+
+.pdf-portfolio .portfolio-section:last-child {
+  break-after: auto;
+}
+
+.pdf-portfolio :is(.desktop-panel, .mobile-panel, .mobile-panels, .desktop-editorial) {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.pdf-portfolio :is(.results-center, .experience-projects, .experience-view-body) {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.pdf-portfolio :is(.reveal, .cms-entrance-fade-up, .cms-entrance-fade-in) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+.pdf-portfolio *,
+.pdf-portfolio *::before,
+.pdf-portfolio *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+.pdf-portfolio .profile-next-section {
+  display: none !important;
+}
+
+.pdf-portfolio .profile-desktop {
+  height: auto !important;
+  min-height: 100svh !important;
+  overflow: visible !important;
+}
+
+.pdf-portfolio .mobile-panels .mobile-panel {
+  scroll-margin-top: 0;
+}
+
+.pdf-portfolio--mobile .mobile-panels {
+  display: block;
+}
+
+.pdf-portfolio--mobile .mobile-panel {
+  min-height: 0 !important;
+  padding-top: clamp(1.5rem, 5vw, 3rem);
+}
+
+.pdf-portfolio--mobile .mobile-panel + .mobile-panel {
+  border-top: 0;
+}
+
+.pdf-portfolio--mobile :is(.editorial360-mobile, .mobile360, .mobile-profile-hero) {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+.pdf-portfolio :is(.pdf-results-page, .pdf-testimonials-page) {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 5rem) var(--gutter);
+}
+
+.pdf-portfolio .pdf-results-flow {
+  display: grid;
+  gap: 2rem;
+  align-content: start;
+}
+
+.pdf-portfolio .pdf-results-group {
+  break-inside: avoid;
+  min-width: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.pdf-portfolio .pdf-results-group-heading {
+  margin: 0 0 1rem;
+  font: 800 clamp(1.5rem, 2.6vw, 2.6rem) / 1 var(--font-display);
+  text-transform: uppercase;
+}
+
+.pdf-portfolio .pdf-results-group .results-center {
+  display: block;
+  max-height: none;
+  overflow: visible;
+}
+
+.pdf-portfolio .pdf-results-group .results-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(.6rem, 1.5vw, 1.5rem);
+}
+
+.pdf-portfolio .pdf-results-group .results-topic {
+  margin-bottom: 1rem;
+}
+
+.pdf-portfolio .pdf-experience-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(1rem, 2.5vw, 3rem);
+  max-width: var(--container);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 6rem) var(--gutter);
+  align-items: start;
+}
+
+.pdf-portfolio .pdf-experience-layout > * {
+  min-width: 0;
+}
+
+.pdf-portfolio .pdf-experience-column-heading {
+  margin: 0 0 1rem;
+  padding: .6rem 0;
+  border-top: 1px solid var(--line);
+  font: 800 clamp(1.45rem, 2vw, 2rem) / 1 var(--font-display);
+  text-transform: uppercase;
+}
+
+.pdf-portfolio .pdf-experience-project-list {
+  display: grid;
+  gap: .8rem;
+}
+
+.pdf-portfolio .pdf-experience-projects .experience-project {
+  position: static;
+  display: block;
+  width: 100%;
+  padding: .7rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.pdf-portfolio .pdf-experience-projects .experience-project-heading {
+  display: block;
+  margin: 0 0 .4rem;
+  font: 750 clamp(1.2rem, 1.6vw, 1.7rem) / 1.05 var(--font-display);
+  text-transform: uppercase;
+}
+
+.pdf-portfolio .pdf-experience-projects .experience-project p {
+  font-size: clamp(.82rem, .95vw, 1rem);
+  line-height: 1.45;
+}
+
+.pdf-portfolio .pdf-experience-project-number {
+  display: inline-block;
+  margin-right: .75rem;
+  color: var(--orange-dark);
+}
+
+.pdf-portfolio .pdf-experience-trajectory .experience-full-body {
+  padding: 0;
+}
+
+.pdf-portfolio .pdf-experience-trajectory .experience-full-body p {
+  font-size: clamp(.82rem, .95vw, 1rem);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.pdf-portfolio .pdf-export-missing-data {
+  color: #9b1c1c;
+  font-weight: 700;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonials-grid {
+  align-items: start;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-card {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  overflow: visible !important;
+  cursor: default;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-quote {
+  display: block !important;
+  max-height: none !important;
+  overflow: visible !important;
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+}
+
+.pdf-portfolio--mobile :is(.pdf-results-page, .pdf-testimonials-page) {
+  padding: 2rem var(--gutter);
+}
+
+.pdf-portfolio--mobile .pdf-results-group .results-metrics-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pdf-portfolio--mobile .pdf-experience-layout {
+  display: block;
+  min-height: 0;
+  padding: 2rem var(--gutter);
+}
+
+.pdf-portfolio--mobile .pdf-experience-layout > * + * {
+  margin-top: 2rem;
+}
+
+.pdf-portfolio--mobile .pdf-experience-projects .experience-project-heading {
+  font-size: clamp(1.4rem, 6vw, 2rem);
+}
+
+.pdf-portfolio--mobile .pdf-testimonials-page .testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.pdf-portfolio--clean,
+.pdf-portfolio--clean .portfolio-section,
+.pdf-portfolio--clean .portfolio-section *,
+.pdf-portfolio--clean .portfolio-section *::before,
+.pdf-portfolio--clean .portfolio-section *::after {
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #171717 !important;
+}
+
+.pdf-portfolio--clean .portfolio-section :is(img, svg) {
+  filter: grayscale(1) !important;
+}
+
+.pdf-portfolio--clean .portfolio-section :is(.item-label, .item-value, .results-axis, .experience-eyebrow) {
+  color: #454545 !important;
+}
+
+@media print {
+  html:has(.pdf-portfolio) {
+    scroll-snap-type: none;
+  }
+  body:has(.pdf-portfolio) {
+    overflow: visible;
+  }
+  .pdf-portfolio .portfolio-section {
+    break-after: page;
+    break-inside: avoid;
+  }
+  .pdf-portfolio .portfolio-section:last-child {
+    break-after: auto;
+  }
+}

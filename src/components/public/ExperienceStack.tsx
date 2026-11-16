@@ -728,6 +728,92 @@ function ExperienceCard({
   )
 }
 
+/**
+ * Static PDF-only experience: no company menu, gallery or interactive switch.
+ * Uses the same published blocks and complete trajectory formatter as the site.
+ */
+export function PdfExperienceSection({
+  section,
+  isMobile,
+  detail,
+}: {
+  section: PortfolioSection
+  isMobile: boolean
+  detail?: string
+}) {
+  const items = [
+    ...(section.desktopPanelA ?? section.panelA),
+    ...(section.desktopPanelB ?? section.panelB),
+  ].filter((item) => item.isHidden !== true)
+  const competencies =
+    items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []
+  const projects = items.filter(
+    (item) => item.title.toLowerCase() !== "competências aplicadas" && !item.value,
+  )
+  const metrics = items.filter((item) => Boolean(item.value))
+
+  return (
+    <section
+      id={section.slug}
+      data-section={section.slug}
+      data-pdf-section={section.slug}
+      className={"portfolio-section experience-card pdf-experience-section theme-" + section.theme}
+    >
+      <div className={"pdf-experience-layout" + (isMobile ? " is-mobile" : "")}>
+        <header className="experience-heading pdf-experience-identity">
+          {!isMobile && <CompanyMark section={section} />}
+          <h2>{section.title}</h2>
+          {section.eyebrow && <p className="experience-eyebrow">{section.eyebrow}</p>}
+          <ExperienceIntro section={section} />
+          {!isMobile && <ExperienceCompetencies tags={competencies} />}
+        </header>
+        <div className="pdf-experience-projects">
+          <h3 className="pdf-experience-column-heading">Projetos e realizações</h3>
+          <div className="pdf-experience-project-list">
+            {projects.map((item, index) => (
+              <article className="experience-project" key={item.title + "-" + index}>
+                {item.meta && (
+                  <span className={"experience-project-meta " + (heroSizeClass(item.fieldFormats?.meta) ?? "")} style={heroTextStyle(item.fieldFormats?.meta)}>
+                    {item.meta}
+                  </span>
+                )}
+                <h4 className={"experience-project-heading " + (heroSizeClass(item.fieldFormats?.title) ?? "")} style={heroTextStyle(item.fieldFormats?.title)}>
+                  {isMobile && (
+                    <span className="pdf-experience-project-number">{String(index + 1).padStart(2, "0")}</span>
+                  )}
+                  {item.title}
+                </h4>
+                {item.text && <p className={heroSizeClass(item.fieldFormats?.text)} style={heroTextStyle(item.fieldFormats?.text)}>{item.text}</p>}
+                {item.tags?.length ? <p>{item.tags.join(" · ")}</p> : null}
+              </article>
+            ))}
+            {metrics.length > 0 && (
+              <div className="experience-extra-metrics" aria-label="Indicadores complementares">
+                {metrics.map((item, index) => (
+                  <div key={item.title + "-" + index}>
+                    <span>{item.title}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <aside className="pdf-experience-trajectory" data-pdf-missing-trajectory={detail?.trim() ? undefined : "true"}>
+          <h3 className="pdf-experience-column-heading">Trajetória</h3>
+          {detail?.trim() ? (
+            <ExperienceDetails description={detail} slug={section.slug} complete />
+          ) : (
+            <p className="pdf-export-missing-data" role="status">
+              Trajetória publicada não carregada. Não exportar antes de obter os dados.
+            </p>
+          )}
+        </aside>
+      </div>
+    </section>
+  )
+}
+
 export function ExperienceStack({
   sections,
   isMobile,
