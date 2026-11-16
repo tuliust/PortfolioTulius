@@ -1092,6 +1092,7 @@ try {
           const formationTitleSizes = [...document.querySelectorAll("#formacao .desktop-panel .content-item h3")]
             .map((node) => parseFloat(getComputedStyle(node).fontSize))
           const badge = rect(".profile-portrait .badge-360")
+          const portrait = rect(".profile-portrait")
           const yearsCopy = rect(".years span")
           const overlap = badge && yearsCopy
             ? Math.max(0, Math.min(badge.bottom, yearsCopy.bottom) - Math.max(badge.top, yearsCopy.top)) *
@@ -1116,6 +1117,8 @@ try {
             cardsBottom: rect(".area-grid")?.bottom ?? null,
             finalHighlightBottom: document.querySelector(".profile-highlights .content-item:last-child")?.getBoundingClientRect().bottom ?? null,
             badgeYearsOverlapPx2: overlap,
+            badgePortraitBottomGap: badge && portrait ? portrait.bottom - badge.bottom : null,
+            badgeYearsVerticalGap: badge && yearsCopy ? badge.top - yearsCopy.bottom : null,
           }
         })
         console.log("P3_DESKTOP_DENSITY " + JSON.stringify(density))
@@ -1130,6 +1133,10 @@ try {
           density.careerTextFontPx !== null && density.careerTextFontPx >= 11.5 &&
           density.cardLabelFontPx !== null && density.cardLabelFontPx >= 9.7 &&
           density.badgeYearsOverlapPx2 !== null && density.badgeYearsOverlapPx2 < 200 &&
+          // Seal must be fully above the portrait's lower clipping edge,
+          // with legible distance from the years caption at 1512×691.
+          density.badgePortraitBottomGap !== null && density.badgePortraitBottomGap >= 8 &&
+          density.badgeYearsVerticalGap !== null && density.badgeYearsVerticalGap >= 8 &&
           // Owner-approved position: ~63.5% of the broad desktop Hero,
           // fully visible within the FIRST fold despite vertically growing content.
           density.arrowCenterX !== null && Math.abs(density.arrowCenterX - width * .635) <= 5 &&

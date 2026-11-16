@@ -3073,7 +3073,10 @@
     font-size: clamp(2.5rem, min(3.8vw, var(--hero-desktop-years-size, 55px)), 4.6rem);
   }
   .public-site #perfil .profile-portrait .badge-360 {
-    top: calc(var(--hero-desktop-badge-y, 74%) - clamp(.25rem, 1.3dvh, .7rem));
+    /* Protect the orange circular seal against cropping at the portrait's
+       bottom edge on short desktop viewports. Preserve CMS badge positioning. */
+    top: calc(var(--hero-desktop-badge-y, 74%) - clamp(1.75rem, 4.2dvh, 2.5rem));
+    width: max(var(--hero-desktop-badge-size, 34%), 40%);
   }
   /* Descriptions in Sobre: ItemCard already reads desktop.textSize; the
      prior selector ignored this CMS variable. */

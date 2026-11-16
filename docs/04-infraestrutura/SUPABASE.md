@@ -52,3 +52,8 @@ A releitura de 12/11 confirmou os quatro blocos e nenhuma configuração `items[
 ## Ajustes editoriais desktop em produção — 16/11/2026
 
 Intervenção aprovada no projeto `portfolio` (`zfnrhzplwpjpdljraypt`), restrita a três registros existentes de `content_blocks` via UPDATE JSONB sob verificações de `updated_at` e valores anteriores: Perfil/A (`hero.desktop.introSize` 16→15 e novo `yearsSize=55`); Perfil/B (seis `desktop.titleSize` 23→21); Sobre/B (cinco `desktop.textSize=14`). A intenção é manter a fonte única de verdade no CMS. Não há DDL, migration, alterações em RLS, Auth, Storage ou outros JSONB. O registro do procedimento não substitui a verificação SQL pós-execução. A atualização do código segue na `main`, com documentação no mesmo ciclo.
+
+
+## Tamanho editorial do Hero desktop — 16/11/2026
+
+No projeto produtivo `portfolio`, o bloco publicado `perfil`/A (sort_order=1, ID `a2f4770b-7964-4f3c-b816-c778b66ac15c`) teve **somente** `content_json.items[0].hero.desktop.yearsSize` alterado de **55 para 51**, com verificação do `updated_at` e valores anteriores, preservando todas as demais propriedades JSONB e valores mobile. A alteração foi solicitada e é lida tanto pelo frontend quanto pelo controle existente do painel. A subida e redução discreta do selo são CSS, sem atualização de dados, Storage, Auth, RLS, schema ou migrations. Verificar o valor pós-escrita e o SHA de publicação ao concluir; este registro não equivale a teste de salvamento pela interface administrativa.
