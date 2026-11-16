@@ -375,3 +375,10 @@ O download físico não foi implementado. Registrar Validate, P3 e deployment po
 `src/lib/pdf-print-layout.ts` e testes adicionam `@page` individuais, limite de altura e seleção. O admin só habilita impressão após carregar imagens e fontes; exige Trajetórias e links de Hero/Contato. A QA física deverá verificar em Chromium nas **quatro combinações**: número de páginas idêntico à quantidade de seções incluídas, fontes/texto extraíveis por `pdftotext`, hiperlinks do Hero e Contato e altura variável. **Chamar `window.print()` não comprova que o usuário salvou o arquivo.** A homologação real autenticada com CMS produtivo permanece pendente até execução documentada.
 
 Sem dependências novas, funções servidoras ou mudanças em Auth/RLS/Storage. Registrar CI e deployment por SHA; não presumir aprovação antes de concluir a QA.
+
+### QA física nativa da Etapa 5 — contrato de verificação
+
+O workflow `PDF Renderer Visual QA` passa a executar `scripts/pdf-export-pdf-smoke.mjs` após a QA de layout, com a fixture de conteúdo fallback e Trajetórias **sintéticas**. Produz quatro PDFs com 13 seções (Desktop/Mobile × Original/Clean) e dois PDFs reduzidos (quatro seções). `pdfinfo` verifica a quantidade de páginas físicas, `pdftotext` verifica texto pesquisável e `pdftohtml` inspeciona links nativos nas páginas Hero/Contato, incluindo redirecionamento de links para seções excluídas. O relatório e PDFs de teste são publicados como artefatos temporários do CI; não contêm dados privados de produção.
+
+**Limite:** é uma verificação do Chromium no CI, equivalente em tecnologia ao diálogo nativo de impressão, mas não uma confirmação de salvamento pelo usuário. O resultado por SHA será acrescentado após execução. 
+

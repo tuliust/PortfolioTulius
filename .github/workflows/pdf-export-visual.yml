@@ -8,6 +8,11 @@ on:
       - pdf-export-qa.html
       - src/pdf-export-qa.tsx
       - scripts/pdf-export-visual-smoke.mjs
+      - scripts/pdf-export-pdf-smoke.mjs
+      - src/lib/pdf-print-layout.ts
+      - src/lib/pdf-print-layout.test.ts
+      - src/components/admin/PdfPreviewPage.tsx
+      - src/components/admin/PdfExportPanel.tsx
       - src/components/public/PdfPortfolio.tsx
       - src/components/public/PdfPortfolio.css
       - src/components/public/PublicSite.tsx
@@ -37,7 +42,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Check browser script syntax
-        run: node --check scripts/pdf-export-visual-smoke.mjs
+        run: |
+          node --check scripts/pdf-export-visual-smoke.mjs
+          node --check scripts/pdf-export-pdf-smoke.mjs
       - name: Start isolated Vite fixture
         shell: bash
         run: |
@@ -61,6 +68,15 @@ jobs:
           npm install --no-audit --no-fund --no-save puppeteer-core@25.16.0
           cp "$GITHUB_WORKSPACE/scripts/pdf-export-visual-smoke.mjs" visual.mjs
           PDF_QA_SHOTS="$RUNNER_TEMP/pdf-visual-shots" PDF_QA_BASE="http://127.0.0.1:4177" node visual.mjs
+      - name: Generate and inspect native searchable PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v pdfinfo
+          command -v pdftotext
+          command -v pdftohtml
+          cp "$GITHUB_WORKSPACE/scripts/pdf-export-pdf-smoke.mjs" "$RUNNER_TEMP/pdf-visual/native-pdf.mjs"
+          (cd "$RUNNER_TEMP/pdf-visual" && PDF_QA_SHOTS="$RUNNER_TEMP/pdf-visual-shots" PDF_QA_BASE="http://127.0.0.1:4177" node native-pdf.mjs)
       - name: Verify QA page is not published
         shell: bash
         run: |
