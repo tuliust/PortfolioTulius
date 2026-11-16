@@ -314,3 +314,15 @@
 .pdf-portfolio .profile-mobile-next {
   display: none !important;
 }
+
+/* Preserve the two real mobile Hero panels: no overlap when the header is absent. */
+@media (max-width: 767px) {
+  .pdf-portfolio--mobile #perfil-a.mobile-panel {
+    height: auto !important;
+    min-height: 100svh !important;
+  }
+
+  .pdf-portfolio--mobile #perfil-a.mobile-panel:not(.editorial360-mobile) .profile-mobile-stage {
+    min-height: clamp(22rem, 60svh, 36rem);
+  }
+}

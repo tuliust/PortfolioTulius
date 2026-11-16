@@ -79,6 +79,15 @@ try {
             ? getComputedStyle(metricsGrid).gridTemplateColumns.split(" ").length
             : 0
           const photo = document.querySelector("#perfil img")
+          const profileA = document.querySelector("#perfil-a")
+          const profileB = document.querySelector("#perfil-b")
+          const heroStage = profileA?.querySelector(".profile-mobile-stage, .mobile360")
+          const profileABounds = profileA?.getBoundingClientRect()
+          const profileBBounds = profileB?.getBoundingClientRect()
+          const heroStageBounds = heroStage?.getBoundingClientRect()
+          const loadedFonts = [...document.fonts]
+            .filter((face) => face.status === "loaded")
+            .map((face) => face.family)
           const testimonials = [...document.querySelectorAll("#depoimentos .testimonial-card")]
           const clipping = [
             ...document.querySelectorAll(
@@ -96,6 +105,14 @@ try {
             device: root?.dataset.pdfDevice,
             palette: root?.dataset.pdfPalette,
             whiteSections: colors.every((color) => color === "rgb(255, 255, 255)"),
+            loadedFonts,
+            firstMobilePanelHeight: profileABounds?.height ?? null,
+            mobilePanelOverlapPx: profileABounds && profileBBounds
+              ? Math.max(0, profileABounds.bottom - profileBBounds.top)
+              : null,
+            mobileHeroContentOverlapPx: heroStageBounds && profileBBounds
+              ? Math.max(0, heroStageBounds.bottom - profileBBounds.top)
+              : null,
             colors: [...new Set(colors)],
             mediaCount: document.querySelectorAll(".pdf-portfolio img").length,
             portraitLoaded: Boolean(photo?.complete && photo.naturalWidth > 0),
@@ -140,6 +157,17 @@ try {
         if (report.testimonials !== 3 || !report.testimonialsAsArticles) issues.push("testimonials")
         if (report.unwantedControls !== 0 || !report.profileArrowHidden) issues.push("controls")
         if (report.heroLinks < 5) issues.push("hero_links")
+        if (!report.loadedFonts.some((font) => font.includes("Big Shoulders Display"))) {
+          issues.push("display_font_missing")
+        }
+        if (!report.loadedFonts.some((font) => font.includes("Inter"))) {
+          issues.push("body_font_missing")
+        }
+        if (device === "mobile" && (
+          (report.firstMobilePanelHeight ?? 0) < viewports.mobile.height - 2 ||
+          (report.mobilePanelOverlapPx ?? 1) > 2 ||
+          (report.mobileHeroContentOverlapPx ?? 1) > 2
+        )) issues.push("mobile_profile_overlap")
         if (report.textClipping) issues.push("text_clipping")
         if (report.horizontalOverflowPx > 2) issues.push("horizontal_overflow")
         if (palette === "clean" && !report.whiteSections) issues.push("clean_backgrounds")
