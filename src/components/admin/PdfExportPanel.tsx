@@ -5,6 +5,7 @@ import {
   type PdfDevice,
 } from "../../lib/pdf-export-options"
 import { buildPdfPreviewUrl } from "../../lib/pdf-preview-config"
+import { preparePdfPrintLayout } from "../../lib/pdf-print-layout"
 import "./PdfExportPanel.css"
 
 type AdminSection = {
@@ -28,6 +29,9 @@ export default function PdfExportPanel({
   const [excluded, setExcluded] = useState<string[]>([])
   const [scale, setScale] = useState(1)
   const host = useRef<HTMLDivElement>(null)
+  const printFrame = useRef<HTMLIFrameElement>(null)
+  const [printReady, setPrintReady] = useState(false)
+  const [printError, setPrintError] = useState("")
   const visible = useMemo(
     () =>
       sections
@@ -39,6 +43,49 @@ export default function PdfExportPanel({
   const url = buildPdfPreviewUrl({ device, colorMode: palette, includedSlugs: included })
   const canPreview = loadStatus === "ready" && url !== null
   const viewport = PDF_EXPORT_VIEWPORTS[device]
+  const selection = included.join("|")
+
+  useEffect(() => {
+    setPrintReady(false)
+    setPrintError("")
+    if (!canPreview) return
+    const onReady = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || event.source !== printFrame.current?.contentWindow) {
+        return
+      }
+      const payload = event.data as { type?: string; device?: string; includedSlugs?: string[] } | null
+      if (
+        payload?.type === "portfolio-pdf-ready" &&
+        payload.device === device &&
+        Array.isArray(payload.includedSlugs) &&
+        payload.includedSlugs.join("|") === selection
+      ) {
+        setPrintReady(true)
+      }
+    }
+    window.addEventListener("message", onReady)
+    return () => window.removeEventListener("message", onReady)
+  }, [url, canPreview, device, selection])
+
+  const printPdf = () => {
+    try {
+      const doc = printFrame.current?.contentDocument
+      const frameWindow = printFrame.current?.contentWindow
+      if (!printReady || !doc || !frameWindow) {
+        throw new Error("Aguarde a prévia publicada ficar pronta.")
+      }
+      const manifest = preparePdfPrintLayout(doc, device, included)
+      if (manifest.pages.length !== included.length) {
+        throw new Error("A quantidade de páginas não corresponde à seleção.")
+      }
+      doc.title = "Tulius Tsangaropulos - " + device + " - " + palette
+      setPrintError("")
+      frameWindow.focus()
+      frameWindow.print()
+    } catch (reason) {
+      setPrintError(reason instanceof Error ? reason.message : "Não foi possível imprimir.")
+    }
+  }
 
   useEffect(() => {
     const element = host.current
@@ -175,6 +222,7 @@ export default function PdfExportPanel({
               style={{ width: viewport.width * scale, height: viewport.height * scale }}
             >
               <iframe
+                ref={printFrame}
                 title={"Prévia PDF " + device + " " + palette}
                 src={url ?? undefined}
                 loading="lazy"
@@ -187,12 +235,24 @@ export default function PdfExportPanel({
             </div>
           </div>
         )}
+        <div className="pdf-export-print-actions">
+          <button type="button" onClick={printPdf} disabled={!canPreview || !printReady}>
+            Gerar PDF
+          </button>
+          <span role="status">
+            {!canPreview
+              ? "Selecione ao menos uma seção."
+              : printReady
+                ? "Documento pronto para impressão."
+                : "Carregando fontes, imagens e Trajetórias…"}
+          </span>
+        </div>
+        {printError && <p role="alert" className="pdf-export-print-error">{printError}</p>}
         <p className="pdf-export-help">
-          Prévia protegida com conteúdo publicado. A geração do arquivo PDF, os links finais e a
-          paginação física serão implementados na Etapa 5.
-        </p>
-        <p className="pdf-export-pending">
-          Download de PDF indisponível nesta etapa. Nenhum arquivo foi gerado.
+          Clique em <strong>Gerar PDF</strong> e escolha <strong>Salvar como PDF</strong> no
+          diálogo do navegador. Os textos e links permanecem pesquisáveis e clicáveis;
+          cada seção selecionada ocupa uma página de altura adaptada ao conteúdo.
+          Desative cabeçalhos e rodapés de impressão, se disponíveis.
         </p>
       </section>
     </div>

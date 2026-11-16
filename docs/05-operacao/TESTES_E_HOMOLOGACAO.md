@@ -370,3 +370,8 @@ O download físico não foi implementado. Registrar Validate, P3 e deployment po
 
 **Ainda não executados:** ensaio autenticado real da prévia PDF no admin, paridade com conteúdo e mídias produtivos na nova rota e geração física do PDF com links e paginação. A etapa 4 entrega apenas o painel de configuração e prévia protegida.
 
+## Etapa 5 — contrato de PDF físico (16/11/2026)
+
+`src/lib/pdf-print-layout.ts` e testes adicionam `@page` individuais, limite de altura e seleção. O admin só habilita impressão após carregar imagens e fontes; exige Trajetórias e links de Hero/Contato. A QA física deverá verificar em Chromium nas **quatro combinações**: número de páginas idêntico à quantidade de seções incluídas, fontes/texto extraíveis por `pdftotext`, hiperlinks do Hero e Contato e altura variável. **Chamar `window.print()` não comprova que o usuário salvou o arquivo.** A homologação real autenticada com CMS produtivo permanece pendente até execução documentada.
+
+Sem dependências novas, funções servidoras ou mudanças em Auth/RLS/Storage. Registrar CI e deployment por SHA; não presumir aprovação antes de concluir a QA.

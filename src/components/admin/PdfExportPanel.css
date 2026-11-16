@@ -159,3 +159,37 @@
     grid-template-columns: 1fr;
   }
 }
+
+.pdf-export-print-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .85rem;
+}
+.pdf-export-print-actions button {
+  min-height: 44px;
+  padding: .75rem 1.25rem;
+  background: #171617;
+  color: #fff;
+  border: 1px solid #171617;
+  font-weight: 800;
+  cursor: pointer;
+}
+.pdf-export-print-actions button:disabled {
+  background: #dedbd8;
+  color: #635e5b;
+  border-color: #bcb6b2;
+  cursor: not-allowed;
+}
+.pdf-export-print-actions button:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+.pdf-export-print-actions span {
+  color: #625d58;
+  font-size: .82rem;
+}
+.pdf-export-print-error {
+  color: #ad2915;
+  font-weight: 700;
+}

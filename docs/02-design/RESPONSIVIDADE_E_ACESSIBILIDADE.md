@@ -169,3 +169,7 @@ A revisão manual das imagens de QA identificou que a fixture não carregava as 
 ## Etapa 4 — prévia administrativa de PDF (16/11/2026)
 
 O iframe recebe viewport de **1440 px Desktop** ou **390 px Mobile**, permitindo media queries efetivas para o dispositivo selecionado. A escala visual aplica-se somente na apresentação do iframe; a abertura em nova aba permite revisão natural. Botões de paleta/dispositivo usam `aria-pressed` e as seções usam checkboxes com rótulos. A rota exige autorização administrativa antes da leitura do conteúdo. Layout público e editor existentes permanecem inalterados.
+
+## PDF nativo — geometria de impressão na Etapa 5 (16/11/2026)
+
+A impressão usa `@page` nomeadas com largura nativa de 1440 px ou 390 px e altura conforme o conteúdo de cada seção. Um documento pode conter páginas de alturas diferentes, em vez de forçar seções extensas ao formato A4. `print-color-adjust: exact` protege a paleta Original e os fundos brancos da variante Clean. Os links e o texto permanecem vetoriais no PDF de Chromium. O botão de gerar é habilitado apenas após o carregamento da prévia; o diálogo de impressão é acessível via navegador. A aparência final dependerá das opções do diálogo (por exemplo, cabeçalhos/rodapés).

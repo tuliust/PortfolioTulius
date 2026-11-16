@@ -117,3 +117,9 @@ A exportação passou a carregar metadados de viewport e paleta, sem novos contr
 No menu administrativo, após **Prévia**, há **Exportar PDF**, com escolhas **Desktop/Mobile** e **Original/Clean**. A seleção mostra somente seções publicadas e visíveis na ordem `sort_order`, inicialmente todas incluídas. É possível marcar/desmarcar e usar **Selecionar todas** ou **Desmarcar todas**. Nada é gravado no CMS; com seleção vazia, a prévia fica indisponível.
 
 A prévia protegida aparece em iframe com opção **Abrir em nova aba** e usa conteúdo publicado, não rascunhos. Trajetórias de experiências selecionadas são obrigatórias e erros de leitura impedem a composição. **Download PDF ainda não existe**: paginação, hiperlinks finais e geração ficam para a Etapa 5. Nenhum dado, Auth/RLS, Storage ou migration foi alterado.
+
+## Etapa 5 — salvar documento PDF (16/11/2026)
+
+Em **Exportar PDF**, selecione Desktop/Mobile, Original/Clean e as seções desejadas; aguarde **Documento pronto para impressão** e clique **Gerar PDF**. No diálogo do navegador Chromium/Chrome, selecione **Salvar como PDF** (sem cabeçalhos e rodapés) para gravar o arquivo. A impressão usa uma página de altura própria por seção, respeita a ordem pública e conserva links e texto nativos. Seções desmarcadas são omitidas, sem alteração de publicação. Links que apontam a seções excluídas levam ao site público.
+
+A geração permanece bloqueada se a prévia estiver incompleta, houver imagens ausentes, Trajetórias não carregadas, seções divergentes ou excesso do limite físico de página. **Não existe download binário direto**: o salvamento ocorre no diálogo do navegador, sob controle do usuário. Não há alterações persistidas pelo módulo.

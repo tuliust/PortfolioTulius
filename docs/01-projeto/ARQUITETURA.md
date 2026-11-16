@@ -70,3 +70,9 @@ Os depoimentos exportados passam a ser elementos `article` em lugar de botões. 
 O módulo lazy `PdfExportPanel.tsx` está no menu do `AdminApp` como **Exportar PDF**. A nova rota `/admin/pdf-preview` é específica e exige `useAdminGuard` antes da montagem do conteúdo. `pdf-preview-config.ts` valida dispositivo, paleta e slugs selecionados. O iframe recebe viewport intrínseco 1440×900 ou 390×844 CSS px, escalado apenas dentro do espaço administrativo.
 
 `PdfPreviewPage.tsx` lê `usePortfolio(false)` e `career_experiences.description` publicados por PostgREST; não expõe rascunhos nem fallback local. Seções e Trajetórias ausentes bloqueiam a prévia. Leituras de seções e Trajetórias são independentes, não um snapshot transacional. Não há geração de PDF, alteração de schema, Auth/RLS ou escrita no CMS.
+
+## Etapa 5 — geração PDF nativa e páginas variáveis (16/11/2026)
+
+A exportação usa **CSS Paged Media e impressão nativa do navegador**, sem backend, novas dependências ou transporte de conteúdo do CMS. `src/lib/pdf-print-layout.ts` mede cada `[data-pdf-section]` e gera regras `@page` nomeadas: largura de 1440 px (Desktop) ou 390 px (Mobile) e altura individual de até 16.000 px por seção, evitando cortes em blocos longos. O mecanismo preserva texto pesquisável e hiperlinks nativos e converte âncoras para seções excluídas em links para https://tulius.work/.
+
+`PdfPreviewPage.tsx` só sinaliza prontidão ao iframe após carregar fontes e imagens visíveis. `PdfExportPanel.tsx` verifica origem e janela da mensagem antes de habilitar **Gerar PDF**, chamando `iframe.contentWindow.print()`. O navegador abre seu próprio diálogo, onde o usuário escolhe **Salvar como PDF**; não há download binário automático. O PDF só é apresentado como pronto se dados, imagens, Trajetórias e seções estiverem completos. Não houve mudança de CMS, Auth/RLS ou produção fora do fluxo Git.
