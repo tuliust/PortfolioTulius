@@ -40,7 +40,7 @@ async function screenshotSettledResults(page, selector, filename) {
   await page.screenshot({ path: path.join(shots, filename), fullPage: false })
 }
 try {
-  for (const route of ["/admin", "/admin/preview"]) {
+  for (const route of ["/admin", "/admin/preview", "/admin/pdf-preview"]) {
     const page = await browser.newPage()
     try {
       const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 30000 })

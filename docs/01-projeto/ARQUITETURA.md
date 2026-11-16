@@ -64,3 +64,9 @@ Os depoimentos exportados passam a ser elementos `article` em lugar de botões. 
 ## Fixture visual isolada da Etapa 3 (16/11/2026)
 
 `pdf-export-qa.html` e `src/pdf-export-qa.tsx` criam entrada exclusiva do servidor Vite de desenvolvimento. Usam `src/content/fallback.ts` e Trajetórias sintéticas, **não** Supabase de produção. O build padrão tem somente `index.html` como entrada e o workflow QA verifica que `dist/pdf-export-qa.html` não existe. O script `scripts/pdf-export-visual-smoke.mjs` utiliza Chromium em quatro modalidades e o workflow `.github/workflows/pdf-export-visual.yml` publica capturas como artefato interno do CI. Nenhuma rota de PDF foi adicionada ao app publicado.
+
+## Etapa 4 — painel de exportação PDF (16/11/2026)
+
+O módulo lazy `PdfExportPanel.tsx` está no menu do `AdminApp` como **Exportar PDF**. A nova rota `/admin/pdf-preview` é específica e exige `useAdminGuard` antes da montagem do conteúdo. `pdf-preview-config.ts` valida dispositivo, paleta e slugs selecionados. O iframe recebe viewport intrínseco 1440×900 ou 390×844 CSS px, escalado apenas dentro do espaço administrativo.
+
+`PdfPreviewPage.tsx` lê `usePortfolio(false)` e `career_experiences.description` publicados por PostgREST; não expõe rascunhos nem fallback local. Seções e Trajetórias ausentes bloqueiam a prévia. Leituras de seções e Trajetórias são independentes, não um snapshot transacional. Não há geração de PDF, alteração de schema, Auth/RLS ou escrita no CMS.

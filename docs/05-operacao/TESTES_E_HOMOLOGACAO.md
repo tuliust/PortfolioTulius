@@ -354,3 +354,8 @@ Arquivos: `.github/workflows/pdf-export-visual.yml`, `scripts/pdf-export-visual-
 
 **Fora da Etapa 3:** ainda não há rota ou tela do admin para PDF, geração de arquivo físico com uma página por seção, conferência dos hyperlinks no documento final ou homologação de fidelidade com dados de produção. Não houve mudanças de Auth/RLS/Storage/migrations nem deploy manual.
 
+## Etapa 4 — interface e rota de prévia PDF (16/11/2026)
+
+`PdfExportPanel.tsx`, `PdfExportPanel.css`, `PdfPreviewPage.tsx`, `pdf-preview-config.ts`, `useAdminGuard.ts` e testes foram adicionados. `AdminApp.tsx` e `routes.tsx` integram o módulo, e P3 testa também o redirecionamento anônimo de `/admin/pdf-preview`. A QA visual da Etapa 3, [#43863504846](https://github.com/tuliust/PortfolioTulius/actions/runs/43863504846), terminou **SUCCESS** nas quatro variantes com dados fallback e Trajetórias sintéticas no SHA `9d2c2e9`. Não prova fidelidade ao CMS real.
+
+O download físico não foi implementado. Registrar Validate, P3 e deployment por SHA; os testes autenticados do painel e a verificação visual do iframe com CMS real permanecem pendentes.

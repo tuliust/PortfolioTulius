@@ -18,6 +18,11 @@ const AdminPreview = lazy(() =>
     default: module.AdminPreview,
   })),
 )
+const AdminPdfPreview = lazy(() =>
+  import("../components/admin/PdfPreviewPage").then((module) => ({
+    default: module.AdminPdfPreview,
+  })),
+)
 
 function Deferred({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<div className="admin-loading">Carregando…</div>}>{children}</Suspense>
@@ -38,6 +43,14 @@ export const router = createBrowserRouter([
     element: (
       <Deferred>
         <AdminPreview />
+      </Deferred>
+    ),
+  },
+  {
+    path: "/admin/pdf-preview",
+    element: (
+      <Deferred>
+        <AdminPdfPreview />
       </Deferred>
     ),
   },

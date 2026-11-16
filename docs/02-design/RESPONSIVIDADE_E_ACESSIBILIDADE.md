@@ -165,3 +165,7 @@ O workflow `PDF Renderer Visual QA` monta a mesma árvore React do renderer em v
 A seta interna `profile-mobile-next` (rolagem entre painéis do Perfil mobile) é ocultada apenas no PDF; links dos cinco eixos de atuação permanecem acionáveis. O script Chromium conta esses links pela marcação mobile `.profile-mobile-area-list a` e pela classe desktop `.area-card-link`, sem exigir classes iguais para layouts diferentes.
 
 A revisão manual das imagens de QA identificou que a fixture não carregava as fontes web usadas em `index.html` e que o Perfil mobile podia ter painel A encolhido, gerando sobreposição com B. A entrada isolada passou a carregar as **mesmas famílias Google Fonts sem copiar arquivos**, e o CSS de PDF preserva `min-height:100svh` no primeiro painel mobile. A QA agora verifica fontes carregadas, altura de A e ausência de sobreposição geométrica com B. Essas correções **não modificam o site público**.
+
+## Etapa 4 — prévia administrativa de PDF (16/11/2026)
+
+O iframe recebe viewport de **1440 px Desktop** ou **390 px Mobile**, permitindo media queries efetivas para o dispositivo selecionado. A escala visual aplica-se somente na apresentação do iframe; a abertura em nova aba permite revisão natural. Botões de paleta/dispositivo usam `aria-pressed` e as seções usam checkboxes com rótulos. A rota exige autorização administrativa antes da leitura do conteúdo. Layout público e editor existentes permanecem inalterados.

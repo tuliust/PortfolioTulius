@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { lazy, Suspense, useEffect, useRef, useState } from "react"
 import { Link, Navigate, useBlocker, useNavigate } from "react-router"
-import { isAdmin, supabase } from "../../lib/supabase"
+import { supabase } from "../../lib/supabase"
+import { useAdminGuard } from "../../hooks/useAdminGuard"
 import { tryCompositeSave, sameJson } from "../../lib/p2-composite-save"
 import { PublicSite } from "../public/PublicSite"
 import {
@@ -23,6 +24,8 @@ import {
 import { FloatingSaveButton } from "./FloatingSaveButton"
 import { IdentityCatalogEditor } from "./IdentityCatalogEditor"
 import "./section-editor-stage3.css"
+
+const PdfExportPanel = lazy(() => import("./PdfExportPanel"))
 import { AdminInfoTip } from "./InfoTip"
 import {
   ContentStudio,
@@ -57,16 +60,6 @@ function sectionPublicationLabel(section: SectionRow): string {
   return section.status === "published" && section.is_visible ? "Publicado" : "Oculto"
 }
 
-function useAdminGuard() {
-  const [state, setState] = useState<"loading" | "allowed" | "denied">("loading")
-  useEffect(() => {
-    isAdmin()
-      .then((allowed) => setState(allowed ? "allowed" : "denied"))
-      .catch(() => setState("denied"))
-  }, [])
-  return state
-}
-
 function AdminShell({
   children,
   active,
@@ -91,6 +84,7 @@ function AdminShell({
     ["seo", "SEO", "edit"],
     ["editorial", "Revisões", "edit"],
     ["preview", "Prévia", "arrow"],
+    ["pdf", "Exportar PDF", "arrow"],
   ] as const
   async function logout() {
     const question = editorDirty
@@ -1260,6 +1254,11 @@ export function AdminApp() {
     seo: <SeoStudio onDirtyChange={setEditorDirty} />,
     editorial: <EditorialStudio />,
     preview: <PortfolioPreviewPane />,
+    pdf: (
+      <Suspense fallback={<div className="admin-loading">Preparando prévia PDF…</div>}>
+        <PdfExportPanel sections={sections} loadStatus={loadStatus} />
+      </Suspense>
+    ),
   }
   return (
     <AdminShell

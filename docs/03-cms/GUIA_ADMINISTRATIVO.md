@@ -111,3 +111,9 @@ Existe apenas renderer estático em `PdfPortfolio.tsx`, ainda sem item de menu, 
 ## Preparação das quatro variantes de PDF — Etapa 3 (16/11/2026)
 
 A exportação passou a carregar metadados de viewport e paleta, sem novos controles no painel administrativo. A seleção das seções permanece apenas em memória e não altera dados. Nenhuma tela administrativa ou API de geração foi criada nesta etapa.
+
+## Exportar PDF — interface da Etapa 4 (16/11/2026)
+
+No menu administrativo, após **Prévia**, há **Exportar PDF**, com escolhas **Desktop/Mobile** e **Original/Clean**. A seleção mostra somente seções publicadas e visíveis na ordem `sort_order`, inicialmente todas incluídas. É possível marcar/desmarcar e usar **Selecionar todas** ou **Desmarcar todas**. Nada é gravado no CMS; com seleção vazia, a prévia fica indisponível.
+
+A prévia protegida aparece em iframe com opção **Abrir em nova aba** e usa conteúdo publicado, não rascunhos. Trajetórias de experiências selecionadas são obrigatórias e erros de leitura impedem a composição. **Download PDF ainda não existe**: paginação, hiperlinks finais e geração ficam para a Etapa 5. Nenhum dado, Auth/RLS, Storage ou migration foi alterado.
