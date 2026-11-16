@@ -2,12 +2,12 @@ import type { CSSProperties } from "react"
 import type { DesignTokens, PortfolioSection } from "../../types/content"
 import { heroColor, heroFont } from "../../lib/hero-formatting"
 import { selectPublishedPdfSections } from "../../lib/pdf-export-sections"
+import { pdfExportViewport, type PdfColorMode, type PdfDevice } from "../../lib/pdf-export-options"
 import { RESULT_THEME_KEYS, ResultsCenter, Section, TestimonialCards } from "./PublicSite"
 import { EXPERIENCE_SLUGS, PdfExperienceSection } from "./ExperienceStack"
 import "./PdfPortfolio.css"
 
-export type PdfDevice = "desktop" | "mobile"
-export type PdfColorMode = "original" | "clean"
+export type { PdfDevice, PdfColorMode } from "../../lib/pdf-export-options"
 
 export type PdfPortfolioProps = {
   sections: readonly PortfolioSection[]
@@ -81,7 +81,7 @@ function PdfResultsSection({
         <div className="pdf-results-flow">
           <div className="pdf-results-group pdf-results-overview">
             <h3 className="pdf-results-group-heading">Visão geral — indicadores</h3>
-            <ResultsCenter section={section} selectedTheme={null} mobile={isMobile} />
+            <ResultsCenter section={section} selectedTheme={null} mobile={isMobile} staticForExport />
           </div>
           {topics.map((topic, index) => (
             <div className="pdf-results-group" key={topic.themeKey || index}>
@@ -89,6 +89,7 @@ function PdfResultsSection({
                 section={section}
                 selectedTheme={topic.themeKey || RESULT_THEME_KEYS[index]}
                 mobile={isMobile}
+                staticForExport
               />
             </div>
           ))}
@@ -141,6 +142,7 @@ export function PdfPortfolio({
   const ordered = selectPublishedPdfSections(sections, includedSlugs)
   const publishedSlugs = ordered.map((section) => section.slug)
   const isMobile = device === "mobile"
+  const viewport = pdfExportViewport(device)
 
   return (
     <div
@@ -149,6 +151,8 @@ export function PdfPortfolio({
       }
       data-pdf-device={device}
       data-pdf-palette={colorMode}
+      data-pdf-reference-width={viewport.width}
+      data-pdf-reference-height={viewport.height}
       style={pdfSiteStyle(tokens, colorMode)}
     >
       <main>
@@ -179,6 +183,7 @@ export function PdfPortfolio({
               selectedTheme={null}
               isMobile={isMobile}
               onSelectTheme={() => undefined}
+              pdfExport
             />
           )
         })}

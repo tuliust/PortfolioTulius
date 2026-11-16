@@ -279,3 +279,32 @@
     break-after: auto;
   }
 }
+
+/* At the 390px mobile capture, preserve the public site's one-column metric layout. */
+@media (max-width: 420px) {
+  .pdf-portfolio--mobile .pdf-results-group .results-metrics-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* PDF layout: text columns are never sticky or internally scrollable. */
+.pdf-portfolio :is(
+  .pdf-experience-layout,
+  .pdf-experience-layout > *,
+  .pdf-results-page,
+  .pdf-testimonials-page
+) {
+  position: relative;
+  top: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.pdf-portfolio .pdf-results-group .results-center {
+  overflow: visible !important;
+}
+
+.pdf-portfolio--mobile .pdf-experience-layout .pdf-experience-identity {
+  position: static;
+  top: auto;
+}

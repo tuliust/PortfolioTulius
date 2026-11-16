@@ -332,3 +332,6 @@ O teste `src/components/public/PdfPortfolio.test.tsx` usa React SSR sintético p
 
 **Limite da Etapa 2:** os testes SSR verificam a árvore HTML sintética, não imagens reais, cores finais, métricas geométricas, hiperlinks efetivos no PDF, paginação física ou acesso autenticado. Não houve mudança em Supabase, Auth, RLS, Storage, migrations ou configuração manual de deploy. A próxima fase precisa demonstrar visualmente o renderer real antes de liberar a geração de PDF no admin.
 
+## Etapa 3 do PDF — teste de contrato de dispositivo (16/11/2026)
+
+Foram adicionados testes unitários para os viewports Desktop 1440×900 e Mobile 390×844 e atualizados os testes de SSR do renderer para `data-pdf-section`, tamanho de referência e depoimentos sem botões. O PDF físico e a comparação visual com produção continuam pendentes. Verificar o `Validate` do SHA que introduziu os testes antes de declarar sucesso.

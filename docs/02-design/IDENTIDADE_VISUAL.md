@@ -71,3 +71,7 @@ Nova intervenção aprovada: os títulos das seis empresas do Perfil usam `items
 ## Ajuste fino de +15 ANOS e selo do Hero desktop — 16/11/2026
 
 A pedido do proprietário, o indicador “+15 ANOS” foi reduzido discretamente de **55 px para 51 px** no campo editável desktop `items[0].hero.desktop.yearsSize` do Supabase (bloco Perfil/A). O renderer continua aplicando o tamanho por `--hero-desktop-years-size`; não foi criado novo estilo tipográfico e os conteúdos e demais fontes permanecem inalterados. O selo laranja conserva o mesmo SVG, cor e diagramação circular, com ajuste estritamente desktop em `src/index.css`: largura mínima proporcional de **42% para 40%** da área do retrato e deslocamento superior por `top: calc(var(--hero-desktop-badge-y, 74%) - clamp(1.75rem, 4.2dvh, 2.5rem))`. A variável de posição e o campo de tamanho do CMS permanecem respeitados. Essa correção evita o corte inferior mostrado na captura do proprietário; não se aplica ao mobile.
+
+## Modos Original/Clean da exportação PDF — Etapa 3 (16/11/2026)
+
+O renderer `PdfPortfolio` mantém os tokens visuais na variante Original e sobrepõe superfícies brancas/textos em escala de cinza na variante Clean, exclusivamente sob `.pdf-portfolio`. A página pública, suas mídias e os tokens salvos no CMS não foram alterados. A eventual avaliação visual de exportação deve confrontar as quatro combinações com os estilos atuais, não com capturas históricas.

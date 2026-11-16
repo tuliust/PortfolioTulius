@@ -1103,10 +1103,12 @@ export function ResultsCenter({
   section,
   selectedTheme,
   mobile = false,
+  staticForExport = false,
 }: {
   section: PortfolioSection
   selectedTheme: string | null
   mobile?: boolean
+  staticForExport?: boolean
 }) {
   const topics = mobile ? section.panelB : (section.desktopPanelB ?? section.panelB)
   const metrics = mobile ? section.panelA : (section.desktopPanelA ?? section.panelA)
@@ -1119,10 +1121,10 @@ export function ResultsCenter({
   return (
     <div
       className={`results-center${compact ? " is-compact" : ""}`}
-      aria-live="polite"
-      role={compact && !mobile ? "region" : undefined}
-      aria-label={compact && !mobile ? `Indicadores de ${topic?.title}` : undefined}
-      tabIndex={compact && !mobile ? 0 : undefined}
+      aria-live={staticForExport ? undefined : "polite"}
+      role={compact && !mobile && !staticForExport ? "region" : undefined}
+      aria-label={compact && !mobile && !staticForExport ? `Indicadores de ${topic?.title}` : undefined}
+      tabIndex={compact && !mobile && !staticForExport ? 0 : undefined}
     >
       {topic && (
         <article className="results-topic">
@@ -1285,15 +1287,8 @@ export function TestimonialCards({
       {items.map((item, index) => {
         const key = item.title + "-" + index
         const isExpanded = expandedForExport || expanded === key
-        return (
-          <button
-            type="button"
-            key={key}
-            className={`testimonial-card${isExpanded ? " is-expanded" : ""}`}
-            aria-expanded={isExpanded}
-            aria-label={`${isExpanded ? "Recolher" : "Expandir"} depoimento de ${item.title}`}
-            onClick={expandedForExport ? undefined : () => setExpanded(isExpanded ? null : key)}
-          >
+        const content = (
+          <>
             <div className="testimonial-person">
               {item.image && (
                 <img
@@ -1314,6 +1309,25 @@ export function TestimonialCards({
                 {isExpanded ? "Recolher −" : "Ler depoimento completo +"}
               </span>
             )}
+          </>
+        )
+        if (expandedForExport) {
+          return (
+            <article key={key} className="testimonial-card is-expanded">
+              {content}
+            </article>
+          )
+        }
+        return (
+          <button
+            type="button"
+            key={key}
+            className={isExpanded ? "testimonial-card is-expanded" : "testimonial-card"}
+            aria-expanded={isExpanded}
+            aria-label={(isExpanded ? "Recolher" : "Expandir") + " depoimento de " + item.title}
+            onClick={() => setExpanded(isExpanded ? null : key)}
+          >
+            {content}
           </button>
         )
       })}
@@ -1383,6 +1397,7 @@ export function Section({
   selectedTheme,
   isMobile,
   onSelectTheme,
+  pdfExport = false,
 }: {
   section: PortfolioSection
   nextSectionSlug?: string
@@ -1390,11 +1405,13 @@ export function Section({
   selectedTheme: string | null
   isMobile: boolean
   onSelectTheme: (themeKey: string | null) => void
+  pdfExport?: boolean
 }) {
   return (
     <section
       id={section.slug}
       data-section={section.slug}
+      data-pdf-section={pdfExport ? section.slug : undefined}
       className={`portfolio-section theme-${section.theme} layout-${section.layout} motion-${section.animation ?? "fade-up"} cms-entrance-${section.animation ?? "fade-up"}`}
     >
       {section.anchor && (

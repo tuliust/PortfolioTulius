@@ -151,3 +151,9 @@ A aba Projetos e Realizações passa a exibir **cinco resumos por empresa** em d
 `PdfPortfolio` recebe `desktop`/`mobile` e `original`/`clean`; seu CSS restringe as alterações ao escopo `.pdf-portfolio`. Remove conteúdo interativo apenas na composição PDF, amplia alturas dos blocos e depoimentos, e aplica fundos brancos e escala cinza no modo Clean. A seção lógica mobile mantém painéis A/B na mesma página editorial.
 
 **Não homologado:** a fidelidade pixel-a-pixel, ausência de cortes em PDF e media queries em viewport real; a etapa de geração deverá usar a largura efetiva do dispositivo e páginas de altura adaptativa.
+
+## Viewports e comportamento estático PDF — Etapa 3 (16/11/2026)
+
+As referências de captura da exportação são Desktop 1440×900 e Mobile 390×844, sem escala artificial do desktop. A versão mobile preserva as composições A/B do `Section`; na seção Resultados, até 420 CSS px a lista de indicadores mantém uma coluna, como no site público. Resultados e Trajetória não usam rolagem interna; a exportação de depoimentos usa artigos estáticos. `data-pdf-section` marca as seções lógicas para uma futura composição de uma página física por seção.
+
+**Não comprovado nesta mudança:** paridade visual por screenshots com CMS e mídia de produção, dimensões finais de página PDF e ausência de recorte no arquivo PDF. Os testes de estrutura não substituem essa homologação.

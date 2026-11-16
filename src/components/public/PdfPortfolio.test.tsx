@@ -90,6 +90,13 @@ describe("PdfPortfolio read-only renderer", () => {
         expect(html).toContain("Depoimento integral e completo")
         expect(html).not.toContain("Registro antigo")
         expect(html).not.toContain("Ler depoimento completo")
+        expect(html).not.toContain("<button")
+        expect(html).toContain("<article")
+        expect(html).toContain('data-pdf-section="resultados"')
+        expect(html).toContain('data-pdf-section="invest-rs"')
+        expect(html).toContain(
+          'data-pdf-reference-width="' + (device === "mobile" ? "390" : "1440") + '"',
+        )
         expect(html).not.toContain("experience-index")
         expect(html).not.toContain("experience-gallery")
         expect(html).not.toContain("site-header")

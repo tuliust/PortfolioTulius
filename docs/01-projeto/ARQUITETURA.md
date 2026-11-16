@@ -54,3 +54,9 @@ Foi criado `src/components/public/PdfPortfolio.tsx` como componente read-only, s
 O renderer reutiliza `Section`, `ResultsCenter`, `RESULT_THEME_KEYS` e `TestimonialCards` de `PublicSite.tsx`; `expandedForExport` exibe depoimentos integrais. `PdfExperienceSection` em `ExperienceStack.tsx` reutiliza marca, introdução e `ExperienceDetails complete`, exibe projetos e Trajetória simultaneamente e não monta galerias nem menu de empresas. `PdfPortfolio.css` só é importado pelo componente de exportação.
 
 **Pendente:** carregamento consistente do CMS e Trajetórias, viewport real, PDF de uma página física por seção, links finais e paridade visual. Nenhuma rota pública, schema, Auth/RLS, Storage ou configuração Vercel mudou.
+
+## Etapa 3 — contrato de modos visuais PDF (16/11/2026)
+
+`src/lib/pdf-export-options.ts` define as referências 1440×900 CSS px para Desktop e 390×844 CSS px para Mobile. `PdfPortfolio` publica os atributos `data-pdf-reference-width/height`; a futura geração deve configurar o viewport real do Chromium, pois uma classe CSS não ativa media queries do navegador. `Section` recebeu `pdfExport` opcional, marcando `data-pdf-section` somente na exportação; `ResultsCenter` recebeu `staticForExport` para retirar o foco/ARIA da navegação temática em modo estático.
+
+Os depoimentos exportados passam a ser elementos `article` em lugar de botões. O comportamento padrão da página pública permanece inalterado. Esta etapa ainda não introduz rota, tela administrativa ou serviço de geração de PDF.

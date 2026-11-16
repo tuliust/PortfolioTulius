@@ -107,3 +107,7 @@ A aba **Trajetória** lê `career_experiences.description`: um parágrafo introd
 ## PDF — estado após a Etapa 2 (16/11/2026)
 
 Existe apenas renderer estático em `PdfPortfolio.tsx`, ainda sem item de menu, rota de preview ou download. A filtragem `includedSlugs` atua em memória; não modifica publicação, `sections.is_visible` ou registros do CMS. O integrador deverá passar seções e tokens publicados e seis descrições de Trajetória, bloqueando geração se dados obrigatórios faltarem. Não usar rascunhos da prévia em um PDF anunciado como público.
+
+## Preparação das quatro variantes de PDF — Etapa 3 (16/11/2026)
+
+A exportação passou a carregar metadados de viewport e paleta, sem novos controles no painel administrativo. A seleção das seções permanece apenas em memória e não altera dados. Nenhuma tela administrativa ou API de geração foi criada nesta etapa.
