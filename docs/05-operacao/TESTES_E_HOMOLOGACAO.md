@@ -323,3 +323,12 @@ Implementação isolada: `PdfPortfolio.tsx`, `PdfPortfolio.css`, `PdfExperienceS
 ### Validação adicional de estrutura HTML — Etapa 2
 
 O teste `src/components/public/PdfPortfolio.test.tsx` usa React SSR sintético para confirmar, em desktop e mobile, a ordem de três seções, visão geral e tema contínuos, projetos visíveis, Trajetória integral, depoimentos sem botão e ausência de menus/galerias. Esses testes **não** validam dimensões físicas de páginas, fotos nem paridade visual com produção; tais condições continuam para as etapas posteriores.
+
+## Evidências concluídas — renderer PDF da Etapa 2 (16/11/2026)
+
+**Código e testes por SHA:** `3435c54441f9e5a72e5fc97f021353a8de9f4476`. [Validate #43856231156](https://github.com/tuliust/PortfolioTulius/actions/runs/43856231156) **SUCCESS**: formatação, TypeScript, **60 arquivos de teste / 271 testes PASS** (incluindo seleção de seções e SSR estático desktop/mobile), build Vite, smoke offline e sintaxe dos scripts. [Export Docs #43856050675](https://github.com/tuliust/PortfolioTulius/actions/runs/43856050675) **SUCCESS** ocorreu no SHA intermediário `0c93fad`; não deve ser atribuído ao SHA final. Vercel production `dpl_7GL83QjJgnyXoBLUEKo95eMWboMS` **READY** para `3435c54`.
+
+[P3 #43856231062](https://github.com/tuliust/PortfolioTulius/actions/runs/43856231062), **FAILURE global exclusivamente no orçamento de LCP mobile**: mediana **3.662,554 ms** frente à meta **≤3.500 ms**. Desktop **900,722 ms PASS**; browser/responsividade **0 falhas**, **38 capturas PASS**, verificação de SHA servido na produção PASS, leitura parcial/RLS e conteúdo de Hero preservados. A falha não significa regressão comprovada do renderer PDF, que permanece **sem rota e não foi executado no navegador**; também não significa performance corrigida. A P3 anterior de `2d9c04f` foi **FAILURE** por LCP mobile **3.515,154 ms**, com navegador PASS. Os commits intermediários `ca34ea7` e `0c93fad` tiveram Validate **FAILURE na etapa de formatação**, corrigida nos commits seguintes sem mudanças editoriais públicas.
+
+**Limite da Etapa 2:** os testes SSR verificam a árvore HTML sintética, não imagens reais, cores finais, métricas geométricas, hiperlinks efetivos no PDF, paginação física ou acesso autenticado. Não houve mudança em Supabase, Auth, RLS, Storage, migrations ou configuração manual de deploy. A próxima fase precisa demonstrar visualmente o renderer real antes de liberar a geração de PDF no admin.
+
