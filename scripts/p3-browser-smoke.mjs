@@ -1123,7 +1123,10 @@ try {
           density.badgeYearsOverlapPx2 !== null && density.badgeYearsOverlapPx2 < 200 &&
           density.arrowCenterX !== null && Math.abs(density.arrowCenterX - width / 2) <= 2 &&
           density.resultsColumnGaps !== null &&
-          Math.abs(density.resultsColumnGaps[0] - density.resultsColumnGaps[1]) <= 3 &&
+          // The approved tighter indicator grid adds breathing room on both
+          // sides; judge balanced generous gutters, not pixel-identical gaps.
+          density.resultsColumnGaps.every((gap) => gap >= 38) &&
+          Math.abs(density.resultsColumnGaps[0] - density.resultsColumnGaps[1]) <= 12 &&
           density.formationMinTitlePx !== null && density.formationMinTitlePx >= 28
         if (!compact) {
           failures++
