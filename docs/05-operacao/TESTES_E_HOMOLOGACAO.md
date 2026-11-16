@@ -178,3 +178,28 @@ O teste P5 foi corrigido de modo restrito em `scripts/p5-admin-readonly.mjs`: ve
 O run P3 [#43804663189](https://github.com/tuliust/PortfolioTulius/actions/runs/43804663189) do SHA funcional `9e534af` registrou `P3_DESKTOP_DENSITY_REGRESSION` por um contrato legado de igualdade quase exata dos gutters (`abs(left-right) ≤ 3px`) na referência **1512×691**. As medidas reais **60 px e 55 px**, ambos espaços maiores, correspondem à nova distribuição aprovada para Resultados. Os demais critérios desse objeto (posição do nome, composição, altura, números, título, botão central e ausência de sobreposição) estavam conformes. O teste agora exige explicitamente **ambos os gutters ≥38 px** e **diferença absoluta ≤12 px**, mantendo proteção contra congestionamento ou assimetria exagerada, sem desfazer o layout solicitado. A verificação ainda precisa rodar no SHA com esta alteração.
 
 No mesmo run anterior, o gate **P6 mobile LCP continuou FAILURE** (mediana 3.629,539 ms contra teto ≤3.500 ms); desktop teve PASS com 867,676 ms. Essa diferença de desempenho permanece registrada, sem relaxamento do orçamento, mudança de imagem ou otimização fora do escopo.
+
+
+### Homologação do refinamento desktop por SHA — 16/11/2026
+
+A intervenção funcional `9e534af393e4cb4bb0fa7e4347e09aba8d677fff` atualizou React/CSS/CMS e os guias; os três blocos JSONB publicados foram relidos após UPDATE transacional em produção. O commit de correção de P5 `e939ab704fc877d4d1a9761e1c6c9c6f099f99f8` mudou **somente** o teste de agrupamento de destaques e este guia; o commit de correção P3 `4fcc3e34a874c8a3125e026e8c17f0fce115c3ec` mudou **somente** o gate da distribuição horizontal de Resultados e este guia. Não houve novas escritas produtivas após a intervenção inicial.
+
+**Verificações do SHA final de código/testes `4fcc3e34`:**
+
+| Evidência | Resultado |
+|---|---|
+| [Validate #43805230825](https://github.com/tuliust/PortfolioTulius/actions/runs/43805230825) | **SUCCESS** — format, TypeScript, testes, build, smoke |
+| [Export Docs #43805230771](https://github.com/tuliust/PortfolioTulius/actions/runs/43805230771) | **SUCCESS** |
+| [P3 Lighthouse #43805230787](https://github.com/tuliust/PortfolioTulius/actions/runs/43805230787) | **FAILURE global exclusivamente pelo budget de LCP mobile** |
+| P3 navegador e responsividade | **PASS** — `P3_BROWSER_AUDIT failures=0`; botão centralizado; gaps de Resultados 60/55 px na referência 1512×691; sem sobreposição selo/legenda; 13 viewports |
+| P4 auditoria editorial | **PASS** — 38 capturas, 13 desktop e 25 mobile, 0 falhas |
+| P5 RLS público, fallback e SEO | **PASS** — RLS anônima, falhas de leitura simuladas e metadados SEO iguais aos publicados, 0 mutations |
+| P6 desktop LCP | **PASS**, mediana de 3 coletas **912,229 ms**, orçamento mantido |
+| P6 mobile LCP | **FAILURE**, mediana de 3 coletas **3.712,335 ms**, orçamento **≤3.500 ms** (performance 85; CLS 0,000217) |
+| Vercel Production | **READY** para `4fcc3e34`, deployment `dpl_C11n3VesWjc6vT5cUAedj16vYRpR` |
+
+**P5 Admin read-only:** [#43804868212](https://github.com/tuliust/PortfolioTulius/actions/runs/43804868212) foi **SUCCESS** no SHA `e939ab70` com 21/21 verificações e 0 escritas. O SHA `4fcc3e34` alterou apenas o gate P3 e a documentação; portanto a evidência de P5 da mesma aplicação permanece referenciada ao seu SHA próprio, não se afirma uma nova execução de P5 no SHA posterior. O [P5 anterior #43804663291](https://github.com/tuliust/PortfolioTulius/actions/runs/43804663291) foi **FAILURE** pelo texto editorial fixo obsoleto, já corrigido no script, e seu registro não foi reclassificado.
+
+**Variação histórica de LCP na intervenção:** [P3 #43804663189](https://github.com/tuliust/PortfolioTulius/actions/runs/43804663189) falhou com mobile **3.629,539 ms** no SHA `9e534af`; [P3 #43804868190](https://github.com/tuliust/PortfolioTulius/actions/runs/43804868190) mediu mobile **3.384,254 ms** (budget PASS), mas ainda falhou no gate legado de espaçamento no SHA `e939ab`; [P3 #43805230787](https://github.com/tuliust/PortfolioTulius/actions/runs/43805230787) passou navegador/layout e falhou pelo LCP mobile **3.712,335 ms** no SHA `4fcc3e`. Este resultado permanece **FAILURE**; a flutuação não deve justificar afrouxamento do limite ou intervenção mobile não solicitada. O risco residual histórico de desempenho em standby mantém sua classificação.
+
+**Limites do aceite:** a releitura SQL comprova valores armazenados em três blocos; o P5 read-only comprova carregamento do editor sem escrita, **não** representa teste de salvar pelo CMS em produção. O P3 comprova funcionamento automatizado em viewports/emulador, não homologação física subjetiva no monitor ou celular do proprietário. O push documental posterior a esta nota não muda o código do app nem altera esses resultados por SHA.
