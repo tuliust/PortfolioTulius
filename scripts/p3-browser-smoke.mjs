@@ -329,13 +329,70 @@ try {
         const photo = document.querySelector("#sobre-a .about-mobile-photo img")
         return Boolean(photo?.complete && photo.naturalWidth > 0)
       }, { timeout: 15000 })
-      await page.select("#resultados-mobile-selector", "marketing")
-      await page.waitForFunction(() =>
-        document.querySelector("#resultados-a .results-topic h3")?.textContent?.toLowerCase()
-          .includes("resultados que orientam decisões") &&
-        document.querySelectorAll("#resultados-a .results-metrics-grid .content-item").length === 2,
-        { timeout: 10000 },
-      )
+      // The CMS now associates four metrics with each of the five themes.
+      // Verify the published contract rather than waiting for the obsolete two-card layout.
+      const resultThemes = [
+        { key: "corporativa", title: "Comunicação que conecta" },
+        { key: "projetos", title: "Comunicação de ponta a ponta" },
+        { key: "eventos", title: "Estratégia também é escuta" },
+        { key: "marketing", title: "Resultados que orientam decisões" },
+        { key: "imprensa", title: "Visão editorial" },
+      ]
+      for (const viewport of [
+        { width: 320, height: 700 },
+        { width: 390, height: 844 },
+        { width: 430, height: 932 },
+      ]) {
+        await page.setViewport({ ...viewport, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
+        for (const theme of resultThemes) {
+          await page.select("#resultados-mobile-selector", theme.key)
+          await page.waitForFunction((expected) => {
+            const panel = document.querySelector("#resultados-a")
+            const selected = document.querySelector("#resultados-mobile-selector")
+            const title = panel?.querySelector(".results-topic h3")?.textContent?.toLowerCase() ?? ""
+            const grid = panel?.querySelector(".results-metrics-grid")
+            return selected?.value === expected.key && title.includes(expected.title.toLowerCase()) &&
+              panel?.querySelector(".results-center.is-compact") &&
+              grid?.querySelectorAll(".content-item").length === 4
+          }, { timeout: 10000 }, theme)
+          const geometry = await page.evaluate(() => {
+            const panel = document.querySelector("#resultados-a")
+            const grid = panel?.querySelector(".results-metrics-grid")
+            const cards = [...(grid?.querySelectorAll(".content-item") ?? [])]
+            const columns = grid ? getComputedStyle(grid).gridTemplateColumns.split(/\s+/).length : 0
+            const bounds = grid?.getBoundingClientRect()
+            const noClippedCards = cards.every((card) => {
+              const rect = card.getBoundingClientRect()
+              return Boolean(bounds && rect.left >= bounds.left - 2 && rect.right <= bounds.right + 2 &&
+                card.scrollWidth <= card.clientWidth + 2 &&
+                card.querySelector(".item-value")?.scrollWidth <= (card.querySelector(".item-value")?.clientWidth ?? 0) + 2)
+            })
+            return {
+              count: cards.length,
+              columns,
+              noClippedCards,
+              horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 2,
+              title: panel?.querySelector(".results-topic h3")?.textContent?.trim() ?? "",
+            }
+          })
+          const expectedColumns = viewport.width <= 420 ? 1 : 2
+          console.log("P3_RESULTS_COMPACT_MOBILE " + JSON.stringify({ viewport, theme: theme.key, ...geometry }))
+          if (geometry.count !== 4 || geometry.columns !== expectedColumns ||
+              !geometry.noClippedCards || geometry.horizontalOverflow) {
+            throw new Error("Mobile compact metrics overflow/mismatch at " +
+              viewport.width + "px for " + theme.key + ": " + JSON.stringify(geometry))
+          }
+          if (viewport.width === 390) {
+            await page.evaluate(() =>
+              document.querySelector("#resultados-a")?.scrollIntoView({ behavior: "instant", block: "start" }))
+            await page.screenshot({
+              path: path.join(shots, "p3-results-" + theme.key + "-390.png"),
+              fullPage: false,
+            })
+          }
+        }
+      }
+      await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
       await page.select("#resultados-mobile-selector", "")
       await page.waitForFunction(() =>
         !document.querySelector("#resultados-a .results-topic") &&
@@ -702,13 +759,46 @@ try {
         return active?.textContent?.toLocaleLowerCase("pt-BR").includes("marketing") &&
           text?.textContent?.toLocaleLowerCase("pt-BR").includes("resultados que orientam decisões")
       }, { timeout: 10000 })
-      stage = "switch topic"
-      await page.click("#resultados .desktop-panel .results-theme-list button:nth-child(6)")
-      await page.waitForFunction(() => {
-        const title = document.querySelector("#resultados .desktop-panel .results-topic h3")
-        const metrics = document.querySelectorAll("#resultados .desktop-panel .results-metrics-grid .content-item")
-        return title?.textContent?.toLowerCase().includes("visão editorial") && metrics.length === 2
-      }, { timeout: 10000 })
+      stage = "verify five compact themes"
+      const desktopThemes = [
+        { key: "corporativa", title: "Comunicação que conecta" },
+        { key: "projetos", title: "Comunicação de ponta a ponta" },
+        { key: "eventos", title: "Estratégia também é escuta" },
+        { key: "marketing", title: "Resultados que orientam decisões" },
+        { key: "imprensa", title: "Visão editorial" },
+      ]
+      for (const [index, theme] of desktopThemes.entries()) {
+        await page.click("#resultados .desktop-panel .results-theme-list button:nth-child(" + (index + 2) + ")")
+        await page.waitForFunction((expected) => {
+          const panel = document.querySelector("#resultados .desktop-panel")
+          const title = panel?.querySelector(".results-topic h3")?.textContent?.toLowerCase() ?? ""
+          const active = panel?.querySelector('.results-theme-list button[aria-pressed="true"]')
+          return title.includes(expected.title.toLowerCase()) &&
+            active?.textContent?.toLowerCase().includes(expected.key === "corporativa" ? "corporativa" : expected.key === "eventos" ? "relações públicas" : expected.key === "projetos" ? "projetos" : expected.key === "marketing" ? "marketing" : "imprensa") &&
+            panel?.querySelector(".results-center.is-compact .results-metrics-grid")?.querySelectorAll(".content-item").length === 4
+        }, { timeout: 10000 }, theme)
+        const state = await page.evaluate(() => {
+          const center = document.querySelector("#resultados .desktop-panel .results-center.is-compact")
+          const grid = center?.querySelector(".results-metrics-grid")
+          const cards = [...(grid?.querySelectorAll(".content-item") ?? [])]
+          return {
+            count: cards.length,
+            scrollAccessible: center?.tabIndex === 0 && center?.getAttribute("role") === "region",
+            noOverflow: document.documentElement.scrollWidth <= innerWidth + 2 &&
+              cards.every((card) => card.scrollWidth <= card.clientWidth + 2),
+          }
+        })
+        console.log("P3_RESULTS_COMPACT_DESKTOP " + JSON.stringify({ theme: theme.key, ...state }))
+        if (state.count !== 4 || !state.scrollAccessible || !state.noOverflow) {
+          throw new Error("Desktop compact metrics regression for " + theme.key + ": " + JSON.stringify(state))
+        }
+        await page.evaluate(() =>
+          document.querySelector("#resultados")?.scrollIntoView({ behavior: "instant", block: "start" }))
+        await page.screenshot({
+          path: path.join(shots, "p3-results-" + theme.key + "-1440.png"),
+          fullPage: false,
+        })
+      }
       stage = "restore overview"
       await page.click("#resultados .desktop-panel .results-theme-list button:first-child")
       await page.waitForFunction(() =>

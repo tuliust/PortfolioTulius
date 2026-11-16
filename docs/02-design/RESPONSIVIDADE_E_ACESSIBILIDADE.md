@@ -135,3 +135,9 @@ O selo `#perfil .profile-portrait .badge-360` permanece posicionado dentro do re
 O slug `resultados` utiliza o estado `.results-center.is-compact` somente nas cinco categorias configuradas com `themePresentation="metrics"`. A nova apresentação reduz as alturas, os filetes, os ícones decorativos, o tamanho de textos e os espaços para exibir quatro indicadores por tema após eixo/título/subtítulo. A **visão geral** conserva os quatro cards e sua geometria sem a classe compacta. O menu da direita e o seletor mobile permanecem iguais.
 
 No desktop, os quatro indicadores são apresentados em duas colunas. No mobile, duas colunas quando a largura permite e uma coluna abaixo de 421 px; rolagem vertical nativa, sem ocultar descrições. As regras novas são restritas ao seletor da seção de Resultados. Validar 1920×1080, 1440×900, 1366×768, 390×844, 360×800 e 320×700, teclado, foco, zoom e preferências de redução de movimento. O conteúdo editorial não renderizado em modo compacto continua disponível no CMS.
+
+## Acessibilidade e verificação temática na seção 03 (16/11/2026)
+
+O conteúdo compacto de Resultados usa uma região identificada e focável no desktop, com `outline` de foco visível, pois possui `max-height` e rolagem vertical própria. O seletor no mobile permanece o mecanismo de interação; o contêiner mobile não introduz um tab stop adicional. A grade compacta mantém uma coluna até 420 px e duas colunas a partir de 421 px, sem truncar números e textos.
+
+O roteiro P3 percorre **todas as cinco categorias** em 320, 390, 430 e 1440 px, confirmando quatro cards por tema, sem estouro horizontal, e gera capturas de cada categoria em 390 e 1440 px. A visão geral conserva quatro indicadores e seu estilo prévio; o teste não deve confundir quantidade de dados publicados no bloco A com quantidade exibida na visão geral.

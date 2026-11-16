@@ -1117,7 +1117,13 @@ function ResultsCenter({
   const compact = topic?.themePresentation === "metrics"
 
   return (
-    <div className={`results-center${compact ? " is-compact" : ""}`} aria-live="polite">
+    <div
+      className={`results-center${compact ? " is-compact" : ""}`}
+      aria-live="polite"
+      role={compact && !mobile ? "region" : undefined}
+      aria-label={compact && !mobile ? `Indicadores de ${topic?.title}` : undefined}
+      tabIndex={compact && !mobile ? 0 : undefined}
+    >
       {topic && (
         <article className="results-topic">
           {topic.themeAxis && <p className="results-axis">{topic.themeAxis}</p>}
