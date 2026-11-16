@@ -5,10 +5,11 @@ export const resultThemeContent: ContentItem[] = [
   {
     title: "Comunicação Corporativa",
     themeKey: "corporativa",
-    themeAxis: "Liderança e Posicionamento",
-    themeTitle: "A voz de quem lidera",
+    themePresentation: "metrics",
+    themeAxis: "Estratégia e Reputação",
+    themeTitle: "Comunicação que conecta",
     themeSubtitle:
-      "Posicionamento e mensagens que fortalecem lideranças e criam conexões com públicos estratégicos.",
+      "Da articulação internacional à comunicação interna, iniciativas que fortalecem reputação, cultura e pertencimento.",
     themeTopics: "Comunicação Corporativa · Comunicação Executiva",
     themeSummary:
       "Desenvolvo narrativas institucionais, discursos e iniciativas que traduzem prioridades organizacionais e consolidam autoridade e confiança.",
@@ -20,6 +21,7 @@ export const resultThemeContent: ContentItem[] = [
   {
     title: "Gestão e execução de projetos",
     themeKey: "projetos",
+    themePresentation: "metrics",
     themeAxis: "Integração e Execução",
     themeTitle: "Comunicação de ponta a ponta",
     themeSubtitle: "Conecto estratégia, reputação, conteúdo, tecnologia e gestão de projetos.",
@@ -31,6 +33,7 @@ export const resultThemeContent: ContentItem[] = [
   {
     title: "Relações Públicas e Gestão de Eventos",
     themeKey: "eventos",
+    themePresentation: "metrics",
     themeAxis: "Estratégia e Relacionamento",
     themeTitle: "Estratégia também é escuta.",
     themeSubtitle: "Uma trajetória conectando organizações e pessoas.",
@@ -45,6 +48,7 @@ export const resultThemeContent: ContentItem[] = [
   {
     title: "Marketing Digital, Branding e Performance",
     themeKey: "marketing",
+    themePresentation: "metrics",
     themeAxis: "Performance e Resultados",
     themeTitle: "Resultados que orientam decisões",
     themeSubtitle:
@@ -57,6 +61,7 @@ export const resultThemeContent: ContentItem[] = [
   {
     title: "Imprensa e Influenciadores",
     themeKey: "imprensa",
+    themePresentation: "metrics",
     themeAxis: "Conteúdo e Imprensa",
     themeTitle: "Visão editorial",
     themeSubtitle:

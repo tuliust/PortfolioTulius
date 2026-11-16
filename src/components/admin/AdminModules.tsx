@@ -724,6 +724,23 @@ export function ContentStudio({
     if (!error) await load()
   }
 
+  function addResultMetric() {
+    if (!draft || experienceSlug !== "resultados" || draft.mobile_panel !== "a") return
+    const items = [
+      ...(draft.content_json.items ?? []),
+      {
+        title: "Novo indicador",
+        value: "",
+        text: "",
+        metricIcon: "chart" as MetricIconName,
+        relatedThemeKeys: [],
+        showInOverview: false,
+      },
+    ]
+    setDraft({ ...draft, content_json: { ...draft.content_json, items } })
+    setExpandedItemIndex(items.length - 1)
+  }
+
   function updateItem(index: number, patch: Partial<ContentItem>) {
     if (!draft) return
     const items = [...(draft.content_json.items ?? [])]
@@ -2115,7 +2132,9 @@ export function ContentStudio({
                                           />
                                         </label>
                                       )}
-                                      {Boolean(item.text?.trim()) && (
+                                      {(Boolean(item.text?.trim()) ||
+                                        (experienceSlug === "resultados" &&
+                                          draft.mobile_panel === "a")) && (
                                         <label className="field-wide">
                                           <span className="hero-field-label">
                                             {experienceSlug === "perfil"
@@ -2146,7 +2165,9 @@ export function ContentStudio({
                                           />
                                         </label>
                                       )}
-                                      {Boolean(item.value?.trim()) && (
+                                      {(Boolean(item.value?.trim()) ||
+                                        (experienceSlug === "resultados" &&
+                                          draft.mobile_panel === "a")) && (
                                         <label>
                                           <span className="admin-field-with-info">
                                             Valor/métrica
@@ -2214,6 +2235,36 @@ export function ContentStudio({
                                             updateItem(index, { metricIcon })
                                           }
                                         />
+                                        <label className="toggle-field">
+                                          <input
+                                            type="checkbox"
+                                            checked={item.showInOverview !== false}
+                                            onChange={(event) =>
+                                              updateItem(index, {
+                                                showInOverview: event.target.checked,
+                                              })
+                                            }
+                                          />
+                                          Exibir também na visão geral
+                                        </label>
+                                        {item.showInOverview !== false && (
+                                          <label>
+                                            Ordem na visão geral
+                                            <input
+                                              type="number"
+                                              min="1"
+                                              step="1"
+                                              value={item.overviewOrder ?? ""}
+                                              onChange={(event) =>
+                                                updateItem(index, {
+                                                  overviewOrder: event.target.value
+                                                    ? Math.max(1, Number(event.target.value))
+                                                    : undefined,
+                                                })
+                                              }
+                                            />
+                                          </label>
+                                        )}
                                         <fieldset>
                                           <legend>Exibir este indicador nos temas</legend>
                                           {(
@@ -2260,6 +2311,23 @@ export function ContentStudio({
                                     "resultados" &&
                                     draft.mobile_panel === "b" && (
                                       <div className="field-wide">
+                                        <label>
+                                          Apresentação da categoria
+                                          <select
+                                            value={item.themePresentation ?? "editorial"}
+                                            onChange={(event) =>
+                                              updateItem(index, {
+                                                themePresentation:
+                                                  event.target.value === "metrics"
+                                                    ? "metrics"
+                                                    : "editorial",
+                                              })
+                                            }
+                                          >
+                                            <option value="editorial">Editorial (textos e indicadores)</option>
+                                            <option value="metrics">Compacta (abertura e quatro indicadores)</option>
+                                          </select>
+                                        </label>
                                         <label>
                                           Identificador do tema (para os links da abertura)
                                           <input
@@ -2713,6 +2781,11 @@ export function ContentStudio({
                             )}
                           </article>
                         ),
+                      )}
+                      {experienceSlug === "resultados" && draft.mobile_panel === "a" && (
+                        <button type="button" className="secondary-button" onClick={addResultMetric}>
+                          Adicionar indicador
+                        </button>
                       )}
                     </>
                   )}

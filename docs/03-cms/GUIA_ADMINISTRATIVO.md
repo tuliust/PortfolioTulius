@@ -86,3 +86,11 @@ Todos os campos seguem o salvamento CAS/RPC `save_section_block_atomic` do edito
 ## Revisão do campo +15 ANOS — 16/11/2026
 
 No **Perfil → Coluna esquerda → Apresentação**, o campo existente **“Tamanho de +15 ANOS no desktop (px)”** agora tem valor publicado **51 px** (anteriormente 55 px), armazenado em `content_blocks.content_json.items[0].hero.desktop.yearsSize`. Não foi criado campo novo. As alterações geométricas do selo são CSS desktop e continuam respeitando o valor editável `hero.desktop.badgeSize` quando fornecido. O conteúdo editorial, `hero.mobile`, `hero.mobileEditorial` e a edição mobile não mudam. Edite os tamanhos do título pelo CMS normalmente; a modificação SQL desta entrega foi protegida por checagem da versão do bloco, sem testar gravação pela interface.
+
+## Resultados com indicadores compactos — 16/11/2026
+
+**Editor do site → Resultados e projetos em destaque → Centro (bloco A):** permite adicionar indicadores sem editar JSON, alterar valor, título, texto, ícone, ordenar os itens e marcar categorias em `relatedThemeKeys`. O controle **Exibir também na visão geral** grava `showInOverview`; **Ordem na visão geral** grava `overviewOrder`, preservando a ordem dos quatro cards gerais separada da ordem temática.
+
+**Direita (bloco B):** cada uma das cinco categorias pode escolher **Apresentação da categoria**: `editorial` ou `metrics` (compacta). No modo compacto, somente eixo, título, subtítulo e indicadores aparecem no site. `themeTopics`, `themeSummary` e `inheritedHighlights` continuam no CMS, sem exclusão. A categoria corporativa adota “Estratégia e Reputação” e “Comunicação que conecta”. Os identificadores `themeKey` continuam estáveis para os vínculos com o Hero.
+
+O Centro e a Direita são **dois blocos independentes**, salvos separadamente pela RPC de conteúdo já existente; não há falsa promessa de transação conjunta. Os 20 indicadores temáticos são mantidos somente no bloco A, e quatro deles participam também da visão geral. Verificar edição, salvar e reler cada bloco.

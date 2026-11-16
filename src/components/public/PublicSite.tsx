@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { usePortfolio } from "../../hooks/usePortfolio"
+import { selectResultMetrics } from "../../lib/result-metrics"
 import { splitProfileTitle } from "../../lib/profile-title"
 import type {
   ContentItem,
@@ -1112,25 +1113,24 @@ function ResultsCenter({
   const topic = topics.find(
     (item, index) => (item.themeKey || RESULT_THEME_KEYS[index]) === selectedTheme,
   )
-  const filteredMetrics = topic
-    ? metrics.filter((item) => item.relatedThemeKeys?.includes(topic.themeKey || ""))
-    : metrics
+  const filteredMetrics = selectResultMetrics(metrics, topic)
+  const compact = topic?.themePresentation === "metrics"
 
   return (
-    <div className="results-center" aria-live="polite">
+    <div className={`results-center${compact ? " is-compact" : ""}`} aria-live="polite">
       {topic && (
         <article className="results-topic">
           {topic.themeAxis && <p className="results-axis">{topic.themeAxis}</p>}
           <h3>{topic.themeTitle || topic.title}</h3>
           {topic.themeSubtitle && <p className="results-subtitle">{topic.themeSubtitle}</p>}
-          {topic.themeTopics && (
+          {!compact && topic.themeTopics && (
             <div className="results-related">
               <strong>Temas relacionados</strong>
               <p>{topic.themeTopics}</p>
             </div>
           )}
-          {topic.themeSummary && <p className="results-summary">{topic.themeSummary}</p>}
-          {Boolean(topic.inheritedHighlights?.length) && (
+          {!compact && topic.themeSummary && <p className="results-summary">{topic.themeSummary}</p>}
+          {!compact && Boolean(topic.inheritedHighlights?.length) && (
             <div className="results-inherited">
               <strong>Competências e experiência</strong>
               <ul>

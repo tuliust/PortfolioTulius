@@ -3151,3 +3151,59 @@
     translate: none;
   }
 }
+
+/* Resultados: quatro indicadores compactos por tema, sem afetar a visão geral. */
+.public-site #resultados .results-center.is-compact .results-topic {
+  padding: .5rem 0 .65rem;
+}
+.public-site #resultados .results-center.is-compact .results-topic h3 {
+  font-size: clamp(1.8rem, 2.5vw, 2.7rem);
+}
+.public-site #resultados .results-center.is-compact .results-subtitle {
+  margin: .35rem 0 .5rem;
+  font-size: clamp(.78rem, .9vw, .95rem);
+  line-height: 1.35;
+}
+.public-site #resultados .results-center.is-compact .results-metrics-grid {
+  gap: clamp(.55rem, 1vw, .85rem) clamp(.75rem, 1.2vw, 1.1rem);
+}
+.public-site #resultados .results-center.is-compact .results-metrics-grid .content-item {
+  border-top: 1px solid var(--line);
+  padding: .55rem 0 0;
+}
+.public-site #resultados .results-center.is-compact .result-metric-icon {
+  display: none;
+}
+.public-site #resultados .results-center.is-compact .item-value {
+  margin-bottom: .2rem;
+  font-size: clamp(1.75rem, 2.6vw, 2.75rem);
+  line-height: .95;
+}
+.public-site #resultados .results-center.is-compact .content-item h3 {
+  font-size: clamp(.95rem, 1.2vw, 1.3rem);
+  margin: 0 0 .2rem;
+}
+.public-site #resultados .results-center.is-compact .content-item p {
+  font-size: clamp(.71rem, .82vw, .85rem);
+  line-height: 1.32;
+}
+@media (max-width: 767px) {
+  .public-site #resultados-a .results-center.is-compact .results-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: .85rem;
+  }
+  .public-site #resultados-a .results-center.is-compact .results-metrics-grid .content-item .item-value {
+    font-size: clamp(1.65rem, 6.8vw, 2.25rem);
+  }
+  .public-site #resultados-a .results-center.is-compact .results-metrics-grid .content-item h3 {
+    font-size: clamp(.95rem, 4vw, 1.25rem);
+  }
+  .public-site #resultados-a .results-center.is-compact .results-metrics-grid .content-item p {
+    font-size: clamp(.74rem, 2.9vw, .86rem);
+  }
+}
+@media (max-width: 420px) {
+  .public-site #resultados-a .results-center.is-compact .results-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

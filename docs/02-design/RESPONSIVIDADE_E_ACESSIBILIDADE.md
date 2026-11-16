@@ -129,3 +129,9 @@ A alteração **não modifica** o mobile (≤767 px), o conteúdo das duas colun
 ## Selo completo na abertura desktop — 16/11/2026
 
 O selo `#perfil .profile-portrait .badge-360` permanece posicionado dentro do retrato, mas sua correção de topo passa a utilizar `clamp(1.75rem, 4.2dvh, 2.5rem)` em vez de `clamp(.25rem, 1.3dvh, .7rem)`; a dimensão mínima muda de 42% para 40% da largura do contêiner. Em janelas desktop baixas, a combinação de subida e diminuição evita que a borda do círculo seja ocultada por `overflow:hidden` do retrato, sem aproximá-lo indevidamente da legenda. O texto “+15 ANOS” foi reduzido no CMS desktop de 55 para 51 px; o CSS responsivo `clamp()` existente foi preservado. O retrato, o filete laranja, a seção com altura flexível, a seta e os destaques continuam com suas configurações anteriores. **Mobile (≤767 px) permanece intocado.**
+
+## Indicadores compactos de Resultados — 16/11/2026
+
+O slug `resultados` utiliza o estado `.results-center.is-compact` somente nas cinco categorias configuradas com `themePresentation="metrics"`. A nova apresentação reduz as alturas, os filetes, os ícones decorativos, o tamanho de textos e os espaços para exibir quatro indicadores por tema após eixo/título/subtítulo. A **visão geral** conserva os quatro cards e sua geometria sem a classe compacta. O menu da direita e o seletor mobile permanecem iguais.
+
+No desktop, os quatro indicadores são apresentados em duas colunas. No mobile, duas colunas quando a largura permite e uma coluna abaixo de 421 px; rolagem vertical nativa, sem ocultar descrições. As regras novas são restritas ao seletor da seção de Resultados. Validar 1920×1080, 1440×900, 1366×768, 390×844, 360×800 e 320×700, teclado, foco, zoom e preferências de redução de movimento. O conteúdo editorial não renderizado em modo compacto continua disponível no CMS.

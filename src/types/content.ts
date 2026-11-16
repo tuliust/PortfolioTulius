@@ -152,6 +152,11 @@ export type ContentItem = {
   targetSlug?: string
   metricIcon?: MetricIconName
   relatedThemeKeys?: string[]
+  /** Ausente mantém o comportamento legado da visão geral. */
+  showInOverview?: boolean
+  overviewOrder?: number
+  /** Apresentação de categoria editorial ou compacta. */
+  themePresentation?: "editorial" | "metrics"
   toolIcons?: ToolIconName[]
   themeKey?: string
   themeAxis?: string
