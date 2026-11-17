@@ -296,6 +296,62 @@ try {
   } finally {
     await brokenPage.close()
   }
+
+  // Regression for the production-only About tablet asset. Unlike the public
+  // page, PDF export must provide an immediate src outside the viewport.
+  // Mock the published URL locally: the QA does not read production Storage.
+  const aboutPage = await browser.newPage()
+  try {
+    await aboutPage.setViewport({ ...viewports.mobile, deviceScaleFactor: 1 })
+    await aboutPage.setRequestInterception(true)
+    aboutPage.on("request", (request) => {
+      if (request.url().includes("a46a4091-bce1-4345-a17f-7d7947a8e903-tulius_tablet.png")) {
+        void request.respond({
+          status: 200,
+          contentType: "image/png",
+          body: Buffer.from(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/lZUAAAAASUVORK5CYII=",
+            "base64",
+          ),
+        })
+      } else {
+        void request.continue()
+      }
+    })
+    await aboutPage.goto(
+      base + "/pdf-export-qa.html?device=mobile&palette=original&deferredAbout=true",
+      { waitUntil: "networkidle0", timeout: 35000 },
+    )
+    await aboutPage.waitForFunction(
+      () => document.documentElement.dataset.pdfExportReady === "true",
+      { timeout: 25000 },
+    )
+    const about = await aboutPage.evaluate(() => {
+      const image = document.querySelector("#sobre .about-mobile-photo img")
+      return {
+        count: document.querySelectorAll(".pdf-portfolio [data-pdf-section]").length,
+        hasSource: Boolean(image?.getAttribute("src")),
+        eager: image?.getAttribute("loading") === "eager",
+        imageLoaded: Boolean(image?.complete && image?.naturalWidth),
+        error: document.querySelector("[data-pdf-readiness-error]")?.textContent ?? "",
+      }
+    })
+    const issues = []
+    if (about.count !== 13) issues.push("about_section_missing")
+    if (!about.hasSource || !about.eager || !about.imageLoaded) {
+      issues.push("about_photo_deferred_or_broken")
+    }
+    if (about.error) issues.push("about_unexpected_export_block")
+    records.push({ device: "mobile", simulatedDeferredAbout: true, report: about, issues })
+    if (issues.length) failures++
+    console.log("PDF_MOBILE_ABOUT_IMAGE_QA " + JSON.stringify({ ...about, issues }))
+  } catch (error) {
+    failures++
+    records.push({ simulatedDeferredAbout: true, error: String(error) })
+    console.error("PDF_MOBILE_ABOUT_IMAGE_QA_ERROR " + String(error))
+  } finally {
+    await aboutPage.close()
+  }
 } finally {
   await browser.close()
 }

@@ -20,25 +20,28 @@ const colorMode: PdfColorMode = query.get("palette") === "clean" ? "clean" : "or
 const simulateBrokenImage = query.get("brokenImage") === "true"
 const simulateDeferredAbout = query.get("deferredAbout") === "true"
 const requestedSlugs = query.get("sections")?.split(",").filter(Boolean)
-const fixtureSections = simulateBrokenImage || simulateDeferredAbout
-  ? sections.map((section) =>
-      section.slug === "sobre" && simulateDeferredAbout
-        ? {
-            ...section,
-            panelA: section.panelA.map((item, index) =>
-              index === 0 ? { ...item, image: APPROVED_ABOUT_TABLET } : item,
-            ),
-          }
-        : section.slug === "depoimentos" && simulateBrokenImage
-        ? {
-            ...section,
-            panelA: section.panelA.map((item, index) =>
-              index === 0 ? { ...item, image: "/media/pdf-qa-intentionally-missing.webp" } : item,
-            ),
-          }
-        : section,
-    )
-  : sections
+const fixtureSections =
+  simulateBrokenImage || simulateDeferredAbout
+    ? sections.map((section) =>
+        section.slug === "sobre" && simulateDeferredAbout
+          ? {
+              ...section,
+              panelA: section.panelA.map((item, index) =>
+                index === 0 ? { ...item, image: APPROVED_ABOUT_TABLET } : item,
+              ),
+            }
+          : section.slug === "depoimentos" && simulateBrokenImage
+            ? {
+                ...section,
+                panelA: section.panelA.map((item, index) =>
+                  index === 0
+                    ? { ...item, image: "/media/pdf-qa-intentionally-missing.webp" }
+                    : item,
+                ),
+              }
+            : section,
+      )
+    : sections
 
 const fixtureIncludedSlugs = selectPublishedPdfSections(fixtureSections, requestedSlugs).map(
   (section) => section.slug,

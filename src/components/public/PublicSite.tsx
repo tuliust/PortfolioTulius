@@ -1005,7 +1005,13 @@ function toDvh(value?: number) {
  * desktop asset key so the original mobile thumbnail is not changed.
  */
 
-function AboutMobile({ section, pdfExport = false }: { section: PortfolioSection; pdfExport?: boolean }) {
+function AboutMobile({
+  section,
+  pdfExport = false,
+}: {
+  section: PortfolioSection
+  pdfExport?: boolean
+}) {
   const photo = section.panelA[0]
   const imageSource = photo?.image || photo?.aboutDesktopImage
   const imageAlt = photo?.alt || photo?.aboutDesktopAlt || "Tulius Tsangaropulos com um tablet"
