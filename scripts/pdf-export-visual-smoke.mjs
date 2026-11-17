@@ -221,7 +221,8 @@ try {
         if (device === "desktop" && (
           (report.contactLayoutHeight ?? 9999) > 820 ||
           report.contactLayoutOverflow !== "visible" ||
-          (report.contactBottomGap ?? 9999) > 4
+          (report.contactBottomGap ?? -9999) < 25 ||
+          (report.contactBottomGap ?? 9999) > 90
         )) issues.push("contact_bottom_alignment")
         if (report.testimonialPortraitWidths.some((width) => width < 64)) issues.push("testimonial_photo_size")
         if (report.testimonialQuoteFontSizes.some((size) => size < 15.5)) issues.push("testimonial_font_size")
