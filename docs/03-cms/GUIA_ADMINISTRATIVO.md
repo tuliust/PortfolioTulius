@@ -139,3 +139,9 @@ A prévia do PDF mostra as seis experiências em sequência, sem cartões sobrep
 A exportação Mobile de Sobre solicita a imagem publicada imediatamente com `loading="eager"` e `src` presente desde a primeira renderização. No site público, o `DeferredAboutTablet` continua esperando interseção da viewport e conserva sua otimização de download. O arquivo referenciado está cadastrado no CMS e existe no bucket público. A exportação não altera, substitui ou oculta essa mídia.
 
 Na aba protegida de impressão, o evento `beforeprint` deixa de medir novamente o documento caso as regras `@page` já tenham sido preparadas: isso reduz o risco de geometria divergente no diálogo gráfico. Para salvar, escolha **Destino: Salvar como PDF**, **Margens: Nenhuma**, marque **Gráficos de segundo plano** e desative cabeçalhos e rodapés. O aplicativo não altera as configurações do Chrome.
+
+## Fluxo de impressão PDF em folhas estáveis — 17/11/2026
+
+Em **Exportar PDF**, Desktop utiliza folhas em paisagem e Mobile em retrato. Cada seção selecionada inicia em nova folha, mas Resultados, Trajetórias, projetos e Depoimentos podem continuar em folhas adicionais; **13 seções não significam necessariamente 13 folhas**. Preservar fotos, texto selecionável e hyperlinks. No Chrome, escolher **Salvar como PDF**, margens nenhuma, gráficos de segundo plano marcados, cabeçalhos/rodapés desativados.
+
+A homologação com dados reais do CMS ainda é necessária; nenhuma mídia ou dado editorial é modificado pela exportação.

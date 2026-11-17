@@ -51,12 +51,10 @@ const careerDescriptions = Object.fromEntries(
   EXPERIENCE_SLUGS.map((slug) => [
     slug,
     [
-      "Trajetória para o ensaio visual isolado com informações sintéticas.",
-      "• Comunicação institucional: Planejamento e produção de mensagens e materiais para diferentes públicos.",
-      "• Relacionamento estratégico: Articulação de equipes, fornecedores e parceiros institucionais.",
-      "• Projetos: Integração entre planejamento editorial, conteúdo, dados e governança.",
-      "• Gestão: Coordenação de entregas e acompanhamento da execução de iniciativas.",
-      "• Resultados: Monitoramento, documentação e análise dos projetos realizados.",
+      "Trajetória sintética extensa, com volume comparável à produção.",
+      ...Array.from({ length: 13 }, (_, index) =>
+        "• Frente sintética " + (index + 1) + ": Planejamento, comunicação institucional e articulação de fornecedores e equipes, com documentação de resultados, acompanhamento de processos e relatórios para diferentes públicos.",
+      ),
     ].join("\n"),
   ]),
 )

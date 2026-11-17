@@ -271,12 +271,10 @@
   body:has(.pdf-portfolio) {
     overflow: visible;
   }
+  /* The injected print stylesheet controls starts; long sections may flow. */
   .pdf-portfolio .portfolio-section {
-    break-after: page;
-    break-inside: avoid;
-  }
-  .pdf-portfolio .portfolio-section:last-child {
     break-after: auto;
+    break-inside: auto;
   }
 }
 

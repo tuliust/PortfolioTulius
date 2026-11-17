@@ -8,79 +8,47 @@ export type PdfPrintManifest = { widthPx: number; pages: PdfPrintPage[] }
 
 const VALID_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
-/** Native CSS named pages preserve vector text, links, and original colors. */
+/**
+ * Chrome print: one stable physical paper size per device. A logical section
+ * begins on a new sheet; its contents can span continuation sheets.
+ * Variable-sized named pages were unstable with real CMS data in Chrome.
+ */
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
   const viewport = pdfExportViewport(device)
-  if (!pages.length || pages.some((page) => !VALID_SLUG.test(page.slug))) {
+  if (!pages.length || pages.some((page) => !VALID_SLUG.test(page.slug)) ||
+      new Set(pages.map((page) => page.slug)).size !== pages.length) {
     throw new Error("A seleção de páginas do PDF é inválida.")
   }
-  if (
-    pages.some(
-      (page) =>
-        !Number.isInteger(page.heightPx) ||
-        page.heightPx < (device === "desktop" && page.slug === "contato" ? 650 : viewport.height) ||
-        page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT,
-    )
-  ) {
+  if (pages.some((page) => !Number.isInteger(page.heightPx) ||
+      page.heightPx < viewport.height || page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT)) {
     throw new Error("Uma seção ultrapassou o limite de paginação do PDF.")
   }
+  const starts = pages.map((page, index) =>
+    '.pdf-portfolio [data-pdf-section="' + page.slug + '"] { break-before: ' +
+    (index === 0 ? "auto" : "page") + " !important; page-break-before: " +
+    (index === 0 ? "auto" : "always") + " !important; }",
+  ).join("\n")
 
-  const declarations = pages
-    .map(
-      (page, index) =>
-        "@page portfolio" +
-        index +
-        " { size: " +
-        viewport.width +
-        "px " +
-        page.heightPx +
-        "px; margin: 0; }",
-    )
-    .join("\n")
-  const assignments = pages
-    .map(
-      (page, index) =>
-        '.pdf-portfolio [data-pdf-section="' +
-        page.slug +
-        '"] { page: portfolio' +
-        index +
-        " !important; height: " +
-        page.heightPx +
-        "px !important; min-height: " +
-        page.heightPx +
-        "px !important; break-before: auto !important; break-after: page !important; overflow: visible !important; }",
-    )
-    .join("\n")
-  // In print, 100svh follows the variable PDF page height rather than the
-  // 844px mobile reference. Freeze only these PDF-specific viewport elements.
-  const mobileViewportFreeze =
-    device === "mobile"
-      ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: 844px !important; min-height: 844px !important; }\n" +
-        ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\n"
-      : ""
   return (
-    declarations +
-    "\n@media print {\n" +
-    "html, body, #root { width: " +
-    viewport.width +
-    "px !important; min-width: " +
-    viewport.width +
-    "px !important; max-width: none !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }\n" +
-    "body, .pdf-portfolio, .pdf-portfolio main { width: " +
-    viewport.width +
-    "px !important; max-width: none !important; height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }\n" +
-    ".pdf-portfolio .portfolio-section:last-child { break-after: auto !important; }\n" +
-    assignments +
-    "\n" +
-    mobileViewportFreeze +
-    "\n}\n"
+    "@page { size: " + viewport.width + "px " + viewport.height + "px; margin: 0; }\n" +
+    "@media print {\n" +
+    "html, body, #root { width: " + viewport.width + "px !important; min-width: " +
+    viewport.width + "px !important; max-width: none !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }\n" +
+    "body, .pdf-portfolio, .pdf-portfolio main { width: " + viewport.width +
+    "px !important; max-width: none !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }\n" +
+    ".pdf-portfolio .portfolio-section { height: auto !important; max-height: none !important; break-after: auto !important; page-break-after: auto !important; break-inside: auto !important; page-break-inside: auto !important; overflow: visible !important; }\n" +
+    ".pdf-portfolio .pdf-results-group, .pdf-portfolio .mobile-panel, .pdf-portfolio .desktop-panel { break-inside: auto !important; page-break-inside: auto !important; }\n" +
+    ".pdf-portfolio :is(.results-metrics-grid .content-item, .experience-project, .testimonial-card, .contact-link, .experience-full-point) { break-inside: avoid !important; page-break-inside: avoid !important; }\n" +
+    ".pdf-portfolio :is(.section-heading, .panel-heading, .experience-heading, .pdf-experience-column-heading, .pdf-results-group-heading) { break-after: avoid-page !important; }\n" +
+    (device === "mobile"
+      ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: auto !important; min-height: 844px !important; }\n" +
+        ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\n"
+      : "") +
+    starts + "\n}\n"
   )
 }
 
-/**
- * Prepare a complete authorized preview for Chrome's native Save as PDF.
- * No CMS mutation, rasterization, upload or PDF server is involved.
- */
+/** Prepare published, authorized content for Chrome's native Save as PDF. */
 export function preparePdfPrintLayout(
   doc: Document,
   device: PdfDevice,
@@ -97,17 +65,11 @@ export function preparePdfPrintLayout(
   if (!includedSlugs.length || new Set(includedSlugs).size !== includedSlugs.length) {
     throw new Error("Selecione ao menos uma seção válida.")
   }
-
-  // Printing can invoke beforeprint multiple times. Remove any prior @page
-  // constraints BEFORE measuring the natural document to avoid recursive growth.
   doc.getElementById(PDF_PRINT_STYLE_ID)?.remove()
-
   const nodes = Array.from(root.querySelectorAll<HTMLElement>("[data-pdf-section]"))
   const slugs = nodes.map((section) => section.dataset.pdfSection ?? "")
-  if (
-    slugs.length !== includedSlugs.length ||
-    slugs.some((slug, index) => slug !== includedSlugs[index])
-  ) {
+  if (slugs.length !== includedSlugs.length ||
+      slugs.some((slug, index) => slug !== includedSlugs[index])) {
     throw new Error("A seleção ou a ordem não corresponde à prévia carregada.")
   }
   if (root.querySelector("[data-pdf-missing-trajectory], .pdf-export-missing-data")) {
@@ -120,46 +82,13 @@ export function preparePdfPrintLayout(
     throw new Error("Há uma imagem publicada que não foi carregada.")
   }
 
-  const pages = nodes.map((section) => {
-    const bounds = section.getBoundingClientRect()
-    // Section.scrollHeight can stay at the mobile viewport minimum even when
-    // descendant text extends past the section before print reflow.
-    const visibleContentBottom = Array.from(section.querySelectorAll<HTMLElement>("*")).reduce(
-      (bottom, child) => {
-        if (!child.getClientRects().length) return bottom
-        return Math.max(bottom, child.getBoundingClientRect().bottom)
-      },
-      bounds.bottom,
-    )
-    const measuredHeight = Math.max(
-      device === "desktop" && section.dataset.pdfSection === "contato" ? 650 : viewport.height,
-      section.scrollHeight,
-      section.clientHeight,
-      bounds.height,
-      visibleContentBottom - bounds.top,
-    )
-    // Print fonts and svh-based blocks can reflow when Chromium assigns a
-    // variable-height named page. The reserve prevents a trailing fragment.
-    // Ferramentas has two mobile editorial panels with six icon/text clusters.
-    // The printed fragments may expand beyond their screen bounds; keep the
-    // final item on the same physical page as the section heading.
-    const reserve =
-      device === "mobile"
-        ? section.dataset.pdfSection === "ferramentas"
-          ? 320
-          : 96
-        : section.dataset.pdfSection === "contato"
-          ? 0
-          : 8
-    return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(measuredHeight + reserve) }
-  })
-  const css = pdfPrintCss(device, pages)
+  // The manifest counts logical sections, never the number of printed sheets.
+  const pages = slugs.map((slug) => ({ slug, heightPx: viewport.height }))
   const style = doc.createElement("style")
   style.id = PDF_PRINT_STYLE_ID
-  style.textContent = css
+  style.textContent = pdfPrintCss(device, pages)
   doc.head.appendChild(style)
 
-  // Internal links to excluded sections open the corresponding public page.
   const ids = new Set(Array.from(root.querySelectorAll("[id]")).map((node) => node.id))
   for (const anchor of Array.from(root.querySelectorAll<HTMLAnchorElement>("a[href]"))) {
     const old = anchor.getAttribute("data-pdf-print-original-href")
@@ -174,7 +103,6 @@ export function preparePdfPrintLayout(
     anchor.setAttribute("data-pdf-print-original-href", href)
     anchor.setAttribute("href", "https://tulius.work/" + href)
   }
-
   for (const slug of ["perfil", "contato"]) {
     if (!slugs.includes(slug)) continue
     if (!nodes[slugs.indexOf(slug)].querySelector("a[href]")) {

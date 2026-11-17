@@ -195,3 +195,7 @@ A variante Desktop da exportação reduz a extensão vertical de Contato, diminu
 ## PDF — imagem diferida em Sobre e estabilidade da impressão (17/11/2026)
 
 O renderer público de Sobre Mobile usa `DeferredAboutTablet`, que omite `src` até o IntersectionObserver aproximar a imagem da viewport. A prévia PDF precisa validar todas as imagens antes de liberar a impressão, mesmo as que estejam fora da janela visível. Agora, somente com `pdfExport=true`, a imagem é renderizada com `src` direto e `loading="eager"`. A otimização pública permanece intacta. O evento `beforeprint` evita refazer o cálculo das páginas se o manifesto de impressão já estiver instalado.
+
+## Layout físico de exportação PDF — 17/11/2026
+
+A impressão PDF usa tamanho de folha fixo por dispositivo (Desktop 1440×900 px; Mobile 390×844 px), independentemente da altura do conteúdo. Seções iniciam novas folhas; conteúdos extensos fluem pelas páginas adicionais sem redução artificial de fonte ou truncamento. O site público e os placements do CMS não são afetados.

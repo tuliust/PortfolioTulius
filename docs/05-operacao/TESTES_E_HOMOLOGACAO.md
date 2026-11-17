@@ -469,3 +469,11 @@ A QA visual contém **seis cenários PASS**: quatro variantes, falha sintética 
 
 **Vercel produção**: `dpl_3t4VCFgBEy6KDiXxxSJZLqLqPgb7` **READY** para o SHA funcional. Não foi executado deploy manual. O [P3 Lighthouse #44125335814](https://github.com/tuliust/PortfolioTulius/actions/runs/44125335814) ainda estava **em execução** no momento desta checagem, sem atribuição de sucesso/falha. O bug de `DeferredAboutTablet` foi corrigido somente no PDF; a disponibilidade da mídia real no navegador do proprietário e o comportamento do diálogo gráfico do Chrome ainda aguardam **nova homologação**. Não ocorreu qualquer mutação em CMS, Storage, Auth ou RLS.
 
+
+## Correção da paginação após PDFs reais reprovados — 17/11/2026
+
+Os PDFs enviados pelo proprietário apresentam páginas vazias, sobreposição, conteúdo fora de seção e quebra de depoimentos. A QA com fixture sintética anterior não homologa esses PDFs reais.
+
+Intervenção exclusiva de PDF: `pdf-print-layout.ts` deixa de aplicar páginas `@page` nomeadas com alturas variáveis e utiliza folhas físicas de tamanho fixo por dispositivo (Desktop 1440×900 px, Mobile 390×844 px). Cada seção inicia uma folha e conteúdos longos podem continuar em outras folhas. O manifesto representa quantidade de seções, não folhas físicas. A fixture agora simula Trajetórias longas e o smoke verifica orientação por folha, conteúdo por folha, ordem de títulos e links, inclusive seleções parciais.
+
+**Aceite produtivo pendente:** testes CI e homologação Chrome gráfico com dados reais precisam de verificação por SHA. Não foram alterados CMS, banco, Auth, RLS, Storage, mídias nem estilos da página pública.

@@ -32,7 +32,7 @@ try {
     const page = await browser.newPage()
     const { device, palette, sections } = item
     const selected = new Set(sections)
-    const label = device + "-" + palette + "-" + sections.length + "pages"
+    const label = device + "-" + palette + "-" + sections.length + "sections"
     try {
       const width = device === "desktop" ? 1440 : 390
       const height = device === "desktop" ? 900 : 844
@@ -106,18 +106,9 @@ try {
       })
       const info = execFileSync("pdfinfo", [file], { encoding: "utf8" })
       const actualPages = Number(info.match(/^Pages:\s*(\d+)/m)?.[1])
-      if (actualPages !== sections.length) {
-        const entries = []
-        for (let number = 1; number <= actualPages; number++) {
-          const text = execFileSync("pdftotext", [
-            "-f", String(number), "-l", String(number), file, "-",
-          ], { encoding: "utf8" })
-          entries.push({ page: number, text: text.replace(/\s+/g, " ").slice(0, 110) })
-        }
-        throw new Error(
-          "Physical PDF pages " + actualPages + ", requested " + sections.length +
-          "; manifest=" + JSON.stringify(manifest.pages) + "; pageStarts=" + JSON.stringify(entries),
-        )
+      if (!Number.isInteger(actualPages) || actualPages < sections.length || actualPages > 100) {
+        throw new Error("Invalid physical page count " + actualPages +
+          " for " + sections.length + " sections")
       }
       // Validate the *physical* orientation on every PDF page, not merely
       // the CSS reference viewport or a global landscape print option.
@@ -136,7 +127,7 @@ try {
         const isLandscape = pageSize.widthPt > pageSize.heightPt
         if ((device === "desktop") !== isLandscape) {
           throw new Error(
-            "Wrong page orientation for " + sections[index] + ": " + JSON.stringify(pageSize),
+            "Wrong orientation on physical page " + (index + 1) + ": " + JSON.stringify(pageSize),
           )
         }
       }
@@ -156,23 +147,30 @@ try {
         depoimentos: "DEPOIMENTOS",
         contato: "CONTATO",
       }
-      for (let index = 0; index < sections.length; index++) {
-        const text = execFileSync(
-          "pdftotext",
-          ["-f", String(index + 1), "-l", String(index + 1), file, "-"],
-          { encoding: "utf8", maxBuffer: 5 * 1024 * 1024 },
+      const physicalTexts = Array.from({ length: actualPages }, (_, index) => {
+        const text = execFileSync("pdftotext", [
+          "-f", String(index + 1), "-l", String(index + 1), "-layout", file, "-",
+        ], { encoding: "utf8", maxBuffer: 5 * 1024 * 1024 })
+        return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase().replace(/\s+/g, " ").trim()
+      })
+      for (let index = 0; index < physicalTexts.length; index++) {
+        if (physicalTexts[index].length < 20) {
+          throw new Error("Blank or truncated physical PDF page " + (index + 1))
+        }
+      }
+      const sectionStarts = {}
+      let previous = -1
+      for (const slug of sections) {
+        const pageIndex = physicalTexts.findIndex(
+          (text, index) => index > previous && text.includes(titles[slug]),
         )
-        const normalized = text
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toUpperCase()
-          .replace(/\s+/g, " ")
-        if (normalized.trim().length < 80) {
-          throw new Error("Blank or incomplete physical PDF page " + (index + 1))
+        if (pageIndex < 0) {
+          throw new Error("Missing or out-of-order section " + slug +
+            " after physical page " + (previous + 1))
         }
-        if (!normalized.includes(titles[sections[index]])) {
-          throw new Error("Section " + sections[index] + " missing on page " + (index + 1))
-        }
+        sectionStarts[slug] = pageIndex
+        previous = pageIndex
       }
       const searchable = execFileSync("pdftotext", ["-layout", file, "-"], {
         encoding: "utf8",
@@ -186,9 +184,11 @@ try {
         maxBuffer: 35 * 1024 * 1024,
       })
       const physical = [...xml.matchAll(/<page number="(\d+)"[\s\S]*?<\/page>/g)]
-      if (physical.length !== sections.length) throw new Error("Cannot parse PDF pages")
-      const hero = physical[0]?.[0] ?? ""
-      const contact = physical[physical.length - 1]?.[0] ?? ""
+      if (physical.length !== actualPages) throw new Error("Cannot parse PDF pages")
+      const hero = physical.slice(sectionStarts.perfil ?? 0, sectionStarts.sobre ?? 1)
+        .map((part) => part[0]).join("\n")
+      const contact = physical.slice(sectionStarts.contato ?? actualPages - 1)
+        .map((part) => part[0]).join("\n")
       if (selected.has("perfil") && !hero.includes("<a href=")) {
         throw new Error("Missing clickable Hero links")
       }
@@ -204,7 +204,7 @@ try {
       const record = {
         label, pages: actualPages, widthPx: manifest.widthPx,
         paperSizes,
-        heightsPx: manifest.pages.map((part) => part.heightPx),
+        referencePaperHeightPx: height, sectionStarts,
         searchableChars: searchable.length, bytes: fs.statSync(file).size,
         heroLinks: (hero.match(/<a href=/g) || []).length,
         contactLinks: (contact.match(/<a href=/g) || []).length,
