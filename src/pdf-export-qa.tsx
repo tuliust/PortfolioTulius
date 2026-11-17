@@ -58,10 +58,7 @@ function PdfVisualFixture() {
   }, [])
 
   return (
-    <PdfPrintReady
-      device={device}
-      includedSlugs={fixtureIncludedSlugs}
-    >
+    <PdfPrintReady device={device} includedSlugs={fixtureIncludedSlugs}>
       <PdfPortfolio
         sections={fixtureSections}
         tokens={defaultTokens}
