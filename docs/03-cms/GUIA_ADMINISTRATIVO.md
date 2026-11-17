@@ -153,3 +153,8 @@ A ajuda da tela administrativa também informa que uma seção pode continuar em
 Para **Desktop**, o painel e a aba de impressão distinguem a opção interna **Destino: Salvar como PDF** do Chrome do driver virtual Windows **Microsoft Print to PDF**. O driver Windows não é equivalente ao mecanismo Chromium empregado na QA física, que respeita o tamanho de folha CSS.
 
 Selecionar no Chrome **Salvar como PDF** (não Microsoft Print to PDF), **Margens: Nenhuma**, **Gráficos de segundo plano** ligados e cabeçalhos/rodapés desligados. Espera-se folha Desktop em paisagem, textos pesquisáveis e links; seções extensas podem continuar em folhas seguintes. O site não consegue escolher o destino do diálogo de impressão programaticamente. Nenhuma mídia ou dado CMS é alterado.
+## Desktop PDF — dimensionamento editorial por conteúdo (17/11/2026)
+
+Na opção **Desktop** do Exportar PDF, cada seção começa em uma nova folha com altura calculada de acordo com seu conteúdo publicado. Assim, Resultados e as seis experiências podem ocupar uma única folha mais alta, enquanto Formação, Ferramentas e Depoimentos deixam de preencher artificialmente 900 px. As fotografias de Sobre e Contato recebem alinhamentos exclusivos para essa exportação. As bordas laranja entre as empresas foram removidas somente do PDF Desktop.
+
+O modo **Mobile não mudou** e continua com folhas de tamanho fixo e eventuais continuações. Selecione sempre **Destino: Salvar como PDF** no Chrome, margens nenhuma, gráficos de segundo plano habilitados e cabeçalhos/rodapés desativados. A geração não altera dados ou mídias do CMS.

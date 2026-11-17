@@ -199,3 +199,10 @@ O renderer público de Sobre Mobile usa `DeferredAboutTablet`, que omite `src` a
 ## Layout físico de exportação PDF — 17/11/2026
 
 A impressão PDF usa tamanho de folha fixo por dispositivo (Desktop 1440×900 px; Mobile 390×844 px), independentemente da altura do conteúdo. Seções iniciam novas folhas; conteúdos extensos fluem pelas páginas adicionais sem redução artificial de fonte ou truncamento. O site público e os placements do CMS não são afetados.
+## Exportação PDF Desktop — alturas distintas por seção (17/11/2026)
+
+O renderer de impressão Desktop usa uma folha CSS nomeada e dimensionada para cada uma das 13 seções publicadas, após o carregamento de fontes, imagens e Trajetórias. Resultados e experiências completas podem ter folhas mais altas; Formação, Ferramentas e Depoimentos terminam pouco depois da base visível do conteúdo. A quebra ocorre na mudança do nome CSS da página, sem `break-after: page` adicional. O limite máximo de 16.000 CSS px e o bloqueio de imagens/Trajetórias ausentes permanecem.
+
+A composição PDF de **Sobre** recebe altura de 750 px com fotografia central de 700 px deslocada para cima; em **Contato**, reduz-se o espaço superior e sobe-se o retrato transparente com `object-fit: contain`. As cinco bordas laranja entre as seis experiências desaparecem **somente no PDF Desktop**. O site público e toda a exportação Mobile mantêm seu CSS pré-existente.
+
+**Dependência de aceite:** o teste Chromium por SHA deve comprovar uma página por seção, íntegra e sem folhas brancas; o arquivo do Chrome do proprietário continua sendo a evidência visual definitiva para a versão produtiva.

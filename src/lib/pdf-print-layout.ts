@@ -67,12 +67,7 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
         : maximum,
     box.bottom,
   )
-  const actual = Math.max(
-    box.height,
-    section.scrollHeight,
-    section.clientHeight,
-    bottom - box.top,
-  )
+  const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
   const slug = section.dataset.pdfSection ?? ""
   const reserve = ["formacao", "ferramentas", "depoimentos"].includes(slug)
     ? 2
@@ -182,9 +177,10 @@ export function preparePdfPrintLayout(
   }
 
   // Each Desktop section has its own measured sheet; Mobile remains unchanged.
-  const pages = device === "desktop"
-    ? nodes.map(measureDesktopSection)
-    : slugs.map((slug) => ({ slug, heightPx: viewport.height }))
+  const pages =
+    device === "desktop"
+      ? nodes.map(measureDesktopSection)
+      : slugs.map((slug) => ({ slug, heightPx: viewport.height }))
   const style = doc.createElement("style")
   style.id = PDF_PRINT_STYLE_ID
   style.textContent = pdfPrintCss(device, pages)
