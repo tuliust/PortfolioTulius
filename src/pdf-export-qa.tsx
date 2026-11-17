@@ -52,8 +52,12 @@ const careerDescriptions = Object.fromEntries(
     slug,
     [
       "Trajetória sintética extensa, com volume comparável à produção.",
-      ...Array.from({ length: 13 }, (_, index) =>
-        "• Frente sintética " + (index + 1) + ": Planejamento, comunicação institucional e articulação de fornecedores e equipes, com documentação de resultados, acompanhamento de processos e relatórios para diferentes públicos.",
+      ...Array.from(
+        { length: 13 },
+        (_, index) =>
+          "• Frente sintética " +
+          (index + 1) +
+          ": Planejamento, comunicação institucional e articulação de fornecedores e equipes, com documentação de resultados, acompanhamento de processos e relatórios para diferentes públicos.",
       ),
     ].join("\n"),
   ]),

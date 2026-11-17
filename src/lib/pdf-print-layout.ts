@@ -15,26 +15,50 @@ const VALID_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
  */
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
   const viewport = pdfExportViewport(device)
-  if (!pages.length || pages.some((page) => !VALID_SLUG.test(page.slug)) ||
-      new Set(pages.map((page) => page.slug)).size !== pages.length) {
+  if (
+    !pages.length ||
+    pages.some((page) => !VALID_SLUG.test(page.slug)) ||
+    new Set(pages.map((page) => page.slug)).size !== pages.length
+  ) {
     throw new Error("A seleção de páginas do PDF é inválida.")
   }
-  if (pages.some((page) => !Number.isInteger(page.heightPx) ||
-      page.heightPx < viewport.height || page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT)) {
+  if (
+    pages.some(
+      (page) =>
+        !Number.isInteger(page.heightPx) ||
+        page.heightPx < viewport.height ||
+        page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT,
+    )
+  ) {
     throw new Error("Uma seção ultrapassou o limite de paginação do PDF.")
   }
-  const starts = pages.map((page, index) =>
-    '.pdf-portfolio [data-pdf-section="' + page.slug + '"] { break-before: ' +
-    (index === 0 ? "auto" : "page") + " !important; page-break-before: " +
-    (index === 0 ? "auto" : "always") + " !important; }",
-  ).join("\n")
+  const starts = pages
+    .map(
+      (page, index) =>
+        '.pdf-portfolio [data-pdf-section="' +
+        page.slug +
+        '"] { break-before: ' +
+        (index === 0 ? "auto" : "page") +
+        " !important; page-break-before: " +
+        (index === 0 ? "auto" : "always") +
+        " !important; }",
+    )
+    .join("\n")
 
   return (
-    "@page { size: " + viewport.width + "px " + viewport.height + "px; margin: 0; }\n" +
+    "@page { size: " +
+    viewport.width +
+    "px " +
+    viewport.height +
+    "px; margin: 0; }\n" +
     "@media print {\n" +
-    "html, body, #root { width: " + viewport.width + "px !important; min-width: " +
-    viewport.width + "px !important; max-width: none !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }\n" +
-    "body, .pdf-portfolio, .pdf-portfolio main { width: " + viewport.width +
+    "html, body, #root { width: " +
+    viewport.width +
+    "px !important; min-width: " +
+    viewport.width +
+    "px !important; max-width: none !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }\n" +
+    "body, .pdf-portfolio, .pdf-portfolio main { width: " +
+    viewport.width +
     "px !important; max-width: none !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }\n" +
     ".pdf-portfolio .portfolio-section { height: auto !important; max-height: none !important; break-after: auto !important; page-break-after: auto !important; break-inside: auto !important; page-break-inside: auto !important; overflow: visible !important; }\n" +
     ".pdf-portfolio .pdf-results-group, .pdf-portfolio .mobile-panel, .pdf-portfolio .desktop-panel { break-inside: auto !important; page-break-inside: auto !important; }\n" +
@@ -44,7 +68,8 @@ export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): 
       ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: auto !important; min-height: 844px !important; }\n" +
         ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\n"
       : "") +
-    starts + "\n}\n"
+    starts +
+    "\n}\n"
   )
 }
 
@@ -68,8 +93,10 @@ export function preparePdfPrintLayout(
   doc.getElementById(PDF_PRINT_STYLE_ID)?.remove()
   const nodes = Array.from(root.querySelectorAll<HTMLElement>("[data-pdf-section]"))
   const slugs = nodes.map((section) => section.dataset.pdfSection ?? "")
-  if (slugs.length !== includedSlugs.length ||
-      slugs.some((slug, index) => slug !== includedSlugs[index])) {
+  if (
+    slugs.length !== includedSlugs.length ||
+    slugs.some((slug, index) => slug !== includedSlugs[index])
+  ) {
     throw new Error("A seleção ou a ordem não corresponde à prévia carregada.")
   }
   if (root.querySelector("[data-pdf-missing-trajectory], .pdf-export-missing-data")) {

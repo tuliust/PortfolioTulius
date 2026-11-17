@@ -23,9 +23,12 @@ describe("PDF physical page flow", () => {
   it("rejects invalid, duplicated and dangerously sized entries", () => {
     expect(() => pdfPrintCss("desktop", [])).toThrow()
     expect(() => pdfPrintCss("desktop", [{ slug: "../admin", heightPx: 900 }])).toThrow()
-    expect(() => pdfPrintCss("mobile", [
-      { slug: "perfil", heightPx: 844 }, { slug: "perfil", heightPx: 844 },
-    ])).toThrow()
+    expect(() =>
+      pdfPrintCss("mobile", [
+        { slug: "perfil", heightPx: 844 },
+        { slug: "perfil", heightPx: 844 },
+      ]),
+    ).toThrow()
     expect(() => pdfPrintCss("mobile", [{ slug: "perfil", heightPx: 500 }])).toThrow()
     expect(() =>
       pdfPrintCss("mobile", [{ slug: "perfil", heightPx: PDF_PRINT_MAX_PAGE_HEIGHT + 1 }]),
