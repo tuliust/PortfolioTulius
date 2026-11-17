@@ -410,7 +410,6 @@
   }
 }
 
-
 /* PDF-only separators: the public site's sticky experience borders remain untouched. */
 .pdf-portfolio .pdf-experience-section + .pdf-experience-section {
   border-top: 3px solid var(--orange) !important;
@@ -432,7 +431,7 @@
 }
 
 .pdf-portfolio--desktop .pdf-results-group {
-  padding-top: .65rem;
+  padding-top: 0.65rem;
 }
 
 /* PDF Contact uses a shorter editorial page than the immersive public screen.
@@ -464,12 +463,14 @@
   border-bottom: 1px solid #d6d0ca;
   background: #fff;
   color: #171717;
-  font: 600 0.9rem/1.5 system-ui, sans-serif;
+  font:
+    600 0.9rem/1.5 system-ui,
+    sans-serif;
 }
 
 .pdf-print-toolbar button {
   border: 1px solid #171717;
-  padding: .7rem 1rem;
+  padding: 0.7rem 1rem;
   background: #fff;
   cursor: pointer;
   color: inherit;

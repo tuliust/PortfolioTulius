@@ -94,7 +94,8 @@ export default function PdfExportPanel({
       const printUrl = new URL(url ?? "", window.location.origin)
       printUrl.searchParams.set("print", "1")
       const tab = window.open(printUrl.href, "_blank")
-      if (!tab) throw new Error("O navegador bloqueou a nova aba. Permita pop-ups para gerar o PDF.")
+      if (!tab)
+        throw new Error("O navegador bloqueou a nova aba. Permita pop-ups para gerar o PDF.")
       tab.opener = null
       setPrintError("")
     } catch (reason) {
@@ -271,10 +272,10 @@ export default function PdfExportPanel({
         )}
         <p className="pdf-export-help">
           Clique em <strong>Gerar PDF</strong> para abrir a impressão em uma nova aba. Escolha
-          <strong> Salvar como PDF</strong> como destino (não a impressora física) no diálogo
-          do navegador. Os textos e links permanecem pesquisáveis e clicáveis; cada seção
-          selecionada ocupa uma página de altura adaptada ao conteúdo. Ative gráficos de fundo para
-          preservar as cores e desative cabeçalhos e rodapés de impressão.
+          <strong> Salvar como PDF</strong> como destino (não a impressora física) no diálogo do
+          navegador. Os textos e links permanecem pesquisáveis e clicáveis; cada seção selecionada
+          ocupa uma página de altura adaptada ao conteúdo. Ative gráficos de fundo para preservar as
+          cores e desative cabeçalhos e rodapés de impressão.
         </p>
       </section>
     </div>

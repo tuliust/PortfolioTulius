@@ -80,7 +80,11 @@ function PublishedPdfPreview() {
     )
   }
   return (
-    <PdfPrintReady device={config.device} includedSlugs={config.includedSlugs} autoPrint={printMode}>
+    <PdfPrintReady
+      device={config.device}
+      includedSlugs={config.includedSlugs}
+      autoPrint={printMode}
+    >
       {printMode && (
         <div className="pdf-print-toolbar">
           <span>Prévia pronta para salvar. Se o diálogo não abrir, use o botão ao lado.</span>
