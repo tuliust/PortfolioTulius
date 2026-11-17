@@ -206,11 +206,17 @@ try {
         if (report.resultsCenters !== 6 || report.metricsCount !== 24) issues.push("results")
         if (report.experienceCount !== 6 || report.projectCounts.some((n) => n !== 5)) issues.push("projects")
         if (report.experiencePositions.some((position) => position === "sticky" || position === "fixed") || report.experienceOverlapPx > 2) issues.push("experience_stacking")
-        if (report.experienceSeparators.some((entry) => entry.width < 2.5)) issues.push("experience_separators")
-        if (palette === "clean" && report.experienceSeparators.some((entry) => {
-          const channels = entry.color.match(/\d+/g)?.map(Number) ?? []
-          return channels.length < 3 || channels[0] !== channels[1] || channels[1] !== channels[2]
-        })) issues.push("clean_separator_not_grayscale")
+        if (device === "desktop") {
+          if (report.experienceSeparators.some((entry) => entry.width > 0.1)) {
+            issues.push("desktop_experience_dividers")
+          }
+        } else {
+          if (report.experienceSeparators.some((entry) => entry.width < 2.5)) issues.push("experience_separators")
+          if (palette === "clean" && report.experienceSeparators.some((entry) => {
+            const channels = entry.color.match(/\d+/g)?.map(Number) ?? []
+            return channels.length < 3 || channels[0] !== channels[1] || channels[1] !== channels[2]
+          })) issues.push("clean_separator_not_grayscale")
+        }
         if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
         if (device === "desktop" && (
           (report.contactLayoutHeight ?? 9999) > 820 ||

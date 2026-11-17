@@ -110,6 +110,10 @@ try {
         throw new Error("Invalid physical page count " + actualPages +
           " for " + sections.length + " sections")
       }
+      if (device === "desktop" && actualPages !== sections.length) {
+        throw new Error("Desktop printed " + actualPages +
+          " physical pages for " + sections.length + " sections")
+      }
       // Validate the *physical* orientation on every PDF page, not merely
       // the CSS reference viewport or a global landscape print option.
       const sizeInfo = execFileSync(
@@ -171,6 +175,30 @@ try {
         }
         sectionStarts[slug] = pageIndex
         previous = pageIndex
+      }
+      if (device === "desktop") {
+        for (const [index, slug] of sections.entries()) {
+          if (sectionStarts[slug] !== index) {
+            throw new Error("Wrong Desktop section page for " + slug)
+          }
+          if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug) &&
+            !physicalTexts[index].includes("FRENTE SINTETICA 13")) {
+            throw new Error("Incomplete Desktop Trajetória for " + slug)
+          }
+          if (slug === "resultados" && (
+            !physicalTexts[index].includes("RESULTADOS QUE ORIENTAM DECISOES") ||
+            !physicalTexts[index].includes("CONTEUDO E IMPRENSA")
+          )) {
+            throw new Error("Incomplete Desktop Results")
+          }
+        }
+        for (const slug of ["formacao", "ferramentas", "depoimentos"]) {
+          if (!sections.includes(slug)) continue
+          const pageHeight = paperSizes[sectionStarts[slug]].heightPt / 0.75
+          if (pageHeight > 880) {
+            throw new Error("Excessive Desktop whitespace in " + slug)
+          }
+        }
       }
       const searchable = execFileSync("pdftotext", ["-layout", file, "-"], {
         encoding: "utf8",

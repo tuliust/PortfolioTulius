@@ -13,7 +13,79 @@ const VALID_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
  * begins on a new sheet; its contents can span continuation sheets.
  * Variable-sized named pages were unstable with real CMS data in Chrome.
  */
+/** Chrome named physical pages for complete Desktop sections; Mobile unchanged. */
+function desktopPdfPrintCss(pages: readonly PdfPrintPage[]): string {
+  if (
+    !pages.length ||
+    pages.some(
+      (page) =>
+        !VALID_SLUG.test(page.slug) ||
+        !Number.isInteger(page.heightPx) ||
+        page.heightPx < 400 ||
+        page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT,
+    ) ||
+    new Set(pages.map((page) => page.slug)).size !== pages.length
+  ) {
+    throw new Error("A seleção ou altura de páginas do PDF Desktop é inválida.")
+  }
+  const sheets = pages.map(
+    (page, index) =>
+      "@page portfolio" + index + " { size: 1440px " + page.heightPx + "px; margin: 0; }",
+  )
+  const assignments = pages.map(
+    (page, index) =>
+      '.pdf-portfolio--desktop [data-pdf-section="' +
+      page.slug +
+      '"] { page: portfolio' +
+      index +
+      " !important; min-height: " +
+      page.heightPx +
+      "px !important; height: auto !important; max-height: none !important; " +
+      "break-before: auto !important; break-after: auto !important; " +
+      "break-inside: avoid !important; overflow: visible !important; }",
+  )
+  return [
+    ...sheets,
+    "@media print {",
+    "html, body, #root, .pdf-portfolio, .pdf-portfolio main { width: 1440px !important; min-width: 1440px !important; max-width: none !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }",
+    ".pdf-portfolio--desktop { print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }",
+    ".pdf-portfolio--desktop .portfolio-section { height: auto !important; max-height: none !important; break-after: auto !important; break-before: auto !important; break-inside: auto !important; overflow: visible !important; }",
+    ".pdf-portfolio--desktop #perfil .profile-desktop { min-height: 900px !important; }",
+    ".pdf-portfolio--desktop .pdf-experience-layout { min-height: 0 !important; }",
+    ...assignments,
+    "}",
+  ].join("\n")
+}
+
+/** Measure all visible section descendants before installing print styles. */
+function measureDesktopSection(section: HTMLElement): PdfPrintPage {
+  const box = section.getBoundingClientRect()
+  const bottom = Array.from(section.querySelectorAll<HTMLElement>("*")).reduce(
+    (maximum, child) =>
+      child.getClientRects().length
+        ? Math.max(maximum, child.getBoundingClientRect().bottom)
+        : maximum,
+    box.bottom,
+  )
+  const actual = Math.max(
+    box.height,
+    section.scrollHeight,
+    section.clientHeight,
+    bottom - box.top,
+  )
+  const slug = section.dataset.pdfSection ?? ""
+  const reserve = ["formacao", "ferramentas", "depoimentos"].includes(slug)
+    ? 2
+    : slug === "resultados" || section.classList.contains("pdf-experience-section")
+      ? 32
+      : slug === "contato"
+        ? 8
+        : 12
+  return { slug, heightPx: Math.ceil(Math.max(400, actual + reserve)) }
+}
+
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
+  if (device === "desktop") return desktopPdfPrintCss(pages)
   const viewport = pdfExportViewport(device)
   if (
     !pages.length ||
@@ -109,8 +181,10 @@ export function preparePdfPrintLayout(
     throw new Error("Há uma imagem publicada que não foi carregada.")
   }
 
-  // The manifest counts logical sections, never the number of printed sheets.
-  const pages = slugs.map((slug) => ({ slug, heightPx: viewport.height }))
+  // Each Desktop section has its own measured sheet; Mobile remains unchanged.
+  const pages = device === "desktop"
+    ? nodes.map(measureDesktopSection)
+    : slugs.map((slug) => ({ slug, heightPx: viewport.height }))
   const style = doc.createElement("style")
   style.id = PDF_PRINT_STYLE_ID
   style.textContent = pdfPrintCss(device, pages)

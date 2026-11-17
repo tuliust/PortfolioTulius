@@ -408,13 +408,32 @@
   }
 }
 
-/* PDF-only separators: the public site's sticky experience borders remain untouched. */
-.pdf-portfolio .pdf-experience-section + .pdf-experience-section {
+/* Desktop experience sheets have no dividers. Mobile and the public site
+   retain their existing independent presentation. */
+.pdf-portfolio--mobile .pdf-experience-section + .pdf-experience-section {
   border-top: 3px solid var(--orange) !important;
 }
 
-.pdf-portfolio--clean .pdf-experience-section + .pdf-experience-section {
+.pdf-portfolio--mobile.pdf-portfolio--clean .pdf-experience-section + .pdf-experience-section {
   border-top-color: #454545 !important;
+}
+
+.pdf-portfolio--desktop .pdf-experience-section + .pdf-experience-section {
+  border-top: 0 !important;
+}
+
+/* Desktop PDF: compact Sobre and lift its photo near the right column. */
+.pdf-portfolio--desktop #sobre .about-desktop {
+  min-height: 750px !important;
+}
+
+.pdf-portfolio--desktop #sobre .about-portrait {
+  height: 700px !important;
+}
+
+.pdf-portfolio--desktop #sobre .about-portrait.has-custom-image img {
+  top: 0 !important;
+  translate: 0 -2.5rem !important;
 }
 
 /* Desktop PDF: use two balanced columns for all six Results groups. Keeping
@@ -436,7 +455,7 @@
    The retained transparent portrait must reach the page's bottom edge. */
 .pdf-portfolio--desktop #contato .contact-desktop {
   min-height: 740px !important;
-  padding-top: 2.5rem !important;
+  padding-top: 1.25rem !important;
   padding-bottom: 0 !important;
   --contact-bottom-space: 0px;
   overflow: visible !important;
@@ -448,7 +467,7 @@
 }
 
 .pdf-portfolio--desktop #contato .contact-portrait img {
-  translate: 0 3.25rem !important;
+  translate: 0 -3.25rem !important;
 }
 
 /* Print-only helper in the top-level tab; never appear on PDF pages. */
