@@ -109,6 +109,27 @@ try {
           "; manifest=" + JSON.stringify(manifest.pages) + "; pageStarts=" + JSON.stringify(entries),
         )
       }
+      // Validate the *physical* orientation on every PDF page, not merely
+      // the CSS reference viewport or a global landscape print option.
+      const sizeInfo = execFileSync(
+        "pdfinfo",
+        ["-f", "1", "-l", String(actualPages), file],
+        { encoding: "utf8" },
+      )
+      const paperSizes = [...sizeInfo.matchAll(
+        /^Page\s+\d+\s+size:\s*([0-9.]+)\s+x\s+([0-9.]+)\s+pts/gm,
+      )].map((match) => ({ widthPt: Number(match[1]), heightPt: Number(match[2]) }))
+      if (paperSizes.length !== actualPages) {
+        throw new Error("Unable to inspect individual physical page sizes")
+      }
+      for (const [index, pageSize] of paperSizes.entries()) {
+        const isLandscape = pageSize.widthPt > pageSize.heightPt
+        if ((device === "desktop") !== isLandscape) {
+          throw new Error(
+            "Wrong page orientation for " + sections[index] + ": " + JSON.stringify(pageSize),
+          )
+        }
+      }
       // Verify that every section starts on its own physical PDF page.
       const titles = {
         perfil: "TULIUS",
@@ -136,6 +157,9 @@ try {
           .replace(/[\u0300-\u036f]/g, "")
           .toUpperCase()
           .replace(/\s+/g, " ")
+        if (normalized.trim().length < 80) {
+          throw new Error("Blank or incomplete physical PDF page " + (index + 1))
+        }
         if (!normalized.includes(titles[sections[index]])) {
           throw new Error("Section " + sections[index] + " missing on page " + (index + 1))
         }
@@ -169,6 +193,7 @@ try {
       }
       const record = {
         label, pages: actualPages, widthPx: manifest.widthPx,
+        paperSizes,
         heightsPx: manifest.pages.map((part) => part.heightPx),
         searchableChars: searchable.length, bytes: fs.statSync(file).size,
         heroLinks: (hero.match(/<a href=/g) || []).length,
