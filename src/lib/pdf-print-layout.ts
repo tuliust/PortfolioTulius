@@ -18,7 +18,7 @@ export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): 
     pages.some(
       (page) =>
         !Number.isInteger(page.heightPx) ||
-        page.heightPx < viewport.height ||
+        page.heightPx < (device === "desktop" && page.slug === "contato" ? 650 : viewport.height) ||
         page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT,
     )
   ) {
@@ -132,7 +132,7 @@ export function preparePdfPrintLayout(
       bounds.bottom,
     )
     const measuredHeight = Math.max(
-      viewport.height,
+      device === "desktop" && section.dataset.pdfSection === "contato" ? 650 : viewport.height,
       section.scrollHeight,
       section.clientHeight,
       bounds.height,

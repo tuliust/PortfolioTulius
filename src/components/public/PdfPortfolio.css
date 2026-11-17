@@ -422,16 +422,16 @@
 /* Desktop PDF: use two balanced columns for all six Results groups. Keeping
    the content legible avoids an excessively tall portrait-oriented page. */
 .pdf-portfolio--desktop .pdf-results-page {
-  padding-block: clamp(2rem, 3vw, 3rem);
+  padding-block: 1.5rem;
 }
 
 .pdf-portfolio--desktop .pdf-results-flow {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem 2rem;
+  gap: 0.75rem 2rem;
 }
 
 .pdf-portfolio--desktop .pdf-results-group {
-  padding-top: 0.65rem;
+  padding-top: 0.35rem;
 }
 
 /* PDF Contact uses a shorter editorial page than the immersive public screen.

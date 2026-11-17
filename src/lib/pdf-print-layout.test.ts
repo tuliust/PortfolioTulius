@@ -14,6 +14,11 @@ describe("PDF native named pages", () => {
     expect(css).toContain("print-color-adjust: exact")
   })
 
+  it("supports compact landscape Contact pages", () => {
+    const css = pdfPrintCss("desktop", [{ slug: "contato", heightPx: 748 }])
+    expect(css).toContain("size: 1440px 748px")
+  })
+
   it("preserves mobile viewport width and tall sections", () => {
     const css = pdfPrintCss("mobile", [{ slug: "invest-rs", heightPx: 4200 }])
     expect(css).toContain("size: 390px 4200px")
