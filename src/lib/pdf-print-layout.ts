@@ -140,11 +140,7 @@ export function preparePdfPrintLayout(
     // The printed fragments may expand beyond their screen bounds; keep the
     // final item on the same physical page as the section heading.
     const reserve =
-      device === "mobile"
-        ? section.dataset.pdfSection === "ferramentas"
-          ? 320
-          : 96
-        : 8
+      device === "mobile" ? (section.dataset.pdfSection === "ferramentas" ? 320 : 96) : 8
     return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(measuredHeight + reserve) }
   })
   const css = pdfPrintCss(device, pages)
