@@ -327,7 +327,6 @@
   }
 }
 
-
 /* The website stacks experiences with sticky replacement. A PDF is a continuous
    document: each of the six experiences must flow directly below the last. */
 .pdf-portfolio .experience-card.pdf-experience-section {
@@ -362,7 +361,7 @@
 .pdf-portfolio .pdf-testimonials-page .testimonial-card {
   display: flex !important;
   flex-direction: column;
-  gap: .65rem;
+  gap: 0.65rem;
   min-height: 14rem !important;
   padding: clamp(1.05rem, 1.65vw, 1.6rem) !important;
 }
@@ -384,12 +383,12 @@
 }
 
 .pdf-portfolio .pdf-testimonials-page .testimonial-person span {
-  font-size: clamp(.82rem, .9vw, .98rem) !important;
+  font-size: clamp(0.82rem, 0.9vw, 0.98rem) !important;
   line-height: 1.4;
 }
 
 .pdf-portfolio .pdf-testimonials-page .testimonial-quote {
-  margin: .7rem 0 0 !important;
+  margin: 0.7rem 0 0 !important;
   font-size: clamp(1rem, 1.1vw, 1.16rem) !important;
   line-height: 1.6 !important;
 }
@@ -400,7 +399,9 @@
   border-left: 3px solid #9b1c1c;
   background: #fff;
   color: #711616;
-  font: 700 .95rem/1.5 system-ui, sans-serif;
+  font:
+    700 0.95rem/1.5 system-ui,
+    sans-serif;
 }
 
 @media (max-width: 767px) {

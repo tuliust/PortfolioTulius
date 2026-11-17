@@ -66,10 +66,7 @@ export function PdfPrintReady({
     document.documentElement.removeAttribute("data-pdf-export-ready")
     const notify = (type: "portfolio-pdf-ready" | "portfolio-pdf-error", message?: string) => {
       if (window.parent !== window) {
-        window.parent.postMessage(
-          { type, device, includedSlugs, message },
-          window.location.origin,
-        )
+        window.parent.postMessage({ type, device, includedSlugs, message }, window.location.origin)
       }
     }
     const prepare = async () => {
