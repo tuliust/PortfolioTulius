@@ -56,7 +56,6 @@ function PdfVisualFixture() {
     <PdfPrintReady
       device={device}
       includedSlugs={selectPublishedPdfSections(fixtureSections).map((section) => section.slug)}
-      prepareOnBeforePrint={false}
     >
       <PdfPortfolio
         sections={fixtureSections}
