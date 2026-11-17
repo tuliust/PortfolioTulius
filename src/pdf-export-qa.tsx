@@ -17,6 +17,7 @@ const query = new URLSearchParams(location.search)
 const device: PdfDevice = query.get("device") === "mobile" ? "mobile" : "desktop"
 const colorMode: PdfColorMode = query.get("palette") === "clean" ? "clean" : "original"
 const simulateBrokenImage = query.get("brokenImage") === "true"
+const requestedSlugs = query.get("sections")?.split(",").filter(Boolean)
 const fixtureSections = simulateBrokenImage
   ? sections.map((section) =>
       section.slug === "depoimentos"
@@ -29,6 +30,10 @@ const fixtureSections = simulateBrokenImage
         : section,
     )
   : sections
+
+const fixtureIncludedSlugs = selectPublishedPdfSections(fixtureSections, requestedSlugs).map(
+  (section) => section.slug,
+)
 
 const careerDescriptions = Object.fromEntries(
   EXPERIENCE_SLUGS.map((slug) => [
@@ -55,7 +60,7 @@ function PdfVisualFixture() {
   return (
     <PdfPrintReady
       device={device}
-      includedSlugs={selectPublishedPdfSections(fixtureSections).map((section) => section.slug)}
+      includedSlugs={fixtureIncludedSlugs}
     >
       <PdfPortfolio
         sections={fixtureSections}
@@ -63,6 +68,7 @@ function PdfVisualFixture() {
         careerDescriptions={careerDescriptions}
         device={device}
         colorMode={colorMode}
+        includedSlugs={fixtureIncludedSlugs}
       />
     </PdfPrintReady>
   )

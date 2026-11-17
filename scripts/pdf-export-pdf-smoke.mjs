@@ -45,7 +45,8 @@ try {
         hasTouch: device === "mobile",
       })
       const response = await page.goto(
-        origin + "/pdf-export-qa.html?device=" + device + "&palette=" + palette,
+        origin + "/pdf-export-qa.html?device=" + device + "&palette=" + palette +
+          "&sections=" + encodeURIComponent(sections.join(",")),
         { waitUntil: "networkidle0", timeout: 45000 },
       )
       if (response?.status() !== 200 && response?.status() !== 304) {
