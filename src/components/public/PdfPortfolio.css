@@ -326,3 +326,85 @@
     min-height: clamp(22rem, 60svh, 36rem);
   }
 }
+
+
+/* The website stacks experiences with sticky replacement. A PDF is a continuous
+   document: each of the six experiences must flow directly below the last. */
+.pdf-portfolio .experience-card.pdf-experience-section {
+  position: static !important;
+  top: auto !important;
+  inset: auto !important;
+  z-index: auto !important;
+  margin: 0 !important;
+  scroll-snap-align: none !important;
+}
+
+/* Contact uses cover on the public desktop. The PDF must show the whole
+   approved portrait inside its column, without cropping either side. */
+.pdf-portfolio--desktop #contato .contact-desktop {
+  overflow: visible !important;
+}
+
+.pdf-portfolio--desktop #contato .contact-portrait img {
+  max-width: 100%;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+  translate: 0 0 !important;
+}
+
+/* Text-rich PDF testimonials are static articles, not compact site cards. */
+.pdf-portfolio .pdf-testimonials-page .testimonials-grid {
+  grid-template-rows: auto !important;
+  grid-auto-rows: auto !important;
+  gap: clamp(1rem, 1.8vw, 1.6rem);
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-card {
+  display: flex !important;
+  flex-direction: column;
+  gap: .65rem;
+  min-height: 14rem !important;
+  padding: clamp(1.05rem, 1.65vw, 1.6rem) !important;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-person {
+  align-items: center;
+  gap: 1rem;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-person img {
+  width: clamp(4.5rem, 5.2vw, 5.75rem) !important;
+  height: clamp(4.5rem, 5.2vw, 5.75rem) !important;
+  flex: none;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-person h3 {
+  font-size: clamp(1.45rem, 1.8vw, 1.9rem) !important;
+  line-height: 1.08;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-person span {
+  font-size: clamp(.82rem, .9vw, .98rem) !important;
+  line-height: 1.4;
+}
+
+.pdf-portfolio .pdf-testimonials-page .testimonial-quote {
+  margin: .7rem 0 0 !important;
+  font-size: clamp(1rem, 1.1vw, 1.16rem) !important;
+  line-height: 1.6 !important;
+}
+
+.pdf-readiness-error {
+  margin: 1rem;
+  padding: 1rem;
+  border-left: 3px solid #9b1c1c;
+  background: #fff;
+  color: #711616;
+  font: 700 .95rem/1.5 system-ui, sans-serif;
+}
+
+@media (max-width: 767px) {
+  .pdf-portfolio--mobile .pdf-testimonials-page .testimonial-card {
+    min-height: 0 !important;
+  }
+}

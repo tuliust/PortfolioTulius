@@ -125,3 +125,7 @@ Em **Exportar PDF**, selecione Desktop/Mobile, Original/Clean e as seções dese
 A geração permanece bloqueada se a prévia estiver incompleta, houver imagens ausentes, Trajetórias não carregadas, seções divergentes ou excesso do limite físico de página. **Não existe download binário direto**: o salvamento ocorre no diálogo do navegador, sob controle do usuário. Não há alterações persistidas pelo módulo.
 
 **Configurações de cor na impressão:** no Chrome/Chromium, marque **Gráficos de fundo** e desative cabeçalhos e rodapés. A diretiva `print-color-adjust: exact` não sobrepõe opções escolhidas manualmente; a QA física de Chromium é executada com `printBackground: true`.
+
+## PDF — comportamento após a homologação de 17/11/2026
+
+A prévia do PDF mostra as seis experiências em sequência, sem cartões sobrepostos. Contato Desktop exibe o retrato completo; Depoimentos tem retratos e fontes maiores, com respiro antes da citação. A opção Mobile carrega as imagens de forma antecipada: a prévia visual permanece acessível mesmo se uma fotografia falhar. Nesse caso o painel exibe **a seção da imagem indisponível**, não habilita **Gerar PDF** e mantém íntegro o documento disponível para inspeção. Corrigir o arquivo publicado ou a conectividade antes de imprimir; a alteração não troca imagens no Supabase nem altera o site público.

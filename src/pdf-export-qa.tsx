@@ -8,6 +8,8 @@ import { createRoot } from "react-dom/client"
 import { sections, defaultTokens } from "./content/fallback"
 import { EXPERIENCE_SLUGS } from "./components/public/ExperienceStack"
 import { PdfPortfolio } from "./components/public/PdfPortfolio"
+import { PdfPrintReady } from "./components/public/PdfPrintReady"
+import { selectPublishedPdfSections } from "./lib/pdf-export-sections"
 import type { PdfDevice, PdfColorMode } from "./lib/pdf-export-options"
 import "./index.css"
 
@@ -37,13 +39,19 @@ function PdfVisualFixture() {
   }, [])
 
   return (
-    <PdfPortfolio
-      sections={sections}
-      tokens={defaultTokens}
-      careerDescriptions={careerDescriptions}
+    <PdfPrintReady
       device={device}
-      colorMode={colorMode}
-    />
+      includedSlugs={selectPublishedPdfSections(sections).map((section) => section.slug)}
+      prepareOnBeforePrint={false}
+    >
+      <PdfPortfolio
+        sections={sections}
+        tokens={defaultTokens}
+        careerDescriptions={careerDescriptions}
+        device={device}
+        colorMode={colorMode}
+      />
+    </PdfPrintReady>
   )
 }
 

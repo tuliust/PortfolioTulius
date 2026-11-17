@@ -395,3 +395,9 @@ O workflow `PDF Renderer Visual QA` passa a executar `scripts/pdf-export-pdf-smo
 ## Proteção contra corte nas galerias — mudança de 17/11/2026
 
 O `scripts/p3-browser-smoke.mjs` passa a verificar `getComputedStyle(img).objectFit === "contain"` na galeria de **Invest RS mobile, 390 × 844**, e de **Prefeitura-SP desktop, 1440 × 900**; as verificações anteriores de vínculo projeto/slide, controles e navegação permanecem. Inspeção de CSS e leitura Supabase (19 slides publicados, zoom 1×, sem deslocamentos) não substituem execução do P3 pelo SHA final, a revisão óptica real, nem o orçamento LCP mobile ≤3.500 ms. Resultados de CI históricos permanecem como registrados; não declarar sucesso antecipado.
+
+## Ajustes pós-homologação do proprietário — PDF (17/11/2026)
+
+Relato visual produtivo: experiências com comportamento sticky (indevido no PDF), fotografia de Contato recortada lateralmente, depoimentos compactos e prévia Mobile bloqueada pela mensagem genérica de imagem não carregada. As correções foram aplicadas **somente ao renderer de exportação**: experiências estáticas em fluxo, Contato Desktop com `contain`, retratos/textos dos três depoimentos ampliados e componente de prontidão que espera `decode()` antes de validar `naturalWidth`, mantém o preview visível e envia erro específico ao painel. A fixture visual monta agora o mesmo componente de prontidão da prévia real e exige `data-pdf-export-ready=true`; o smoke ganhou assertivas para seis experiências sem sticky/sobreposição, retrato sem recorte e tamanhos/espaçamentos mínimos de depoimentos. A QA física das quatro variantes e seleções parciais permanece obrigatória.
+
+A evidência de CI deve ser conferida por SHA após este commit. Não há teste autenticado real de que eventuais URLs de mídia ausentes no Supabase tenham sido corrigidas; este ajuste não edita a mídia produtiva. A frente ainda aguarda aceite visual após a publicação automática.

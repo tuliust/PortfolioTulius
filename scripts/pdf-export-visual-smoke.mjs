@@ -52,6 +52,10 @@ try {
           () => document.documentElement.dataset.pdfQaReady === "true",
           { timeout: 10000 },
         )
+        await page.waitForFunction(
+          () => document.documentElement.dataset.pdfExportReady === "true",
+          { timeout: 25000 },
+        )
         await page.evaluate(async () => {
           await document.fonts.ready
           await Promise.all(
@@ -89,6 +93,29 @@ try {
             .filter((face) => face.status === "loaded")
             .map((face) => face.family)
           const testimonials = [...document.querySelectorAll("#depoimentos .testimonial-card")]
+          const experienceBounds = experiences.map((section) => section.getBoundingClientRect())
+          const experiencePositions = experiences.map(
+            (section) => getComputedStyle(section).position,
+          )
+          const experienceOverlapPx = experienceBounds.reduce(
+            (maximum, rect, index) =>
+              index === 0
+                ? maximum
+                : Math.max(maximum, experienceBounds[index - 1].bottom - rect.top),
+            0,
+          )
+          const contactPortrait = document.querySelector("#contato .contact-portrait img")
+          const testimonialPortraitWidths = testimonials.map(
+            (card) => card.querySelector(".testimonial-person img")?.getBoundingClientRect().width || 0,
+          )
+          const testimonialQuoteFontSizes = testimonials.map(
+            (card) => parseFloat(getComputedStyle(card.querySelector(".testimonial-quote")).fontSize),
+          )
+          const testimonialTopGaps = testimonials.map((card) => {
+            const person = card.querySelector(".testimonial-person")?.getBoundingClientRect()
+            const quote = card.querySelector(".testimonial-quote")?.getBoundingClientRect()
+            return person && quote ? quote.top - person.bottom : 0
+          })
           const clipping = [
             ...document.querySelectorAll(
               "#resultados .results-center, #depoimentos .testimonial-quote, .pdf-experience-trajectory",
@@ -120,6 +147,14 @@ try {
             metricsCount: results?.querySelectorAll(".results-metrics-grid .content-item").length || 0,
             metricsColumns,
             experienceCount: experiences.length,
+            experiencePositions,
+            experienceOverlapPx,
+            contactPortraitObjectFit: contactPortrait
+              ? getComputedStyle(contactPortrait).objectFit
+              : null,
+            testimonialPortraitWidths,
+            testimonialQuoteFontSizes,
+            testimonialTopGaps,
             projectCounts: experiences.map(
               (el) => el.querySelectorAll(".pdf-experience-projects .experience-project").length,
             ),
@@ -153,6 +188,11 @@ try {
         if (report.device !== device || report.palette !== palette) issues.push("mode")
         if (report.resultsCenters !== 6 || report.metricsCount !== 24) issues.push("results")
         if (report.experienceCount !== 6 || report.projectCounts.some((n) => n !== 5)) issues.push("projects")
+        if (report.experiencePositions.some((position) => position === "sticky" || position === "fixed") || report.experienceOverlapPx > 2) issues.push("experience_stacking")
+        if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
+        if (report.testimonialPortraitWidths.some((width) => width < 64)) issues.push("testimonial_photo_size")
+        if (report.testimonialQuoteFontSizes.some((size) => size < 15.5)) issues.push("testimonial_font_size")
+        if (report.testimonialTopGaps.some((gap) => gap < 10)) issues.push("testimonial_text_spacing")
         if (report.trajectoryParagraphs.some((n) => n < 6)) issues.push("trajectories")
         if (report.testimonials !== 3 || !report.testimonialsAsArticles) issues.push("testimonials")
         if (report.unwantedControls !== 0 || !report.profileArrowHidden) issues.push("controls")

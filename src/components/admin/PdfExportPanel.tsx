@@ -60,14 +60,20 @@ export default function PdfExportPanel({
         type?: string
         device?: string
         includedSlugs?: string[]
+        message?: string
       } | null
       if (
-        payload?.type === "portfolio-pdf-ready" &&
-        payload.device === device &&
+        payload?.device === device &&
         Array.isArray(payload.includedSlugs) &&
         payload.includedSlugs.join("|") === selection
       ) {
-        setPrintReady(true)
+        if (payload.type === "portfolio-pdf-ready") {
+          setPrintError("")
+          setPrintReady(true)
+        } else if (payload.type === "portfolio-pdf-error") {
+          setPrintReady(false)
+          setPrintError(payload.message || "Não foi possível preparar as imagens do documento.")
+        }
       }
     }
     window.addEventListener("message", onReady)
@@ -232,7 +238,7 @@ export default function PdfExportPanel({
                 ref={printFrame}
                 title={"Prévia PDF " + device + " " + palette}
                 src={url ?? undefined}
-                loading="lazy"
+                loading="eager"
                 style={{
                   width: viewport.width,
                   height: viewport.height,
@@ -251,7 +257,9 @@ export default function PdfExportPanel({
               ? "Selecione ao menos uma seção."
               : printReady
                 ? "Documento pronto para impressão."
-                : "Carregando fontes, imagens e Trajetórias…"}
+                : printError
+                  ? "Prévia visível; geração bloqueada até corrigir a mídia."
+                  : "Carregando fontes, imagens e Trajetórias…"}
           </span>
         </div>
         {printError && (

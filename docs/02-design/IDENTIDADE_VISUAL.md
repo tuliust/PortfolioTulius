@@ -75,3 +75,7 @@ A pedido do proprietário, o indicador “+15 ANOS” foi reduzido discretamente
 ## Modos Original/Clean da exportação PDF — Etapa 3 (16/11/2026)
 
 O renderer `PdfPortfolio` mantém os tokens visuais na variante Original e sobrepõe superfícies brancas/textos em escala de cinza na variante Clean, exclusivamente sob `.pdf-portfolio`. A página pública, suas mídias e os tokens salvos no CMS não foram alterados. A eventual avaliação visual de exportação deve confrontar as quatro combinações com os estilos atuais, não com capturas históricas.
+
+## PDF — ajuste localizado de Contato e Depoimentos (17/11/2026)
+
+A fotografia de Contato na versão Desktop do PDF passa a `object-fit: contain` e `object-position: center bottom`, sem `translate`, exclusivamente no escopo `.pdf-portfolio`. O enquadramento `cover` aprovado para o site público permanece intacto. A versão PDF de Depoimentos usa retratos de 72–92 px, títulos e cargos legíveis e citações de pelo menos 16 px com espaço vertical antes do texto; não modifica fotografias, recortes ou tokens do CMS.
