@@ -185,8 +185,11 @@ try {
       })
       const physical = [...xml.matchAll(/<page number="(\d+)"[\s\S]*?<\/page>/g)]
       if (physical.length !== actualPages) throw new Error("Cannot parse PDF pages")
-      const hero = physical.slice(sectionStarts.perfil ?? 0, sectionStarts.sobre ?? 1)
-        .map((part) => part[0]).join("\n")
+      const firstNextSection = sections[sections.indexOf("perfil") + 1]
+      const hero = physical.slice(
+        sectionStarts.perfil ?? 0,
+        firstNextSection ? sectionStarts[firstNextSection] : actualPages,
+      ).map((part) => part[0]).join("\n")
       const contact = physical.slice(sectionStarts.contato ?? actualPages - 1)
         .map((part) => part[0]).join("\n")
       if (selected.has("perfil") && !hero.includes("<a href=")) {
