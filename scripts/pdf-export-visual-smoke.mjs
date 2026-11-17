@@ -111,6 +111,9 @@ try {
               contactPortrait.getBoundingClientRect().bottom
             : null
           const contactLayoutHeight = contactLayout?.getBoundingClientRect().height ?? null
+          const contactLayoutOverflow = contactLayout
+            ? getComputedStyle(contactLayout).overflowY
+            : null
           const experienceSeparators = experiences.slice(1).map((section) => {
             const style = getComputedStyle(section)
             return { width: parseFloat(style.borderTopWidth), color: style.borderTopColor }
@@ -160,6 +163,7 @@ try {
             experienceSeparators,
             contactBottomGap,
             contactLayoutHeight,
+            contactLayoutOverflow,
             experiencePositions,
             experienceOverlapPx,
             contactPortraitObjectFit: contactPortrait
@@ -210,6 +214,7 @@ try {
         if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
         if (device === "desktop" && (
           (report.contactLayoutHeight ?? 9999) > 820 ||
+          report.contactLayoutOverflow !== "visible" ||
           (report.contactBottomGap ?? 9999) > 4
         )) issues.push("contact_bottom_alignment")
         if (report.testimonialPortraitWidths.some((width) => width < 64)) issues.push("testimonial_photo_size")

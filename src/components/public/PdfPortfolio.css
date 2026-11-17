@@ -441,7 +441,7 @@
   padding-top: 2.5rem !important;
   padding-bottom: 0 !important;
   --contact-bottom-space: 0px;
-  overflow: clip !important;
+  overflow: visible !important;
 }
 
 .pdf-portfolio--desktop #contato .contact-portrait {
