@@ -409,3 +409,74 @@
     min-height: 0 !important;
   }
 }
+
+
+/* PDF-only separators: the public site's sticky experience borders remain untouched. */
+.pdf-portfolio .pdf-experience-section + .pdf-experience-section {
+  border-top: 3px solid var(--orange) !important;
+}
+
+.pdf-portfolio--clean .pdf-experience-section + .pdf-experience-section {
+  border-top-color: #454545 !important;
+}
+
+/* Desktop PDF: use two balanced columns for all six Results groups. Keeping
+   the content legible avoids an excessively tall portrait-oriented page. */
+.pdf-portfolio--desktop .pdf-results-page {
+  padding-block: clamp(2rem, 3vw, 3rem);
+}
+
+.pdf-portfolio--desktop .pdf-results-flow {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 2rem;
+}
+
+.pdf-portfolio--desktop .pdf-results-group {
+  padding-top: .65rem;
+}
+
+/* PDF Contact uses a shorter editorial page than the immersive public screen.
+   The retained transparent portrait must reach the page's bottom edge. */
+.pdf-portfolio--desktop #contato .contact-desktop {
+  min-height: 740px !important;
+  padding-top: 2.5rem !important;
+  padding-bottom: 0 !important;
+  --contact-bottom-space: 0px;
+  overflow: clip !important;
+}
+
+.pdf-portfolio--desktop #contato .contact-portrait {
+  margin-bottom: 0 !important;
+  align-self: stretch;
+}
+
+.pdf-portfolio--desktop #contato .contact-portrait img {
+  translate: 0 3.25rem !important;
+}
+
+/* Print-only helper in the top-level tab; never appear on PDF pages. */
+.pdf-print-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #d6d0ca;
+  background: #fff;
+  color: #171717;
+  font: 600 0.9rem/1.5 system-ui, sans-serif;
+}
+
+.pdf-print-toolbar button {
+  border: 1px solid #171717;
+  padding: .7rem 1rem;
+  background: #fff;
+  cursor: pointer;
+  color: inherit;
+}
+
+@media print {
+  .pdf-print-toolbar {
+    display: none !important;
+  }
+}

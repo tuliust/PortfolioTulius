@@ -129,3 +129,7 @@ A geração permanece bloqueada se a prévia estiver incompleta, houver imagens 
 ## PDF — comportamento após a homologação de 17/11/2026
 
 A prévia do PDF mostra as seis experiências em sequência, sem cartões sobrepostos. Contato Desktop exibe o retrato completo; Depoimentos tem retratos e fontes maiores, com respiro antes da citação. A opção Mobile carrega as imagens de forma antecipada: a prévia visual permanece acessível mesmo se uma fotografia falhar. Nesse caso o painel exibe **a seção da imagem indisponível**, não habilita **Gerar PDF** e mantém íntegro o documento disponível para inspeção. Corrigir o arquivo publicado ou a conectividade antes de imprimir; a alteração não troca imagens no Supabase nem altera o site público.
+
+## Correções da impressão e diagramação do PDF — 17/11/2026
+
+**Gerar PDF** agora abre uma aba de impressão protegida com o mesmo conteúdo publicado e seleção da prévia, em vez de mandar imprimir o iframe reduzido da tela administrativa. A aba tenta abrir o diálogo automaticamente após carregar fontes, imagens e Trajetórias; se o navegador bloquear a abertura do diálogo, há o botão **Imprimir / Salvar PDF** na própria aba. Na janela de impressão é necessário escolher **Salvar como PDF** como destino, não a impressora HP/física. O site não consegue selecionar a impressora do usuário programaticamente. A orientação pretendida é **paisagem no Desktop** e **retrato no Mobile**, preservando uma página por seção e a seleção parcial. Nenhum dado do CMS muda.

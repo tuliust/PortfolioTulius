@@ -52,11 +52,13 @@ export function PdfPrintReady({
   device,
   includedSlugs,
   prepareOnBeforePrint = true,
+  autoPrint = false,
 }: {
   children: ReactNode
   device: PdfDevice
   includedSlugs: string[]
   prepareOnBeforePrint?: boolean
+  autoPrint?: boolean
 }) {
   const [printError, setPrintError] = useState("")
   const selection = includedSlugs.join("|")
@@ -77,6 +79,12 @@ export function PdfPrintReady({
       setPrintError("")
       document.documentElement.dataset.pdfExportReady = "true"
       notify("portfolio-pdf-ready")
+      if (autoPrint && window.parent === window) {
+        preparePdfPrintLayout(document, device, includedSlugs)
+        window.setTimeout(() => {
+          if (active) window.print()
+        }, 150)
+      }
     }
     void prepare().catch((reason: unknown) => {
       if (!active) return
@@ -103,7 +111,7 @@ export function PdfPrintReady({
       document.documentElement.removeAttribute("data-pdf-export-ready")
       window.removeEventListener("beforeprint", beforePrint)
     }
-  }, [device, selection, prepareOnBeforePrint])
+  }, [device, selection, prepareOnBeforePrint, autoPrint])
 
   return (
     <>

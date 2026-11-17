@@ -79,3 +79,7 @@ O renderer `PdfPortfolio` mantém os tokens visuais na variante Original e sobre
 ## PDF — ajuste localizado de Contato e Depoimentos (17/11/2026)
 
 A fotografia de Contato na versão Desktop do PDF passa a `object-fit: contain` e `object-position: center bottom`, sem `translate`, exclusivamente no escopo `.pdf-portfolio`. O enquadramento `cover` aprovado para o site público permanece intacto. A versão PDF de Depoimentos usa retratos de 72–92 px, títulos e cargos legíveis e citações de pelo menos 16 px com espaço vertical antes do texto; não modifica fotografias, recortes ou tokens do CMS.
+
+## Divisória e fotografia na exportação — 17/11/2026
+
+As experiências no PDF Original são separadas por filetes laranja de 3 px; no PDF Clean, a mesma separação usa cinza `#454545`, sem reintroduzir cor na paleta de exportação. A imagem aprovada para Contato Desktop continua com `contain`, sem recorte lateral, e tem ancoragem vertical exclusiva do PDF, aproximando sua base da margem inferior. Nenhuma mídia, fonte ou token editorial foi modificado.

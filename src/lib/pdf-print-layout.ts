@@ -98,6 +98,10 @@ export function preparePdfPrintLayout(
     throw new Error("Selecione ao menos uma seção válida.")
   }
 
+  // Printing can invoke beforeprint multiple times. Remove any prior @page
+  // constraints BEFORE measuring the natural document to avoid recursive growth.
+  doc.getElementById(PDF_PRINT_STYLE_ID)?.remove()
+
   const nodes = Array.from(root.querySelectorAll<HTMLElement>("[data-pdf-section]"))
   const slugs = nodes.map((section) => section.dataset.pdfSection ?? "")
   if (
@@ -144,7 +148,6 @@ export function preparePdfPrintLayout(
     return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(measuredHeight + reserve) }
   })
   const css = pdfPrintCss(device, pages)
-  doc.getElementById(PDF_PRINT_STYLE_ID)?.remove()
   const style = doc.createElement("style")
   style.id = PDF_PRINT_STYLE_ID
   style.textContent = css

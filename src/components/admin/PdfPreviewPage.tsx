@@ -12,6 +12,7 @@ import { PdfPortfolio } from "../public/PdfPortfolio"
 
 function PublishedPdfPreview() {
   const config = parsePdfPreviewConfig(window.location.search)
+  const printMode = new URLSearchParams(window.location.search).get("print") === "1"
   const { sections, tokens, source, loading, error } = usePortfolio(false)
   const [careerDetails, setCareerDetails] = useState<Record<string, string>>({})
   const [careerStatus, setCareerStatus] = useState<"loading" | "ready" | "error">("loading")
@@ -79,7 +80,15 @@ function PublishedPdfPreview() {
     )
   }
   return (
-    <PdfPrintReady device={config.device} includedSlugs={config.includedSlugs}>
+    <PdfPrintReady device={config.device} includedSlugs={config.includedSlugs} autoPrint={printMode}>
+      {printMode && (
+        <div className="pdf-print-toolbar">
+          <span>Prévia pronta para salvar. Se o diálogo não abrir, use o botão ao lado.</span>
+          <button type="button" onClick={() => window.print()}>
+            Imprimir / Salvar PDF
+          </button>
+        </div>
+      )}
       <PdfPortfolio
         sections={selected}
         tokens={tokens}
