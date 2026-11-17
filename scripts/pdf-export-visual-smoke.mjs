@@ -105,6 +105,16 @@ try {
             0,
           )
           const contactPortrait = document.querySelector("#contato .contact-portrait img")
+          const contactLayout = document.querySelector("#contato .contact-desktop")
+          const contactBottomGap = contactPortrait && contactLayout
+            ? contactLayout.getBoundingClientRect().bottom -
+              contactPortrait.getBoundingClientRect().bottom
+            : null
+          const contactLayoutHeight = contactLayout?.getBoundingClientRect().height ?? null
+          const experienceSeparators = experiences.slice(1).map((section) => {
+            const style = getComputedStyle(section)
+            return { width: parseFloat(style.borderTopWidth), color: style.borderTopColor }
+          })
           const testimonialPortraitWidths = testimonials.map(
             (card) => card.querySelector(".testimonial-person img")?.getBoundingClientRect().width || 0,
           )
@@ -147,6 +157,9 @@ try {
             metricsCount: results?.querySelectorAll(".results-metrics-grid .content-item").length || 0,
             metricsColumns,
             experienceCount: experiences.length,
+            experienceSeparators,
+            contactBottomGap,
+            contactLayoutHeight,
             experiencePositions,
             experienceOverlapPx,
             contactPortraitObjectFit: contactPortrait
@@ -189,7 +202,16 @@ try {
         if (report.resultsCenters !== 6 || report.metricsCount !== 24) issues.push("results")
         if (report.experienceCount !== 6 || report.projectCounts.some((n) => n !== 5)) issues.push("projects")
         if (report.experiencePositions.some((position) => position === "sticky" || position === "fixed") || report.experienceOverlapPx > 2) issues.push("experience_stacking")
+        if (report.experienceSeparators.some((entry) => entry.width < 2.5)) issues.push("experience_separators")
+        if (palette === "clean" && report.experienceSeparators.some((entry) => {
+          const channels = entry.color.match(/\d+/g)?.map(Number) ?? []
+          return channels.length < 3 || channels[0] !== channels[1] || channels[1] !== channels[2]
+        })) issues.push("clean_separator_not_grayscale")
         if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
+        if (device === "desktop" && (
+          (report.contactLayoutHeight ?? 9999) > 820 ||
+          (report.contactBottomGap ?? 9999) > 4
+        )) issues.push("contact_bottom_alignment")
         if (report.testimonialPortraitWidths.some((width) => width < 64)) issues.push("testimonial_photo_size")
         if (report.testimonialQuoteFontSizes.some((size) => size < 15.5)) issues.push("testimonial_font_size")
         if (report.testimonialTopGaps.some((gap) => gap < 10)) issues.push("testimonial_text_spacing")
@@ -216,7 +238,7 @@ try {
         if (device === "desktop" && report.metricsColumns !== 4) issues.push("desktop_metric_grid")
         if (errors.length) issues.push("page_errors")
 
-        for (const slug of ["perfil", "resultados", "invest-rs", "depoimentos"]) {
+        for (const slug of ["perfil", "resultados", "invest-rs", "depoimentos", "contato"]) {
           const section = await page.$('[data-pdf-section="' + slug + '"]')
           if (section) {
             await section.screenshot({
