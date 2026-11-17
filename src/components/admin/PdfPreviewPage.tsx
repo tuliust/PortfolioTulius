@@ -91,8 +91,8 @@ function PublishedPdfPreview() {
             {config.device === "desktop" ? (
               <>
                 No Chrome, escolha <strong>Destino: Salvar como PDF</strong>. Não use
-                <strong> Microsoft Print to PDF</strong> (Windows). Se o diálogo não abrir,
-                utilize o botão ao lado.
+                <strong> Microsoft Print to PDF</strong> (Windows). Se o diálogo não abrir, utilize
+                o botão ao lado.
               </>
             ) : (
               "Prévia pronta para salvar. Se o diálogo não abrir, use o botão ao lado."
