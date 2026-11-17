@@ -478,3 +478,9 @@ Intervenção exclusiva de PDF: `pdf-print-layout.ts` deixa de aplicar páginas 
 
 **Aceite produtivo pendente:** testes CI e homologação Chrome gráfico com dados reais precisam de verificação por SHA. Não foram alterados CMS, banco, Auth, RLS, Storage, mídias nem estilos da página pública.
 **Ajuste da seleção parcial na QA:** o teste de links do Perfil deve considerar todas as folhas de sua seção até o início da seção selecionada seguinte, e não presumir a presença de Sobre. O primeiro ensaio com páginas estáveis passou nas quatro variantes integrais e na seleção Desktop, mas falhou na seleção Mobile parcial por essa assertiva; o run anterior permanece `FAILURE` e nova execução deve comprovar o resultado.
+
+## Diagnóstico do PDF Desktop emitido por driver Windows — 17/11/2026
+
+O documento do proprietário tem 19 folhas A4 em retrato, produtor **Microsoft: Print To PDF**, conteúdo girado e todas as informações de texto convertidas em imagens; não existem hyperlinks PDF. As folhas 12, 14 e 16 estão completamente brancas, enquanto 8 e 10 apresentam fragmentos finais de Trajetória. O PDF é **reprovado**. Como o arquivo foi produzido por driver externo ao fluxo de PDF nativo ensaiado no Chromium, não atribuir suas falhas ao CSS sem reproduzi-las usando **Salvar como PDF** do Chrome.
+
+Mitigação: mensagens direcionadas ao Desktop em `PdfExportPanel.tsx` e `PdfPreviewPage.tsx` exigem o destino correto e distinguem o driver virtual do Windows. Sem mudanças de layout, fontes, mídia, Auth, RLS, Storage ou CMS. A nova exportação gráfica pelo Chrome com conteúdo real continua obrigatória para aceite; CI, publicação e resultado final devem ser registrados por SHA.

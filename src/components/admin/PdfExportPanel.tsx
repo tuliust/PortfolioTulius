@@ -270,13 +270,21 @@ export default function PdfExportPanel({
             {printError}
           </p>
         )}
+        {device === "desktop" && (
+          <p className="pdf-export-help" role="note">
+            <strong>Importante para o PDF Desktop:</strong> no diálogo do Chrome, escolha o destino
+            <strong> Salvar como PDF</strong>, disponibilizado pelo próprio navegador.
+            <strong> Não use Microsoft Print to PDF</strong>, o driver virtual do Windows: ele pode
+            impor A4 em retrato, girar a página e converter texto em imagem.
+          </p>
+        )}
         <p className="pdf-export-help">
           Clique em <strong>Gerar PDF</strong> para abrir a impressão em uma nova aba. Escolha
-          <strong> Salvar como PDF</strong> como destino (não a impressora física) no diálogo do
-          navegador. Cada seção começa em uma nova folha e conteúdos extensos podem continuar em
-          folhas adicionais. Textos e links permanecem pesquisáveis e clicáveis. Ative gráficos de
-          fundo para preservar as cores, selecione <strong>Margens: Nenhuma</strong> e desative
-          cabeçalhos e rodapés de impressão.
+          <strong> Salvar como PDF</strong> como destino do Chrome, não uma impressora física ou
+          virtual do sistema. Cada seção começa em uma nova folha e conteúdos extensos podem
+          continuar em folhas adicionais. Os textos e links devem permanecer pesquisáveis e
+          clicáveis. Ative <strong>Gráficos de segundo plano</strong> para preservar as cores,
+          selecione <strong>Margens: Nenhuma</strong> e desative cabeçalhos e rodapés.
         </p>
       </section>
     </div>

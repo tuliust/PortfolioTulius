@@ -146,3 +146,10 @@ Em **Exportar PDF**, Desktop utiliza folhas em paisagem e Mobile em retrato. Cad
 
 A homologação com dados reais do CMS ainda é necessária; nenhuma mídia ou dado editorial é modificado pela exportação.
 A ajuda da tela administrativa também informa que uma seção pode continuar em folhas subsequentes, sem prometer uma folha de altura variável por seção.
+
+
+## Exportação Desktop — destino correto do PDF (17/11/2026)
+
+Para **Desktop**, o painel e a aba de impressão distinguem a opção interna **Destino: Salvar como PDF** do Chrome do driver virtual Windows **Microsoft Print to PDF**. O driver Windows não é equivalente ao mecanismo Chromium empregado na QA física, que respeita o tamanho de folha CSS.
+
+Selecionar no Chrome **Salvar como PDF** (não Microsoft Print to PDF), **Margens: Nenhuma**, **Gráficos de segundo plano** ligados e cabeçalhos/rodapés desligados. Espera-se folha Desktop em paisagem, textos pesquisáveis e links; seções extensas podem continuar em folhas seguintes. O site não consegue escolher o destino do diálogo de impressão programaticamente. Nenhuma mídia ou dado CMS é alterado.
