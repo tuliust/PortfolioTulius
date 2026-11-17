@@ -1,5 +1,5 @@
 # Biblioteca de mídias e Storage
-**Status:** preservação; limpeza não autorizada por este guia · **Revisão:** 11/11/2026.
+**Status:** preservação; limpeza não autorizada por este guia · **Revisão:** 17/11/2026.
 
 | Origem | Quantidade | Acesso |
 |---|---:|---|
@@ -22,3 +22,17 @@ O favicon TT fornecido pelo proprietário é empacotado como `public/favicon.png
 ## Fotografia da seção “Olá!” — apresentação desktop em 12/11/2026
 
 A intervenção **não realizou upload, substituição, exclusão, recorte, mudança de alt ou mudança de metadados da mídia**. A referência `aboutDesktopImage` publicada permanece a original; `aboutDesktopFraming` não foi persistido/alterado. O alinhamento na borda inferior decorre exclusivamente de `#sobre .about-portrait.has-custom-image img` em [`src/index.css`](../../src/index.css): deslocamento `top: clamp(2rem, 5.8dvh, 3.5rem)` dentro do contêiner que aplica `overflow:hidden`. Portanto, a caixa da imagem pode exceder a borda do quadro, mas seu desenho visível deve permanecer recortado na seção. O [smoke desktop](../05-operacao/TESTES_E_HOMOLOGACAO.md) conferiu a máscara, sem comprovar pixels transparentes em todos os aparelhos/zoom. O mobile mantém a imagem e enquadramento próprios; nenhuma operação no Storage deve ser executada para repetir esse ajuste.
+
+## Dimensões de preparo e apresentação pública (17/11/2026)
+
+Estas são **dimensões recomendadas de arquivo**, não garantias de dimensões existentes no Storage nem instruções para forçar pixels CSS. A transparência depende do arquivo original. Manter as mídias publicadas e seus alts, URLs e pontos focais.
+
+| Uso | Desktop recomendado | Mobile recomendado | Formato / regra visual |
+| --- | --- | --- | --- |
+| Galerias de projetos, seis experiências | 1600 × 1600 px | Mesmo arquivo | WebP/PNG; `contain` mostra todo o conteúdo, podendo deixar margens |
+| Perfil — abertura “+15 anos” | 1200 × 1600 px | Mesmo conteúdo, versão otimizada 900 × 1200 px | WebP/PNG; composição desktop aprovada e `contain` mobile |
+| “Olá!” — foto com tablet | 1200 × 1600 px | 900 × 1200 px | PNG ou WebP com transparência; `contain`, máscara/deslocamento desktop existentes |
+| Contato — foto com tablet | 1200 × 1600 px | Mesmo arquivo | PNG ou WebP com transparência; alinhamento desktop aprovado e `contain` mobile |
+| Logotipos das empresas | 512 × 512 px se raster | Mesmo arquivo | Preferir SVG; `contain` preserva proporção |
+
+A mudança de código afeta **somente** `.experience-media-frame > img` (`cover` → `contain`), sem criar novas cópias, processar uploads ou modificar dados. Consulta somente leitura ao Supabase em 17/11/2026 encontrou **19 slides** publicados nas seis experiências: todos com zoom **1×** e sem ponto focal deslocado. O CMS continua permitindo enquadramento/zoom explícito, que pode produzir corte intencional. O quadro responsivo e as demais fotografias são preservados.

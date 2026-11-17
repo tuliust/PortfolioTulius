@@ -505,14 +505,17 @@ try {
         const open = [...(list?.querySelectorAll('.experience-project-choice[aria-expanded="true"]') ?? [])]
         const selected = open[0]?.closest(".experience-project")
         const gallery = selected?.querySelector(".experience-gallery")
+        const galleryImage = gallery?.querySelector(".experience-media-frame img")
+        const imageFit = galleryImage ? getComputedStyle(galleryImage).objectFit : null
         const title = selected?.querySelector(".experience-project-heading")?.textContent?.trim()
         const galleryTitle = gallery?.querySelector(".experience-gallery-footer h3")?.textContent?.trim()
-        return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery),
+        return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery), imageFit,
           noPlaceholder: !list?.textContent?.includes("Fotografia do projeto pendente") }
       })
       console.log("P3_EXPERIENCE_MOBILE_PROJECT " + JSON.stringify(project))
       if (project.openCount !== 1 || !project.gallery || project.galleryTitle !== project.title ||
-          !project.noPlaceholder) throw new Error("Project/gallery linkage failure")
+          !project.noPlaceholder || project.imageFit !== "contain")
+        throw new Error("Project/gallery linkage or image framing failure")
       await page.waitForFunction(() =>
         !document.querySelector("#invest-rs-a .experience-view-trajectory")?.disabled,
         { timeout: 15000 },
@@ -860,6 +863,9 @@ try {
         return !!bar && !!panel && !!header && Math.abs(bar.top - header.bottom) <= 3 && panel.top <= 3
       }, { timeout: 10000 })
       stage = "slide controls"
+      const desktopImageFit = await page.$eval("#prefeitura-sp .desktop-panel .experience-media-frame img",
+        (image) => getComputedStyle(image).objectFit)
+      if (desktopImageFit !== "contain") throw new Error("Desktop gallery must preserve full artwork")
       const before = await page.evaluate(() => {
         const btn = document.querySelector("#prefeitura-sp .desktop-panel .experience-gallery-controls button:last-child")
         const counter = document.querySelector("#prefeitura-sp .desktop-panel .experience-gallery-controls > span")
