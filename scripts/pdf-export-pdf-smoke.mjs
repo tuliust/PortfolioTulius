@@ -183,6 +183,10 @@ try {
         previous = pageIndex
       }
       if (device === "desktop") {
+        if (sections.includes("perfil") &&
+          !physicalTexts[sectionStarts.perfil].includes("IDIOMAS")) {
+          throw new Error("Desktop Hero lost the Idiomas highlight onto another sheet")
+        }
         for (const [index, slug] of sections.entries()) {
           if (sectionStarts[slug] !== index) {
             throw new Error("Wrong Desktop section page for " + slug)

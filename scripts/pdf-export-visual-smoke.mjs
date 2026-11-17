@@ -104,6 +104,12 @@ try {
                 : Math.max(maximum, experienceBounds[index - 1].bottom - rect.top),
             0,
           )
+          const aboutPortrait = document.querySelector("#sobre .about-portrait img")
+          const aboutLayout = document.querySelector("#sobre .about-desktop")
+          const aboutBottomGap = aboutPortrait && aboutLayout
+            ? aboutLayout.getBoundingClientRect().bottom -
+              aboutPortrait.getBoundingClientRect().bottom
+            : null
           const contactPortrait = document.querySelector("#contato .contact-portrait img")
           const contactLayout = document.querySelector("#contato .contact-desktop")
           const contactBottomGap = contactPortrait && contactLayout
@@ -161,6 +167,7 @@ try {
             metricsColumns,
             experienceCount: experiences.length,
             experienceSeparators,
+            aboutBottomGap,
             contactBottomGap,
             contactLayoutHeight,
             contactLayoutOverflow,
@@ -219,10 +226,13 @@ try {
         }
         if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
         if (device === "desktop" && (
+          Math.abs(report.aboutBottomGap ?? 9999) > 4
+        )) issues.push("about_photo_bottom_alignment")
+        if (device === "desktop" && (
           (report.contactLayoutHeight ?? 9999) > 820 ||
           report.contactLayoutOverflow !== "visible" ||
-          (report.contactBottomGap ?? -9999) < 25 ||
-          (report.contactBottomGap ?? 9999) > 90
+          (report.contactBottomGap ?? 9999) > -20 ||
+          (report.contactBottomGap ?? -9999) < -75
         )) issues.push("contact_bottom_alignment")
         if (report.testimonialPortraitWidths.some((width) => width < 64)) issues.push("testimonial_photo_size")
         if (report.testimonialQuoteFontSizes.some((size) => size < 15.5)) issues.push("testimonial_font_size")

@@ -158,3 +158,8 @@ Selecionar no Chrome **Salvar como PDF** (não Microsoft Print to PDF), **Margen
 Na opção **Desktop** do Exportar PDF, cada seção começa em uma nova folha com altura calculada de acordo com seu conteúdo publicado. Assim, Resultados e as seis experiências podem ocupar uma única folha mais alta, enquanto Formação, Ferramentas e Depoimentos deixam de preencher artificialmente 900 px. As fotografias de Sobre e Contato recebem alinhamentos exclusivos para essa exportação. As bordas laranja entre as empresas foram removidas somente do PDF Desktop.
 
 O modo **Mobile não mudou** e continua com folhas de tamanho fixo e eventuais continuações. Selecione sempre **Destino: Salvar como PDF** no Chrome, margens nenhuma, gráficos de segundo plano habilitados e cabeçalhos/rodapés desativados. A geração não altera dados ou mídias do CMS.
+## Correções de acabamento na impressão Desktop — 17/11/2026
+
+O PDF Desktop mantém alturas individuais por seção. A folha **Perfil** conserva os quatro destaques, incluindo **Idiomas**, na mesma página; as fotografias centrais de **Sobre** e **Contato** são alinhadas à base de suas páginas; as folhas de **Invest RS, Prefeitura de São Paulo, Vale, TV Globo/SporTV e Grupo InPress** são compactadas depois do último parágrafo. **Ferramentas** recebe redução moderada da sobra inferior. A seção **CDI**, a versão Mobile e a exibição pública não recebem esses ajustes.
+
+Permanece obrigatório escolher **Salvar como PDF** do Chrome, margens nenhuma, gráficos de segundo plano habilitados e cabeçalhos/rodapés desativados. O destino Microsoft Print to PDF não é equivalente. A prova de conteúdo não cortado depende da QA física e do arquivo produtivo regenerado.

@@ -69,11 +69,33 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   )
   const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
   const slug = section.dataset.pdfSection ?? ""
-  // Print CSS grids can fragment at intrinsic item boundaries, so add
-  // space for whole editorial blocks without imposing a uniform sheet size.
+  // The published Hero has a fourth highlight ("Idiomas") that escaped into
+  // a second physical sheet when its pre-print height was measured below 900px.
+  if (slug === "perfil") {
+    return { slug, heightPx: Math.ceil(Math.max(900, actual + 12)) }
+  }
+
+  // Five long company sheets had 100px+ of unnecessary bottom whitespace.
+  // Use the lower edge of the three real text columns rather than the grid
+  // wrapper, whose 100svh minimum and padding overstate the visible content.
+  if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress"].includes(slug)) {
+    const columns = Array.from(
+      section.querySelectorAll<HTMLElement>(".pdf-experience-layout > *"),
+    )
+    if (columns.length === 3) {
+      const textBottom = Math.max(
+        ...columns.map((column) => column.getBoundingClientRect().bottom - box.top),
+      )
+      return { slug, heightPx: Math.ceil(Math.max(400, textBottom + 72)) }
+    }
+  }
+
+  // The photos of Sobre and Contato must reach the bottom of their physical
+  // pages. Other groups retain safety reserves against print-time grid reflow.
   let reserve = 12
-  if (slug === "formacao") reserve = 240
-  else if (slug === "ferramentas") reserve = 280
+  if (slug === "sobre") reserve = 0
+  else if (slug === "formacao") reserve = 240
+  else if (slug === "ferramentas") reserve = 210
   else if (slug === "depoimentos") reserve = 2
   else if (slug === "resultados" || section.classList.contains("pdf-experience-section")) {
     reserve = 32

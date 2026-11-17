@@ -504,3 +504,11 @@ A mudança em `src/lib/pdf-print-layout.ts` introduz o ramo exclusivo Desktop de
 - **Revisão óptica do artefato CI:** Formação e Ferramentas deixam de transbordar para folhas adicionais; Depoimentos conserva os três depoimentos; Sobre/Contato exibem composição mais curta e fotos deslocadas; folhas têm largura Desktop constante e alturas diferentes. Algumas folhas de Trajetórias longas são fisicamente mais altas que largas — comportamento **intencional** e aceito pelo novo requisito.
 
 **Aceite produtivo:** a QA utiliza conteúdo e imagens sintéticos; **não** substitui a geração autenticada no computador do proprietário com CMS e mídias reais. O modo Mobile e o site público não foram alterados. Sem operações de escrita no Supabase, Storage, Auth/RLS ou migrations.
+
+## Segunda rodada de acabamento Desktop — PDF Chrome/Skia 14 folhas (17/11/2026)
+
+Arquivo físico do proprietário inspecionado: 14 páginas, produtor Chrome/Skia, texto nativo e hyperlinks. A folha 2 contém apenas **Idiomas** (continuação indevida de Perfil); as fotografias de Sobre (folha 3) e Contato (folha 14) não chegam à margem inferior; as experiências nas folhas 6–10 e Ferramentas apresentam sobra branca inferior. O documento é evidência de **FAILURE produtivo** antes da intervenção.
+
+Intervenção isolada no exportador Desktop: `measureDesktopSection` assegura altura mínima de 900 px para Perfil; Sobre usa fotografia de 750 px sem translate negativo e sem reserva extra; cinco experiências são medidas pela base da última das três colunas +72 px, preservando todos os textos; Ferramentas mantém reserva de impressão de 210 px; Contato desloca a silhueta para baixo em +3rem. A QA física agora exige a palavra **IDIOMAS** na folha Perfil; a QA visual mede a fotografia de Sobre junto à base e a posição inferior do retrato de Contato. O modo Mobile não muda.
+
+**Critério de aceite:** validar por SHA a QA visual e a QA física das seis variantes; depois regenerar o PDF produtivo Desktop para comprovar a inexistência de fragmentos, truncamentos e espaços excessivos. Nenhuma mutação em dados, RLS, Auth, Storage, migrations ou mídias. Não considerar a alteração aceita somente porque Vercel está READY.

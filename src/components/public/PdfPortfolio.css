@@ -428,12 +428,12 @@
 }
 
 .pdf-portfolio--desktop #sobre .about-portrait {
-  height: 700px !important;
+  height: 750px !important;
 }
 
 .pdf-portfolio--desktop #sobre .about-portrait.has-custom-image img {
   top: 0 !important;
-  translate: 0 -2.5rem !important;
+  translate: 0 0 !important;
 }
 
 /* Desktop PDF: use two balanced columns for all six Results groups. Keeping
@@ -467,7 +467,8 @@
 }
 
 .pdf-portfolio--desktop #contato .contact-portrait img {
-  translate: 0 -3.25rem !important;
+  /* Transparent portrait bottom must land on the physical sheet edge. */
+  translate: 0 3rem !important;
 }
 
 /* Print-only helper in the top-level tab; never appear on PDF pages. */
