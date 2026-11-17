@@ -273,10 +273,10 @@ export default function PdfExportPanel({
         <p className="pdf-export-help">
           Clique em <strong>Gerar PDF</strong> para abrir a impressão em uma nova aba. Escolha
           <strong> Salvar como PDF</strong> como destino (não a impressora física) no diálogo do
-          navegador. Os textos e links permanecem pesquisáveis e clicáveis; cada seção selecionada
-          ocupa uma página de altura adaptada ao conteúdo. Ative gráficos de fundo para preservar as
-          cores, selecione <strong>Margens: Nenhuma</strong> e desative cabeçalhos e rodapés de
-          impressão.
+          navegador. Cada seção começa em uma nova folha e conteúdos extensos podem continuar em
+          folhas adicionais. Textos e links permanecem pesquisáveis e clicáveis. Ative gráficos de
+          fundo para preservar as cores, selecione <strong>Margens: Nenhuma</strong> e desative
+          cabeçalhos e rodapés de impressão.
         </p>
       </section>
     </div>

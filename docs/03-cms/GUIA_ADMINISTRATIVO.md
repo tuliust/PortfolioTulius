@@ -145,3 +145,4 @@ Na aba protegida de impressão, o evento `beforeprint` deixa de medir novamente 
 Em **Exportar PDF**, Desktop utiliza folhas em paisagem e Mobile em retrato. Cada seção selecionada inicia em nova folha, mas Resultados, Trajetórias, projetos e Depoimentos podem continuar em folhas adicionais; **13 seções não significam necessariamente 13 folhas**. Preservar fotos, texto selecionável e hyperlinks. No Chrome, escolher **Salvar como PDF**, margens nenhuma, gráficos de segundo plano marcados, cabeçalhos/rodapés desativados.
 
 A homologação com dados reais do CMS ainda é necessária; nenhuma mídia ou dado editorial é modificado pela exportação.
+A ajuda da tela administrativa também informa que uma seção pode continuar em folhas subsequentes, sem prometer uma folha de altura variável por seção.

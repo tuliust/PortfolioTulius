@@ -1,7 +1,7 @@
 /*
  * Isolated PDF-only styling. No route or public-side import.
  * The capture engine must use a viewport matching data-pdf-device.
- * Each logical section will receive one physical PDF page from that engine.
+ * Each section begins on a physical PDF sheet; long content may continue.
  */
 .pdf-portfolio {
   width: 100%;
