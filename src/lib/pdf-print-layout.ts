@@ -116,17 +116,29 @@ export function preparePdfPrintLayout(
     throw new Error("Há uma imagem publicada que não foi carregada.")
   }
 
-  const pages = nodes.map((section) => ({
-    slug: section.dataset.pdfSection ?? "",
-    heightPx: Math.ceil(
-      Math.max(
-        viewport.height,
-        section.scrollHeight,
-        section.clientHeight,
-        section.getBoundingClientRect().height,
-      ) + 8,
-    ),
-  }))
+  const pages = nodes.map((section) => {
+    const bounds = section.getBoundingClientRect()
+    // Section.scrollHeight can stay at the mobile viewport minimum even when
+    // descendant text extends past the section before print reflow.
+    const visibleContentBottom = Array.from(section.querySelectorAll<HTMLElement>("*")).reduce(
+      (bottom, child) => {
+        if (!child.getClientRects().length) return bottom
+        return Math.max(bottom, child.getBoundingClientRect().bottom)
+      },
+      bounds.bottom,
+    )
+    const measuredHeight = Math.max(
+      viewport.height,
+      section.scrollHeight,
+      section.clientHeight,
+      bounds.height,
+      visibleContentBottom - bounds.top,
+    )
+    // Print fonts and svh-based blocks can reflow when Chromium assigns a
+    // variable-height named page. The reserve prevents a trailing fragment.
+    const reserve = device === "mobile" ? 96 : 8
+    return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(measuredHeight + reserve) }
+  })
   const css = pdfPrintCss(device, pages)
   doc.getElementById(PDF_PRINT_STYLE_ID)?.remove()
   const style = doc.createElement("style")
