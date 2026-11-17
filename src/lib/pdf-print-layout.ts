@@ -136,7 +136,15 @@ export function preparePdfPrintLayout(
     )
     // Print fonts and svh-based blocks can reflow when Chromium assigns a
     // variable-height named page. The reserve prevents a trailing fragment.
-    const reserve = device === "mobile" ? 96 : 8
+    // Ferramentas has two mobile editorial panels with six icon/text clusters.
+    // The printed fragments may expand beyond their screen bounds; keep the
+    // final item on the same physical page as the section heading.
+    const reserve =
+      device === "mobile"
+        ? section.dataset.pdfSection === "ferramentas"
+          ? 320
+          : 96
+        : 8
     return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(measuredHeight + reserve) }
   })
   const css = pdfPrintCss(device, pages)
