@@ -239,6 +239,36 @@ try {
       }
     }
   }
+  // Failure-mode regression: a missing published portrait must not blank
+  // the mobile document or silently enable an incomplete PDF.
+  const brokenPage = await browser.newPage()
+  try {
+    await brokenPage.setViewport({ ...viewports.mobile, deviceScaleFactor: 1 })
+    await brokenPage.goto(
+      base + "/pdf-export-qa.html?device=mobile&palette=original&brokenImage=true",
+      { waitUntil: "networkidle0", timeout: 35000 },
+    )
+    await brokenPage.waitForSelector("[data-pdf-readiness-error]", { timeout: 25000 })
+    const broken = await brokenPage.evaluate(() => ({
+      count: document.querySelectorAll(".pdf-portfolio [data-pdf-section]").length,
+      visible: Boolean(document.querySelector("#depoimentos .testimonial-card")),
+      ready: document.documentElement.dataset.pdfExportReady === "true",
+      message: document.querySelector("[data-pdf-readiness-error]")?.textContent ?? "",
+    }))
+    const issues = []
+    if (broken.count !== 13 || !broken.visible) issues.push("preview_disappeared")
+    if (broken.ready) issues.push("incomplete_pdf_enabled")
+    if (!broken.message.includes("depoimentos")) issues.push("missing_section_diagnostic")
+    records.push({ device: "mobile", palette: "original", simulatedBrokenImage: true, report: broken, issues })
+    if (issues.length) failures++
+    console.log("PDF_MOBILE_BROKEN_IMAGE_QA " + JSON.stringify({ ...broken, issues }))
+  } catch (error) {
+    failures++
+    records.push({ simulatedBrokenImage: true, error: String(error) })
+    console.error("PDF_MOBILE_BROKEN_IMAGE_QA_ERROR " + String(error))
+  } finally {
+    await brokenPage.close()
+  }
 } finally {
   await browser.close()
 }

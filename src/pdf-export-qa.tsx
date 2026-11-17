@@ -16,6 +16,20 @@ import "./index.css"
 const query = new URLSearchParams(location.search)
 const device: PdfDevice = query.get("device") === "mobile" ? "mobile" : "desktop"
 const colorMode: PdfColorMode = query.get("palette") === "clean" ? "clean" : "original"
+const simulateBrokenImage = query.get("brokenImage") === "true"
+const fixtureSections = simulateBrokenImage
+  ? sections.map((section) =>
+      section.slug === "depoimentos"
+        ? {
+            ...section,
+            panelA: section.panelA.map((item, index) =>
+              index === 0 ? { ...item, image: "/media/pdf-qa-intentionally-missing.webp" } : item,
+            ),
+          }
+        : section,
+    )
+  : sections
+
 const careerDescriptions = Object.fromEntries(
   EXPERIENCE_SLUGS.map((slug) => [
     slug,
@@ -41,11 +55,11 @@ function PdfVisualFixture() {
   return (
     <PdfPrintReady
       device={device}
-      includedSlugs={selectPublishedPdfSections(sections).map((section) => section.slug)}
+      includedSlugs={selectPublishedPdfSections(fixtureSections).map((section) => section.slug)}
       prepareOnBeforePrint={false}
     >
       <PdfPortfolio
-        sections={sections}
+        sections={fixtureSections}
         tokens={defaultTokens}
         careerDescriptions={careerDescriptions}
         device={device}
