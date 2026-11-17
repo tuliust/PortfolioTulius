@@ -65,7 +65,7 @@ function Badge360({ config }: { config?: HeroVisualConfig }) {
 // Exactly this published CMS image is oversized for the mobile About thumbnail.
 // Reserve its original intrinsic ratio but start downloading it only near view.
 // Other images and any future CMS replacement preserve their normal loading.
-const APPROVED_ABOUT_TABLET =
+export const APPROVED_ABOUT_TABLET =
   "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/a46a4091-bce1-4345-a17f-7d7947a8e903-tulius_tablet.png"
 
 function DeferredAboutTablet({ alt, style }: { alt: string; style?: React.CSSProperties }) {
@@ -1005,7 +1005,7 @@ function toDvh(value?: number) {
  * desktop asset key so the original mobile thumbnail is not changed.
  */
 
-function AboutMobile({ section }: { section: PortfolioSection }) {
+function AboutMobile({ section, pdfExport = false }: { section: PortfolioSection; pdfExport?: boolean }) {
   const photo = section.panelA[0]
   const imageSource = photo?.image || photo?.aboutDesktopImage
   const imageAlt = photo?.alt || photo?.aboutDesktopAlt || "Tulius Tsangaropulos com um tablet"
@@ -1024,14 +1024,14 @@ function AboutMobile({ section }: { section: PortfolioSection }) {
         </header>
         {imageSource && (
           <div className="about-mobile-photo">
-            {imageSource === APPROVED_ABOUT_TABLET ? (
+            {imageSource === APPROVED_ABOUT_TABLET && !pdfExport ? (
               <DeferredAboutTablet alt={imageAlt} style={imageFramingStyle(photo?.mediaFraming)} />
             ) : (
               <img
                 src={imageSource}
                 alt={imageAlt}
                 style={imageFramingStyle(photo?.mediaFraming)}
-                loading="lazy"
+                loading={pdfExport ? "eager" : "lazy"}
                 decoding="async"
               />
             )}
@@ -1482,7 +1482,7 @@ export function Section({
       {isMobile && (
         <div className="mobile-panels">
           {section.slug === "sobre" ? (
-            <AboutMobile section={section} />
+            <AboutMobile section={section} pdfExport={pdfExport} />
           ) : section.slug === "resultados" ? (
             <ResultsMobile
               section={section}

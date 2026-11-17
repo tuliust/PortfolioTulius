@@ -8,6 +8,7 @@ import { createRoot } from "react-dom/client"
 import { sections, defaultTokens } from "./content/fallback"
 import { EXPERIENCE_SLUGS } from "./components/public/ExperienceStack"
 import { PdfPortfolio } from "./components/public/PdfPortfolio"
+import { APPROVED_ABOUT_TABLET } from "./components/public/PublicSite"
 import { PdfPrintReady } from "./components/public/PdfPrintReady"
 import { selectPublishedPdfSections } from "./lib/pdf-export-sections"
 import type { PdfDevice, PdfColorMode } from "./lib/pdf-export-options"
@@ -17,10 +18,18 @@ const query = new URLSearchParams(location.search)
 const device: PdfDevice = query.get("device") === "mobile" ? "mobile" : "desktop"
 const colorMode: PdfColorMode = query.get("palette") === "clean" ? "clean" : "original"
 const simulateBrokenImage = query.get("brokenImage") === "true"
+const simulateDeferredAbout = query.get("deferredAbout") === "true"
 const requestedSlugs = query.get("sections")?.split(",").filter(Boolean)
-const fixtureSections = simulateBrokenImage
+const fixtureSections = simulateBrokenImage || simulateDeferredAbout
   ? sections.map((section) =>
-      section.slug === "depoimentos"
+      section.slug === "sobre" && simulateDeferredAbout
+        ? {
+            ...section,
+            panelA: section.panelA.map((item, index) =>
+              index === 0 ? { ...item, image: APPROVED_ABOUT_TABLET } : item,
+            ),
+          }
+        : section.slug === "depoimentos" && simulateBrokenImage
         ? {
             ...section,
             panelA: section.panelA.map((item, index) =>

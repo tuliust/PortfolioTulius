@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react"
-import { preparePdfPrintLayout } from "../../lib/pdf-print-layout"
+import { PDF_PRINT_STYLE_ID, preparePdfPrintLayout } from "../../lib/pdf-print-layout"
 import type { PdfDevice } from "../../lib/pdf-export-options"
 
 async function waitForPublishedImages(): Promise<void> {
@@ -96,6 +96,9 @@ export function PdfPrintReady({
 
     const beforePrint = () => {
       try {
+        // Chrome may fire beforeprint while the @page rules are already active.
+        // Do not remeasure the page geometry once prepared for printing.
+        if (document.getElementById(PDF_PRINT_STYLE_ID)) return
         preparePdfPrintLayout(document, device, includedSlugs)
       } catch (reason) {
         if (!active) return

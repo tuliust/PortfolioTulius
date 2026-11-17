@@ -133,3 +133,9 @@ A prévia do PDF mostra as seis experiências em sequência, sem cartões sobrep
 ## Correções da impressão e diagramação do PDF — 17/11/2026
 
 **Gerar PDF** agora abre uma aba de impressão protegida com o mesmo conteúdo publicado e seleção da prévia, em vez de mandar imprimir o iframe reduzido da tela administrativa. A aba tenta abrir o diálogo automaticamente após carregar fontes, imagens e Trajetórias; se o navegador bloquear a abertura do diálogo, há o botão **Imprimir / Salvar PDF** na própria aba. Na janela de impressão é necessário escolher **Salvar como PDF** como destino, não a impressora HP/física. O site não consegue selecionar a impressora do usuário programaticamente. A orientação pretendida é **paisagem no Desktop** e **retrato no Mobile**, preservando uma página por seção e a seleção parcial. Nenhum dado do CMS muda.
+
+## PDF — carregamento da imagem Sobre e impressão no Chrome (17/11/2026)
+
+A exportação Mobile de Sobre solicita a imagem publicada imediatamente com `loading="eager"` e `src` presente desde a primeira renderização. No site público, o `DeferredAboutTablet` continua esperando interseção da viewport e conserva sua otimização de download. O arquivo referenciado está cadastrado no CMS e existe no bucket público. A exportação não altera, substitui ou oculta essa mídia.
+
+Na aba protegida de impressão, o evento `beforeprint` deixa de medir novamente o documento caso as regras `@page` já tenham sido preparadas: isso reduz o risco de geometria divergente no diálogo gráfico. Para salvar, escolha **Destino: Salvar como PDF**, **Margens: Nenhuma**, marque **Gráficos de segundo plano** e desative cabeçalhos e rodapés. O aplicativo não altera as configurações do Chrome.

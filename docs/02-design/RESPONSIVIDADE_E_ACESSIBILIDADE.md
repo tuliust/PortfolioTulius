@@ -191,3 +191,7 @@ A variante Desktop da exportação reduz a extensão vertical de Contato, diminu
 **Revisão de formato do PDF (17/11/2026):** espaçamentos entre grupos de Resultados são compactados no Desktop para manter orientação paisagem sem ocultar indicadores. A seção Contato no Desktop admite página física de altura menor que a referência de tela de 900 px, mantendo a fotografia encostada à base da composição. Os modos Mobile mantêm retrato e não recebem esses ajustes de Resultados e Contato Desktop.
 
 **Base efetiva de Contato no PDF Desktop, 17/11/2026:** o contêiner da fotografia da exportação não usa mais recorte `overflow:clip`, permitindo que os 52 px de ajuste vertical da imagem transparente permaneçam visíveis até a extremidade inferior. A reserva adicional de 8 px foi removida apenas da página física Contato Desktop. O modo Mobile, o conteúdo e a imagem do site público não mudam.
+
+## PDF — imagem diferida em Sobre e estabilidade da impressão (17/11/2026)
+
+O renderer público de Sobre Mobile usa `DeferredAboutTablet`, que omite `src` até o IntersectionObserver aproximar a imagem da viewport. A prévia PDF precisa validar todas as imagens antes de liberar a impressão, mesmo as que estejam fora da janela visível. Agora, somente com `pdfExport=true`, a imagem é renderizada com `src` direto e `loading="eager"`. A otimização pública permanece intacta. O evento `beforeprint` evita refazer o cálculo das páginas se o manifesto de impressão já estiver instalado.

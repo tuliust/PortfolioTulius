@@ -86,6 +86,15 @@ try {
         throw new Error("Manifest order mismatch")
       }
 
+      const beforePrintIsStable = await page.evaluate(() => {
+        const style = document.getElementById("portfolio-pdf-print-pages")
+        window.dispatchEvent(new Event("beforeprint"))
+        return Boolean(style) && document.getElementById("portfolio-pdf-print-pages") === style
+      })
+      if (!beforePrintIsStable) {
+        throw new Error("beforeprint replaced the prepared page geometry")
+      }
+
       const file = path.join(output, label + ".pdf")
       await page.pdf({
         path: file,
