@@ -128,10 +128,16 @@ try {
         throw new Error("Unable to inspect individual physical page sizes")
       }
       for (const [index, pageSize] of paperSizes.entries()) {
-        const isLandscape = pageSize.widthPt > pageSize.heightPt
-        if ((device === "desktop") !== isLandscape) {
+        // Desktop has constant 1440px width, but Trajetórias can be
+        // legitimately taller than the width after allowing variable heights.
+        if (device === "desktop" && Math.abs(pageSize.widthPt - 1080) > 1) {
           throw new Error(
-            "Wrong orientation on physical page " + (index + 1) + ": " + JSON.stringify(pageSize),
+            "Wrong Desktop paper width on page " + (index + 1) + ": " + JSON.stringify(pageSize),
+          )
+        }
+        if (device === "mobile" && pageSize.widthPt >= pageSize.heightPt) {
+          throw new Error(
+            "Wrong Mobile portrait page " + (index + 1) + ": " + JSON.stringify(pageSize),
           )
         }
       }

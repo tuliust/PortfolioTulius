@@ -69,13 +69,15 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   )
   const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
   const slug = section.dataset.pdfSection ?? ""
-  const reserve = ["formacao", "ferramentas", "depoimentos"].includes(slug)
-    ? 2
-    : slug === "resultados" || section.classList.contains("pdf-experience-section")
-      ? 32
-      : slug === "contato"
-        ? 8
-        : 12
+  // Print CSS grids can fragment at intrinsic item boundaries, so add
+  // space for whole editorial blocks without imposing a uniform sheet size.
+  let reserve = 12
+  if (slug === "formacao") reserve = 240
+  else if (slug === "ferramentas") reserve = 280
+  else if (slug === "depoimentos") reserve = 2
+  else if (slug === "resultados" || section.classList.contains("pdf-experience-section")) {
+    reserve = 32
+  } else if (slug === "contato") reserve = 8
   return { slug, heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 
