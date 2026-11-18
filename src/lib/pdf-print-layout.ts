@@ -222,7 +222,7 @@ function ensureMobileReferenceCss(doc: Document): void {
   style.id = PDF_MOBILE_REFERENCE_STYLE_ID
   const aboutContinuationRules = mobileRules
     .filter((rule) => rule.includes("#sobre "))
-    .map((rule) => rule.replaceAll("#sobre ", "#sobre-diferenciais "))
+    .map((rule) => rule.replace(/#sobre /g, "#sobre-diferenciais "))
   style.textContent = [...normalizedBaseRules, ...mobileRules, ...aboutContinuationRules]
     .join("\n")
     .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
@@ -383,15 +383,21 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     const photo = section.querySelector<HTMLElement>(".about-mobile-photo")
     if (photo) bottom = Math.max(box.top, photo.getBoundingClientRect().bottom)
   }
+  // Borders and padding on Results cards contribute to print fragmentation
+  // even though they have no glyph boxes. Preserve their real layout bounds.
+  if (slug === "resultados" || slug === "resultados-grupos") {
+    const resultsLayout = section.querySelector<HTMLElement>(".pdf-results-page")
+    if (resultsLayout) bottom = Math.max(bottom, resultsLayout.getBoundingClientRect().bottom)
+  }
   const reserve =
     (
       {
         perfil: 2,
-        "perfil-areas": 18,
+        "perfil-areas": 84,
         sobre: 0,
         "sobre-diferenciais": 64,
-        resultados: 24,
-        "resultados-grupos": 24,
+        resultados: 36,
+        "resultados-grupos": 64,
       } as Record<string, number>
     )[slug] ?? 72
   return {
