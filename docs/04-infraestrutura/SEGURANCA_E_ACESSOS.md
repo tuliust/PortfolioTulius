@@ -49,5 +49,3 @@ Proteção de senhas vazadas segue desativada por escolha de custo já aceita pe
 Para eventual revisão de RLS: analisar policies individualmente, testar usuário não administrador no local sintético e preparar rollback; não reduzir grants só para remover alertas.
 
 [Supabase](SUPABASE.md) · [standby](../06-governanca/BACKLOG_STANDBY.md).
-
-
