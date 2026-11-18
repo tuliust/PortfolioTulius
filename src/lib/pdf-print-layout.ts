@@ -1,4 +1,4 @@
-import { pdfExportViewport, type PdfDevice } from "./pdf-export-options"
+import type { PdfDevice } from "./pdf-export-options"
 
 export const PDF_PRINT_STYLE_ID = "portfolio-pdf-print-pages"
 export const PDF_PRINT_MAX_PAGE_HEIGHT = 16000
@@ -115,7 +115,6 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   return { slug, heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 
-
 export const PDF_MOBILE_REFERENCE_STYLE_ID = "portfolio-pdf-mobile-reference"
 
 /**
@@ -126,9 +125,9 @@ export const PDF_MOBILE_REFERENCE_STYLE_ID = "portfolio-pdf-mobile-reference"
  * viewport-width units with the 390px PDF container width.
  */
 function matchesMobileReferenceMedia(query: string): boolean {
-  const conditions = [...query.matchAll(/\\(\\s*(min|max)-(width|height)\\s*:\\s*(\\d+)px\\s*\\)/g)]
+  const conditions = [...query.matchAll(/\(\s*(min|max)-(width|height)\s*:\s*(\d+)px\s*\)/g)]
   if (!conditions.some((part) => part[2] === "width")) return false
-  if (/\\b(?:screen|print|orientation)\\b/i.test(query)) return false
+  if (/\b(?:screen|print|orientation)\b/i.test(query)) return false
   return conditions.every(([, bound, axis, limit]) => {
     const reference = axis === "width" ? 390 : 844
     return bound === "max" ? reference <= Number(limit) : reference >= Number(limit)
@@ -153,7 +152,7 @@ function ensureMobileReferenceCss(doc: Document): void {
         Array.from(media.cssRules)
           .map((entry) => entry.cssText)
           .join("\n")
-          .replace(/(-?\\d+(?:\\.\\d+)?)vw\\b/g, "$1cqw"),
+          .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw"),
       )
     }
   }
@@ -226,64 +225,8 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
 
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
   if (device === "desktop") return desktopPdfPrintCss(pages)
-  if (device === "mobile") return mobilePdfPrintCss(pages)
-  const viewport = pdfExportViewport(device)
-  if (
-    !pages.length ||
-    pages.some((page) => !VALID_SLUG.test(page.slug)) ||
-    new Set(pages.map((page) => page.slug)).size !== pages.length
-  ) {
-    throw new Error("A seleção de páginas do PDF é inválida.")
-  }
-  if (
-    pages.some(
-      (page) =>
-        !Number.isInteger(page.heightPx) ||
-        page.heightPx < viewport.height ||
-        page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT,
-    )
-  ) {
-    throw new Error("Uma seção ultrapassou o limite de paginação do PDF.")
-  }
-  const starts = pages
-    .map(
-      (page, index) =>
-        '.pdf-portfolio [data-pdf-section="' +
-        page.slug +
-        '"] { break-before: ' +
-        (index === 0 ? "auto" : "page") +
-        " !important; page-break-before: " +
-        (index === 0 ? "auto" : "always") +
-        " !important; }",
-    )
-    .join("\n")
+  return mobilePdfPrintCss(pages)
 
-  return (
-    "@page { size: " +
-    viewport.width +
-    "px " +
-    viewport.height +
-    "px; margin: 0; }\n" +
-    "@media print {\n" +
-    "html, body, #root { width: " +
-    viewport.width +
-    "px !important; min-width: " +
-    viewport.width +
-    "px !important; max-width: none !important; height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }\n" +
-    "body, .pdf-portfolio, .pdf-portfolio main { width: " +
-    viewport.width +
-    "px !important; max-width: none !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }\n" +
-    ".pdf-portfolio .portfolio-section { height: auto !important; max-height: none !important; break-after: auto !important; page-break-after: auto !important; break-inside: auto !important; page-break-inside: auto !important; overflow: visible !important; }\n" +
-    ".pdf-portfolio .pdf-results-group, .pdf-portfolio .mobile-panel, .pdf-portfolio .desktop-panel { break-inside: auto !important; page-break-inside: auto !important; }\n" +
-    ".pdf-portfolio :is(.results-metrics-grid .content-item, .experience-project, .testimonial-card, .contact-link, .experience-full-point) { break-inside: avoid !important; page-break-inside: avoid !important; }\n" +
-    ".pdf-portfolio :is(.section-heading, .panel-heading, .experience-heading, .pdf-experience-column-heading, .pdf-results-group-heading) { break-after: avoid-page !important; }\n" +
-    (device === "mobile"
-      ? ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: auto !important; min-height: 844px !important; }\n" +
-        ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }\n"
-      : "") +
-    starts +
-    "\n}\n"
-  )
 }
 
 /** Prepare published, authorized content for Chrome's native Save as PDF. */
