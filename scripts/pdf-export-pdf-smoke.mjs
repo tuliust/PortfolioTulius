@@ -86,8 +86,11 @@ try {
         )
         if (images.some((img) => !img.naturalWidth)) throw new Error("Broken image")
         document.documentElement.dataset.pdfExportReady = "true"
-        const mod = await import("/src/lib/pdf-print-layout.ts")
-        return mod.preparePdfPrintLayout(document, mobileOrDesktop, slugs)
+        const prepare = window.__pdfQaPrepare
+        if (typeof prepare === "function") {
+          return prepare(document, mobileOrDesktop, slugs)
+        }
+        throw new Error("The QA print-layout entrypoint was not loaded")
       }, sections, device)
 
       if (device === "mobile" && palette === "original" && sections.length === 13) {

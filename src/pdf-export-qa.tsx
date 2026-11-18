@@ -11,6 +11,7 @@ import { PdfPortfolio } from "./components/public/PdfPortfolio"
 import { APPROVED_ABOUT_TABLET } from "./components/public/PublicSite"
 import { PdfPrintReady } from "./components/public/PdfPrintReady"
 import { selectPublishedPdfSections } from "./lib/pdf-export-sections"
+import { preparePdfPrintLayout } from "./lib/pdf-print-layout"
 import type { PdfDevice, PdfColorMode } from "./lib/pdf-export-options"
 import "./index.css"
 
@@ -92,6 +93,10 @@ function PdfVisualFixture() {
     </PdfPrintReady>
   )
 }
+
+// This hook exists only on the isolated, non-published QA entrypoint. Production
+// builds cannot dynamically import a raw /src/*.ts module as Vite dev can.
+Object.assign(window, { __pdfQaPrepare: preparePdfPrintLayout })
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
