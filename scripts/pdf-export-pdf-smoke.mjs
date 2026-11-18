@@ -87,6 +87,47 @@ try {
         return mod.preparePdfPrintLayout(document, mobileOrDesktop, slugs)
       }, sections, device)
 
+      if (device === "mobile" && palette === "original" && sections.length === 13) {
+        const geometry = await page.evaluate(() => {
+          const slugs = ["resultados", "invest-rs", "depoimentos"]
+          return slugs.map((slug) => {
+            const section = document.querySelector("#" + slug)
+            if (!section) return { slug, missing: true }
+            const origin = section.getBoundingClientRect().top
+            const texts = []
+            const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT)
+            while (walker.nextNode()) {
+              const node = walker.currentNode
+              if (!node.textContent?.trim()) continue
+              const range = document.createRange()
+              range.selectNodeContents(node)
+              for (const rect of range.getClientRects()) {
+                if (rect.height > 0) {
+                  texts.push({
+                    bottom: Math.round((rect.bottom - origin) * 100) / 100,
+                    label: node.textContent.trim().slice(0, 50),
+                  })
+                }
+              }
+            }
+            const media = [...section.querySelectorAll("img,svg,canvas,video")]
+              .filter((node) => node.getClientRects().length > 0)
+              .map((node) => ({
+                bottom: Math.round((node.getBoundingClientRect().bottom - origin) * 100) / 100,
+                tag: node.tagName,
+                className: typeof node.className === "string" ? node.className : "",
+              }))
+            return {
+              slug,
+              innerHeight: window.innerHeight,
+              textMax: texts.sort((a, b) => b.bottom - a.bottom).slice(0, 3),
+              mediaMax: media.sort((a, b) => b.bottom - a.bottom).slice(0, 3),
+            }
+          })
+        })
+        console.log("PDF_MOBILE_GEOMETRY " + JSON.stringify({ label, geometry, heights: manifest.pages }))
+      }
+
       if (manifest.pages.length !== sections.length) throw new Error("Manifest count mismatch")
       if (device === "mobile" && sections.includes("invest-rs")) {
         const mobileLayout = await page.evaluate(() => {
