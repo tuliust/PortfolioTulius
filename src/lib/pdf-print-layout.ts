@@ -153,14 +153,16 @@ function ensureMobileReferenceCss(doc: Document): void {
       if (rule.type === CSSRule.STYLE_RULE) {
         const styleRule = rule as CSSStyleRule
         const viewportDeclarations = Array.from(styleRule.style)
-          .filter((name) => /\d(?:vw|svh|dvh|lvh|vh)\b/.test(styleRule.style.getPropertyValue(name)))
+          .filter((name) =>
+            /\d(?:vw|svh|dvh|lvh|vh)\b/.test(styleRule.style.getPropertyValue(name)),
+          )
           .map((name) => {
             const value = styleRule.style
               .getPropertyValue(name)
               .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
               .replace(
                 /(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g,
-                (_match, count) => String(Math.round(Number(count) * 844 / 100)) + "px",
+                (_match, count) => String(Math.round((Number(count) * 844) / 100)) + "px",
               )
             const priority = styleRule.style.getPropertyPriority(name) ? " !important" : ""
             return name + ": " + value + priority + ";"
