@@ -5,6 +5,7 @@ import { adminVisualAreas, type AdminVisualArea } from "../../lib/admin-visual-a
 import { sectionElementGroup } from "../../lib/section-element-group"
 import { isSafeEditorialImage, validateContentItems } from "../../lib/validation"
 import { PublishedMediaPicker } from "./PublishedMediaPicker"
+import { getItemMediaRecommendation } from "../../lib/admin-media-recommendations"
 import { AdminInfoTip } from "./InfoTip"
 import {
   nextExpandedItem,
@@ -1421,10 +1422,11 @@ export function ContentStudio({
                 {draft.content_json.items?.[0] ? (
                   <PublishedMediaPicker
                     label="Fotografia desktop"
+                    recommendedSize="1200 × 1600 px (desktop)"
                     guidanceAsInfo
                     iconOnlyActions
                     allowFraming={false}
-                    guidance="Retrato vertical 3:4; sugestão 900 × 1200 px."
+                    guidance="Retrato vertical 3:4 em PNG ou WebP; prefira transparência."
                     ratio="3 / 4"
                     framing={draft.content_json.items[0].aboutDesktopFraming}
                     onFramingChange={(aboutDesktopFraming) =>
@@ -1521,7 +1523,8 @@ export function ContentStudio({
                       <div className="field-grid experience-logo-fields">
                         <PublishedMediaPicker
                           label="Logotipo da empresa"
-                          guidance="Logo quadrado 1:1; referência 400 × 400 px ou SVG."
+                          recommendedSize="512 × 512 px (se raster); preferencialmente SVG"
+                          guidance="Marca quadrada 1:1; preserve proporções e área de respiro."
                           ratio="1 / 1"
                           allowFraming={false}
                           framing={draft.content_json.experienceMedia?.logoFraming}
@@ -1681,8 +1684,9 @@ export function ContentStudio({
                               ))}
                               <PublishedMediaPicker
                                 label="Fotografia do slide"
-                                guidance="Galeria vertical 9:10; referência 900 × 1000 px."
-                                ratio="9 / 10"
+                                recommendedSize="1600 × 1600 px (desktop e mobile)"
+                                guidance="Imagem inteira no quadro responsivo; prefira WebP ou PNG."
+                                ratio="1 / 1"
                                 allowFraming={false}
                                 framing={slide.framing}
                                 onFramingChange={(framing) => {
@@ -2552,25 +2556,15 @@ export function ContentStudio({
                                         ? "Foto"
                                         : "Imagem do item"
                                     }
+                                    {...getItemMediaRecommendation(
+                                      experienceSlug,
+                                      draft.mobile_panel,
+                                      index,
+                                      aboutImageTarget,
+                                    )}
                                     guidanceAsInfo
                                     iconOnlyActions
                                     allowFraming={false}
-                                    guidance={
-                                      ["perfil", "contato", "sobre"].includes(
-                                        sections.find((entry) => entry.id === draft.section_id)
-                                          ?.slug ?? "",
-                                      )
-                                        ? "Retrato vertical 3:4; sugestão 900 × 1200 px."
-                                        : "Miniatura editorial 1:1; sugestão 600 × 600 px."
-                                    }
-                                    ratio={
-                                      ["perfil", "contato", "sobre"].includes(
-                                        sections.find((entry) => entry.id === draft.section_id)
-                                          ?.slug ?? "",
-                                      )
-                                        ? "3 / 4"
-                                        : "1 / 1"
-                                    }
                                     framing={
                                       aboutImageTarget === "desktop" &&
                                       sections.find((entry) => entry.id === draft.section_id)

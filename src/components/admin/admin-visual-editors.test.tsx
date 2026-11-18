@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest"
 import { NumericField } from "./AdminVisualFields"
 import { DeviceStyleEditor, HeroDeviceEditor } from "./DeviceStyleEditors"
 import { ProfileMobileEditorialEditor } from "./ProfileMobileEditorialEditor"
+import { PublishedMediaPicker } from "./PublishedMediaPicker"
+import { getItemMediaRecommendation } from "../../lib/admin-media-recommendations"
 
 describe("P3 — regressão dos formulários visuais extraídos", () => {
   it("mantém o contrato de números opcionais e limites", () => {
@@ -38,6 +40,40 @@ describe("P3 — regressão dos formulários visuais extraídos", () => {
     expect(mobile).toContain("Frase: alinhamento")
   })
 
+  it("expõe as dimensões em botão de informação ao lado do campo de mídia", () => {
+    const html = renderToStaticMarkup(
+      <PublishedMediaPicker
+        label="Fotografia do slide"
+        recommendedSize="1600 × 1600 px (desktop e mobile)"
+        guidance="A imagem é exibida inteira."
+        value=""
+        onChange={() => undefined}
+      />,
+    )
+    expect(html).toContain('aria-label="Informações sobre Fotografia do slide"')
+    expect(html).toContain('role="tooltip"')
+    expect(html).toContain("Tamanho recomendado: 1600 × 1600 px")
+    expect(html).toContain("A imagem é exibida inteira.")
+  })
+
+  it("diferencia Perfil, Sobre, Contato e miniaturas por destino", () => {
+    expect(getItemMediaRecommendation("perfil", "a", 0, "mobile").recommendedSize).toContain(
+      "1200 × 1600 px",
+    )
+    expect(getItemMediaRecommendation("sobre", "a", 0, "desktop").recommendedSize).toContain(
+      "1200 × 1600 px",
+    )
+    expect(getItemMediaRecommendation("sobre", "a", 0, "mobile").recommendedSize).toContain(
+      "900 × 1200 px",
+    )
+    expect(getItemMediaRecommendation("contato", "a", 0, "mobile").guidance).toContain(
+      "transparência",
+    )
+    expect(getItemMediaRecommendation("perfil", "b", 1, "mobile").recommendedSize).toContain(
+      "600 × 600 px",
+    )
+  })
+
   it("mantém as três áreas editoriais mobile, sem mudar a composição desktop", () => {
     const html = renderToStaticMarkup(<ProfileMobileEditorialEditor onChange={() => undefined} />)
     expect(html).toContain("Abertura Editorial 360°")
@@ -45,5 +81,6 @@ describe("P3 — regressão dos formulários visuais extraídos", () => {
     expect(html).toContain("Selo do painel B · acima de Áreas de Atuação")
     expect(html).toContain("Área 3")
     expect(html).toContain("Fotografia exclusiva")
+    expect(html).toContain("Tamanho recomendado: 900 × 1200 px")
   })
 })

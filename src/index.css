@@ -1127,6 +1127,10 @@
 .admin-field-with-info, .published-media-label-row { display: flex; align-items: center; gap: .3rem; min-width: 0; }
 .admin-info-wrap { position: relative; display: inline-flex; flex: none; align-items: center; }
 .admin-info-trigger { display: grid; place-items: center; width: 2rem; height: 2rem; padding: 0; background: white; border: 1px solid #bdb4ae; border-radius: 50%; color: #504a47; }
+/* Compact information affordance beside media fields; keep 44px touch targets on mobile. */
+@media (min-width: 768px) {
+  .published-media-label-row .admin-info-trigger { width: 1.5rem; height: 1.5rem; }
+}
 .admin-info-trigger:hover, .admin-info-trigger[aria-expanded="true"] { background: #171617; border-color: #171617; color: white; }
 .admin-info-tooltip { position: absolute; z-index: 15; top: calc(100% + .35rem); right: 0; width: min(18rem, calc(100vw - 3rem)); padding: .7rem .8rem; color: white; background: #171617; font-size: .76rem; font-weight: 400; line-height: 1.5; box-shadow: 0 6px 18px #17161720; overflow-wrap: anywhere; pointer-events: none; }
 .admin-info-tooltip[hidden] { display: none; }

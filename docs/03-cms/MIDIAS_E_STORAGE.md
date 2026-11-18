@@ -1,5 +1,5 @@
 # Biblioteca de mídias e Storage
-**Status:** preservação; limpeza não autorizada por este guia · **Revisão:** 17/11/2026.
+**Status:** preservação; limpeza não autorizada por este guia · **Revisão:** 18/11/2026.
 
 | Origem | Quantidade | Acesso |
 |---|---:|---|
@@ -36,3 +36,7 @@ Estas são **dimensões recomendadas de arquivo**, não garantias de dimensões 
 | Logotipos das empresas | 512 × 512 px se raster | Mesmo arquivo | Preferir SVG; `contain` preserva proporção |
 
 A mudança de código afeta **somente** `.experience-media-frame > img` (`cover` → `contain`), sem criar novas cópias, processar uploads ou modificar dados. Consulta somente leitura ao Supabase em 17/11/2026 encontrou **19 slides** publicados nas seis experiências: todos com zoom **1×** e sem ponto focal deslocado. O CMS continua permitindo enquadramento/zoom explícito, que pode produzir corte intencional. O quadro responsivo e as demais fotografias são preservados.
+
+## Ajuda contextual de tamanho no CMS (18/11/2026)
+
+O seletor de mídias `PublishedMediaPicker` exibe, por ícone “i” ao lado do nome do campo, a dimensão recomendada específica de **galerias, logos, retratos de Perfil/Sobre/Contato, miniaturas e imagens de SEO**. A dica funciona com hover, clique/toque e ativação pelo teclado (Enter/Espaço); Esc fecha a dica aberta por clique. No mobile, o alvo conserva 44 px. As referências da tabela acima continuam **orientações de preparo**: não existe bloqueio por resolução, transformação automática, substituição de objetos ou alteração de metadata/Storage. Retratos transparentes devem conservar canal alfa e composição aprovada. Para SEO, acrescem referências próprias de Open Graph (1200 × 630 px) e favicon (512 × 512 px). Contrato de UI no [Guia administrativo](GUIA_ADMINISTRATIVO.md).

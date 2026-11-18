@@ -123,7 +123,8 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
             <div className="field-wide">
               <PublishedMediaPicker
                 label="Imagem Open Graph (compartilhamento)"
-                guidance="1200 × 630 px (1,91:1). Redes sociais usam o arquivo original; prepare o recorte antes do upload."
+                recommendedSize="1200 × 630 px (1,91:1)"
+                guidance="Redes sociais usam o arquivo original; prepare o recorte antes do upload."
                 ratio="1200 / 630"
                 value={settings.seo_json?.ogImage ?? ""}
                 onChange={(ogImage) =>
@@ -141,7 +142,8 @@ export function SeoStudio({ onDirtyChange }: { onDirtyChange?: (dirty: boolean) 
             <div className="field-wide">
               <PublishedMediaPicker
                 label="Favicon e ícone de início (Apple)"
-                guidance="Imagem quadrada, preferencialmente PNG. Clique em Escolher da biblioteca e use Enviar mídia para fazer o upload. O mesmo arquivo será utilizado como favicon e ícone Apple após salvar."
+                recommendedSize="512 × 512 px (quadrado; Apple exibe em 180 × 180 px)"
+                guidance="Prefira PNG. O mesmo arquivo publicado será usado como favicon e ícone Apple após salvar."
                 ratio="1 / 1"
                 value={settings.seo_json?.faviconUrl || FALLBACK_FAVICON}
                 allowFraming={false}

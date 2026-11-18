@@ -278,11 +278,12 @@ export function ProfileMobileEditorialEditor({
         </div>
         <PublishedMediaPicker
           label="Fotografia exclusiva da área 3 mobile"
+          recommendedSize="900 × 1200 px (mobile)"
           value={current.mobileImage ?? ""}
           onChange={(mobileImage, mobileAlt) => onChange({ ...current, mobileImage, mobileAlt })}
           framing={current.mobileFraming}
           onFramingChange={(mobileFraming) => onChange({ ...current, mobileFraming })}
-          guidance="Retrato vertical exclusivo do mobile, preferencialmente 3:4; o original desktop não é alterado."
+          guidance="Retrato vertical 3:4, preferencialmente WebP ou PNG; o original desktop não é alterado."
           ratio="3 / 4"
         />
         <small>

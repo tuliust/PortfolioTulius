@@ -8,6 +8,7 @@ import type { MediaFraming } from "../../lib/media-framing"
 
 export function PublishedMediaPicker({
   label,
+  recommendedSize,
   value,
   onChange,
   framing,
@@ -20,6 +21,7 @@ export function PublishedMediaPicker({
   allowStaticSiteIcon = false,
 }: {
   label: string
+  recommendedSize: string
   value: string
   onChange: (url: string, alt: string) => void
   framing?: MediaFraming
@@ -34,6 +36,7 @@ export function PublishedMediaPicker({
   const [open, setOpen] = useState(false)
   const [previewFailed, setPreviewFailed] = useState(false)
   const [framingOpen, setFramingOpen] = useState(false)
+  const helpText = `Tamanho recomendado: ${recommendedSize}. ${guidance}`
 
   useEffect(() => {
     setPreviewFailed(false)
@@ -43,11 +46,9 @@ export function PublishedMediaPicker({
     <div className="published-media-picker">
       <div className="published-media-label-row">
         <strong className="published-media-picker-label">{label}</strong>
-        {guidanceAsInfo && (
-          <AdminInfoTip label={label} description={`Área de destino: ${guidance}`} />
-        )}
+        {guidanceAsInfo && <AdminInfoTip label={label} description={helpText} />}
       </div>
-      {!guidanceAsInfo && <p className="published-media-guidance">Área de destino: {guidance}</p>}
+      {!guidanceAsInfo && <p className="published-media-guidance">{helpText}</p>}
       {value &&
       (isSafeEditorialImage(value) || (allowStaticSiteIcon && value === "/favicon.png")) &&
       !previewFailed ? (
@@ -105,7 +106,7 @@ export function PublishedMediaPicker({
         <MediaFramingDialog
           src={value}
           label={label}
-          guidance={guidance}
+          guidance={helpText}
           ratio={ratio}
           value={framing}
           onChange={onFramingChange}

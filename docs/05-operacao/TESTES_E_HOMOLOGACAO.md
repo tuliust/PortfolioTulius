@@ -1,5 +1,5 @@
 # Testes, CI e homologação
-**Status:** roteiro de manutenção e aceite editorial · **Revisão:** 16/11/2026. Código funcional da revisão `aeffc5f` (Validate SUCCESS; P3 #43842659962 FAILURE), com commit documental anterior `ad5863c` (Validate/Export SUCCESS; Vercel READY). Aceite do proprietário não reclassifica resultado técnico; relatórios históricos continuam vinculados aos respectivos SHAs.
+**Status:** roteiro de manutenção e aceite editorial · **Revisão:** 18/11/2026. Código funcional da revisão `aeffc5f` (Validate SUCCESS; P3 #43842659962 FAILURE), com commit documental anterior `ad5863c` (Validate/Export SUCCESS; Vercel READY). Aceite do proprietário não reclassifica resultado técnico; relatórios históricos continuam vinculados aos respectivos SHAs.
 
 ## Resultado final desta auditoria P3 — 16/11/2026
 
@@ -710,3 +710,7 @@ A correção proposta/implementada em `pdf-print-layout.ts` avalia media queries
 **Preservação:** Desktop mantém 13 folhas no QA, com geometria e conteúdo anteriores; Formação, experiências, Ferramentas, Depoimentos e Contato preservam as alturas verificadas no fixture anterior. O código do site público, as migrações e os dados do CMS não foram modificados.
 
 **Limite de homologação:** esses resultados provêm da fixture local com dados sintéticos, não de um PDF exportado com sessão autenticada e CMS produtivo. As capturas e o PDF real encaminhados pelo responsável serviram como referência visual para inspeção e confecção de uma prévia independente. **Não foi comprovada a paridade pixel a pixel do PDF final produtivo com os seis anexos**; essa comparação e o aceite explícito do responsável continuam pendentes. A publicação automática da Vercel deve ser reconfirmada no HEAD documental definitivo.
+
+## Tooltip administrativo de dimensões de mídia (18/11/2026)
+
+O teste `src/components/admin/admin-visual-editors.test.tsx` cobre a presença de botão de ajuda acessível com `role="tooltip"` e texto recomendado no `PublishedMediaPicker`, além do mapeamento de Perfil, Sobre (desktop/mobile), Contato, miniaturas genéricas e fotografia exclusiva mobile. A verificação é de **renderização estática e lógica de recomendação**; não comprova, isoladamente, hover real ou toque em navegador autenticado. Validar `pnpm check`/CI por SHA, publicação automática e revisão visual de admin quando possível, mantendo sem alterações dados e configuração de produção.
