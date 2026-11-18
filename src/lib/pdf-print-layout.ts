@@ -152,7 +152,12 @@ function ensureMobileReferenceCss(doc: Document): void {
         Array.from(media.cssRules)
           .map((entry) => entry.cssText)
           .join("\n")
-          .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw"),
+          .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
+          // A taller named @page must not expand 55svh portraits or other
+          // viewport-height spacers and create another continuation sheet.
+          .replace(/(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g, (_match, unit) =>
+            String(Math.round(Number(unit) * 8.44 * 1000) / 1000) + "px",
+          ),
       )
     }
   }
@@ -220,9 +225,9 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     box.bottom,
   )
   const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
-  // Sobre has two editorial panels whose final paragraph can reflow
-  // slightly in Chrome's physical print compositor. Keep it on one sheet.
-  const reserve = section.dataset.pdfSection === "sobre" ? 144 : 48
+  // Extra reserve keeps Sobre's last paragraph together; mobile viewport
+  // heights are frozen at the canonical 844px while printing taller sheets.
+  const reserve = section.dataset.pdfSection === "sobre" ? 72 : 48
   return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 

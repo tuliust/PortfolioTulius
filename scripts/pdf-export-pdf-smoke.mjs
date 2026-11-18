@@ -18,6 +18,9 @@ const variants = [
   { device: "mobile", palette: "clean", sections: allSections },
   // Reproduces the owner's real print tab: a wide tab containing a 390px document.
   { device: "mobile", palette: "original", sections: allSections, wideTab: true },
+  // Includes the actual mobile editorial Hero variant absent from fallback CMS.
+  { device: "mobile", palette: "original", sections: allSections, editorial360: true },
+  { device: "mobile", palette: "original", sections: allSections, wideTab: true, editorial360: true },
   { device: "desktop", palette: "original", sections: ["perfil", "resultados", "invest-rs", "contato"] },
   { device: "mobile", palette: "clean", sections: ["perfil", "resultados", "invest-rs", "contato"] },
 ]
@@ -32,9 +35,9 @@ let failed = 0
 try {
   for (const item of variants) {
     const page = await browser.newPage()
-    const { device, palette, sections, wideTab = false } = item
+    const { device, palette, sections, wideTab = false, editorial360 = false } = item
     const selected = new Set(sections)
-    const label = device + "-" + palette + (wideTab ? "-wide-tab" : "") + "-" + sections.length + "sections"
+    const label = device + "-" + palette + (wideTab ? "-wide-tab" : "") + (editorial360 ? "-editorial360" : "") + "-" + sections.length + "sections"
     try {
       const width = device === "desktop" || wideTab ? 1440 : 390
       const height = device === "desktop" || wideTab ? 900 : 844
@@ -48,7 +51,8 @@ try {
       })
       const response = await page.goto(
         origin + "/pdf-export-qa.html?device=" + device + "&palette=" + palette +
-          "&sections=" + encodeURIComponent(sections.join(",")),
+          "&sections=" + encodeURIComponent(sections.join(",")) +
+          (editorial360 ? "&editorial360=true" : ""),
         { waitUntil: "networkidle0", timeout: 45000 },
       )
       if (response?.status() !== 200 && response?.status() !== 304) {
@@ -188,6 +192,13 @@ try {
         previous = pageIndex
       }
       if (device === "mobile") {
+        if (editorial360 && (
+          !physicalTexts[0].includes("CONEXOES") ||
+          !physicalTexts[0].includes("INOVACAO") ||
+          !physicalTexts[0].includes("TSANGAROPULOS")
+        )) {
+          throw new Error("Mobile editorial Hero lost title or name")
+        }
         for (const [index, slug] of sections.entries()) {
           if (sectionStarts[slug] !== index) {
             throw new Error("Wrong Mobile section page for " + slug)

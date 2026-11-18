@@ -19,29 +19,37 @@ const device: PdfDevice = query.get("device") === "mobile" ? "mobile" : "desktop
 const colorMode: PdfColorMode = query.get("palette") === "clean" ? "clean" : "original"
 const simulateBrokenImage = query.get("brokenImage") === "true"
 const simulateDeferredAbout = query.get("deferredAbout") === "true"
+const simulateEditorial360 = query.get("editorial360") === "true"
 const requestedSlugs = query.get("sections")?.split(",").filter(Boolean)
-const fixtureSections =
-  simulateBrokenImage || simulateDeferredAbout
-    ? sections.map((section) =>
-        section.slug === "sobre" && simulateDeferredAbout
-          ? {
-              ...section,
-              panelA: section.panelA.map((item, index) =>
-                index === 0 ? { ...item, image: APPROVED_ABOUT_TABLET } : item,
-              ),
-            }
-          : section.slug === "depoimentos" && simulateBrokenImage
-            ? {
-                ...section,
-                panelA: section.panelA.map((item, index) =>
-                  index === 0
-                    ? { ...item, image: "/media/pdf-qa-intentionally-missing.webp" }
-                    : item,
-                ),
-              }
-            : section,
-      )
-    : sections
+const fixtureSections = sections.map((section) => {
+  if (section.slug === "perfil" && simulateEditorial360) {
+    return {
+      ...section,
+      panelA: section.panelA.map((item, index) =>
+        index === 0
+          ? { ...item, hero: { ...item.hero, mobileEditorial: { enabled: true } } }
+          : item,
+      ),
+    }
+  }
+  if (section.slug === "sobre" && simulateDeferredAbout) {
+    return {
+      ...section,
+      panelA: section.panelA.map((item, index) =>
+        index === 0 ? { ...item, image: APPROVED_ABOUT_TABLET } : item,
+      ),
+    }
+  }
+  if (section.slug === "depoimentos" && simulateBrokenImage) {
+    return {
+      ...section,
+      panelA: section.panelA.map((item, index) =>
+        index === 0 ? { ...item, image: "/media/pdf-qa-intentionally-missing.webp" } : item,
+      ),
+    }
+  }
+  return section
+})
 
 const fixtureIncludedSlugs = selectPublishedPdfSections(fixtureSections, requestedSlugs).map(
   (section) => section.slug,
