@@ -37,11 +37,26 @@ const fixtureSections = sections.map((section) => {
     // The isolated fallback formerly had different, shorter final headlines.
     // Match the five published blocks supplied for the real PDF comparison.
     const printReference = [
-      ["Estratégia também é escuta.", "Diálogo como prioridade para compreender demandas, alinhar expectativas e orientar ações."],
-      ["Comunicação de ponta a ponta", "Vivência em diferentes etapas, processos e perspectivas da Comunicação."],
-      ["Visão editorial", "Clareza e repertório para temas complexos, construção de narrativas e abordagens para diferentes públicos."],
-      ["Resultados que orientam decisões", "Monitoramento, análise de indicadores e apresentação de resultados para aprimorar ações."],
-      ["Comunicação para lideranças", "Posicionamento e mensagens que fortalecem credibilidade e criam conexões."],
+      [
+        "Estratégia também é escuta.",
+        "Diálogo como prioridade para compreender demandas, alinhar expectativas e orientar ações.",
+      ],
+      [
+        "Comunicação de ponta a ponta",
+        "Vivência em diferentes etapas, processos e perspectivas da Comunicação.",
+      ],
+      [
+        "Visão editorial",
+        "Clareza e repertório para temas complexos, construção de narrativas e abordagens para diferentes públicos.",
+      ],
+      [
+        "Resultados que orientam decisões",
+        "Monitoramento, análise de indicadores e apresentação de resultados para aprimorar ações.",
+      ],
+      [
+        "Comunicação para lideranças",
+        "Posicionamento e mensagens que fortalecem credibilidade e criam conexões.",
+      ],
     ]
     return {
       ...section,

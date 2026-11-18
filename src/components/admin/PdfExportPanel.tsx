@@ -286,8 +286,8 @@ export default function PdfExportPanel({
           </p>
         )}
         <p className="pdf-export-help">
-          Clique em <strong>Gerar PDF</strong>. No Desktop, a impressão utiliza a prévia
-          de 1440 px; no Mobile, abre uma nova aba. Escolha
+          Clique em <strong>Gerar PDF</strong>. No Desktop, a impressão utiliza a prévia de 1440 px;
+          no Mobile, abre uma nova aba. Escolha
           <strong> Salvar como PDF</strong> como destino do Chrome, não uma impressora física ou
           virtual do sistema. Cada seção começa em uma nova folha e conteúdos extensos podem
           continuar em folhas adicionais. Os textos e links devem permanecer pesquisáveis e

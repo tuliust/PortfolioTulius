@@ -20,7 +20,7 @@ export function preparePdfPreviewForLaunch(
   }
 }
 
-/** 
+/**
  * Print Desktop inside the validated 1440px reference iframe.
  * A new tab may be 390px wide and hide .desktop-panel through mobile CSS.
  * Mobile continues using its separate print tab.
