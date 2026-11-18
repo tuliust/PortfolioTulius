@@ -425,7 +425,8 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
   // media cascade than its 390px preview geometry. The portrait is already
   // fully visible at that physical boundary; only the empty paper tail
   // must be discarded. The printed sheet is clipped to this same height.
-  const editorialHero = slug === "perfil" && !!section.querySelector("#perfil-a.editorial360-mobile")
+  const editorialHero =
+    slug === "perfil" && !!section.querySelector("#perfil-a.editorial360-mobile")
   const printHeight = bottom - box.top + reserve - (editorialHero ? 158 : 0)
   return {
     slug,
