@@ -4,7 +4,27 @@
 
 O Supabase `portfolio` possui **22/22** tabelas públicas com RLS e **41** políticas. O advisor de segurança retornou **7 WARN** em [`authenticated_security_definer_function_executable`](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable) e **1 WARN** em [`auth_leaked_password_protection`](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). São avisos **conhecidos e não corrigidos**, sujeitos às decisões e ao [standby](../06-governanca/BACKLOG_STANDBY.md). O aceite do PDF não os encerra nem autoriza mudança de RLS, grants ou Auth. Consultas executadas foram somente de leitura.
 
+### Conferência visual dos PATs — 18/11/2026
+
+Na conta GitHub inspecionada, a página de tokens
+fine-grained apresentou três tokens, todos expirados.
+A página de tokens clássicos não apresentou nenhum
+token cadastrado.
+
+Nenhum PAT ativo foi identificado nessas duas listas.
+A correspondência entre esses registros e o PAT
+historicamente exposto não foi comprovada.
+
+A revogação específica do token histórico permanece
+não confirmada. A expiração observada não deve ser
+registrada como revogação.
+
+
 ---
+
+Nenhum token foi criado, utilizado, renovado ou excluído.
+
+
 
 **Status:** controles registrados, alterações não autorizadas por este documento · **Revisão:** 11/11/2026.
 
@@ -29,3 +49,5 @@ Proteção de senhas vazadas segue desativada por escolha de custo já aceita pe
 Para eventual revisão de RLS: analisar policies individualmente, testar usuário não administrador no local sintético e preparar rollback; não reduzir grants só para remover alertas.
 
 [Supabase](SUPABASE.md) · [standby](../06-governanca/BACKLOG_STANDBY.md).
+
+
