@@ -146,13 +146,26 @@ function ensureMobileReferenceCss(doc: Document): void {
       continue // Cross-origin stylesheet; the local compiled site CSS is available.
     }
     for (const rule of Array.from(rules)) {
-      // PDF-specific and public base styles also contain vw-based typography.
-      // Reapply their sizing against the PDF container before the responsive
-      // overrides, so the browser tab width cannot inflate the measurement.
-      if (rule.type === CSSRule.STYLE_RULE && /\dvw\b/.test(rule.cssText)) {
-        normalizedBaseRules.push(
-          rule.cssText.replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw"),
-        )
+      // Reapply only the declarations that contain vw, not an entire CSS
+      // rule. Cloning the complete base rule here reinstated its Desktop
+      // grid display AFTER the PDF Mobile display:block declaration,
+      // squeezing Experience columns into three unusable 390px columns.
+      if (rule.type === CSSRule.STYLE_RULE) {
+        const styleRule = rule as CSSStyleRule
+        const viewportDeclarations = Array.from(styleRule.style)
+          .filter((name) => /\dvw\b/.test(styleRule.style.getPropertyValue(name)))
+          .map((name) => {
+            const value = styleRule.style
+              .getPropertyValue(name)
+              .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
+            const priority = styleRule.style.getPropertyPriority(name) ? " !important" : ""
+            return name + ": " + value + priority + ";"
+          })
+        if (viewportDeclarations.length) {
+          normalizedBaseRules.push(
+            styleRule.selectorText + " { " + viewportDeclarations.join(" ") + " }",
+          )
+        }
       }
       if (rule.type !== CSSRule.MEDIA_RULE) continue
       const media = rule as CSSMediaRule

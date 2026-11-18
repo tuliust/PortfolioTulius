@@ -88,6 +88,22 @@ try {
       }, sections, device)
 
       if (manifest.pages.length !== sections.length) throw new Error("Manifest count mismatch")
+      if (device === "mobile" && sections.includes("invest-rs")) {
+        const mobileLayout = await page.evaluate(() => {
+          const layout = document.querySelector("#invest-rs .pdf-experience-layout")
+          const columns = [...(layout?.children || [])]
+          return {
+            display: layout ? getComputedStyle(layout).display : "",
+            tops: columns.map((column) => column.getBoundingClientRect().top),
+          }
+        })
+        if (mobileLayout.display !== "block" || mobileLayout.tops.length !== 3 ||
+            mobileLayout.tops[1] <= mobileLayout.tops[0] ||
+            mobileLayout.tops[2] <= mobileLayout.tops[1]) {
+          throw new Error("Mobile Experience must use stacked columns: " +
+            JSON.stringify(mobileLayout))
+        }
+      }
       if (manifest.pages.some((entry, index) => entry.slug !== sections[index])) {
         throw new Error("Manifest order mismatch")
       }
@@ -117,7 +133,7 @@ try {
           " for " + sections.length + " sections")
       }
       if (actualPages !== sections.length) {
-        throw new Error("Desktop printed " + actualPages +
+        throw new Error(device + " printed " + actualPages +
           " physical pages for " + sections.length + " sections")
       }
       // Validate the *physical* orientation on every PDF page, not merely

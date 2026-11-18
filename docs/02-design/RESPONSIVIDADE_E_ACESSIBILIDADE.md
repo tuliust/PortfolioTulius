@@ -240,3 +240,8 @@ Risco residual: páginas Mobile com Trajetórias longas podem ficar fisicamente 
 
 
 **Paridade de cálculo com aba externa larga (18/11/2026):** além das regras de media query mobile, o CSS de base carregado pelo renderer PDF que contém unidades `vw` é reavaliado em `cqw` da largura interna de 390 px. Isso evita que a medição de folhas aumente quando a aba de impressão é larga, mantendo as mesmas dimensões e legibilidade do conteúdo Mobile. Validar na QA física por folha; o Desktop não usa esse ramo.
+
+
+## PDF Mobile — correção da regressão das três colunas (18/11/2026)
+
+A análise do PDF sintético físico gerado pelo SHA `da91859` constatou que a seção **Invest RS** e as demais experiências eram diagramadas em três colunas extremamente estreitas, como no Desktop, apesar de a prévia Mobile exigir empilhamento vertical. A causa era a injeção, no final da cascata CSS, de **regras base inteiras** que contivessem algum `vw`: essa duplicação também reaplicava `display: grid` e `grid-template-columns`, sobrepondo `display: block` do Mobile. Agora o normalizador reemite **somente as declarações cujo próprio valor contenha `vw`**, convertendo essas unidades em `cqw`; não duplica `display`, `grid`, `position` nem demais propriedades. A escala tipográfica do PDF mantém 390 px de referência mesmo em aba larga. Nenhum seletor Desktop, regra de medição Desktop, mídia ou conteúdo do site público foi modificado.
