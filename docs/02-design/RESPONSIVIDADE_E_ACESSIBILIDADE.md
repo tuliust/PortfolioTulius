@@ -215,3 +215,10 @@ Em **Sobre**, a fotografia central e a composição têm a mesma altura de refer
 ## Ajuste exclusivo do PDF Desktop — fotografias e folgas inferiores (17/11/2026)
 
 Na composição para impressão (não na página pública), a altura da folha de **Sobre** é medida pelo grid de texto/foto sem computar o deslocamento visual do PNG; o retrato é deslocado 24 px para compensar transparência inferior. Em **Contato**, a folha conserva reserva de 56 px em relação ao grid, separada da translação de 72 px da imagem. A diagramação das **seis experiências** mantém três colunas e todo o texto, com 64 CSS px de folga após a última coluna; o padding inferior original não é herdado no PDF. São regras exclusivas do Desktop, sem modificar Mobile ou imagens do CMS. A eficácia física deve ser verificada na QA de PDF e na exportação real do Chrome.
+
+
+## PDF Desktop — correção complementar de transparência inferior (18/11/2026)
+
+O PDF produtivo de 13 folhas do proprietário, salvo pelo Chrome/Skia, mostrou que a geometria da imagem não equivale ao limite dos pixels visíveis: a fotografia termina aproximadamente **7 pt acima da folha em Sobre (página 2)** e **16 pt em Contato (página 13)**, apesar da QA anterior aprovar as caixas do DOM. Para compensar somente o inset transparente dos PNGs publicados, a translação de Sobre passou de **24 para 36 CSS px** e a de Contato de **72 para 96 CSS px** no CSS isolado `PdfPortfolio.css`. A folha de Contato mantém `overflow: clip` para que o deslocamento não crie folha adicional; o CSS de medição `pdf-print-layout.ts` e as dimensões do papel não mudam. O site público, Mobile, mídias e dados do CMS permanecem inalterados.
+
+O teste visual do exportador verifica as novas posições geométricas das imagens e o recorte de Contato. **A confirmação de zero faixa abaixo dos pixels opacos dos PNGs produtivos depende de regenerar o PDF no Chrome**; fixture e DOM não podem substituir essa inspeção visual.

@@ -442,8 +442,9 @@
 
 .pdf-portfolio--desktop #sobre .about-portrait.has-custom-image img {
   top: 0 !important;
-  /* The published PNG contains transparent pixels along its lower edge. */
-  translate: 0 1.5rem !important;
+  /* The productive Chrome PDF retained ~7 pt beneath the opaque pixels.
+     Compensate for the PNG's transparent bottom inset, not its CSS box. */
+  translate: 0 2.25rem !important;
 }
 
 /* Desktop PDF: use two balanced columns for all six Results groups. Keeping
@@ -477,8 +478,9 @@
 }
 
 .pdf-portfolio--desktop #contato .contact-portrait img {
-  /* Compensate for transparent bottom pixels without enlarging the paper. */
-  translate: 0 4.5rem !important;
+  /* The productive Chrome PDF retained ~16 pt beneath the opaque pixels.
+     Move the silhouette inside the clipped sheet, not the paper boundary. */
+  translate: 0 6rem !important;
 }
 
 /* The photo bleeds slightly beyond its CSS image box to cover transparent

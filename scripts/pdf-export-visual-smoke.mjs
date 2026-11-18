@@ -120,6 +120,9 @@ try {
           const contactLayoutOverflow = contactLayout
             ? getComputedStyle(contactLayout).overflowY
             : null
+          const contactSectionOverflow = document.querySelector("#contato")
+            ? getComputedStyle(document.querySelector("#contato")).overflowY
+            : null
           const experienceSeparators = experiences.slice(1).map((section) => {
             const style = getComputedStyle(section)
             return { width: parseFloat(style.borderTopWidth), color: style.borderTopColor }
@@ -171,6 +174,7 @@ try {
             contactBottomGap,
             contactLayoutHeight,
             contactLayoutOverflow,
+            contactSectionOverflow,
             experiencePositions,
             experienceOverlapPx,
             contactPortraitObjectFit: contactPortrait
@@ -226,14 +230,15 @@ try {
         }
         if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
         if (device === "desktop" && (
-          (report.aboutBottomGap ?? 9999) > -18 ||
-          (report.aboutBottomGap ?? -9999) < -30
+          (report.aboutBottomGap ?? 9999) > -32 ||
+          (report.aboutBottomGap ?? -9999) < -40
         )) issues.push("about_photo_bottom_alignment")
         if (device === "desktop" && (
           (report.contactLayoutHeight ?? 9999) > 820 ||
           report.contactLayoutOverflow !== "visible" ||
-          (report.contactBottomGap ?? 9999) > -56 ||
-          (report.contactBottomGap ?? -9999) < -90
+          report.contactSectionOverflow !== "clip" ||
+          (report.contactBottomGap ?? 9999) > -92 ||
+          (report.contactBottomGap ?? -9999) < -100
         )) issues.push("contact_bottom_alignment")
         if (report.testimonialPortraitWidths.some((width) => width < 64)) issues.push("testimonial_photo_size")
         if (report.testimonialQuoteFontSizes.some((size) => size < 15.5)) issues.push("testimonial_font_size")
