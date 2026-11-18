@@ -136,6 +136,7 @@ function matchesMobileReferenceMedia(query: string): boolean {
 
 function ensureMobileReferenceCss(doc: Document): void {
   if (doc.getElementById(PDF_MOBILE_REFERENCE_STYLE_ID)) return
+  const normalizedBaseRules: string[] = []
   const mobileRules: string[] = []
   for (const sheet of Array.from(doc.styleSheets)) {
     let rules: CSSRuleList
@@ -145,6 +146,14 @@ function ensureMobileReferenceCss(doc: Document): void {
       continue // Cross-origin stylesheet; the local compiled site CSS is available.
     }
     for (const rule of Array.from(rules)) {
+      // PDF-specific and public base styles also contain vw-based typography.
+      // Reapply their sizing against the PDF container before the responsive
+      // overrides, so the browser tab width cannot inflate the measurement.
+      if (rule.type === CSSRule.STYLE_RULE && /\dvw\b/.test(rule.cssText)) {
+        normalizedBaseRules.push(
+          rule.cssText.replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw"),
+        )
+      }
       if (rule.type !== CSSRule.MEDIA_RULE) continue
       const media = rule as CSSMediaRule
       if (!matchesMobileReferenceMedia(media.media.mediaText)) continue
@@ -167,7 +176,7 @@ function ensureMobileReferenceCss(doc: Document): void {
   }
   const style = doc.createElement("style")
   style.id = PDF_MOBILE_REFERENCE_STYLE_ID
-  style.textContent = mobileRules.join("\n")
+  style.textContent = [...normalizedBaseRules, ...mobileRules].join("\n")
   doc.head.appendChild(style)
 }
 

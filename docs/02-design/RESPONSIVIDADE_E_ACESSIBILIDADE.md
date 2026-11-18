@@ -237,3 +237,6 @@ Risco residual: páginas Mobile com Trajetórias longas podem ficar fisicamente 
 
 
 **Acabamento final de medição Mobile (18/11/2026):** para eliminar espaço inferior causado pela janela Desktop na aba de impressão, a altura da folha Mobile é obtida da última caixa de conteúdo renderizada (`leaf`), não do `scrollHeight` de wrappers. Reserva de 64 CSS px para Sobre e 72 px para as demais seções, mantendo o conteúdo e evitando páginas órfãs. A cor de fundo da folha de Sobre continua grafite abaixo de seu segundo painel. Um teste de paridade compara as alturas de folha da mesma fixture em abas 390 px e 1440 px. Nenhuma mudança no site público, CMS ou PDF Desktop.
+
+
+**Paridade de cálculo com aba externa larga (18/11/2026):** além das regras de media query mobile, o CSS de base carregado pelo renderer PDF que contém unidades `vw` é reavaliado em `cqw` da largura interna de 390 px. Isso evita que a medição de folhas aumente quando a aba de impressão é larga, mantendo as mesmas dimensões e legibilidade do conteúdo Mobile. Validar na QA física por folha; o Desktop não usa esse ramo.
