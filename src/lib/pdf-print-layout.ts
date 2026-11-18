@@ -300,6 +300,18 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     }
   }
 
+  // Perfil ends at the last published area link. The public immersive panel
+  // reserves future screen space after it; that blank area must not set the
+  // physical PDF page height.
+  if (section.dataset.pdfSection === "perfil") {
+    const lastArea = section.querySelector<HTMLElement>(
+      "#perfil-b .profile-mobile-area-list li:last-child",
+    )
+    if (lastArea?.getClientRects().length) {
+      bottom = lastArea.getBoundingClientRect().bottom
+    }
+  }
+
   // Protect the final caption, photo or punctuation without creating an
   // orphaned sheet when printing a tall trajectory or second mobile panel.
   const reserve = section.dataset.pdfSection === "sobre" ? 64 : 72
