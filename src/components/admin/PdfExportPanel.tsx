@@ -5,7 +5,7 @@ import {
   type PdfDevice,
 } from "../../lib/pdf-export-options"
 import { buildPdfPreviewUrl } from "../../lib/pdf-preview-config"
-import { preparePdfPrintLayout } from "../../lib/pdf-print-layout"
+import { pdfPrintErrorMessage, preparePdfPreviewForLaunch } from "../../lib/pdf-print-launch"
 import "./PdfExportPanel.css"
 
 type AdminSection = {
@@ -87,10 +87,9 @@ export default function PdfExportPanel({
       if (!printReady || !doc || !frameWindow) {
         throw new Error("Aguarde a prévia publicada ficar pronta.")
       }
-      const manifest = preparePdfPrintLayout(doc, device, included)
-      if (manifest.pages.length !== included.length) {
-        throw new Error("A quantidade de páginas não corresponde à seleção.")
-      }
+      // The Mobile print tab prepares its own CSS and validates images/text.
+      // Do not mutate the 390px preview iframe before opening that tab.
+      preparePdfPreviewForLaunch(doc, device, included)
       const printUrl = new URL(url ?? "", window.location.origin)
       printUrl.searchParams.set("print", "1")
       const tab = window.open(printUrl.href, "_blank")
@@ -99,7 +98,7 @@ export default function PdfExportPanel({
       tab.opener = null
       setPrintError("")
     } catch (reason) {
-      setPrintError(reason instanceof Error ? reason.message : "Não foi possível imprimir.")
+      setPrintError(pdfPrintErrorMessage(reason))
     }
   }
 
