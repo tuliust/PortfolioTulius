@@ -220,7 +220,10 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     box.bottom,
   )
   const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
-  return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(Math.max(400, actual + 48)) }
+  // Sobre has two editorial panels whose final paragraph can reflow
+  // slightly in Chrome's physical print compositor. Keep it on one sheet.
+  const reserve = section.dataset.pdfSection === "sobre" ? 144 : 48
+  return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
