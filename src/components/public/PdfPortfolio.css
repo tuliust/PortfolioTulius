@@ -424,9 +424,9 @@
 
 /* Keep the three-column content, but remove the inherited bottom padding
    that caused an extra blank sheet whenever compact paper was shorter than
-   the grid's original viewport-based box. Restrict to five requested jobs. */
+   the grid's original viewport-based box. Apply to all six company sheets. */
 .pdf-portfolio--desktop
-  :is(#invest-rs, #prefeitura-sp, #vale, #globo-sportv, #inpress)
+  :is(#invest-rs, #prefeitura-sp, #vale, #globo-sportv, #inpress, #cdi)
   .pdf-experience-layout {
   padding-bottom: 0 !important;
 }
@@ -442,7 +442,8 @@
 
 .pdf-portfolio--desktop #sobre .about-portrait.has-custom-image img {
   top: 0 !important;
-  translate: 0 0 !important;
+  /* The published PNG contains transparent pixels along its lower edge. */
+  translate: 0 1.5rem !important;
 }
 
 /* Desktop PDF: use two balanced columns for all six Results groups. Keeping
@@ -476,8 +477,8 @@
 }
 
 .pdf-portfolio--desktop #contato .contact-portrait img {
-  /* Transparent portrait bottom must land on the physical sheet edge. */
-  translate: 0 3rem !important;
+  /* Compensate for transparent bottom pixels without enlarging the paper. */
+  translate: 0 4.5rem !important;
 }
 
 /* Print-only helper in the top-level tab; never appear on PDF pages. */

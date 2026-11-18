@@ -525,3 +525,10 @@ O PDF sintético físico foi inspecionado: a altura compactada ficou menor que a
 - **Vercel:** deployment automático de produção `dpl_DQ4GySqeyUbmy5uoiVZf5Adx2rZS` em estado **READY**, associado exatamente ao SHA `fd4f273`. Não houve deploy manual.
 
 **Limitação obrigatória:** resultados aprovam a fixture Chromium, **não** o PDF físico com os 13 setores e mídias reais. É necessária nova exportação Desktop Original no Chrome do proprietário para conferir foto de Sobre, foto de Contato e espaços residuais, sem encerrar a homologação produtiva por antecipação. Audit P3 Lighthouse é controle de performance independente e não participa do aceite desta diagramação; seu estado deve ser consultado por SHA.
+
+
+## Ajuste adicional solicitado — acabamento inferior do PDF Desktop (17/11/2026)
+
+O proprietário apontou uma faixa laranja ainda visível sob os retratos nas páginas **Sobre (2)** e **Contato (12)** e espaço inferior residual nas **seis experiências (páginas 5 a 10)**. O problema de medição é que a posição final de uma imagem transparente deslocada pode aumentar a altura do próprio papel: transladar o retrato sem separar essas medidas mantém a faixa inferior. O exportador Desktop passa a medir Sobre e Contato pela caixa do grid editorial (Contato mantém reserva fixa de 56 px, independente do novo deslocamento da imagem). O PNG de Sobre recebe compensação de 24 px e o de Contato de 72 px no CSS **exclusivo de PDF**, sem recortar ou substituir os arquivos.
+
+As seis experiências, inclusive CDI, usam como base a maior das três colunas de texto, com reserva reduzida de 96 para **64 CSS px** e remoção do padding inferior herdado, para retirar apenas parte do vazio sem reduzir fonte ou conteúdo. A QA visual verifica os novos deslocamentos de caixas; a QA física precisa continuar confirmando 13 folhas Desktop, títulos, último conteúdo de Trajetória e hyperlinks. **Este registro documenta o código solicitado, não afirma homologação produtiva ou ausência de transparência residual nos PNGs reais.** Sem mudanças no renderer público, Mobile, CMS, Supabase, Storage, Auth, RLS, migrations ou deploy manual.

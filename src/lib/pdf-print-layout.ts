@@ -60,6 +60,25 @@ function desktopPdfPrintCss(pages: readonly PdfPrintPage[]): string {
 /** Measure all visible section descendants before installing print styles. */
 function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   const box = section.getBoundingClientRect()
+  const slug = section.dataset.pdfSection ?? ""
+  // These transparent portraits deliberately bleed below their layout boxes.
+  // Measuring their translated image bounds would extend the paper by the
+  // same amount, preserving the visible orange strip below the silhouette.
+  if (slug === "sobre" || slug === "contato") {
+    const layout = section.querySelector<HTMLElement>(
+      slug === "sobre" ? ".about-desktop" : ".contact-desktop",
+    )
+    if (layout) {
+      const layoutBottom = layout.getBoundingClientRect().bottom - box.top
+      // Contact retains its original 48px portrait bleed plus 8px of paper
+      // safety, independently of the new transparent-pixel compensation.
+      const bleed = slug === "contato" ? 56 : 0
+      return {
+        slug,
+        heightPx: Math.ceil(Math.max(slug === "sobre" ? 750 : 740, layoutBottom + bleed)),
+      }
+    }
+  }
   const bottom = Array.from(section.querySelectorAll<HTMLElement>("*")).reduce(
     (maximum, child) =>
       child.getClientRects().length
@@ -68,36 +87,34 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
     box.bottom,
   )
   const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
-  const slug = section.dataset.pdfSection ?? ""
   // The published Hero has a fourth highlight ("Idiomas") that escaped into
   // a second physical sheet when its pre-print height was measured below 900px.
   if (slug === "perfil") {
     return { slug, heightPx: Math.ceil(Math.max(900, actual + 12)) }
   }
 
-  // Five long company sheets had 100px+ of unnecessary bottom whitespace.
-  // Use the lower edge of the three real text columns rather than the grid
-  // wrapper, whose 100svh minimum and padding overstate the visible content.
-  if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress"].includes(slug)) {
+  // The six company sheets can finish shortly after their lowest text
+  // column, without inheriting the original immersive viewport height.
+  if (
+    ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug)
+  ) {
     const columns = Array.from(section.querySelectorAll<HTMLElement>(".pdf-experience-layout > *"))
     if (columns.length === 3) {
       const textBottom = Math.max(
         ...columns.map((column) => column.getBoundingClientRect().bottom - box.top),
       )
-      return { slug, heightPx: Math.ceil(Math.max(400, textBottom + 96)) }
+      return { slug, heightPx: Math.ceil(Math.max(400, textBottom + 64)) }
     }
   }
 
-  // The photos of Sobre and Contato must reach the bottom of their physical
-  // pages. Other groups retain safety reserves against print-time grid reflow.
+  // Other groups retain safety reserves against print-time grid reflow.
   let reserve = 12
-  if (slug === "sobre") reserve = 0
-  else if (slug === "formacao") reserve = 240
+  if (slug === "formacao") reserve = 240
   else if (slug === "ferramentas") reserve = 210
   else if (slug === "depoimentos") reserve = 2
   else if (slug === "resultados" || section.classList.contains("pdf-experience-section")) {
     reserve = 32
-  } else if (slug === "contato") reserve = 8
+  }
   return { slug, heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 
