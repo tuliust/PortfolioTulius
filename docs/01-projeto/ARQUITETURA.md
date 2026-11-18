@@ -1,4 +1,13 @@
 # Arquitetura do PortfolioTulius
+
+## Contrato atual de impressão PDF — 18/11/2026
+
+A geração continua exclusivamente no navegador, sem backend PDF ou novas tabelas. O renderer `PdfPortfolio` consome o conteúdo publicado; `PdfPrintReady` aguarda fontes/imagens/Trajetórias; `pdf-print-layout.ts` monta regras físicas `@page`. **Desktop:** `PdfExportPanel.tsx` imprime diretamente o iframe validado de **1440 px** por `printDesktopReferenceFrame()` (`pdf-print-launch.ts`), evitando uma nova aba estreita onde o CSS do site ocultaria `.desktop-panel`. **Mobile:** aba separada, viewport interno **390 px**, folhas físicas separadas para Perfil, Sobre e Resultados; reserva exclusiva de **176 px** em `sobre-diferenciais`. Nenhum componente público, conteúdo ou migration foi modificado.
+
+O proprietário confirmou **aceite visual de ambos os PDFs reais** em 18/11. A especificação operacional atual, os testes e os limites estão em [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md); as etapas anteriores abaixo são registros de evolução e não substituem a solução corrigida.
+
+---
+
 **Status:** referência canônica · **Atualizado:** 16/11/2026. Stack: React 19, TypeScript, Vite, Tailwind CSS v4, Supabase e Vercel.
 
 ## Camadas

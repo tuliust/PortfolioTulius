@@ -1,4 +1,13 @@
 # Testes, CI e homologação
+
+## Homologação PDF concluída — 18/11/2026
+
+O proprietário confirmou **aceite visual dos dois PDFs reais Desktop/Mobile** após as correções. Código funcional `609218b`: [Validate #44250702060](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702060) **SUCCESS**, [PDF Renderer #44250701938](https://github.com/tuliust/PortfolioTulius/actions/runs/44250701938) **SUCCESS** (6/6 visual, 9/9 PDF físico e 2/2 CSS compilado), [P5 read-only #44250702020](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702020) **SUCCESS no segundo attempt** após timeout no primeiro, Vercel Production **READY**. O teste físico sintético da seleção integral produziu **13 folhas Desktop/16 Mobile**; a declaração de aceite real é visual e não autoriza atribuir essas mesmas contagens aos arquivos reais sem manifesto.
+
+O [novo guia canônico de exportação PDF](EXPORTACAO_PDF.md) descreve modos, fluxo, causas, correções e requisitos de nova inspeção. Mentions históricas de “PDF pendente” abaixo foram superadas especificamente por este aceite; o P3 LCP Mobile **FAILURE** em outro ciclo continua histórico, e o teste integral autenticado de persistência no CMS não foi implicitamente executado.
+
+---
+
 **Status:** roteiro de manutenção e aceite editorial · **Revisão:** 18/11/2026. Código funcional da revisão `aeffc5f` (Validate SUCCESS; P3 #43842659962 FAILURE), com commit documental anterior `ad5863c` (Validate/Export SUCCESS; Vercel READY). Aceite do proprietário não reclassifica resultado técnico; relatórios históricos continuam vinculados aos respectivos SHAs.
 
 ## Resultado final desta auditoria P3 — 16/11/2026

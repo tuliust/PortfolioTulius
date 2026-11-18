@@ -1,4 +1,11 @@
 # Responsividade, UX e acessibilidade
+
+## Resultado vigente do PDF — 18/11/2026
+
+Após a regressão real de impressão descrita ao final deste documento, o proprietário reexportou **Desktop e Mobile** e confirmou o **aceite visual** de ambos. O Desktop usa o iframe de referência 1440 px e não perde painéis em uma aba estreita; o Mobile mantém os cinco diferenciais na mesma folha e conserva a paginação física de referência 390 px. Código funcional `609218b`, QA sintético **SUCCESS**; não houve alteração do CSS ou da experiência pública. Contrato atual: [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md). Registros anteriores sobre “aceite pendente” são históricos.
+
+---
+
 **Status:** contrato de apresentação · **Revisão:** 16/11/2026.
 
 ## Modelo

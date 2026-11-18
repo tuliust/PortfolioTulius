@@ -1,4 +1,13 @@
 # Supabase — configuração de produção
+
+## Inventário read-only verificado — 18/11/2026
+
+Projeto `portfolio` (ref `zfnrhzplwpjpdljraypt`, `us-east-1`) em **ACTIVE_HEALTHY**, PostgreSQL 17. **22/22 tabelas `public` com RLS**, **41 policies**, **12 migrations**; 14 seções, 13 publicadas/visíveis, 42 painéis, 28 blocos, 56 placements, **82 `media_assets` publicados** e **4 `portfolio_projects` normalizados com `status=published` e `project_status=realizado`**. `resultados` tem dois registros `content_blocks` publicados, com arrays de **20 e 5 itens** repetidos nos placements por breakpoint. A alteração da contagem de mídia/projetos em relação aos snapshots de 11/16–11 é **fato novo de leitura**, sem atribuição de causa.
+
+Buckets: `portfolio-public` continua público e `portfolio-private` privado. Não confundir a contagem de `media_assets` com a quantidade de arquivos do Storage. A função `portfolio-illustrative-import-20261026` está **ACTIVE v2**, mas isso não comprova o comportamento HTTP. Nenhuma consulta executou INSERT/UPDATE/DELETE, Auth, RLS, Storage, DDL ou migration. [Modelo CMS](../03-cms/MODELO_DE_DADOS.md) · [PDF aprovado](../05-operacao/EXPORTACAO_PDF.md).
+
+---
+
 **Status:** referência de infraestrutura em 11/11/2026, com atualização editorial verificada em **16/11/2026**. Projeto `portfolio`, ref `zfnrhzplwpjpdljraypt`, região `us-east-1`, PostgreSQL 17. Estado `ACTIVE_HEALTHY` corresponde às consultas informadas; reconferir a saúde em intervenções futuras.
 
 22 tabelas públicas com RLS, 41 policies; Auth com vínculo em `admin_users`; Storage `portfolio-public` (72 objetos) e `portfolio-private` (56). Edge Function `portfolio-illustrative-import-20261026` permanecia ACTIVE v2; auditoria antiga aponta HTTP 410 sem importação, mas não remover sem avaliar dependências. Nenhuma branch cloud Supabase identificada.

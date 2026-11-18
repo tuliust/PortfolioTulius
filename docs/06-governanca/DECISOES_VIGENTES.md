@@ -1,4 +1,13 @@
 # Decisões vigentes do proprietário
+
+## Aceite definitivo dos PDFs Desktop e Mobile — 18/11/2026
+
+Após reexportar e **inspecionar visualmente ambos os PDFs reais**, o proprietário declarou “Está tudo ok. Considere concluído.” A homologação **dos PDFs Desktop e Mobile está ENCERRADA POR ACEITE**. Referência de código funcional `609218bd2bfede558f22c44002e62e9e21b2aada`; contrato e evidências em [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md).
+
+Essa decisão **não** modifica o orçamento LCP Mobile, não reclassifica workflows antigos de FAILURE e não autoriza intervenções em CMS, Supabase, RLS/Auth, Storage, design aprovado, nem itens em standby. Os aceites anteriores de 11/16–11 permanecem registrados abaixo com seus SHAs originais.
+
+---
+
 **Status:** aceites e limites de manutenção · **Revisão:** 16/11/2026. Decisões antigas permanecem vigentes salvo autorização posterior explícita.
 
 ## Decisão final da revisão editorial — 16/11/2026

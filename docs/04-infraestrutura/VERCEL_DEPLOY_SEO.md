@@ -1,4 +1,13 @@
 # Vercel, publicação e SEO
+
+## Publicação confirmada da versão funcional do PDF — 18/11/2026
+
+O deployment Vercel Production **`dpl_55JJGRMED7dnCtrTu9L3rKsSDTh3` está READY** para `main@609218bd2bfede558f22c44002e62e9e21b2aada`; Validate, PDF Renderer QA e P5 read-only encerraram **SUCCESS** nesse SHA (P5 no segundo attempt). O proprietário aceitou os PDFs reais Desktop e Mobile. [Contrato PDF e evidências](../05-operacao/EXPORTACAO_PDF.md).
+
+Um commit **somente Markdown** pode disparar novo deployment pela integração Git/Vercel. Conferir o novo SHA separadamente após este registro; **não** realizar deploy manual nem alterar DNS ou configuração. Os deployments dos parágrafos de 13–16/11 abaixo são históricos.
+
+---
+
 **Status:** contrato operacional · **Revisão:** 16/11/2026. As evidências de 13/11 foram preservadas como históricas; ver a publicação confirmada abaixo.
 
 ## Estado mais recente de publicação — 16/11/2026

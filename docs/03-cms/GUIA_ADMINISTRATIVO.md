@@ -1,4 +1,13 @@
 # Guia operacional do CMS
+
+## Fluxo de exportação PDF homologado — 18/11/2026
+
+No módulo **Exportar PDF**, após a prévia estar pronta, **Gerar PDF** imprime a versão Desktop diretamente no iframe de referência **1440 px**. No **Mobile**, abre aba dedicada com referência **390 px**. No Chrome, escolher **Salvar como PDF**, margens nenhuma, gráficos de fundo ativados e cabeçalhos/rodapés desativados. O proprietário **aceitou visualmente ambos os PDFs reais** após as correções da regressão. Ver [guia canônico PDF](../05-operacao/EXPORTACAO_PDF.md) para ordem das folhas, resolução e testes.
+
+Esse aceite não equivale a teste autenticado integral de **editar → salvar → reler** os 20 indicadores do CMS; as restrições de escrita e o guard de mídia continuam inalterados.
+
+---
+
 **Status:** contrato administrativo vigente · **Revisão:** 18/11/2026. Resultados e Experiências revisados no CMS; aceite editorial do proprietário concluído. A gravação autenticada integral editar→salvar→reler **não foi executada** neste ciclo e não pode ser inferida do aceite ou da leitura pública.
 
 ## Resultados — operação vigente do editor (16/11/2026)

@@ -1,4 +1,15 @@
 # Estado atual — PortfolioTulius
+
+## Estado vigente — 18/11/2026
+
+A homologação dos PDFs **Desktop e Mobile está encerrada por aceite visual do proprietário** após reexportação dos dois arquivos reais. Código funcional `main@609218bd2bfede558f22c44002e62e9e21b2aada`: Validate **SUCCESS** (#44250702060), QA PDF **SUCCESS** (#44250701938: 6/6 visual, 9/9 físico, 2/2 CSS compilado), P5 read-only **SUCCESS na repetição** (#44250702020) e Vercel funcional **READY**. O risco histórico de LCP Mobile permanece aceito, não corrigido.
+
+Supabase `portfolio` relido apenas em consultas de leitura: **ACTIVE_HEALTHY**, 22 tabelas `public` com RLS e 41 policies, 12 migrations, 14 seções (13 publicadas visíveis), 42 painéis, 28 blocos, 56 placements, **82 registros de mídia**, **4 projetos normalizados `published/realizado`** e 6 Trajetórias publicadas. `resultados` conserva 20 indicadores em A e cinco temas em B por breakpoint. Nenhuma operação no banco foi realizada neste ciclo de documentação.
+
+[PDF — contrato e aceite](../05-operacao/EXPORTACAO_PDF.md) · [Supabase](../04-infraestrutura/SUPABASE.md) · [Decisões](../06-governanca/DECISOES_VIGENTES.md). As fotografias históricas abaixo permanecem vinculadas às datas/SHAs antigos; menções antigas a “PDF pendente” não prevalecem sobre este aceite.
+
+---
+
 **Status:** produto e revisão editorial de Resultados/Experiências concluídos por aceite do proprietário em 16/11/2026. **Código funcional** [`aeffc5f`](https://github.com/tuliust/PortfolioTulius/commit/aeffc5feabc7dfeab426046eb9748e5b8ef81c45) com Validate SUCCESS, P3 global FAILURE. **Commit documental anterior** [`ad5863c`](https://github.com/tuliust/PortfolioTulius/commit/ad5863c0dbb1386d41482a6d9bbe9dc9a9ba60fc) com Validate/Export SUCCESS e Vercel READY. Conferir sempre a `main` viva; a baseline `0627947` (11/11) é histórica.
 
 ## Estado mais recente da revisão editorial — 16/11/2026

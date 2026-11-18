@@ -1,5 +1,15 @@
 # PortfolioTulius — documentação temática
 
+## Situação vigente — aceite PDF e conferência de serviços, 18/11/2026
+
+**PDF Desktop e Mobile concluídos por aceite visual do proprietário** após inspeção das exportações reais. Código funcional [`609218b`](https://github.com/tuliust/PortfolioTulius/commit/609218bd2bfede558f22c44002e62e9e21b2aada); [Validate SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702060), [QA PDF SUCCESS (6/6 visual, 9/9 físico, 2/2 CSS)](https://github.com/tuliust/PortfolioTulius/actions/runs/44250701938), [P5 read-only SUCCESS no segundo attempt](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702020); Vercel funcional READY no mesmo SHA. [**Contrato vigente de exportação e aceite**](05-operacao/EXPORTACAO_PDF.md).
+
+**Supabase relido em produção (somente leitura):** `portfolio` ACTIVE_HEALTHY, 22 tabelas públicas com RLS/41 políticas, 14 seções (13 publicadas e visíveis), 42 painéis, 28 blocos, 56 placements, **82 mídias cadastradas**, **4 projetos normalizados publicados/realizados**, 12 migrations. A revisão de PDF não alterou o banco. O risco de LCP Mobile permanece em [standby](06-governanca/BACKLOG_STANDBY.md), aceito e não corrigido.
+
+**Organização:** o novo guia de PDF está na pasta operacional `docs/05-operacao/`. O índice canônico abaixo continua por assunto. Os relatórios antigos preservam seu contexto histórico em `docs/historico/`; nenhum deles deve ser excluído ou tratado como contrato vigente. As cinco fontes privadas do Projeto ChatGPT devem ser substituídas manualmente por snapshots atualizados, sem copiá-las para o GitHub.
+
+---
+
 ## Resultado mais recente do ciclo editorial — 16/11/2026
 
 No SHA [`8ed19b0`](https://github.com/tuliust/PortfolioTulius/commit/8ed19b098349e882f7c7dbb9b926114b6451e17e), [P3 #43846278955](https://github.com/tuliust/PortfolioTulius/actions/runs/43846278955) confirmou **navegador/responsividade PASS (0 falhas)** após corrigir as duas assertivas obsoletas de quatro para **cinco projetos**, e **38 capturas PASS**, projeto ↔ galeria, troca Trajetória/Projetos, rotas admin anônimas, SEO, RLS e tolerância parcial de leitura pública. O marcador `P3_DEPLOYMENT_GATE` confirmou o SHA servido em produção. Entretanto, **P3 global = FAILURE exclusivamente no orçamento mobile**: LCP mediano **3.649,202 ms** (meta **≤3.500 ms**); desktop **895,144 ms** (PASS). [Validate #43846279093](https://github.com/tuliust/PortfolioTulius/actions/runs/43846279093) e [Export Docs #43846279061](https://github.com/tuliust/PortfolioTulius/actions/runs/43846279061) foram **SUCCESS**; Vercel production `dpl_9Ti9ghY6ZC6tJ2DbCmT6Wg9L8XUm` estava **READY**. O proprietário **encerrou a revisão editorial** e aceitou o risco residual, sem considerar o LCP corrigido nem reclassificar o workflow como SUCCESS. Não houve mudança de Hero, Olá, conteúdo público ou banco nesta correção de teste.
@@ -23,6 +33,7 @@ Os parágrafos de 16/11 que citam `9915964`, `aeffc5f` ou `ad5863c` são marcos 
 | Permissões, políticas, chaves | [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
 | Domínios, publicação e SEO | [Vercel](04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
 | CI, Lighthouse, homologação | [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
+| Exportação PDF Desktop/Mobile, aceite e impressão | [Guia PDF](05-operacao/EXPORTACAO_PDF.md) |
 | Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
 | Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
 | Branches antigas e limpeza manual | [Referências de branches](06-governanca/BRANCHES_E_REFERENCIAS.md) |

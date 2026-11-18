@@ -1,4 +1,11 @@
 # Guia para ChatGPT, Codex e outras IAs
+
+## Leitura prioritária para PDF — após o aceite de 18/11/2026
+
+Para demandas envolvendo o PDF, iniciar por [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md), `src/lib/pdf-print-layout.ts`, `src/lib/pdf-print-launch.ts` e o smoke físico. **Desktop** imprime no iframe de referência 1440 px; **Mobile** em aba independente com documento de 390 px. Ambos já foram **aceitos pelo proprietário**. Não reabrir a homologação por causa de menções históricas a “pendente”, nem interpretar o aceite como correção do LCP Mobile, autorização de escrita no CMS ou atualização automática das cinco fontes privadas.
+
+---
+
 **Status:** roteiro de manutenção · **Revisão:** 11/11/2026. Complementa [`AGENTS.md`](../../AGENTS.md), sem substituí-lo.
 
 ## Procedimento antes de alterar qualquer coisa

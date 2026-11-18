@@ -1,4 +1,11 @@
 # Configurações, variáveis e integrações
+
+## Conferência read-only — 18/11/2026
+
+O código funcional PDF `main@609218b` foi validado e publicado no deployment Vercel Production **`dpl_55JJGRMED7dnCtrTu9L3rKsSDTh3` READY**. O Supabase `portfolio` (`zfnrhzplwpjpdljraypt`) retornou **ACTIVE_HEALTHY**; 22 tabelas `public` com RLS, 41 políticas e 12 migrations. Nenhuma variável real, segredo, chave, permissão, DNS ou configuração foi lida/modificada. O aceite do proprietário dos dois PDFs está documentado em [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md). Evidências de 13–16/11 abaixo são históricas.
+
+---
+
 **Status:** inventário seguro, sem segredos · **Revisão:** 16/11/2026. A situação de 13/11 permanece identificada como verificação histórica.
 
 | Serviço | Referência |
