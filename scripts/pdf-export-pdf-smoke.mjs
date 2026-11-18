@@ -304,10 +304,15 @@ try {
       const sectionStarts = {}
       let previous = -1
       for (const slug of sections) {
-        const pageIndex = physicalTexts.findIndex(
-          (text, index) => index > previous && text.includes(titles[slug]),
-        )
-        if (pageIndex < 0) {
+        // Mobile has additional physical sheets inside Perfil, Sobre and
+        // Resultados. Search by the explicit manifest: keywords like
+        // RESULTADOS and INVEST RS also occur in preceding metric captions.
+        const pageIndex = device === "mobile"
+          ? printSlugs.indexOf(slug)
+          : physicalTexts.findIndex(
+              (text, index) => index > previous && text.includes(titles[slug]),
+            )
+        if (pageIndex <= previous || !physicalTexts[pageIndex]?.includes(titles[slug])) {
           throw new Error("Missing or out-of-order section " + slug +
             " after physical page " + (previous + 1))
         }
