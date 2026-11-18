@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest"
-import { pdfPrintErrorMessage, preparePdfPreviewForLaunch } from "./pdf-print-launch"
+import {
+  pdfPrintErrorMessage,
+  preparePdfPreviewForLaunch,
+  printDesktopReferenceFrame,
+} from "./pdf-print-launch"
 
 const fakeDocument = {} as Document
 
@@ -24,6 +28,32 @@ describe("PDF print launch from the admin preview", () => {
     expect(() =>
       preparePdfPreviewForLaunch(fakeDocument, "desktop", ["perfil", "sobre"], prepare),
     ).toThrow("A quantidade de páginas não corresponde à seleção.")
+  })
+
+  it("prints Desktop from the 1440px reference frame, without another tab", () => {
+    const frameWindow = { focus: vi.fn(), print: vi.fn() }
+    expect(printDesktopReferenceFrame("desktop", frameWindow)).toBe(true)
+    expect(frameWindow.focus).toHaveBeenCalledOnce()
+    expect(frameWindow.print).toHaveBeenCalledOnce()
+  })
+
+  it("keeps Mobile on its separate print tab", () => {
+    const frameWindow = { focus: vi.fn(), print: vi.fn() }
+    expect(printDesktopReferenceFrame("mobile", frameWindow)).toBe(false)
+    expect(frameWindow.focus).not.toHaveBeenCalled()
+    expect(frameWindow.print).not.toHaveBeenCalled()
+  })
+
+  it("propagates a blocked iframe print to the admin error handler", () => {
+    const frameWindow = {
+      focus: vi.fn(),
+      print: vi.fn(() => {
+        throw new Error("Impressão indisponível")
+      }),
+    }
+    expect(() => printDesktopReferenceFrame("desktop", frameWindow)).toThrow(
+      "Impressão indisponível",
+    )
   })
 
   it("keeps error messages from iframe realms and other throwable values", () => {

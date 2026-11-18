@@ -20,6 +20,21 @@ export function preparePdfPreviewForLaunch(
   }
 }
 
+/** 
+ * Print Desktop inside the validated 1440px reference iframe.
+ * A new tab may be 390px wide and hide .desktop-panel through mobile CSS.
+ * Mobile continues using its separate print tab.
+ */
+export function printDesktopReferenceFrame(
+  device: PdfDevice,
+  frameWindow: Pick<Window, "focus" | "print">,
+): boolean {
+  if (device !== "desktop") return false
+  frameWindow.focus()
+  frameWindow.print()
+  return true
+}
+
 /** Errors thrown by an iframe may not pass `instanceof Error` in its parent. */
 export function pdfPrintErrorMessage(reason: unknown): string {
   if (reason && typeof reason === "object" && "message" in reason) {

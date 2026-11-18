@@ -416,7 +416,7 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
         perfil: 2,
         "perfil-areas": 84,
         sobre: 0,
-        "sobre-diferenciais": 64,
+        "sobre-diferenciais": 176,
         resultados: 36,
         "resultados-grupos": 64,
       } as Record<string, number>

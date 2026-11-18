@@ -5,7 +5,11 @@ import {
   type PdfDevice,
 } from "../../lib/pdf-export-options"
 import { buildPdfPreviewUrl } from "../../lib/pdf-preview-config"
-import { pdfPrintErrorMessage, preparePdfPreviewForLaunch } from "../../lib/pdf-print-launch"
+import {
+  pdfPrintErrorMessage,
+  preparePdfPreviewForLaunch,
+  printDesktopReferenceFrame,
+} from "../../lib/pdf-print-launch"
 import "./PdfExportPanel.css"
 
 type AdminSection = {
@@ -90,6 +94,10 @@ export default function PdfExportPanel({
       // The Mobile print tab prepares its own CSS and validates images/text.
       // Do not mutate the 390px preview iframe before opening that tab.
       preparePdfPreviewForLaunch(doc, device, included)
+      if (printDesktopReferenceFrame(device, frameWindow)) {
+        setPrintError("")
+        return
+      }
       const printUrl = new URL(url ?? "", window.location.origin)
       printUrl.searchParams.set("print", "1")
       const tab = window.open(printUrl.href, "_blank")
@@ -278,7 +286,8 @@ export default function PdfExportPanel({
           </p>
         )}
         <p className="pdf-export-help">
-          Clique em <strong>Gerar PDF</strong> para abrir a impressão em uma nova aba. Escolha
+          Clique em <strong>Gerar PDF</strong>. No Desktop, a impressão utiliza a prévia
+          de 1440 px; no Mobile, abre uma nova aba. Escolha
           <strong> Salvar como PDF</strong> como destino do Chrome, não uma impressora física ou
           virtual do sistema. Cada seção começa em uma nova folha e conteúdos extensos podem
           continuar em folhas adicionais. Os textos e links devem permanecer pesquisáveis e

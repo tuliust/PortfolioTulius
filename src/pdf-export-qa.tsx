@@ -33,6 +33,30 @@ const fixtureSections = sections.map((section) => {
       ),
     }
   }
+  if (section.slug === "sobre" && device === "mobile") {
+    // The isolated fallback formerly had different, shorter final headlines.
+    // Match the five published blocks supplied for the real PDF comparison.
+    const printReference = [
+      ["Estratégia também é escuta.", "Diálogo como prioridade para compreender demandas, alinhar expectativas e orientar ações."],
+      ["Comunicação de ponta a ponta", "Vivência em diferentes etapas, processos e perspectivas da Comunicação."],
+      ["Visão editorial", "Clareza e repertório para temas complexos, construção de narrativas e abordagens para diferentes públicos."],
+      ["Resultados que orientam decisões", "Monitoramento, análise de indicadores e apresentação de resultados para aprimorar ações."],
+      ["Comunicação para lideranças", "Posicionamento e mensagens que fortalecem credibilidade e criam conexões."],
+    ]
+    return {
+      ...section,
+      panelB: section.panelB.map((item, index) =>
+        printReference[index]
+          ? { ...item, title: printReference[index][0], text: printReference[index][1] }
+          : item,
+      ),
+      panelA: simulateDeferredAbout
+        ? section.panelA.map((item, index) =>
+            index === 0 ? { ...item, image: APPROVED_ABOUT_TABLET } : item,
+          )
+        : section.panelA,
+    }
+  }
   if (section.slug === "sobre" && simulateDeferredAbout) {
     return {
       ...section,

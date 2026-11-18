@@ -348,7 +348,8 @@ try {
         if (sections.includes("sobre") && (
           !sheetText("sobre").includes("PRAZER") ||
           sheetText("sobre").includes("ESTRATEGIA TAMBEM E ESCUTA") ||
-          !sheetText("sobre-diferenciais").includes("ESTRATEGIA TAMBEM E ESCUTA")
+          !sheetText("sobre-diferenciais").includes("ESTRATEGIA TAMBEM E ESCUTA") ||
+          !sheetText("sobre-diferenciais").includes("CREDIBILIDADE E CRIAM CONEXOES")
         )) throw new Error("Mobile Sobre / Diferenciais boundary violated")
         if (sections.includes("resultados") && (
           !sheetText("resultados").includes("VISAO GERAL") ||

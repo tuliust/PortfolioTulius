@@ -714,3 +714,14 @@ A correção proposta/implementada em `pdf-print-layout.ts` avalia media queries
 ## Tooltip administrativo de dimensões de mídia (18/11/2026)
 
 O teste `src/components/admin/admin-visual-editors.test.tsx` cobre a presença de botão de ajuda acessível com `role="tooltip"` e texto recomendado no `PublishedMediaPicker`, além do mapeamento de Perfil, Sobre (desktop/mobile), Contato, miniaturas genéricas e fotografia exclusiva mobile. A verificação é de **renderização estática e lógica de recomendação**; não comprova, isoladamente, hover real ou toque em navegador autenticado. Validar `pnpm check`/CI por SHA, publicação automática e revisão visual de admin quando possível, mantendo sem alterações dados e configuração de produção.
+
+
+## Incidente da exportação real — Desktop vazio e folha órfã Mobile (18/11/2026)
+
+**Evidência recebida:** PDF Desktop real com 14 folhas: páginas 1 (Perfil), 2 (Sobre), 4 (Formação), 11 (Ferramentas) e 14 (Contato) apresentavam somente o fundo; Depoimentos se fragmentou entre 12–13. PDF Mobile real com 17 folhas: a frase final do quinto diferencial de Sobre saiu da página 4 para uma folha 5 órfã, deslocando o restante da paginação. Os testes de fixture anteriores, embora SUCCESS, não reproduziam esses dois problemas.
+
+**Causa Desktop:** `PdfExportPanel` preparava a prévia em iframe CSS de 1440px, mas abria outra aba para imprimir; quando essa aba tem viewport CSS estreita, a regra responsiva do site `.desktop-panel {display:none}` esconde as cinco seções que reutilizam `Section`, embora o papel continue com largura 1440px. **Mudança:** em **Gerar PDF**, imprimir diretamente a janela do iframe Desktop de referência, já validada, sem reabrir aba com breakpoint divergente. Mobile mantém sua aba independente. Trata-se de fluxo do exportador, sem alteração do site público ou do Desktop editorial.
+
+**Causa Mobile:** a reserva física de 64px para `sobre-diferenciais` não acomodava o último texto real, que fragmentava em nova folha. Apenas essa reserva foi elevada para **176px**. A fixture Mobile isolada passou a usar os cinco diferenciais recebidos; o smoke físico exige a sentença de encerramento na própria folha dos diferenciais.
+
+**Arquivos:** `PdfExportPanel.tsx`, `pdf-print-launch.ts`, `pdf-print-launch.test.ts`, `pdf-print-layout.ts`, `pdf-export-qa.tsx`, `pdf-export-pdf-smoke.mjs`. Nenhuma alteração em Supabase, Auth, RLS, Storage, migrations, conteúdo ou mídias publicados. **Validação do novo SHA:** inicialmente pendente de Validate, QA física/visual, CSS compilado, deployment e reexportação autenticada com o CMS real. Não usar QA sintético como prova automática de aceite produtivo.
