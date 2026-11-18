@@ -95,9 +95,7 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
 
   // The six company sheets can finish shortly after their lowest text
   // column, without inheriting the original immersive viewport height.
-  if (
-    ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug)
-  ) {
+  if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug)) {
     const columns = Array.from(section.querySelectorAll<HTMLElement>(".pdf-experience-layout > *"))
     if (columns.length === 3) {
       const textBottom = Math.max(
