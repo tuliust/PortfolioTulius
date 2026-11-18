@@ -12,9 +12,12 @@
 | Mídias | `media_assets` |
 | Histórico | `editorial_issues`, `content_revisions`, `audit_logs` |
 
-**Inventário relido do Supabase em 18/11/2026:** 14 seções (13 publicadas/visíveis), 42 painéis, 28 blocos, 56 placements, **82 registros de mídia `published`** (a fotografia antiga era 75), **4 projetos normalizados `published/realizado`** (a fotografia antiga era 3), 6 Trajetórias publicadas e 22 tabelas públicas com RLS. O `resultados` mantém os blocos A/B publicados: respectivamente **20 itens** e **5 temas** por breakpoint. Esses números são contagens de banco, **não** objetos físicos de Storage, comprovação das métricas ou autorização de limpeza. O PDF foi aceito sem qualquer migração/alteração de dados.
+**Inventário relido do Supabase em 18/11/2026:** 14 seções (13 publicadas/visíveis), 42 painéis, 28 blocos, 56 placements, **90 registros de mídia `published`** (fotografias anteriores: 75, 82 e 87), **4 projetos normalizados `published/realizado`** (a fotografia antiga era 3), 6 Trajetórias publicadas e 22 tabelas públicas com RLS. O `resultados` mantém os blocos A/B publicados: respectivamente **20 itens** e **5 temas** por breakpoint. Esses números são contagens de banco, **não** objetos físicos de Storage, comprovação das métricas ou autorização de limpeza. O PDF foi aceito sem qualquer migração/alteração de dados.
 
 ## Semântica
+
+**Logo de experiências (18/11/2026):** `content_blocks.content_json.experienceMedia.logo` e `logoAlt` são campos opcionais independentes. O renderer usa a URL presente como condição de visibilidade do logotipo; um `logoAlt` ausente/vazio resulta em `alt=""` (empresa identificada por texto visível ao lado), não no monograma. Sem URL, o monograma permanece. Sem mudança de tabelas, RPC ou policies.
+
 `sections`: identidade/estado/ordem da seção; `section_panels`: desktop/mobile-a/mobile-b; `content_blocks.content_json`: conteúdo, Hero, imagens e vínculos; `block_placements`: ordem, visibilidade, layout, `style_config`, `motion_config` e `updated_at`. Não migrar blocos manuais para coleções sem decisão editorial.
 
 [`usePortfolio.ts`](../../src/hooks/usePortfolio.ts) + [`placements.ts`](../../src/lib/placements.ts) compõem o site. `media_assets.alt_text` é fonte canônica de alt para mídias reconhecidas; `focal_point` global só atua na ausência de override local de enquadramento (ver [`media-alt-sync.ts`](../../src/lib/media-alt-sync.ts)). `career_experiences` alimenta Trajetória e `testimonials`, Depoimentos. `pages`/`site_settings` alimentam SEO após build.

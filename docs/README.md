@@ -2,10 +2,13 @@
 
 ## Situação vigente — aceite PDF e conferência de serviços, 18/11/2026
 
+**Atualização posterior de 18/11:** corrigida a regra de apresentação dos logotipos das Experiências: `logoAlt` é opcional e não bloqueia a imagem quando há URL. O componente público tem teste de regressão para desktop/mobile. Releitura read-only após novos uploads confirmou **90 mídias publicadas e 143 objetos Storage** (87 públicos e 56 privados). **Backup físico atual segue não confirmado.** A fotografia anterior do mesmo dia era 87 mídias/140 objetos, sem equivaler ao inventário atual. [Contrato de mídia](03-cms/MIDIAS_E_STORAGE.md) · [Contrato CMS](03-cms/GUIA_ADMINISTRATIVO.md).
+
+
 **PDF Desktop e Mobile concluídos por aceite visual do proprietário** após inspeção das exportações reais. Código funcional [`609218b`](https://github.com/tuliust/PortfolioTulius/commit/609218bd2bfede558f22c44002e62e9e21b2aada); [Validate SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702060), [QA PDF SUCCESS (6/6 visual, 9/9 físico, 2/2 CSS)](https://github.com/tuliust/PortfolioTulius/actions/runs/44250701938), [P5 read-only SUCCESS no segundo attempt](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702020); Vercel funcional READY no mesmo SHA. [**Contrato vigente de exportação e aceite**](05-operacao/EXPORTACAO_PDF.md).
 
-**Supabase relido em produção (somente leitura):** `portfolio` ACTIVE_HEALTHY, 22 tabelas públicas com RLS/41 políticas, 14 seções (13 publicadas e visíveis), 42 painéis, 28 blocos, 56 placements, **87 mídias publicadas**, **4 projetos normalizados publicados/realizados**, 12 migrations. O Storage contém **84 objetos públicos e 56 privados**,
-totalizando **140 objetos**. A revisão de PDF não alterou o banco. O risco de LCP Mobile permanece em [standby](06-governanca/BACKLOG_STANDBY.md), aceito e não corrigido.
+**Supabase relido em produção (somente leitura):** `portfolio` ACTIVE_HEALTHY, 22 tabelas públicas com RLS/41 políticas, 14 seções (13 publicadas e visíveis), 42 painéis, 28 blocos, 56 placements, **90 mídias publicadas**, **4 projetos normalizados publicados/realizados**, 12 migrations. O Storage contém **87 objetos públicos e 56 privados**,
+totalizando **143 objetos**. A revisão de PDF não alterou o banco. O risco de LCP Mobile permanece em [standby](06-governanca/BACKLOG_STANDBY.md), aceito e não corrigido.
 
 **Inventário vigente de CI — 18/11/2026:** a pasta
 `.github/workflows/` contém **sete workflows executáveis**:

@@ -1,5 +1,10 @@
 # Testes, CI e homologação
 
+## Regressão dos logos de Experiências — 18/11/2026
+
+`src/components/public/ExperienceStack.test.tsx` introduz verificações SSR do componente público: (1) URL de logo com `logoAlt` omitido exibe imagem com `alt=""` nos contextos desktop (barra e cabeçalho) e mobile (barra); (2) espaços em branco no alt não ocultam logo; (3) alt preenchido é preservado; (4) ausência de URL mantém monograma. `src/components/public/ExperienceStack.tsx` retira a condição incorreta `logo && logoAlt`. **O status da nova execução Validate/CI e do deployment deve ser aferido pelo SHA deste commit**; resultados históricos de CI não homologam automaticamente esta intervenção. Teste autenticado completo do CMS não faz parte deste escopo.
+
+
 ## Homologação PDF concluída — 18/11/2026
 
 O proprietário confirmou **aceite visual dos dois PDFs reais Desktop/Mobile** após as correções. Código funcional `609218b`: [Validate #44250702060](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702060) **SUCCESS**, [PDF Renderer #44250701938](https://github.com/tuliust/PortfolioTulius/actions/runs/44250701938) **SUCCESS** (6/6 visual, 9/9 PDF físico e 2/2 CSS compilado), [P5 read-only #44250702020](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702020) **SUCCESS no segundo attempt** após timeout no primeiro, Vercel Production **READY**. O teste físico sintético da seleção integral produziu **13 folhas Desktop/16 Mobile**; a declaração de aceite real é visual e não autoriza atribuir essas mesmas contagens aos arquivos reais sem manifesto.

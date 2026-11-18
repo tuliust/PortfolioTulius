@@ -1,9 +1,11 @@
 # Biblioteca de mídias e Storage
 
-**Inventário de produção reconfirmado em 18/11/2026 (somente leitura):**
-`media_assets` possui **87 registros publicados**. O Storage
-contém **84 objetos** no bucket `portfolio-public` e **56 objetos**
-no bucket `portfolio-private`, totalizando **140 objetos físicos**.
+**Inventário de produção atualizado após uploads em 18/11/2026 (somente leitura):**
+`media_assets` possui **90 registros publicados**. O Storage
+contém **87 objetos** no bucket `portfolio-public` (13.105.754 bytes em metadados) e **56 objetos**
+no bucket `portfolio-private` (2.840.299 bytes), totalizando **143 objetos físicos**
+(15.946.053 bytes em metadados). A fotografia anterior do mesmo dia
+registrou 87 mídias e 140 objetos (84 públicos + 56 privados); **não representa o inventário atual**.
 Os inventários anteriores de 75/82 mídias e 128 objetos pertencem
 a fotografias históricas. Não existe correspondência obrigatória
 de 1:1 entre registros do catálogo e arquivos físicos.
@@ -16,12 +18,16 @@ nesta conferência.
 
 | Origem | Quantidade | Acesso |
 |---|---:|---|
-| Bucket `portfolio-public` | 84 objetos | Público |
+| Bucket `portfolio-public` | 87 objetos | Público |
 | Bucket `portfolio-private` | 56 objetos | Privado |
-| `media_assets` | 87 registros publicados | Sob RLS |
-| **Total Storage** | **140 objetos** | Público + privado |
+| `media_assets` | 90 registros publicados | Sob RLS |
+| **Total Storage** | **143 objetos** | Público + privado |
 
 A cópia privada de origem, a pública promovida e o catálogo podem não coincidir 1:1. Upload/promoção/exclusão incluem Storage e PostgreSQL **sem uma transação distribuída**. A remoção deve verificar referências e ter compensação/backup.
+
+Nos logotipos das Experiências, `experienceMedia.logoAlt` é **opcional**. O `CompanyMark` exibe um logotipo sempre que há URL, com `alt=""` quando o nome da empresa já o acompanha e o texto alternativo não foi informado; na ausência de URL, exibe o monograma. Não há exigência de preencher alt para o logo ficar visível. `src/components/public/ExperienceStack.test.tsx` protege essa regra em desktop/mobile.
+
+**Backup físico:** nem a contagem atual nem um manifesto vazio comprovam cópia. O teste local anterior da Supabase CLI retornou `Authorization failed` para o par token/projeto; **143/143 arquivos com manifesto e hashes seguem não confirmados**. Conferir autorização do operador antes de repetir download, sem expor tokens nem mudar produção por conveniência.
 
 `media_assets.alt_text` publicado é propagado para usos desktop/mobile pelo [`media-alt-sync.ts`](../../src/lib/media-alt-sync.ts), sem reescrever JSONB antigo. Ponto focal global tem efeito quando não há override de enquadramento por uso; URL externa/não catalogada mantém texto local. Pode ser necessário recarregar a página. A migration `20261110153000` retirou `media_assets.credit`.
 

@@ -1,5 +1,10 @@
 # Configurações, variáveis e integrações
 
+## Inventário posterior aos uploads — 18/11/2026
+
+Consulta somente leitura ao Supabase `portfolio` confirmou **90 mídias publicadas** e **143 objetos Storage**, sendo `portfolio-public` **87 objetos/13.105.754 bytes** e `portfolio-private` **56 objetos/2.840.299 bytes** em metadados (total **15.946.053 bytes**). O registro abaixo de 87 mídias/140 objetos é fotografia anterior de 18/11, não a meta atual de backup. Nenhuma chave, configuração ou mídia foi alterada nesta leitura. O logo Invest RS publicado com alt opcional motivou ajuste apenas no renderer; ver [Mídias](../03-cms/MIDIAS_E_STORAGE.md).
+
+
 ## Conferência read-only — 18/11/2026
 
 O código funcional PDF `main@609218b` foi validado e publicado no deployment Vercel Production **`dpl_55JJGRMED7dnCtrTu9L3rKsSDTh3` READY**. O Supabase `portfolio` (`zfnrhzplwpjpdljraypt`) retornou **ACTIVE_HEALTHY**; 22 tabelas `public` com RLS, 41 políticas e 12 migrations. Nenhuma variável real, segredo, chave, permissão, DNS ou configuração foi lida/modificada. O aceite do proprietário dos dois PDFs está documentado em [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md). Evidências de 13–16/11 abaixo são históricas.

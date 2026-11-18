@@ -2,9 +2,12 @@
 
 ## Estado vigente — 18/11/2026
 
+**Correção posterior de logotipos das Experiências:** o frontend passa a exibir a URL publicada do logo sem exigir `logoAlt` (opcional), preservando o monograma apenas para ausência de URL. Teste SSR cobre barra e cabeçalho desktop e barra mobile. Nenhum dado produtivo foi alterado para implementar o comportamento. Após uploads adicionais de 18/11, o inventário de produção foi relido: 90 mídias publicadas e 143 objetos Storage (87 públicos, 56 privados). O backup físico de 143 objetos **não está comprovado**; números mais antigos são snapshots do mesmo dia.
+
+
 A homologação dos PDFs **Desktop e Mobile está encerrada por aceite visual do proprietário** após reexportação dos dois arquivos reais. Código funcional `main@609218bd2bfede558f22c44002e62e9e21b2aada`: Validate **SUCCESS** (#44250702060), QA PDF **SUCCESS** (#44250701938: 6/6 visual, 9/9 físico, 2/2 CSS compilado), P5 read-only **SUCCESS na repetição** (#44250702020) e Vercel funcional **READY**. O risco histórico de LCP Mobile permanece aceito, não corrigido.
 
-Supabase `portfolio` relido apenas em consultas de leitura: **ACTIVE_HEALTHY**, 22 tabelas `public` com RLS e 41 policies, 12 migrations, 14 seções (13 publicadas visíveis), 42 painéis, 28 blocos, 56 placements, **87 registros de mídia publicados**, **4 projetos normalizados `published/realizado`** e 6 Trajetórias publicadas. O Storage possui **84 objetos no bucket `portfolio-public` e 56 no `portfolio-private`**, totalizando **140 objetos**. `resultados` conserva 20 indicadores em A e cinco temas em B por breakpoint. As contagens anteriores de 82 mídias e 128 objetos correspondem a inventários históricos. Nenhuma operação de escrita no banco ou Storage foi realizada nesta conferência.
+Supabase `portfolio` relido apenas em consultas de leitura: **ACTIVE_HEALTHY**, 22 tabelas `public` com RLS e 41 policies, 12 migrations, 14 seções (13 publicadas visíveis), 42 painéis, 28 blocos, 56 placements, **90 registros de mídia publicados**, **4 projetos normalizados `published/realizado`** e 6 Trajetórias publicadas. O Storage possui **87 objetos no bucket `portfolio-public` e 56 no `portfolio-private`**, totalizando **143 objetos**. `resultados` conserva 20 indicadores em A e cinco temas em B por breakpoint. As contagens anteriores de 82 mídias e 128 objetos correspondem a inventários históricos. Nenhuma operação de escrita no banco ou Storage foi realizada nesta conferência.
 
 [PDF — contrato e aceite](../05-operacao/EXPORTACAO_PDF.md) · [Supabase](../04-infraestrutura/SUPABASE.md) · [Decisões](../06-governanca/DECISOES_VIGENTES.md). As fotografias históricas abaixo permanecem vinculadas às datas/SHAs antigos; menções antigas a “PDF pendente” não prevalecem sobre este aceite.
 

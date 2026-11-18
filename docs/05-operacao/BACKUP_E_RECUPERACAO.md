@@ -1,4 +1,9 @@
 # Backups, restore e rollback
+
+## Pendência física atual — inventário de 18/11/2026
+
+Leitura de metadados de produção: **143 objetos Storage** (87 no bucket público, 56 no privado), 15.946.053 bytes agregados de metadados. **Não há comprovante de backup atual de 143/143 objetos**; o registro histórico de 128/128 abaixo não cobre novos uploads. A tentativa anterior de download individual via Supabase CLI `storage cp --remote` falhou com `Authorization failed for the access token and project ref pair`; não houve novo arquivo físico confirmado. Antes de baixar, validar privilégios legítimos do operador no projeto; não copiar tokens, alterar RLS/Storage nem assumir que inventário SQL equivale a backup. Exigir verificação independente de caminhos e tamanhos, manifesto SHA-256 calculado dos arquivos locais e segunda cópia protegida. Não versionar bytes, manifesto privado ou credenciais.
+
 **Status:** evidência de recuperação histórica e procedimentos; **não é backup físico** · **Revisão:** 11/11/2026.
 
 ## Git e fontes

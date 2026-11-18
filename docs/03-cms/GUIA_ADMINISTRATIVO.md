@@ -1,5 +1,10 @@
 # Guia operacional do CMS
 
+## Logotipo opcional das Experiências — 18/11/2026
+
+No **Editor do site → Experiências Profissionais → empresa → bloco A**, o campo **Logotipo da empresa** persiste a URL em `content_blocks.content_json.experienceMedia.logo`. O texto alternativo (`logoAlt`) continua opcional no editor e no catálogo: sua ausência **não** impede a exibição do arquivo na barra das empresas e no cabeçalho desktop. O renderer `CompanyMark` usa a existência de `logo` como condição para `<img>` e, quando `logoAlt` não está informado, renderiza `alt=""` porque o nome da empresa já aparece em texto adjacente; quando existe alt, preserva-o. Na ausência de URL, exibe o monograma. O seletor ainda copia título/alt no instante da escolha, sem tornar alt obrigatório. Regressão coberta em `src/components/public/ExperienceStack.test.tsx`. Intervenção somente em React e documentação; sem gravação de CMS, Storage ou schema.
+
+
 ## Fluxo de exportação PDF homologado — 18/11/2026
 
 No módulo **Exportar PDF**, após a prévia estar pronta, **Gerar PDF** imprime a versão Desktop diretamente no iframe de referência **1440 px**. No **Mobile**, abre aba dedicada com referência **390 px**. No Chrome, escolher **Salvar como PDF**, margens nenhuma, gráficos de fundo ativados e cabeçalhos/rodapés desativados. O proprietário **aceitou visualmente ambos os PDFs reais** após as correções da regressão. Ver [guia canônico PDF](../05-operacao/EXPORTACAO_PDF.md) para ordem das folhas, resolução e testes.

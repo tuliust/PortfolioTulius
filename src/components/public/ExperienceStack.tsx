@@ -42,10 +42,10 @@ function CompanyMark({ section, small = false }: { section: PortfolioSection; sm
   const { logo, logoAlt } = section.experienceMedia ?? {}
   return (
     <span className={small ? "company-mark company-mark-small" : "company-mark"}>
-      {logo && logoAlt ? (
+      {logo ? (
         <img
           src={logo}
-          alt={logoAlt}
+          alt={logoAlt?.trim() || ""}
           style={imageFramingStyle(section.experienceMedia?.logoFraming)}
           loading="lazy"
           decoding="async"
