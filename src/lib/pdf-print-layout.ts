@@ -264,6 +264,12 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
       "break-before: auto !important; break-after: auto !important; " +
       "break-inside: avoid !important; overflow: visible !important; }",
   )
+  const editorialHeight = pages.find((page) => page.slug === "perfil")?.heightPx
+  const editorialClip = editorialHeight
+    ? ".pdf-portfolio--mobile #perfil:has(#perfil-a.editorial360-mobile) { " +
+      "height: " + editorialHeight + "px !important; min-height: 0 !important; " +
+      "max-height: " + editorialHeight + "px !important; overflow: clip !important; }"
+    : ""
   return [
     ...sheets,
     "@media print {",
@@ -275,6 +281,7 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
     ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: auto !important; min-height: 0 !important; }",
     ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }",
     ...assignments,
+    editorialClip,
     "}",
   ].join("\n")
 }
@@ -380,17 +387,11 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
   // The first physical sheet ends where the approved two-column block ends.
   const slug = section.dataset.pdfSection ?? ""
   if (slug === "perfil") {
-    const photo = section.querySelector<HTMLElement>(
-      ".mobile360-photo, .mobile-profile-hero",
-    )
-    const copy = section.querySelector<HTMLElement>(
-      ".mobile360-bottom-copy, .profile-mobile-years",
-    )
+    const editorial = section.querySelector<HTMLElement>("#perfil-a.editorial360-mobile")
+    const photo = editorial?.querySelector<HTMLImageElement>(".mobile360-photo img")
+    const copy = editorial?.querySelector<HTMLElement>(".mobile360-bottom-copy")
     if (photo && copy) {
-      bottom = Math.max(
-        photo.getBoundingClientRect().bottom,
-        copy.getBoundingClientRect().bottom,
-      )
+      bottom = Math.max(photo.getBoundingClientRect().bottom, copy.getBoundingClientRect().bottom)
     }
   }
   // The Sobre image is translated inside a clipped container; its image box
