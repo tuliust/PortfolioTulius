@@ -1,6 +1,14 @@
 # Biblioteca de mídias e Storage
 
-**Leitura verificada em 18/11/2026:** `media_assets` possui **82 linhas publicadas**; os **75 registros** da fotografia de 11/11 ficaram históricos. As quantidades de **72 e 56 objetos** dos buckets abaixo são do inventário/backup antigo, **não** foram recontadas nesta consulta. Foi confirmado somente que `portfolio-public` é bucket público e `portfolio-private` é privado. Não confundir linhas do catálogo com arquivos físicos ou inferir exclusão/limpeza. Nenhuma gravação de mídia ou Storage ocorreu nesta revisão.
+**Inventário de produção reconfirmado em 18/11/2026 (somente leitura):**
+`media_assets` possui **87 registros publicados**. O Storage
+contém **84 objetos** no bucket `portfolio-public` e **56 objetos**
+no bucket `portfolio-private`, totalizando **140 objetos físicos**.
+Os inventários anteriores de 75/82 mídias e 128 objetos pertencem
+a fotografias históricas. Não existe correspondência obrigatória
+de 1:1 entre registros do catálogo e arquivos físicos.
+Nenhuma gravação, exclusão ou alteração de mídia foi realizada
+nesta conferência.
 
 ---
 
@@ -8,9 +16,10 @@
 
 | Origem | Quantidade | Acesso |
 |---|---:|---|
-| Bucket `portfolio-public` | 72 objetos | Público |
+| Bucket `portfolio-public` | 84 objetos | Público |
 | Bucket `portfolio-private` | 56 objetos | Privado |
-| `media_assets` | **82 registros published em 18/11** | Sob RLS |
+| `media_assets` | 87 registros publicados | Sob RLS |
+| **Total Storage** | **140 objetos** | Público + privado |
 
 A cópia privada de origem, a pública promovida e o catálogo podem não coincidir 1:1. Upload/promoção/exclusão incluem Storage e PostgreSQL **sem uma transação distribuída**. A remoção deve verificar referências e ter compensação/backup.
 

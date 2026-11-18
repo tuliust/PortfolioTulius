@@ -4,7 +4,18 @@
 
 **PDF Desktop e Mobile concluídos por aceite visual do proprietário** após inspeção das exportações reais. Código funcional [`609218b`](https://github.com/tuliust/PortfolioTulius/commit/609218bd2bfede558f22c44002e62e9e21b2aada); [Validate SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702060), [QA PDF SUCCESS (6/6 visual, 9/9 físico, 2/2 CSS)](https://github.com/tuliust/PortfolioTulius/actions/runs/44250701938), [P5 read-only SUCCESS no segundo attempt](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702020); Vercel funcional READY no mesmo SHA. [**Contrato vigente de exportação e aceite**](05-operacao/EXPORTACAO_PDF.md).
 
-**Supabase relido em produção (somente leitura):** `portfolio` ACTIVE_HEALTHY, 22 tabelas públicas com RLS/41 políticas, 14 seções (13 publicadas e visíveis), 42 painéis, 28 blocos, 56 placements, **82 mídias cadastradas**, **4 projetos normalizados publicados/realizados**, 12 migrations. A revisão de PDF não alterou o banco. O risco de LCP Mobile permanece em [standby](06-governanca/BACKLOG_STANDBY.md), aceito e não corrigido.
+**Supabase relido em produção (somente leitura):** `portfolio` ACTIVE_HEALTHY, 22 tabelas públicas com RLS/41 políticas, 14 seções (13 publicadas e visíveis), 42 painéis, 28 blocos, 56 placements, **87 mídias publicadas**, **4 projetos normalizados publicados/realizados**, 12 migrations. O Storage contém **84 objetos públicos e 56 privados**,
+totalizando **140 objetos**. A revisão de PDF não alterou o banco. O risco de LCP Mobile permanece em [standby](06-governanca/BACKLOG_STANDBY.md), aceito e não corrigido.
+
+**Inventário vigente de CI — 18/11/2026:** a pasta
+`.github/workflows/` contém **sete workflows executáveis**:
+`audit-p3-lighthouse.yml`, `export-docs-snapshot.yml`,
+`hygiene-audit.yml`, `p5-admin-readonly.yml`,
+`p5-local-transactional.yml`, `pdf-export-visual.yml`
+e `validate.yml`. Os cinco workflows legados
+continuam arquivados. A referência histórica de seis
+workflows descreve o estado de 11/11/2026 e não
+representa o inventário atual.
 
 **Organização:** o novo guia de PDF está na pasta operacional `docs/05-operacao/`. O índice canônico abaixo continua por assunto. Os relatórios antigos preservam seu contexto histórico em `docs/historico/`; nenhum deles deve ser excluído ou tratado como contrato vigente. As cinco fontes privadas do Projeto ChatGPT devem ser substituídas manualmente por snapshots atualizados, sem copiá-las para o GitHub.
 

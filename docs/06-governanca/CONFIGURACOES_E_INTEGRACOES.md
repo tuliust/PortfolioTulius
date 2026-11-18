@@ -4,6 +4,26 @@
 
 O código funcional PDF `main@609218b` foi validado e publicado no deployment Vercel Production **`dpl_55JJGRMED7dnCtrTu9L3rKsSDTh3` READY**. O Supabase `portfolio` (`zfnrhzplwpjpdljraypt`) retornou **ACTIVE_HEALTHY**; 22 tabelas `public` com RLS, 41 políticas e 12 migrations. Nenhuma variável real, segredo, chave, permissão, DNS ou configuração foi lida/modificada. O aceite do proprietário dos dois PDFs está documentado em [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md). Evidências de 13–16/11 abaixo são históricas.
 
+**Reconfirmação de GitHub, Vercel e inventário — 18/11/2026:**
+a branch `main` do repositório `tuliust/PortfolioTulius`
+estava no SHA `df689be1ec699ee823515d2807540452fd79c7e7`,
+com os workflows Validate e Export Docs em **SUCCESS**.
+A Vercel confirmou o deployment Production
+`dpl_HhgHMZBhB3LeT3FKAUBLY4ichQPH` em **READY**
+para esse mesmo SHA, correspondente a um commit documental
+posterior ao código funcional do PDF (`609218b`).
+
+O Supabase registrava **87 mídias publicadas**, além de
+**84 objetos em `portfolio-public` e 56 em
+`portfolio-private`**, totalizando **140 objetos Storage**.
+O diretório `.github/workflows/` continha **sete workflows
+executáveis**, enquanto os cinco workflows legados
+permaneciam arquivados.
+
+Esta conferência foi exclusivamente de leitura. O estado READY
+não equivale a nova homologação Lighthouse, e a falha histórica
+de LCP mobile permanece registrada e aceita como risco.
+
 ---
 
 **Status:** inventário seguro, sem segredos · **Revisão:** 16/11/2026. A situação de 13/11 permanece identificada como verificação histórica.

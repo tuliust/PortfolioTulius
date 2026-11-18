@@ -1,5 +1,29 @@
 # Vercel, publicação e SEO
 
+## Reconfirmação de produção — 18/11/2026
+
+A Vercel confirmou o deployment Production
+`dpl_HhgHMZBhB3LeT3FKAUBLY4ichQPH` em **READY**,
+vinculado à branch `main` do repositório
+`tuliust/PortfolioTulius`, no SHA
+`df689be1ec699ee823515d2807540452fd79c7e7`.
+
+No GitHub, os workflows Validate e Export Docs
+encerraram **SUCCESS** nesse SHA. Trata-se de um
+commit documental posterior ao código funcional
+dos PDFs Desktop e Mobile (`609218b`).
+
+Essa verificação não constitui uma nova execução
+da auditoria P3/Lighthouse nem comprova correção
+do LCP mobile. A última falha conhecida permanece
+registrada e aceita como risco residual.
+
+Nenhum deploy manual, alteração de DNS, variáveis
+de ambiente ou configuração da Vercel foi realizado
+nesta conferência.
+
+---
+
 ## Publicação confirmada da versão funcional do PDF — 18/11/2026
 
 O deployment Vercel Production **`dpl_55JJGRMED7dnCtrTu9L3rKsSDTh3` está READY** para `main@609218bd2bfede558f22c44002e62e9e21b2aada`; Validate, PDF Renderer QA e P5 read-only encerraram **SUCCESS** nesse SHA (P5 no segundo attempt). O proprietário aceitou os PDFs reais Desktop e Mobile. [Contrato PDF e evidências](../05-operacao/EXPORTACAO_PDF.md).
