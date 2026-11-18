@@ -157,7 +157,14 @@ try {
         console.log("PDF_MOBILE_GEOMETRY " + JSON.stringify({ label, geometry, heights: manifest.pages }))
       }
 
-      if (manifest.pages.length !== sections.length) throw new Error("Manifest count mismatch")
+      const printSlugs = device === "mobile"
+        ? sections.flatMap((slug) =>
+            slug === "perfil" ? ["perfil", "perfil-areas"] :
+            slug === "sobre" ? ["sobre", "sobre-diferenciais"] :
+            slug === "resultados" ? ["resultados", "resultados-grupos"] : [slug],
+          )
+        : sections
+      if (manifest.pages.length !== printSlugs.length) throw new Error("Manifest count mismatch")
       if (device === "mobile" && editorial360) {
         const hero = await page.evaluate(() => {
           const bounds = (selector) =>
@@ -204,7 +211,7 @@ try {
             JSON.stringify(mobileLayout))
         }
       }
-      if (manifest.pages.some((entry, index) => entry.slug !== sections[index])) {
+      if (manifest.pages.some((entry, index) => entry.slug !== printSlugs[index])) {
         throw new Error("Manifest order mismatch")
       }
 
@@ -228,13 +235,13 @@ try {
       })
       const info = execFileSync("pdfinfo", [file], { encoding: "utf8" })
       const actualPages = Number(info.match(/^Pages:\s*(\d+)/m)?.[1])
-      if (!Number.isInteger(actualPages) || actualPages < sections.length || actualPages > 100) {
+      if (!Number.isInteger(actualPages) || actualPages < printSlugs.length || actualPages > 100) {
         throw new Error("Invalid physical page count " + actualPages +
           " for " + sections.length + " sections")
       }
-      if (actualPages !== sections.length) {
+      if (actualPages !== printSlugs.length) {
         throw new Error(device + " printed " + actualPages +
-          " physical pages for " + sections.length + " sections")
+          " physical pages for " + printSlugs.length + " sheets")
       }
       // Validate the *physical* orientation on every PDF page, not merely
       // the CSS reference viewport or a global landscape print option.
@@ -316,14 +323,33 @@ try {
           throw new Error("Mobile editorial Hero lost title or name")
         }
         for (const [index, slug] of sections.entries()) {
-          if (sectionStarts[slug] !== index) {
+          const physicalIndex = printSlugs.indexOf(slug)
+          if (sectionStarts[slug] !== physicalIndex) {
             throw new Error("Wrong Mobile section page for " + slug)
           }
           if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug) &&
-            !physicalTexts[index].includes("FRENTE SINTETICA 13")) {
+            !physicalTexts[physicalIndex].includes("FRENTE SINTETICA 13")) {
             throw new Error("Incomplete Mobile Trajetória for " + slug)
           }
         }
+      }
+      if (device === "mobile") {
+        const sheetText = (slug) => physicalTexts[printSlugs.indexOf(slug)] || ""
+        if (sections.includes("perfil") && (
+          sheetText("perfil").includes("AREAS DE ATUACAO") ||
+          !sheetText("perfil-areas").includes("AREAS DE ATUACAO") ||
+          sheetText("perfil-areas").includes("PRAZER")
+        )) throw new Error("Mobile Perfil / Áreas boundary violated")
+        if (sections.includes("sobre") && (
+          !sheetText("sobre").includes("PRAZER") ||
+          sheetText("sobre").includes("ESTRATEGIA TAMBEM E ESCUTA") ||
+          !sheetText("sobre-diferenciais").includes("ESTRATEGIA TAMBEM E ESCUTA")
+        )) throw new Error("Mobile Sobre / Diferenciais boundary violated")
+        if (sections.includes("resultados") && (
+          !sheetText("resultados").includes("VISAO GERAL") ||
+          sheetText("resultados").includes("CONTEUDO E IMPRENSA") ||
+          !sheetText("resultados-grupos").includes("CONTEUDO E IMPRENSA")
+        )) throw new Error("Mobile Resultados / Temas boundary violated")
       }
       if (device === "desktop") {
         if (sections.includes("perfil") &&
@@ -380,7 +406,7 @@ try {
         throw new Error("Missing clickable Contact links")
       }
       const excludedHeroLinks = await page.evaluate(() =>
-        document.querySelectorAll("#perfil a[data-pdf-print-original-href]").length,
+        document.querySelectorAll("#perfil a[data-pdf-print-original-href], #perfil-areas a[data-pdf-print-original-href]").length,
       )
       if (excludedHeroLinks > 0 && !hero.includes("https://tulius.work/")) {
         throw new Error("Excluded-section Hero links should open the live site")

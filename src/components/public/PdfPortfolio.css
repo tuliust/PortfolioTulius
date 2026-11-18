@@ -630,3 +630,16 @@
     display: none !important;
   }
 }
+
+/* Physical-sheet separation only in Mobile PDF print. The public Sobre/B
+   rules are mirrored by the print preparation, retaining their exact typography. */
+.pdf-portfolio--mobile:not(.pdf-portfolio--clean) #sobre-diferenciais {
+  background: var(--ink) !important;
+}
+.pdf-portfolio--mobile #sobre[data-pdf-section] {
+  overflow: clip !important;
+}
+.pdf-portfolio--mobile #resultados-grupos .pdf-results-page {
+  padding-top: 0.6rem;
+  padding-bottom: 1rem;
+}

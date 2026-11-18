@@ -30,6 +30,18 @@ describe("PDF native print pagination", () => {
     expect(css).toContain("grid-template-columns: minmax(0, 1fr) !important")
   })
 
+  it("supports distinct physical Mobile panels without changing Desktop", () => {
+    const pages = [
+      "perfil", "perfil-areas", "sobre", "sobre-diferenciais",
+      "resultados", "resultados-grupos", "formacao",
+    ].map((slug, index) => ({ slug, heightPx: 440 + index * 50 }))
+    const css = pdfPrintCss("mobile", pages)
+    expect(css.match(/@page portfolioMobile\\d+ \\{/g)).toHaveLength(7)
+    expect(css).toContain('data-pdf-section="perfil-areas"] { page: portfolioMobile1')
+    expect(css).toContain('data-pdf-section="resultados-grupos"] { page: portfolioMobile5')
+    expect(css).not.toContain("@page portfolio0")
+  })
+
   it("rejects invalid, duplicate or excessively tall pages", () => {
     expect(() => pdfPrintCss("desktop", [])).toThrow()
     expect(() => pdfPrintCss("desktop", [{ slug: "../admin", heightPx: 900 }])).toThrow()

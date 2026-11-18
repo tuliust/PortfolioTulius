@@ -220,7 +220,10 @@ function ensureMobileReferenceCss(doc: Document): void {
   // selectors afterwards, restricted to the PDF-only internal 390px canvas.
   const style = doc.createElement("style")
   style.id = PDF_MOBILE_REFERENCE_STYLE_ID
-  style.textContent = [...normalizedBaseRules, ...mobileRules]
+  const aboutContinuationRules = mobileRules
+    .filter((rule) => rule.includes("#sobre "))
+    .map((rule) => rule.replaceAll("#sobre ", "#sobre-diferenciais "))
+  style.textContent = [...normalizedBaseRules, ...mobileRules, ...aboutContinuationRules]
     .join("\n")
     .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
     .replace(
@@ -276,6 +279,76 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
   ].join("\n")
 }
 
+
+/**
+ * Create physical sheets from already published Mobile panels. Moving, rather
+ * than cloning, the actual DOM preserves text, photo sources and live links.
+ * Called only in the print tab, after validating the CMS snapshot. No public
+ * page, Desktop PDF, section source or CMS data is modified.
+ */
+function splitMobilePrintSections(root: HTMLElement, original: readonly HTMLElement[]): HTMLElement[] {
+  const bySlug = new Map(original.map((section) => [section.dataset.pdfSection, section]))
+
+  const newSheet = (source: HTMLElement, slug: string): HTMLElement => {
+    const sheet = source.cloneNode(false) as HTMLElement
+    sheet.id = slug
+    sheet.dataset.section = slug
+    sheet.dataset.pdfSection = slug
+    source.after(sheet)
+    return sheet
+  }
+
+  const separatePanel = (sectionSlug: string, panelId: string, pageSlug: string): void => {
+    const section = bySlug.get(sectionSlug)
+    if (!section) return
+    const panel = section.querySelector<HTMLElement>("#" + panelId)
+    const parent = section.querySelector<HTMLElement>(".mobile-panels")
+    if (!panel || !parent || panel.parentElement !== parent) {
+      throw new Error("Não foi possível separar o painel Mobile " + panelId + ".")
+    }
+    const sheet = newSheet(section, pageSlug)
+    const panels = parent.cloneNode(false) as HTMLElement
+    panels.appendChild(panel)
+    sheet.appendChild(panels)
+  }
+
+  separatePanel("perfil", "perfil-b", "perfil-areas")
+  separatePanel("sobre", "sobre-b", "sobre-diferenciais")
+
+  const results = bySlug.get("resultados")
+  if (results) {
+    const page = results.querySelector<HTMLElement>(".pdf-results-page")
+    const flow = page?.querySelector<HTMLElement>(".pdf-results-flow")
+    const overview = flow?.querySelector<HTMLElement>(":scope > .pdf-results-overview")
+    const themed = flow
+      ? Array.from(flow.querySelectorAll<HTMLElement>(
+          ":scope > .pdf-results-group:not(.pdf-results-overview)",
+        ))
+      : []
+    if (!page || !flow || !overview || !themed.length) {
+      throw new Error("Não foi possível separar os indicadores publicados do PDF Mobile.")
+    }
+    const sheet = newSheet(results, "resultados-grupos")
+    const pageCopy = page.cloneNode(false) as HTMLElement
+    const flowCopy = flow.cloneNode(false) as HTMLElement
+    // The owner's four approved thematic groups come first. A fifth
+    // published group (Comunicação Corporativa / Estratégia e Reputação)
+    // remains intact after them, rather than being silently omitted.
+    const approvedOrder = ["projetos", "eventos", "marketing", "imprensa"]
+    const order = [
+      ...approvedOrder.flatMap((key) =>
+        themed.filter((group) => group.dataset.pdfTheme === key),
+      ),
+      ...themed.filter((group) => !approvedOrder.includes(group.dataset.pdfTheme ?? "")),
+    ]
+    for (const group of order) flowCopy.appendChild(group)
+    pageCopy.appendChild(flowCopy)
+    sheet.appendChild(pageCopy)
+  }
+
+  return Array.from(root.querySelectorAll<HTMLElement>("[data-pdf-section]"))
+}
+
 function measureMobileSection(section: HTMLElement): PdfPrintPage {
   const box = section.getBoundingClientRect()
   const doc = section.ownerDocument
@@ -300,11 +373,24 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     }
   }
 
-  // Protect the final caption, photo or punctuation without creating an
-  // orphaned sheet when printing a tall trajectory or second mobile panel.
-  const reserve = section.dataset.pdfSection === "sobre" ? 64 : 72
+  // These two transparent portraits end at the physical sheet boundary.
+  // The Sobre image is translated inside a clipped container; its image box
+  // itself extends past the visible bottom and must not set paper height.
+  const slug = section.dataset.pdfSection ?? ""
+  if (slug === "sobre") {
+    const photo = section.querySelector<HTMLElement>(".about-mobile-photo")
+    if (photo) bottom = Math.max(box.top, photo.getBoundingClientRect().bottom)
+  }
+  const reserve = ({
+    perfil: 2,
+    "perfil-areas": 18,
+    sobre: 0,
+    "sobre-diferenciais": 64,
+    resultados: 24,
+    "resultados-grupos": 24,
+  } as Record<string, number>)[slug] ?? 72
   return {
-    slug: section.dataset.pdfSection ?? "",
+    slug,
     heightPx: Math.ceil(Math.max(400, bottom - box.top + reserve)),
   }
 }
@@ -353,8 +439,12 @@ export function preparePdfPrintLayout(
   // Preserve the approved Desktop geometry. Mobile uses its own 390px CSS
   // viewport rules and a measured, independent physical sheet per section.
   if (device === "mobile") ensureMobileReferenceCss(doc)
+  const physicalNodes =
+    device === "mobile" ? splitMobilePrintSections(root, nodes) : nodes
   const pages =
-    device === "desktop" ? nodes.map(measureDesktopSection) : nodes.map(measureMobileSection)
+    device === "desktop"
+      ? physicalNodes.map(measureDesktopSection)
+      : physicalNodes.map(measureMobileSection)
   const style = doc.createElement("style")
   style.id = PDF_PRINT_STYLE_ID
   style.textContent = pdfPrintCss(device, pages)
