@@ -1,4 +1,4 @@
-import type { PdfDevice } from "./pdf-export-options"
+import { pdfExportViewport, type PdfDevice } from "./pdf-export-options"
 
 export const PDF_PRINT_STYLE_ID = "portfolio-pdf-print-pages"
 export const PDF_PRINT_MAX_PAGE_HEIGHT = 16000
@@ -235,6 +235,7 @@ export function preparePdfPrintLayout(
   includedSlugs: readonly string[],
 ): PdfPrintManifest {
   const root = doc.querySelector<HTMLElement>(".pdf-portfolio")
+  const viewport = pdfExportViewport(device)
   if (!root || root.dataset.pdfDevice !== device) {
     throw new Error("A prévia não corresponde ao dispositivo selecionado.")
   }
