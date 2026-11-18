@@ -246,17 +246,30 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
 
 function measureMobileSection(section: HTMLElement): PdfPrintPage {
   const box = section.getBoundingClientRect()
-  // Wrapper heights can reflect the *outer tab* width even after the 390px
-  // content rules are restored. Measure rendered leaf content rather than
-  // scrollHeight/min-height of empty flex/grid wrappers.
-  const leaves = Array.from(section.querySelectorAll<HTMLElement>("*")).filter(
-    (child) => child.children.length === 0 && child.getClientRects().length > 0,
-  )
-  const bottom = leaves.reduce(
-    (maximum, child) => Math.max(maximum, child.getBoundingClientRect().bottom),
-    box.top,
-  )
-  // Retain a little breathing room without a blank continuation sheet.
+  const doc = section.ownerDocument
+  let bottom = box.top
+
+  // Empty layout leaves can grow with the external browser viewport even
+  // though every printed line stays at the same position. Measure glyph
+  // rectangles and actual media boxes rather than arbitrary leaf elements.
+  const walker = doc.createTreeWalker(section, NodeFilter.SHOW_TEXT)
+  while (walker.nextNode()) {
+    const node = walker.currentNode
+    if (!node.textContent?.trim()) continue
+    const range = doc.createRange()
+    range.selectNodeContents(node)
+    for (const rect of Array.from(range.getClientRects())) {
+      bottom = Math.max(bottom, rect.bottom)
+    }
+  }
+  for (const media of Array.from(section.querySelectorAll("img, svg, canvas, video"))) {
+    if (media.getClientRects().length > 0) {
+      bottom = Math.max(bottom, media.getBoundingClientRect().bottom)
+    }
+  }
+
+  // Protect the final caption, photo or punctuation without creating an
+  // orphaned sheet when printing a tall trajectory or second mobile panel.
   const reserve = section.dataset.pdfSection === "sobre" ? 64 : 72
   return {
     slug: section.dataset.pdfSection ?? "",

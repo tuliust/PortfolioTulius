@@ -248,3 +248,6 @@ A análise do PDF sintético físico gerado pelo SHA `da91859` constatou que a s
 
 
 **Paridade de alturas físicas (18/11/2026):** a normalização seletiva do PDF Mobile aplica-se agora tanto a `vw → cqw` quanto a `vh/svh/dvh/lvh → px` (referência vertical fixa 844 px) também nas declarações base, não somente nas media queries. O contêiner 390 px permanece em uma coluna. Essa mudança existe somente no CSS injetado do PDF Mobile e não altera o site público nem o caminho Desktop.
+
+
+**Medida geométrica da folha Mobile (18/11/2026):** para evitar diferenças de altura de papel apesar de conteúdo idêntico, as folhas passam a ser dimensionadas pelo último retângulo de **texto real** (via DOM `Range`) ou de **mídia visível** (`img`, `svg`, `canvas`, `video`), com margem inferior de segurança 64/72 px. As caixas de wrappers vazias não influenciam mais o corte da folha. A paridade externa 390/1440 px é verificável na QA física. Desktop continua com algoritmo original intacto.
