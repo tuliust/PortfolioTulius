@@ -251,3 +251,6 @@ A análise do PDF sintético físico gerado pelo SHA `da91859` constatou que a s
 
 
 **Medida geométrica da folha Mobile (18/11/2026):** para evitar diferenças de altura de papel apesar de conteúdo idêntico, as folhas passam a ser dimensionadas pelo último retângulo de **texto real** (via DOM `Range`) ou de **mídia visível** (`img`, `svg`, `canvas`, `video`), com margem inferior de segurança 64/72 px. As caixas de wrappers vazias não influenciam mais o corte da folha. A paridade externa 390/1440 px é verificável na QA física. Desktop continua com algoritmo original intacto.
+
+
+**Fontes de títulos do PDF Mobile em aba larga (18/11/2026):** `PdfPortfolio.css` fixa agora, **somente no renderer Mobile**, o `font-size` de `.pdf-results-page .section-intro` (`clamp(1rem,1.2cqw,1.15rem)`), `.pdf-results-group-heading` (`clamp(1.5rem,2.6cqw,2.6rem)`) e `.pdf-experience-column-heading` (`clamp(1.45rem,2cqw,2rem)`) na largura interna do documento. Esses três valores replicam a composição de 390px aprovada e evitam crescer ao abrir a impressão em uma aba de 1440px. Mantêm fontes, pesos, cores e textos originais, sem afetar o layout público ou a impressão Desktop.

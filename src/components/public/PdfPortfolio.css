@@ -238,6 +238,21 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Explicitly size the print-only headings against the internal 390px canvas.
+   The source uses vw: a wide Chrome print tab expanded the opening Results
+   heading from one line to two and each Experience column title by ~5.6px. */
+.pdf-portfolio--mobile .pdf-results-page .section-intro {
+  font-size: clamp(1rem, 1.2cqw, 1.15rem) !important;
+}
+
+.pdf-portfolio--mobile .pdf-results-group-heading {
+  font-size: clamp(1.5rem, 2.6cqw, 2.6rem) !important;
+}
+
+.pdf-portfolio--mobile .pdf-experience-column-heading {
+  font-size: clamp(1.45rem, 2cqw, 2rem) !important;
+}
+
 .pdf-portfolio--mobile .pdf-experience-layout {
   display: block;
   min-height: 0;
