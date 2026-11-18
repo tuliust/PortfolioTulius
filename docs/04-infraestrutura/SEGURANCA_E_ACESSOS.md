@@ -23,10 +23,6 @@ Nenhum token foi criado, utilizado, renovado ou excluído.
 
 ---
 
-Nenhum token foi criado, utilizado, renovado ou excluído.
-
-
-
 **Status:** controles registrados, alterações não autorizadas por este documento · **Revisão:** 11/11/2026.
 
 ## Controles comprovados
