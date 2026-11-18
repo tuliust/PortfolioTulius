@@ -82,6 +82,15 @@ try {
           const metricsColumns = metricsGrid
             ? getComputedStyle(metricsGrid).gridTemplateColumns.split(" ").length
             : 0
+          const themedMetricColumns = [
+            ...results?.querySelectorAll(".pdf-results-group:not(.pdf-results-overview) .results-metrics-grid") ?? [],
+          ].map((grid) => getComputedStyle(grid).gridTemplateColumns.split(" ").length)
+          const editorialArrow = document.querySelector("#perfil-a .mobile360-down")
+          const editorialPhoto = document.querySelector("#perfil-a .mobile360-photo")
+          const editorialCopy = document.querySelector("#perfil-a .mobile360-bottom-copy")
+          const aboutPhoto = document.querySelector("#sobre .about-mobile-photo img")
+          const contactPhoto = document.querySelector("#contato-a .contact-mobile-photo img")
+          const contactPanelB = document.querySelector("#contato-b")
           const photo = document.querySelector("#perfil img")
           const profileA = document.querySelector("#perfil-a")
           const profileB = document.querySelector("#perfil-b")
@@ -168,6 +177,17 @@ try {
             resultsCenters: results?.querySelectorAll(".results-center").length || 0,
             metricsCount: results?.querySelectorAll(".results-metrics-grid .content-item").length || 0,
             metricsColumns,
+            themedMetricColumns,
+            editorialArrowHidden: !editorialArrow || getComputedStyle(editorialArrow).display === "none",
+            editorialPhotoHeight: editorialPhoto?.getBoundingClientRect().height ?? null,
+            editorialCopyHeight: editorialCopy?.getBoundingClientRect().height ?? null,
+            aboutPhotoTranslate: aboutPhoto ? getComputedStyle(aboutPhoto).translate : null,
+            contactPhotoTranslate: contactPhoto ? getComputedStyle(contactPhoto).translate : null,
+            contactPanelBackground: document.querySelector("#contato")
+              ? getComputedStyle(document.querySelector("#contato")).backgroundColor
+              : null,
+            contactPanelBTop: contactPanelB?.getBoundingClientRect().top ?? null,
+            contactPhotoBottom: contactPhoto?.getBoundingClientRect().bottom ?? null,
             experienceCount: experiences.length,
             experienceSeparators,
             aboutBottomGap,
@@ -222,11 +242,14 @@ try {
             issues.push("desktop_experience_dividers")
           }
         } else {
-          if (report.experienceSeparators.some((entry) => entry.width < 2.5)) issues.push("experience_separators")
-          if (palette === "clean" && report.experienceSeparators.some((entry) => {
-            const channels = entry.color.match(/\d+/g)?.map(Number) ?? []
-            return channels.length < 3 || channels[0] !== channels[1] || channels[1] !== channels[2]
-          })) issues.push("clean_separator_not_grayscale")
+          if (report.experienceSeparators.some((entry) => entry.width > 0.1)) {
+            issues.push("mobile_experience_dividers")
+          }
+          if (report.themedMetricColumns.length !== 5 ||
+              report.themedMetricColumns.some((columns) => columns !== 2)) {
+            issues.push("mobile_topic_metrics_not_two_columns")
+          }
+          if (!report.editorialArrowHidden) issues.push("mobile_editorial_arrow")
         }
         if (device === "desktop" && report.contactPortraitObjectFit !== "contain") issues.push("contact_photo_crop")
         if (device === "desktop" && (
@@ -254,7 +277,7 @@ try {
           issues.push("body_font_missing")
         }
         if (device === "mobile" && (
-          (report.firstMobilePanelHeight ?? 0) < viewports.mobile.height - 2 ||
+          (report.firstMobilePanelHeight ?? 0) < 300 ||
           (report.mobilePanelOverlapPx ?? 1) > 2 ||
           (report.mobileHeroContentOverlapPx ?? 1) > 2
         )) issues.push("mobile_profile_overlap")

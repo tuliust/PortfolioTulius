@@ -272,6 +272,80 @@
   grid-template-columns: 1fr;
 }
 
+/* Mobile PDF only: the lower Hero portrait should frame its adjacent name and
+   summary, rather than filling the entire original immersive portrait slot. */
+.pdf-portfolio--mobile #perfil-a .mobile360-bottom-grid {
+  align-items: center !important;
+}
+.pdf-portfolio--mobile #perfil-a .mobile360-photo {
+  aspect-ratio: auto !important;
+  height: clamp(12.5rem, 56cqw, 14.25rem) !important;
+  align-self: center !important;
+}
+.pdf-portfolio--mobile #perfil-a .mobile360-photo img {
+  object-fit: cover !important;
+  object-position: center 40% !important;
+}
+.pdf-portfolio--mobile #perfil-a .mobile360-down {
+  display: none !important;
+}
+
+/* Sobre: compensate the transparent bottom pixels of the approved PNG.
+   Clip the overlap at the orange panel edge; do not enlarge the paper. */
+.pdf-portfolio--mobile #sobre .about-mobile-intro {
+  padding-bottom: 0 !important;
+}
+.pdf-portfolio--mobile #sobre .about-mobile-photo {
+  margin-bottom: 0 !important;
+  overflow: clip !important;
+}
+.pdf-portfolio--mobile #sobre .about-mobile-photo img {
+  translate: 0 1rem !important;
+}
+
+/* Keep the overview readable in one column; use two columns for each
+   themed set of four metrics, without changing any values or descriptions. */
+.pdf-portfolio--mobile .pdf-results-overview .results-metrics-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+.pdf-portfolio--mobile .pdf-results-group:not(.pdf-results-overview) .results-metrics-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  column-gap: 0.9rem !important;
+  row-gap: 0.4rem !important;
+}
+.pdf-portfolio--mobile .pdf-results-group:not(.pdf-results-overview) .content-item {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.pdf-portfolio--mobile .pdf-results-group:not(.pdf-results-overview) .item-value {
+  font-size: clamp(1.25rem, 5.2cqw, 1.65rem) !important;
+}
+.pdf-portfolio--mobile .pdf-results-group:not(.pdf-results-overview) .item-label {
+  font-size: clamp(0.82rem, 3.5cqw, 1rem) !important;
+}
+.pdf-portfolio--mobile .pdf-results-group:not(.pdf-results-overview) .content-item p {
+  font-size: clamp(0.75rem, 3cqw, 0.9rem) !important;
+  line-height: 1.4;
+}
+
+/* No orange or gray separator between the six professional experiences. */
+.pdf-portfolio--mobile .pdf-experience-section + .pdf-experience-section {
+  border-top: 0 !important;
+}
+
+/* Contact: lift the portrait and the following graphite panel together so
+   the subject ends exactly where the graphite area starts. Extend graphite
+   through the final physical-page reserve, without an orange footer stripe. */
+.pdf-portfolio--mobile #contato-a .contact-mobile-photo {
+  margin-bottom: -0.6rem !important;
+}
+.pdf-portfolio--mobile #contato-a .contact-mobile-photo img {
+  translate: 0 -0.6rem !important;
+}
+.pdf-portfolio--mobile:not(.pdf-portfolio--clean) #contato {
+  background-color: var(--ink) !important;
+}
+
 .pdf-portfolio--clean,
 .pdf-portfolio--clean .portfolio-section,
 .pdf-portfolio--clean .portfolio-section *,
@@ -347,8 +421,9 @@
   overflow-wrap: normal;
 }
 
-/* The mobile downward chevron is a navigation control, not PDF content. */
-.pdf-portfolio .profile-mobile-next {
+/* Mobile navigation arrows belong to the public site, not the PDF. */
+.pdf-portfolio .profile-mobile-next,
+.pdf-portfolio--mobile .mobile360-down {
   display: none !important;
 }
 
@@ -447,16 +522,7 @@
   }
 }
 
-/* Desktop experience sheets have no dividers. Mobile and the public site
-   retain their existing independent presentation. */
-.pdf-portfolio--mobile .pdf-experience-section + .pdf-experience-section {
-  border-top: 3px solid var(--orange) !important;
-}
-
-.pdf-portfolio--mobile.pdf-portfolio--clean .pdf-experience-section + .pdf-experience-section {
-  border-top-color: #454545 !important;
-}
-
+/* Export only: Desktop already has no dividers; Mobile now matches it. */
 .pdf-portfolio--desktop .pdf-experience-section + .pdf-experience-section {
   border-top: 0 !important;
 }
