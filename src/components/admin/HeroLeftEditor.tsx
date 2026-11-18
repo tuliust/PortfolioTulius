@@ -5,6 +5,7 @@ import { HeroHighlightsEditor } from "./HeroHighlightsEditor"
 import { HeroFormattingButton } from "./HeroFormattingButton"
 import { HeroColorPicker, HeroIconPicker } from "./HeroVisualPickers"
 import { PublishedMediaPicker } from "./PublishedMediaPicker"
+import { getItemMediaRecommendation } from "../../lib/admin-media-recommendations"
 import { NumericField } from "./AdminVisualFields"
 import "./HeroLeftEditor.css"
 
@@ -104,11 +105,10 @@ export function HeroLeftEditor({
           <div className="field-wide">
             <PublishedMediaPicker
               label="Foto"
+              {...getItemMediaRecommendation("perfil", "a", 0, "mobile")}
               guidanceAsInfo
               iconOnlyActions
               allowFraming={false}
-              guidance="Retrato vertical 3:4; sugestão 900 × 1200 px."
-              ratio="3 / 4"
               value={item.image ?? ""}
               framing={item.mediaFraming}
               onFramingChange={(mediaFraming) => onUpdateItem(0, { mediaFraming })}
