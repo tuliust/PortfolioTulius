@@ -1,5 +1,12 @@
 # Testes, CI e homologação
 
+## Evidência posterior à correção de logotipos — 18/11/2026
+
+No SHA funcional [`2bbbae59b427c909cf7407790c4c6b0f2bbab31c`](https://github.com/tuliust/PortfolioTulius/commit/2bbbae59b427c909cf7407790c4c6b0f2bbab31c), o renderer deixa de exigir `logoAlt` para mostrar a URL do logo da empresa. O teste `src/components/public/ExperienceStack.test.tsx` passou em **4/4** casos (desktop/mobile, alt ausente ou vazio, alt preenchido e monograma sem URL). [Validate #44292509459](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509459) **SUCCESS**: 65 arquivos e 292 testes, TypeScript, formatação, build e verificações adicionais aprovados. [Export Docs #44292509420](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509420), [PDF Visual QA #44292509358](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509358) e [P3 Lighthouse #44292509279](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509279) também **SUCCESS**, todos nesse mesmo SHA. A Vercel confirmou o deployment Production `dpl_ChxiYyQwEjNnb2YSTqHoQqh2dgJ5` **READY** no mesmo SHA, com aliases `tulius.work` e `www.tulius.work`.
+
+Esse resultado pontual não reclassifica P3 históricos em FAILURE nem elimina a variabilidade conhecida do LCP mobile. Não houve escrita de dados produtivos, Storage, Auth/RLS ou migration. Inventário pós-upload (somente leitura): 90 mídias publicadas, 87 objetos públicos e 56 privados (**143 objetos**); a comprovação de backup físico continua pendente. O registro deste resultado é documental, posterior ao commit funcional.
+
+
 ## Regressão dos logos de Experiências — 18/11/2026
 
 `src/components/public/ExperienceStack.test.tsx` introduz verificações SSR do componente público: (1) URL de logo com `logoAlt` omitido exibe imagem com `alt=""` nos contextos desktop (barra e cabeçalho) e mobile (barra); (2) espaços em branco no alt não ocultam logo; (3) alt preenchido é preservado; (4) ausência de URL mantém monograma. `src/components/public/ExperienceStack.tsx` retira a condição incorreta `logo && logoAlt`. **O status da nova execução Validate/CI e do deployment deve ser aferido pelo SHA deste commit**; resultados históricos de CI não homologam automaticamente esta intervenção. Teste autenticado completo do CMS não faz parte deste escopo.
