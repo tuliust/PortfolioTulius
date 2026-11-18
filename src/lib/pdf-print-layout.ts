@@ -115,8 +115,118 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   return { slug, heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 
+
+export const PDF_MOBILE_REFERENCE_STYLE_ID = "portfolio-pdf-mobile-reference"
+
+/**
+ * Chrome can open the print tab at desktop window width even when the document
+ * itself is Mobile (390px). In that case media queries from the site's mobile
+ * CSS stop matching, and the printout no longer resembles the 390px iframe.
+ * Reapply those existing CSS rules for the reference viewport, substituting
+ * viewport-width units with the 390px PDF container width.
+ */
+function matchesMobileReferenceMedia(query: string): boolean {
+  const conditions = [...query.matchAll(/\\(\\s*(min|max)-(width|height)\\s*:\\s*(\\d+)px\\s*\\)/g)]
+  if (!conditions.some((part) => part[2] === "width")) return false
+  if (/\\b(?:screen|print|orientation)\\b/i.test(query)) return false
+  return conditions.every(([, bound, axis, limit]) => {
+    const reference = axis === "width" ? 390 : 844
+    return bound === "max" ? reference <= Number(limit) : reference >= Number(limit)
+  })
+}
+
+function ensureMobileReferenceCss(doc: Document): void {
+  if (doc.getElementById(PDF_MOBILE_REFERENCE_STYLE_ID)) return
+  const mobileRules: string[] = []
+  for (const sheet of Array.from(doc.styleSheets)) {
+    let rules: CSSRuleList
+    try {
+      rules = sheet.cssRules
+    } catch {
+      continue // Cross-origin stylesheet; the local compiled site CSS is available.
+    }
+    for (const rule of Array.from(rules)) {
+      if (rule.type !== CSSRule.MEDIA_RULE) continue
+      const media = rule as CSSMediaRule
+      if (!matchesMobileReferenceMedia(media.media.mediaText)) continue
+      mobileRules.push(
+        Array.from(media.cssRules)
+          .map((entry) => entry.cssText)
+          .join("\n")
+          .replace(/(-?\\d+(?:\\.\\d+)?)vw\\b/g, "$1cqw"),
+      )
+    }
+  }
+  if (!mobileRules.length) {
+    throw new Error("As regras responsivas do PDF Mobile não foram carregadas.")
+  }
+  const style = doc.createElement("style")
+  style.id = PDF_MOBILE_REFERENCE_STYLE_ID
+  style.textContent = mobileRules.join("\n")
+  doc.head.appendChild(style)
+}
+
+/** One variable-height physical Mobile sheet per complete published section. */
+function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
+  if (
+    !pages.length ||
+    pages.some(
+      (page) =>
+        !VALID_SLUG.test(page.slug) ||
+        !Number.isInteger(page.heightPx) ||
+        page.heightPx < 400 ||
+        page.heightPx > PDF_PRINT_MAX_PAGE_HEIGHT,
+    ) ||
+    new Set(pages.map((page) => page.slug)).size !== pages.length
+  ) {
+    throw new Error("A seleção ou altura das páginas do PDF Mobile é inválida.")
+  }
+  const sheets = pages.map(
+    (page, index) =>
+      "@page portfolioMobile" + index + " { size: 390px " + page.heightPx + "px; margin: 0; }",
+  )
+  const assignments = pages.map(
+    (page, index) =>
+      '.pdf-portfolio--mobile [data-pdf-section="' +
+      page.slug +
+      '"] { page: portfolioMobile' +
+      index +
+      " !important; min-height: " +
+      page.heightPx +
+      "px !important; height: auto !important; max-height: none !important; " +
+      "break-before: auto !important; break-after: auto !important; " +
+      "break-inside: avoid !important; overflow: visible !important; }",
+  )
+  return [
+    ...sheets,
+    "@media print {",
+    "html, body, #root, .pdf-portfolio--mobile, .pdf-portfolio--mobile main { width: 390px !important; min-width: 390px !important; max-width: 390px !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; scroll-snap-type: none !important; }",
+    ".pdf-portfolio--mobile { print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }",
+    ".pdf-portfolio--mobile .portfolio-section { height: auto !important; max-height: none !important; break-after: auto !important; break-before: auto !important; break-inside: auto !important; overflow: visible !important; }",
+    ".pdf-portfolio--mobile .pdf-results-group .results-metrics-grid { grid-template-columns: minmax(0, 1fr) !important; }",
+    ".pdf-portfolio--mobile #perfil-a.mobile-panel { height: auto !important; min-height: 844px !important; }",
+    ".pdf-portfolio--mobile .contact-mobile-photo, .pdf-portfolio--mobile .contact-mobile-photo img { min-height: 422px !important; }",
+    ...assignments,
+    "}",
+  ].join("\n")
+}
+
+function measureMobileSection(section: HTMLElement): PdfPrintPage {
+  const box = section.getBoundingClientRect()
+  const bottom = Array.from(section.querySelectorAll<HTMLElement>("*")).reduce(
+    (maximum, child) =>
+      child.getClientRects().length
+        ? Math.max(maximum, child.getBoundingClientRect().bottom)
+        : maximum,
+    box.bottom,
+  )
+  const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
+  return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(Math.max(400, actual + 48)) }
+}
+
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
   if (device === "desktop") return desktopPdfPrintCss(pages)
+  if (device === "mobile") return mobilePdfPrintCss(pages)
   const viewport = pdfExportViewport(device)
   if (
     !pages.length ||
@@ -183,7 +293,6 @@ export function preparePdfPrintLayout(
   includedSlugs: readonly string[],
 ): PdfPrintManifest {
   const root = doc.querySelector<HTMLElement>(".pdf-portfolio")
-  const viewport = pdfExportViewport(device)
   if (!root || root.dataset.pdfDevice !== device) {
     throw new Error("A prévia não corresponde ao dispositivo selecionado.")
   }
@@ -212,11 +321,11 @@ export function preparePdfPrintLayout(
     throw new Error("Há uma imagem publicada que não foi carregada.")
   }
 
-  // Each Desktop section has its own measured sheet; Mobile remains unchanged.
+  // Preserve the approved Desktop geometry. Mobile uses its own 390px CSS
+  // viewport rules and a measured, independent physical sheet per section.
+  if (device === "mobile") ensureMobileReferenceCss(doc)
   const pages =
-    device === "desktop"
-      ? nodes.map(measureDesktopSection)
-      : slugs.map((slug) => ({ slug, heightPx: viewport.height }))
+    device === "desktop" ? nodes.map(measureDesktopSection) : nodes.map(measureMobileSection)
   const style = doc.createElement("style")
   style.id = PDF_PRINT_STYLE_ID
   style.textContent = pdfPrintCss(device, pages)

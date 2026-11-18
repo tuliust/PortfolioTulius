@@ -16,6 +16,8 @@ const variants = [
   { device: "desktop", palette: "clean", sections: allSections },
   { device: "mobile", palette: "original", sections: allSections },
   { device: "mobile", palette: "clean", sections: allSections },
+  // Reproduces the owner's real print tab: a wide tab containing a 390px document.
+  { device: "mobile", palette: "original", sections: allSections, wideTab: true },
   { device: "desktop", palette: "original", sections: ["perfil", "resultados", "invest-rs", "contato"] },
   { device: "mobile", palette: "clean", sections: ["perfil", "resultados", "invest-rs", "contato"] },
 ]
@@ -30,12 +32,12 @@ let failed = 0
 try {
   for (const item of variants) {
     const page = await browser.newPage()
-    const { device, palette, sections } = item
+    const { device, palette, sections, wideTab = false } = item
     const selected = new Set(sections)
-    const label = device + "-" + palette + "-" + sections.length + "sections"
+    const label = device + "-" + palette + (wideTab ? "-wide-tab" : "") + "-" + sections.length + "sections"
     try {
-      const width = device === "desktop" ? 1440 : 390
-      const height = device === "desktop" ? 900 : 844
+      const width = device === "desktop" || wideTab ? 1440 : 390
+      const height = device === "desktop" || wideTab ? 900 : 844
       await page.setCacheEnabled(false)
       await page.setViewport({
         width,
@@ -110,7 +112,7 @@ try {
         throw new Error("Invalid physical page count " + actualPages +
           " for " + sections.length + " sections")
       }
-      if (device === "desktop" && actualPages !== sections.length) {
+      if (actualPages !== sections.length) {
         throw new Error("Desktop printed " + actualPages +
           " physical pages for " + sections.length + " sections")
       }
@@ -135,7 +137,10 @@ try {
             "Wrong Desktop paper width on page " + (index + 1) + ": " + JSON.stringify(pageSize),
           )
         }
-        if (device === "mobile" && pageSize.widthPt >= pageSize.heightPt) {
+        if (device === "mobile" && (
+          Math.abs(pageSize.widthPt - 292.5) > 1 ||
+          pageSize.widthPt >= pageSize.heightPt
+        )) {
           throw new Error(
             "Wrong Mobile portrait page " + (index + 1) + ": " + JSON.stringify(pageSize),
           )
@@ -181,6 +186,17 @@ try {
         }
         sectionStarts[slug] = pageIndex
         previous = pageIndex
+      }
+      if (device === "mobile") {
+        for (const [index, slug] of sections.entries()) {
+          if (sectionStarts[slug] !== index) {
+            throw new Error("Wrong Mobile section page for " + slug)
+          }
+          if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug) &&
+            !physicalTexts[index].includes("FRENTE SINTETICA 13")) {
+            throw new Error("Incomplete Mobile Trajetória for " + slug)
+          }
+        }
       }
       if (device === "desktop") {
         if (sections.includes("perfil") &&
@@ -245,7 +261,7 @@ try {
       const record = {
         label, pages: actualPages, widthPx: manifest.widthPx,
         paperSizes,
-        referencePaperHeightPx: height, sectionStarts,
+        referencePaperHeightPx: height, wideTab, sectionStarts,
         searchableChars: searchable.length, bytes: fs.statSync(file).size,
         heroLinks: (hero.match(/<a href=/g) || []).length,
         contactLinks: (contact.match(/<a href=/g) || []).length,

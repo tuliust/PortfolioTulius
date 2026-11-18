@@ -17,14 +17,17 @@ describe("PDF native print pagination", () => {
     expect(css).not.toContain("break-after: page !important")
   })
 
-  it("retains the Mobile fixed-sheet layout", () => {
+  it("assigns variable-height named Mobile pages without extra forced page breaks", () => {
     const css = pdfPrintCss("mobile", [
-      { slug: "perfil", heightPx: 844 },
-      { slug: "invest-rs", heightPx: 844 },
+      { slug: "perfil", heightPx: 1488 },
+      { slug: "invest-rs", heightPx: 2016 },
     ])
-    expect(css).toContain("@page { size: 390px 844px; margin: 0; }")
+    expect(css).toContain("@page portfolioMobile0 { size: 390px 1488px; margin: 0; }")
+    expect(css).toContain("@page portfolioMobile1 { size: 390px 2016px; margin: 0; }")
+    expect(css).toContain('data-pdf-section="invest-rs"] { page: portfolioMobile1')
     expect(css).not.toContain("@page portfolio0")
-    expect(css).toContain('data-pdf-section="invest-rs"] { break-before: page')
+    expect(css).not.toContain("break-before: page !important")
+    expect(css).toContain("grid-template-columns: minmax(0, 1fr) !important")
   })
 
   it("rejects invalid, duplicate or excessively tall pages", () => {
@@ -37,7 +40,7 @@ describe("PDF native print pagination", () => {
       ]),
     ).toThrow()
     expect(() => pdfPrintCss("desktop", [{ slug: "formacao", heightPx: 399 }])).toThrow()
-    expect(() => pdfPrintCss("mobile", [{ slug: "perfil", heightPx: 500 }])).toThrow()
+    expect(() => pdfPrintCss("mobile", [{ slug: "perfil", heightPx: 399 }])).toThrow()
     expect(() =>
       pdfPrintCss("desktop", [{ slug: "invest-rs", heightPx: PDF_PRINT_MAX_PAGE_HEIGHT + 1 }]),
     ).toThrow()

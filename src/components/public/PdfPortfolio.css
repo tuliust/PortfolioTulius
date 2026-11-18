@@ -64,6 +64,13 @@
   scroll-margin-top: 0;
 }
 
+.pdf-portfolio--mobile {
+  /* A print tab can be 1440px wide while its PDF is only 390px wide. */
+  width: min(100%, 390px);
+  max-width: 390px;
+  container-type: inline-size;
+}
+
 .pdf-portfolio--mobile .mobile-panels {
   display: block;
 }
@@ -306,6 +313,17 @@
 .pdf-portfolio--mobile .pdf-experience-layout .pdf-experience-identity {
   position: static;
   top: auto;
+}
+
+/* Keep the published surname intact in the PDF-only Hero identity.
+   Responsive units below refer to the 390px PDF container, not its browser tab. */
+.pdf-portfolio--mobile #perfil-a .mobile360-person-name {
+  font-size: clamp(1.2rem, 5.1cqw, 1.5rem);
+}
+
+.pdf-portfolio--mobile #perfil-a .mobile360-person-name > strong {
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 /* The mobile downward chevron is a navigation control, not PDF content. */
