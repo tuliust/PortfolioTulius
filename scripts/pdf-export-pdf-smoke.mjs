@@ -158,6 +158,36 @@ try {
       }
 
       if (manifest.pages.length !== sections.length) throw new Error("Manifest count mismatch")
+      if (device === "mobile" && editorial360) {
+        const hero = await page.evaluate(() => {
+          const bounds = (selector) =>
+            document.querySelector(selector)?.getBoundingClientRect() ?? null
+          const top = bounds("#perfil-a .mobile360-top")
+          const name = bounds("#perfil-a .mobile360-person-name")
+          const description = bounds("#perfil-a .mobile360-experience p")
+          const photo = bounds("#perfil-a .mobile360-photo")
+          const arrow = document.querySelector("#perfil-a .mobile360-down")
+          return {
+            headerBottom: top?.bottom ?? null,
+            nameTop: name?.top ?? null,
+            descriptionBottom: description?.bottom ?? null,
+            photoTop: photo?.top ?? null,
+            photoBottom: photo?.bottom ?? null,
+            arrowHidden: !arrow || getComputedStyle(arrow).display === "none",
+          }
+        })
+        if (
+          hero.headerBottom === null || hero.nameTop === null ||
+          hero.descriptionBottom === null || hero.photoTop === null ||
+          hero.photoBottom === null || !hero.arrowHidden ||
+          hero.nameTop < hero.headerBottom - 2 ||
+          hero.photoTop > hero.nameTop - 4 ||
+          hero.photoBottom < hero.descriptionBottom + 4
+        ) {
+          throw new Error("Mobile editorial Hero portrait/text alignment: " +
+            JSON.stringify(hero))
+        }
+      }
       if (device === "mobile" && sections.includes("invest-rs")) {
         const mobileLayout = await page.evaluate(() => {
           const layout = document.querySelector("#invest-rs .pdf-experience-layout")

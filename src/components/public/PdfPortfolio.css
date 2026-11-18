@@ -279,7 +279,14 @@
 }
 .pdf-portfolio--mobile #perfil-a .mobile360-photo {
   aspect-ratio: auto !important;
-  height: clamp(12.5rem, 56cqw, 14.25rem) !important;
+  height: clamp(13rem, 62cqw, 15.25rem) !important;
+  align-self: center !important;
+}
+/* The public Hero raises copy to avoid its on-site scroll arrow. The PDF
+   hides that arrow, so the inherited upward transform would put the name
+   ON TOP of the black headline and below the photograph. */
+.pdf-portfolio--mobile #perfil-a .mobile360-bottom-copy {
+  transform: none !important;
   align-self: center !important;
 }
 .pdf-portfolio--mobile #perfil-a .mobile360-photo img {
