@@ -267,8 +267,12 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
   const editorialHeight = pages.find((page) => page.slug === "perfil")?.heightPx
   const editorialClip = editorialHeight
     ? ".pdf-portfolio--mobile #perfil:has(#perfil-a.editorial360-mobile) { " +
-      "height: " + editorialHeight + "px !important; min-height: 0 !important; " +
-      "max-height: " + editorialHeight + "px !important; overflow: clip !important; }"
+      "height: " +
+      editorialHeight +
+      "px !important; min-height: 0 !important; " +
+      "max-height: " +
+      editorialHeight +
+      "px !important; overflow: clip !important; }"
     : ""
   return [
     ...sheets,
