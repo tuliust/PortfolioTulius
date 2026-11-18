@@ -155,8 +155,9 @@ function ensureMobileReferenceCss(doc: Document): void {
           .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
           // A taller named @page must not expand 55svh portraits or other
           // viewport-height spacers and create another continuation sheet.
-          .replace(/(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g, (_match, unit) =>
-            String(Math.round(Number(unit) * 8.44 * 1000) / 1000) + "px",
+          .replace(
+            /(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g,
+            (_match, unit) => String(Math.round(Number(unit) * 8.44 * 1000) / 1000) + "px",
           ),
       )
     }
@@ -228,7 +229,10 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
   // Extra reserve keeps Sobre's last paragraph together; mobile viewport
   // heights are frozen at the canonical 844px while printing taller sheets.
   const reserve = section.dataset.pdfSection === "sobre" ? 72 : 48
-  return { slug: section.dataset.pdfSection ?? "", heightPx: Math.ceil(Math.max(400, actual + reserve)) }
+  return {
+    slug: section.dataset.pdfSection ?? "",
+    heightPx: Math.ceil(Math.max(400, actual + reserve)),
+  }
 }
 
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
