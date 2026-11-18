@@ -375,10 +375,26 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     }
   }
 
-  // These two transparent portraits end at the physical sheet boundary.
-  // The Sobre image is translated inside a clipped container; its image box
-  // itself extends past the visible bottom and must not set paper height.
+  // The editorial Hero's full-viewport decorative boxes can extend well
+  // below the actual portrait and copy, even though those pixels are blank.
+  // The first physical sheet ends where the approved two-column block ends.
   const slug = section.dataset.pdfSection ?? ""
+  if (slug === "perfil") {
+    const photo = section.querySelector<HTMLElement>(
+      ".mobile360-photo, .mobile-profile-hero",
+    )
+    const copy = section.querySelector<HTMLElement>(
+      ".mobile360-bottom-copy, .profile-mobile-years",
+    )
+    if (photo && copy) {
+      bottom = Math.max(
+        photo.getBoundingClientRect().bottom,
+        copy.getBoundingClientRect().bottom,
+      )
+    }
+  }
+  // The Sobre image is translated inside a clipped container; its image box
+  // extends past the visible bottom and must not set paper height.
   if (slug === "sobre") {
     const photo = section.querySelector<HTMLElement>(".about-mobile-photo")
     if (photo) bottom = Math.max(box.top, photo.getBoundingClientRect().bottom)
