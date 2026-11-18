@@ -481,6 +481,13 @@
   translate: 0 4.5rem !important;
 }
 
+/* The photo bleeds slightly beyond its CSS image box to cover transparent
+   pixels. Clip it at the *physical sheet* border so Chrome cannot generate
+   an additional blank sheet from that visual overflow. */
+.pdf-portfolio--desktop #contato {
+  overflow: clip !important;
+}
+
 /* Print-only helper in the top-level tab; never appear on PDF pages. */
 .pdf-print-toolbar {
   display: flex;

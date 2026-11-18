@@ -109,10 +109,9 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   let reserve = 12
   if (slug === "formacao") reserve = 240
   else if (slug === "ferramentas") reserve = 210
-  else if (slug === "depoimentos") reserve = 2
-  else if (slug === "resultados" || section.classList.contains("pdf-experience-section")) {
-    reserve = 32
-  }
+  else if (slug === "depoimentos") reserve = 80
+  else if (slug === "resultados") reserve = 128
+  else if (section.classList.contains("pdf-experience-section")) reserve = 32
   return { slug, heightPx: Math.ceil(Math.max(400, actual + reserve)) }
 }
 
