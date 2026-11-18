@@ -624,3 +624,10 @@ Correção **exclusiva `device=mobile`**: restaurar as regras de breakpoint Mobi
 **Pendência distinta — arquivo autenticado com dados reais:** o PDF Chrome/Skia original de 32 folhas é evidência do estado anterior; a QA acima usa *fixture sintética* e não é um novo PDF produtivo. A aba administrativa conectada foi identificada com Mobile Original e 13 seções selecionadas, mas o conector de navegador disponível nesta conversa **somente lê a aba**, sem permissão de clique/impressão nem exportação de arquivo. Portanto, **a geração e inspeção do novo PDF real não foram executadas aqui**. O proprietário deve abrir Exportar PDF, escolher Mobile/Original, gerar Salvar como PDF no Chrome sem margens e com gráficos de fundo, e enviar o novo arquivo para homologação óptica final. Nenhuma alteração de CMS, mídia, Supabase, Auth/RLS/Storage ou migrations.
 
 Esta conclusão distingue o **SUCCESS sintético comprovado** do **aceite produtivo ainda não confirmado**.
+
+
+### Bloqueio produtivo da preparação Mobile e lacuna de cobertura (18/11/2026)
+
+A captura do painel administrativo autenticado exibe `As regras responsivas do PDF Mobile não foram carregadas.` no momento de gerar impressão, mesmo após os nove PDFs sintéticos dev terem passado no SHA `322185d`. Isso revela uma lacuna objetiva: a [QA #44223658300](https://github.com/tuliust/PortfolioTulius/actions/runs/44223658300) servia `pnpm dev`, e o CSS final Vercel pode usar sintaxe CSSOM compilada diferente ou grupos CSS aninhados.
+
+A correção proposta/implementada em `pdf-print-layout.ts` avalia media queries do CSS compilado por `matchMedia` dentro de iframe efêmero com viewport **390×844** (independente da janela externa) e percorre `CSSGroupingRule` aninhados. Não remove o bloqueio se nenhuma regra Mobile aplicável for encontrada. A QA adiciona **build de produção isolado com a página QA opt-in**, mais dois PDFs Mobile editorial360 (390 e 1440 px). O build normal continua proibindo publicar `pdf-export-qa.html`. A tela produtiva com CMS autenticado ainda requer nova verificação, pois o navegador conectado só permite leitura; não converter fixture em aceite real.

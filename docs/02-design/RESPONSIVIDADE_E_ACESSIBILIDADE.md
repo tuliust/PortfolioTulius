@@ -254,3 +254,12 @@ A análise do PDF sintético físico gerado pelo SHA `da91859` constatou que a s
 
 
 **Fontes de títulos do PDF Mobile em aba larga (18/11/2026):** `PdfPortfolio.css` fixa agora, **somente no renderer Mobile**, o `font-size` de `.pdf-results-page .section-intro` (`clamp(1rem,1.2cqw,1.15rem)`), `.pdf-results-group-heading` (`clamp(1.5rem,2.6cqw,2.6rem)`) e `.pdf-experience-column-heading` (`clamp(1.45rem,2cqw,2rem)`) na largura interna do documento. Esses três valores replicam a composição de 390px aprovada e evitam crescer ao abrir a impressão em uma aba de 1440px. Mantêm fontes, pesos, cores e textos originais, sem afetar o layout público ou a impressão Desktop.
+
+
+## PDF Mobile — CSS compilado de produção e bloqueio da exportação (18/11/2026)
+
+A captura do painel autenticado apresenta **"As regras responsivas do PDF Mobile não foram carregadas."**, embora a prévia 390 × 844 esteja visível. O erro ocorre no guardião `ensureMobileReferenceCss` antes da abertura do diálogo de impressão, e **não** comprova ausência da mídia ou dos dados. A QA anterior utilizava apenas `pnpm dev`, enquanto a Vercel serve CSS processado/minificado. O reconhecedor antigo aceitava somente consultas legadas `(max-width: 767px)`, não formas minificadas como `(width <= 767px)`; também não atravessava grupos aninhados `@layer/@supports`.
+
+A correção testa queries com `matchMedia` de um iframe temporário de **390×844 px**, remove o iframe antes de medir papel, reconhece sintaxe de faixa moderna e percorre os grupos CSS em profundidade. Mantém a exigência de **ao menos uma regra Mobile carregada** para não imprimir silenciosamente o layout errado; CSS Base com unidades de viewport continua normalizado **somente em declarações pertinentes** e antes da cascata Mobile. Sem alterações no código Desktop, no conteúdo, nas mídias nem no site público.
+
+O workflow `PDF Renderer Visual QA` passa a executar, além da fixture Vite dev, uma **fixture isolada do build Vite compilado** (`PDF_QA_BUILD=1`) servida por `vite preview`, com os cenários Mobile editorial360 de janela 390 px e aba 1440 px. Esse modo existe somente no CI; a compilação normal não inclui `pdf-export-qa.html` e continua checada por `PDF_QA_NOT_PUBLISHED`. A QA física deve comprovar conteúdo pesquisável, paginação 13/13, uma coluna e paridade de altura. **A correção fica condicionada a CI SUCCESS e confirmação posterior no Chrome com conteúdo real.**

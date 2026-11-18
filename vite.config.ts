@@ -16,6 +16,16 @@ export default defineConfig({
           : deps,
     },
     rolldownOptions: {
+      // The QA-only multi-page build exercises Vite's optimized CSS in
+      // Chromium. The public production build never includes this fixture.
+      ...(process.env.PDF_QA_BUILD === "1"
+        ? {
+            input: {
+              app: path.resolve(__dirname, "index.html"),
+              pdfExportQa: path.resolve(__dirname, "pdf-export-qa.html"),
+            },
+          }
+        : {}),
       output: {
         // The broad vendor group avoids a 533 kB main-entry regression.
         // AdminApp remains a separate lazy route chunk.

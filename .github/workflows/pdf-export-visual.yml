@@ -91,6 +91,23 @@ jobs:
           pnpm build
           test ! -e dist/pdf-export-qa.html
           echo "PDF_QA_NOT_PUBLISHED PASS"
+      - name: Build and verify compiled production-CSS fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          PDF_QA_BUILD=1 pnpm exec vite build --outDir "$RUNNER_TEMP/pdf-production-build"
+          test -f "$RUNNER_TEMP/pdf-production-build/pdf-export-qa.html"
+          (pnpm exec vite preview --outDir "$RUNNER_TEMP/pdf-production-build" --host 127.0.0.1 --port 4178 --strictPort > "$RUNNER_TEMP/pdf-preview.log" 2>&1 &)
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent --show-error "http://127.0.0.1:4178/pdf-export-qa.html" > /dev/null; then
+              echo "PDF_COMPILED_FIXTURE_READY"
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error "http://127.0.0.1:4178/pdf-export-qa.html" > /dev/null
+          (cd "$RUNNER_TEMP/pdf-visual" && PDF_QA_BUILT=1 PDF_QA_SHOTS="$RUNNER_TEMP/pdf-visual-shots/compiled" PDF_QA_BASE="http://127.0.0.1:4178" node native-pdf.mjs)
+          echo "PDF_COMPILED_CSS_QA_PASS"
       - name: Upload synthetic screenshots and JSON
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

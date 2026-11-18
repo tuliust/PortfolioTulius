@@ -24,6 +24,9 @@ const variants = [
   { device: "desktop", palette: "original", sections: ["perfil", "resultados", "invest-rs", "contato"] },
   { device: "mobile", palette: "clean", sections: ["perfil", "resultados", "invest-rs", "contato"] },
 ]
+const testedVariants = process.env.PDF_QA_BUILT === "1"
+  ? variants.filter((item) => item.device === "mobile" && item.editorial360)
+  : variants
 const browser = await puppeteer.launch({
   channel: "chrome",
   headless: true,
@@ -33,7 +36,7 @@ const records = []
 let failed = 0
 
 try {
-  for (const item of variants) {
+  for (const item of testedVariants) {
     const page = await browser.newPage()
     const { device, palette, sections, wideTab = false, editorial360 = false } = item
     const selected = new Set(sections)

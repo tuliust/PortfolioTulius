@@ -124,78 +124,109 @@ export const PDF_MOBILE_REFERENCE_STYLE_ID = "portfolio-pdf-mobile-reference"
  * Reapply those existing CSS rules for the reference viewport, substituting
  * viewport-width units with the 390px PDF container width.
  */
-function matchesMobileReferenceMedia(query: string): boolean {
-  const conditions = [...query.matchAll(/\(\s*(min|max)-(width|height)\s*:\s*(\d+)px\s*\)/g)]
-  if (!conditions.some((part) => part[2] === "width")) return false
-  if (/\b(?:screen|print|orientation)\b/i.test(query)) return false
-  return conditions.every(([, bound, axis, limit]) => {
-    const reference = axis === "width" ? 390 : 844
-    return bound === "max" ? reference <= Number(limit) : reference >= Number(limit)
-  })
+/** Check legacy and minified CSS range-syntax width conditions. */
+function isMobileWidthMedia(query: string): boolean {
+  return /\b(?:min|max)-width\s*:|\bwidth\s*(?::|[<>]=?)|[<>]=?\s*width\b/i.test(query)
 }
 
+/**
+ * Evaluate compiled @media syntax against the *document* reference viewport,
+ * not the outer tab. Vite production builds can rewrite `max-width: 767px`
+ * as `width <= 767px`, which the former regex-only check did not recognize.
+ */
 function ensureMobileReferenceCss(doc: Document): void {
   if (doc.getElementById(PDF_MOBILE_REFERENCE_STYLE_ID)) return
+
+  // A detached iframe has no dependable viewport. Mount a non-rendering
+  // same-origin probe temporarily and remove it before measuring pages.
+  const probe = doc.createElement("iframe")
+  probe.setAttribute("aria-hidden", "true")
+  probe.tabIndex = -1
+  probe.style.cssText =
+    "position:fixed;left:0;top:0;width:390px;height:844px;border:0;visibility:hidden;pointer-events:none;z-index:-1"
+  doc.body.appendChild(probe)
+
   const normalizedBaseRules: string[] = []
   const mobileRules: string[] = []
-  for (const sheet of Array.from(doc.styleSheets)) {
-    let rules: CSSRuleList
-    try {
-      rules = sheet.cssRules
-    } catch {
-      continue // Cross-origin stylesheet; the local compiled site CSS is available.
+  try {
+    const referenceWindow = probe.contentWindow
+    if (!referenceWindow) {
+      throw new Error("Não foi possível verificar as dimensões responsivas do PDF Mobile.")
     }
-    for (const rule of Array.from(rules)) {
-      // Reapply only the declarations that contain vw, not an entire CSS
-      // rule. Cloning the complete base rule here reinstated its Desktop
-      // grid display AFTER the PDF Mobile display:block declaration,
-      // squeezing Experience columns into three unusable 390px columns.
-      if (rule.type === CSSRule.STYLE_RULE) {
-        const styleRule = rule as CSSStyleRule
-        const viewportDeclarations = Array.from(styleRule.style)
-          .filter((name) =>
-            /\d(?:vw|svh|dvh|lvh|vh)\b/.test(styleRule.style.getPropertyValue(name)),
-          )
-          .map((name) => {
-            const value = styleRule.style
-              .getPropertyValue(name)
-              .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
-              .replace(
-                /(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g,
-                (_match, count) => String(Math.round((Number(count) * 844) / 100)) + "px",
+    const walk = (rules: CSSRuleList, insideMobileMedia: boolean): void => {
+      for (const rule of Array.from(rules)) {
+        if (rule.type === CSSRule.MEDIA_RULE) {
+          const media = rule as CSSMediaRule
+          const query = media.media.mediaText
+          if (referenceWindow.matchMedia(query).matches) {
+            walk(media.cssRules, insideMobileMedia || isMobileWidthMedia(query))
+          }
+          continue
+        }
+        if (rule.type === CSSRule.STYLE_RULE) {
+          const styleRule = rule as CSSStyleRule
+          if (insideMobileMedia) {
+            mobileRules.push(styleRule.cssText)
+          } else {
+            // Only viewport-dependent declarations: do not reintroduce base
+            // display:grid after Mobile display:block (experience columns).
+            const viewportDeclarations = Array.from(styleRule.style)
+              .filter((name) =>
+                /\d(?:vw|svh|dvh|lvh|vh)\b/.test(styleRule.style.getPropertyValue(name)),
               )
-            const priority = styleRule.style.getPropertyPriority(name) ? " !important" : ""
-            return name + ": " + value + priority + ";"
-          })
-        if (viewportDeclarations.length) {
-          normalizedBaseRules.push(
-            styleRule.selectorText + " { " + viewportDeclarations.join(" ") + " }",
-          )
+              .map((name) => {
+                const value = styleRule.style
+                  .getPropertyValue(name)
+                  .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
+                  .replace(
+                    /(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g,
+                    (_match, unit) => String(Math.round((Number(unit) * 844) / 100)) + "px",
+                  )
+                const priority = styleRule.style.getPropertyPriority(name) ? " !important" : ""
+                return name + ": " + value + priority + ";"
+              })
+            if (viewportDeclarations.length) {
+              normalizedBaseRules.push(
+                styleRule.selectorText + " { " + viewportDeclarations.join(" ") + " }",
+              )
+            }
+          }
+          continue
+        }
+        // Production CSS can wrap @media rules in @layer or @supports.
+        // Traverse grouping rules, preserving their source order.
+        if ("cssRules" in rule) {
+          walk((rule as CSSGroupingRule).cssRules, insideMobileMedia)
         }
       }
-      if (rule.type !== CSSRule.MEDIA_RULE) continue
-      const media = rule as CSSMediaRule
-      if (!matchesMobileReferenceMedia(media.media.mediaText)) continue
-      mobileRules.push(
-        Array.from(media.cssRules)
-          .map((entry) => entry.cssText)
-          .join("\n")
-          .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
-          // A taller named @page must not expand 55svh portraits or other
-          // viewport-height spacers and create another continuation sheet.
-          .replace(
-            /(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g,
-            (_match, unit) => String(Math.round(Number(unit) * 8.44 * 1000) / 1000) + "px",
-          ),
-      )
     }
+    for (const sheet of Array.from(doc.styleSheets)) {
+      try {
+        walk(sheet.cssRules, false)
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "SecurityError") {
+          continue // A third-party CSS file is not part of the local layout.
+        }
+        throw error
+      }
+    }
+  } finally {
+    probe.remove()
   }
   if (!mobileRules.length) {
     throw new Error("As regras responsivas do PDF Mobile não foram carregadas.")
   }
+  // Keep the original cascade: converted base sizes first, actual responsive
+  // selectors afterwards, restricted to the PDF-only internal 390px canvas.
   const style = doc.createElement("style")
   style.id = PDF_MOBILE_REFERENCE_STYLE_ID
-  style.textContent = [...normalizedBaseRules, ...mobileRules].join("\n")
+  style.textContent = [...normalizedBaseRules, ...mobileRules]
+    .join("\n")
+    .replace(/(-?\d+(?:\.\d+)?)vw\b/g, "$1cqw")
+    .replace(
+      /(-?\d+(?:\.\d+)?)(?:svh|dvh|lvh|vh)\b/g,
+      (_match, unit) => String(Math.round((Number(unit) * 844) / 100)) + "px",
+    )
   doc.head.appendChild(style)
 }
 
