@@ -279,14 +279,16 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
   ].join("\n")
 }
 
-
 /**
  * Create physical sheets from already published Mobile panels. Moving, rather
  * than cloning, the actual DOM preserves text, photo sources and live links.
  * Called only in the print tab, after validating the CMS snapshot. No public
  * page, Desktop PDF, section source or CMS data is modified.
  */
-function splitMobilePrintSections(root: HTMLElement, original: readonly HTMLElement[]): HTMLElement[] {
+function splitMobilePrintSections(
+  root: HTMLElement,
+  original: readonly HTMLElement[],
+): HTMLElement[] {
   const bySlug = new Map(original.map((section) => [section.dataset.pdfSection, section]))
 
   const newSheet = (source: HTMLElement, slug: string): HTMLElement => {
@@ -321,9 +323,11 @@ function splitMobilePrintSections(root: HTMLElement, original: readonly HTMLElem
     const flow = page?.querySelector<HTMLElement>(".pdf-results-flow")
     const overview = flow?.querySelector<HTMLElement>(":scope > .pdf-results-overview")
     const themed = flow
-      ? Array.from(flow.querySelectorAll<HTMLElement>(
-          ":scope > .pdf-results-group:not(.pdf-results-overview)",
-        ))
+      ? Array.from(
+          flow.querySelectorAll<HTMLElement>(
+            ":scope > .pdf-results-group:not(.pdf-results-overview)",
+          ),
+        )
       : []
     if (!page || !flow || !overview || !themed.length) {
       throw new Error("Não foi possível separar os indicadores publicados do PDF Mobile.")
@@ -336,9 +340,7 @@ function splitMobilePrintSections(root: HTMLElement, original: readonly HTMLElem
     // remains intact after them, rather than being silently omitted.
     const approvedOrder = ["projetos", "eventos", "marketing", "imprensa"]
     const order = [
-      ...approvedOrder.flatMap((key) =>
-        themed.filter((group) => group.dataset.pdfTheme === key),
-      ),
+      ...approvedOrder.flatMap((key) => themed.filter((group) => group.dataset.pdfTheme === key)),
       ...themed.filter((group) => !approvedOrder.includes(group.dataset.pdfTheme ?? "")),
     ]
     for (const group of order) flowCopy.appendChild(group)
@@ -381,14 +383,17 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
     const photo = section.querySelector<HTMLElement>(".about-mobile-photo")
     if (photo) bottom = Math.max(box.top, photo.getBoundingClientRect().bottom)
   }
-  const reserve = ({
-    perfil: 2,
-    "perfil-areas": 18,
-    sobre: 0,
-    "sobre-diferenciais": 64,
-    resultados: 24,
-    "resultados-grupos": 24,
-  } as Record<string, number>)[slug] ?? 72
+  const reserve =
+    (
+      {
+        perfil: 2,
+        "perfil-areas": 18,
+        sobre: 0,
+        "sobre-diferenciais": 64,
+        resultados: 24,
+        "resultados-grupos": 24,
+      } as Record<string, number>
+    )[slug] ?? 72
   return {
     slug,
     heightPx: Math.ceil(Math.max(400, bottom - box.top + reserve)),
@@ -439,8 +444,7 @@ export function preparePdfPrintLayout(
   // Preserve the approved Desktop geometry. Mobile uses its own 390px CSS
   // viewport rules and a measured, independent physical sheet per section.
   if (device === "mobile") ensureMobileReferenceCss(doc)
-  const physicalNodes =
-    device === "mobile" ? splitMobilePrintSections(root, nodes) : nodes
+  const physicalNodes = device === "mobile" ? splitMobilePrintSections(root, nodes) : nodes
   const pages =
     device === "desktop"
       ? physicalNodes.map(measureDesktopSection)

@@ -89,7 +89,11 @@ function PdfResultsSection({
             />
           </div>
           {topics.map((topic, index) => (
-            <div className="pdf-results-group" data-pdf-theme={topic.themeKey || RESULT_THEME_KEYS[index]} key={topic.themeKey || index}>
+            <div
+              className="pdf-results-group"
+              data-pdf-theme={topic.themeKey || RESULT_THEME_KEYS[index]}
+              key={topic.themeKey || index}
+            >
               <ResultsCenter
                 section={section}
                 selectedTheme={topic.themeKey || RESULT_THEME_KEYS[index]}

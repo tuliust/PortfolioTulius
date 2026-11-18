@@ -32,8 +32,13 @@ describe("PDF native print pagination", () => {
 
   it("supports distinct physical Mobile panels without changing Desktop", () => {
     const pages = [
-      "perfil", "perfil-areas", "sobre", "sobre-diferenciais",
-      "resultados", "resultados-grupos", "formacao",
+      "perfil",
+      "perfil-areas",
+      "sobre",
+      "sobre-diferenciais",
+      "resultados",
+      "resultados-grupos",
+      "formacao",
     ].map((slug, index) => ({ slug, heightPx: 440 + index * 50 }))
     const css = pdfPrintCss("mobile", pages)
     expect(css.match(/@page portfolioMobile\\d+ \\{/g)).toHaveLength(7)
