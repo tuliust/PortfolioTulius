@@ -695,3 +695,18 @@ A correção proposta/implementada em `pdf-print-layout.ts` avalia media queries
 **Rastreabilidade técnica:** `src/lib/pdf-print-layout.ts` (divisão de nós, CSS responsivo e altura física), `src/components/public/PdfPortfolio.tsx` (identificadores temáticos de leitura), `src/components/public/PdfPortfolio.css` (fundo e reserva de impressão), `scripts/pdf-export-pdf-smoke.mjs` e `src/lib/pdf-print-layout.test.ts`. Os testes sintéticos previstos verificam 16 folhas físicas na seleção completa, separações e textos pesquisáveis; sua execução não é presumida por este registro. Nenhum arquivo do site público, do CMS, do banco ou do PDF Desktop foi intencionalmente alterado.
 
 **Status na criação deste registro:** implementação commitada; Validate, QA física/visual, CSS compilado, comparação visual com as seis referências, Vercel e aceite produtivo **pendentes de reconfirmação por SHA**. Um resultado histórico anterior não confirma esta entrega.
+
+
+### Evidência final — PDF Mobile com seis folhas editoriais (18/11/2026)
+
+**Estado da implementação:** `main@5a9937ac682282b2a7b3f48a1ed8536314866d60`. A mudança principal usa as mesmas seções CMS, mas monta 16 folhas físicas no Mobile, separando apenas os blocos dos painéis de Perfil, Sobre e Resultados. Os demais slugs seguem iguais, sem alteração do conteúdo publicado. A fotografia da abertura editorial é medida com a compensação pontual de 158px da cascata Chrome print e o contêiner é limitado à altura da folha para remover a sobra inferior.
+
+**Testes confirmados (CI sintético isolado):**
+- [Validate PortfolioTulius](https://github.com/tuliust/PortfolioTulius/actions/runs/44242737237): `SUCCESS` (formatador, TypeScript, testes unitários, produção e smoke).
+- [PDF Renderer Visual QA](https://github.com/tuliust/PortfolioTulius/actions/runs/44242737229): `SUCCESS`; QA visual sintético `6/6`, PDFs físicos `9/9`, CSS compilado `2/2`. PDFs gerados com textos selecionáveis, hyperlinks de navegação nas áreas e de contato, folha própria para cada segmento, sem páginas órfãs. Mobile editorial gerado com 16 folhas tanto em 390px quanto com Chrome em aba larga; alturas equivalentes.
+
+**Geometria física sintética do Hero editorial no Chrome** (largura constante de 293,04pt = 390px CSS; folha/altura em px CSS, arredondada): 01/532, 02/727, 03/732, 04/685, 05/1212, 06/3267, 07/691, 08/2224, 09/2183, 10/2187, 11/2159, 12/2177, 13/2159, 14/787, 15/1177, 16/1183. Inspeção adicional do PDF de fixture: a fotografia termina visualmente na borda inferior da primeira folha; a terceira também encerra junto à fotografia; a quinta apresenta quatro indicadores em coluna única; a sexta contém os grupos em duas colunas e preserva o grupo adicional publicado `Estratégia e Reputação` após os quatro grupos da referência. O conteúdo da quarta folha não sofreu alterações editoriais.
+
+**Preservação:** Desktop mantém 13 folhas no QA, com geometria e conteúdo anteriores; Formação, experiências, Ferramentas, Depoimentos e Contato preservam as alturas verificadas no fixture anterior. O código do site público, as migrações e os dados do CMS não foram modificados.
+
+**Limite de homologação:** esses resultados provêm da fixture local com dados sintéticos, não de um PDF exportado com sessão autenticada e CMS produtivo. As capturas e o PDF real encaminhados pelo responsável serviram como referência visual para inspeção e confecção de uma prévia independente. **Não foi comprovada a paridade pixel a pixel do PDF final produtivo com os seis anexos**; essa comparação e o aceite explícito do responsável continuam pendentes. A publicação automática da Vercel deve ser reconfirmada no HEAD documental definitivo.
