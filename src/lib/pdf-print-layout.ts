@@ -226,7 +226,6 @@ function measureMobileSection(section: HTMLElement): PdfPrintPage {
 export function pdfPrintCss(device: PdfDevice, pages: readonly PdfPrintPage[]): string {
   if (device === "desktop") return desktopPdfPrintCss(pages)
   return mobilePdfPrintCss(pages)
-
 }
 
 /** Prepare published, authorized content for Chrome's native Save as PDF. */
