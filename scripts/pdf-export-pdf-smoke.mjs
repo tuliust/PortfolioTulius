@@ -120,8 +120,31 @@ try {
             return {
               slug,
               innerHeight: window.innerHeight,
-              textMax: texts.sort((a, b) => b.bottom - a.bottom).slice(0, 3),
+              textMax: [...texts].sort((a, b) => b.bottom - a.bottom).slice(0, 3),
+              textMin: [...texts].sort((a, b) => a.bottom - b.bottom).slice(0, 3),
               mediaMax: media.sort((a, b) => b.bottom - a.bottom).slice(0, 3),
+              boxes: (slug === "resultados"
+                ? [".pdf-results-page", ".pdf-results-flow", ".pdf-results-group", ".pdf-results-group:last-child", ".results-center"]
+                : slug === "invest-rs"
+                  ? [".pdf-experience-layout", ".pdf-experience-identity", ".pdf-experience-projects", ".pdf-experience-trajectory"]
+                  : [".pdf-testimonials-page", ".testimonials-grid"]
+              ).map((selector) => {
+                const element = section.querySelector(selector)
+                if (!element) return { selector }
+                const rect = element.getBoundingClientRect()
+                const style = getComputedStyle(element)
+                return {
+                  selector,
+                  top: Math.round((rect.top - origin) * 100) / 100,
+                  bottom: Math.round((rect.bottom - origin) * 100) / 100,
+                  paddingTop: style.paddingTop,
+                  paddingBottom: style.paddingBottom,
+                  marginTop: style.marginTop,
+                  gap: style.gap,
+                  display: style.display,
+                  minHeight: style.minHeight,
+                }
+              }),
             }
           })
         })
