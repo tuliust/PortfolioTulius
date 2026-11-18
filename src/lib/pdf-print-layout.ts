@@ -79,14 +79,12 @@ function measureDesktopSection(section: HTMLElement): PdfPrintPage {
   // Use the lower edge of the three real text columns rather than the grid
   // wrapper, whose 100svh minimum and padding overstate the visible content.
   if (["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress"].includes(slug)) {
-    const columns = Array.from(
-      section.querySelectorAll<HTMLElement>(".pdf-experience-layout > *"),
-    )
+    const columns = Array.from(section.querySelectorAll<HTMLElement>(".pdf-experience-layout > *"))
     if (columns.length === 3) {
       const textBottom = Math.max(
         ...columns.map((column) => column.getBoundingClientRect().bottom - box.top),
       )
-      return { slug, heightPx: Math.ceil(Math.max(400, textBottom + 72)) }
+      return { slug, heightPx: Math.ceil(Math.max(400, textBottom + 96)) }
     }
   }
 

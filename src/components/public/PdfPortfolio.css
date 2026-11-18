@@ -422,6 +422,15 @@
   border-top: 0 !important;
 }
 
+/* Keep the three-column content, but remove the inherited bottom padding
+   that caused an extra blank sheet whenever compact paper was shorter than
+   the grid's original viewport-based box. Restrict to five requested jobs. */
+.pdf-portfolio--desktop
+  :is(#invest-rs, #prefeitura-sp, #vale, #globo-sportv, #inpress)
+  .pdf-experience-layout {
+  padding-bottom: 0 !important;
+}
+
 /* Desktop PDF: compact Sobre and lift its photo near the right column. */
 .pdf-portfolio--desktop #sobre .about-desktop {
   min-height: 750px !important;
