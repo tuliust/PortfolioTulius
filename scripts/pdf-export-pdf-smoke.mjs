@@ -269,6 +269,22 @@ try {
       if (excludedHeroLinks > 0 && !hero.includes("https://tulius.work/")) {
         throw new Error("Excluded-section Hero links should open the live site")
       }
+      if (device === "mobile" && wideTab) {
+        const standard = records.find((record) =>
+          record.label ===
+          "mobile-original" + (editorial360 ? "-editorial360" : "") + "-13sections" &&
+          record.result === "PASS"
+        )
+        if (standard) {
+          const deltas = paperSizes.map(
+            (size, index) => Math.abs(size.heightPt - standard.paperSizes[index].heightPt),
+          )
+          if (deltas.some((delta) => delta > 3)) {
+            throw new Error("Mobile paper heights changed with the outer print-tab width: " +
+              JSON.stringify(deltas))
+          }
+        }
+      }
       const record = {
         label, pages: actualPages, widthPx: manifest.widthPx,
         paperSizes,

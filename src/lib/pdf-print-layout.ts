@@ -218,20 +218,21 @@ function mobilePdfPrintCss(pages: readonly PdfPrintPage[]): string {
 
 function measureMobileSection(section: HTMLElement): PdfPrintPage {
   const box = section.getBoundingClientRect()
-  const bottom = Array.from(section.querySelectorAll<HTMLElement>("*")).reduce(
-    (maximum, child) =>
-      child.getClientRects().length
-        ? Math.max(maximum, child.getBoundingClientRect().bottom)
-        : maximum,
-    box.bottom,
+  // Wrapper heights can reflect the *outer tab* width even after the 390px
+  // content rules are restored. Measure rendered leaf content rather than
+  // scrollHeight/min-height of empty flex/grid wrappers.
+  const leaves = Array.from(section.querySelectorAll<HTMLElement>("*")).filter(
+    (child) => child.children.length === 0 && child.getClientRects().length > 0,
   )
-  const actual = Math.max(box.height, section.scrollHeight, section.clientHeight, bottom - box.top)
-  // Extra reserve keeps Sobre's last paragraph together; mobile viewport
-  // heights are frozen at the canonical 844px while printing taller sheets.
-  const reserve = section.dataset.pdfSection === "sobre" ? 72 : 48
+  const bottom = leaves.reduce(
+    (maximum, child) => Math.max(maximum, child.getBoundingClientRect().bottom),
+    box.top,
+  )
+  // Retain a little breathing room without a blank continuation sheet.
+  const reserve = section.dataset.pdfSection === "sobre" ? 64 : 72
   return {
     slug: section.dataset.pdfSection ?? "",
-    heightPx: Math.ceil(Math.max(400, actual + reserve)),
+    heightPx: Math.ceil(Math.max(400, bottom - box.top + reserve)),
   }
 }
 

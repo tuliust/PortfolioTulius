@@ -234,3 +234,6 @@ Risco residual: páginas Mobile com Trajetórias longas podem ficar fisicamente 
 
 
 **Complemento técnico Mobile do PDF (18/11/2026):** os valores de `svh`, `dvh` e `vh` das media queries originais são congelados na altura de referência **844 px** somente na folha Mobile. Sem isso, mudar o tamanho da folha altera também a altura da fotografia de Sobre (55svh) e da composição do Perfil, gerando paginação circular. A variante editorial360 está coberta em fixture sintética própria; o layout público e a exportação Desktop permanecem intocados.
+
+
+**Acabamento final de medição Mobile (18/11/2026):** para eliminar espaço inferior causado pela janela Desktop na aba de impressão, a altura da folha Mobile é obtida da última caixa de conteúdo renderizada (`leaf`), não do `scrollHeight` de wrappers. Reserva de 64 CSS px para Sobre e 72 px para as demais seções, mantendo o conteúdo e evitando páginas órfãs. A cor de fundo da folha de Sobre continua grafite abaixo de seu segundo painel. Um teste de paridade compara as alturas de folha da mesma fixture em abas 390 px e 1440 px. Nenhuma mudança no site público, CMS ou PDF Desktop.

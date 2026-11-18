@@ -75,6 +75,12 @@
   display: block;
 }
 
+/* The second Sobre panel is ink-black. Any remaining physical-sheet safety
+   area beneath its last sentence must continue the same ink, not turn orange. */
+.pdf-portfolio--mobile #sobre {
+  background: var(--ink);
+}
+
 .pdf-portfolio--mobile .mobile-panel {
   min-height: 0 !important;
   padding-top: clamp(1.5rem, 5vw, 3rem);
