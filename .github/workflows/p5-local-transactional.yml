@@ -6,6 +6,7 @@ on:
     paths:
       - .github/workflows/p5-local-transactional.yml
       - scripts/p5-local-transactional.mjs
+      - scripts/p5-local-rpc-authorization.mjs
       - scripts/p2-local-composite.mjs
       - scripts/p4-local-admin-browser.mjs
       - scripts/p4-local-seo.mjs
@@ -40,6 +41,7 @@ jobs:
           set -euo pipefail
           node --test scripts/p2-local-isolation.check.mjs
           node --check scripts/p5-local-transactional.mjs
+          node --check scripts/p5-local-rpc-authorization.mjs
           node --check scripts/p2-local-composite.mjs
           node --check scripts/p4-local-admin-browser.mjs
           node --check scripts/p4-local-seo.mjs
@@ -91,6 +93,10 @@ jobs:
         env:
           P5_LOCAL_URL: http://127.0.0.1:54321/
         run: node scripts/p5-local-transactional.mjs
+      - name: Seven RPCs nonadmin denial and admin success on synthetic stack
+        env:
+          P5_LOCAL_URL: http://127.0.0.1:54321/
+        run: node scripts/p5-local-rpc-authorization.mjs
       - name: P2 composed RPC atomicity, CAS and rollback
         env:
           P5_LOCAL_URL: http://127.0.0.1:54321/

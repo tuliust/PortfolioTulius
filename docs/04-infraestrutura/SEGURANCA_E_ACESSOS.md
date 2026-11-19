@@ -1,5 +1,12 @@
 # Segurança, RLS, acessos e riscos
 
+## Atualização do ciclo de segurança — 19/11/2026
+
+**Credenciais (declarações do proprietário):** os PATs antigos foram excluídos. Isso não demonstra qual deles era o segredo histórico anteriormente exposto; nenhum PAT foi gerado, consultado ou reutilizado neste ciclo. A revogação do token Google exposto foi informada pelo proprietário anteriormente, mas não verificada independentemente; a reconexão do rclone permanece não confirmada. Preservar os registros históricos abaixo sem confundir PATs com eventos OAuth de aplicativos.
+
+**Testes:** a suíte `scripts/p5-local-rpc-authorization.mjs` foi acrescentada ao workflow P5 sintético. Para cada uma das sete RPCs abaixo, requer código `42501`, mensagem `portfolio_admin_required`, ausência de mutação em oito tabelas e chamada administrativa positiva com releitura. **Código adicionado; o resultado da nova execução CI depende de conferência do SHA.** Os sete WARN `SECURITY DEFINER` e o WARN de proteção de senhas vazadas permanecem abertos. Não houve alteração de permissões, migrations, Auth ou RLS. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Revisão de PATs e eventos OAuth — 19/11/2026
 
 Capturas das configurações GitHub apresentadas pelo proprietário mostram **três PATs fine-grained expirados** e **nenhum PAT clássico cadastrado** na inspeção. Isso não identifica qual registro, se algum, corresponde ao PAT histórico: **a identidade e a revogação específica do PAT anteriormente exposto permanecem não confirmadas**. Expiração não deve ser descrita como revogação comprovada.

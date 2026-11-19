@@ -1,5 +1,14 @@
 # Testes, CI e homologação
 
+## Cobertura individual das sete RPCs — ciclo de 19/11/2026
+
+A nova suíte `scripts/p5-local-rpc-authorization.mjs` é executada por `.github/workflows/p5-local-transactional.yml` após o P5 original, usando Supabase CLI + Docker local com `seed.local.synthetic.sql` e endpoint estrito `127.0.0.1:54321`. As credenciais são obtidas somente da stack local; a suíte não faz chamadas ao projeto cloud. As verificações anteriores P5/P2/P4 permanecem intactas.
+
+As sete RPCs testadas individualmente: `create_section_with_panels`, `duplicate_section`, `publish_section`, `save_content_block_atomic`, `save_home_seo_atomic`, `save_section_block_atomic` e `swap_section_order`. Cada negativa exige SQLSTATE `42501` e `portfolio_admin_required` para usuário autenticado sem vínculo `admin_users`, mais igualdade exata antes/depois nas tabelas `pages`, `sections`, `section_panels`, `content_blocks`, `block_placements`, `site_settings`, `content_revisions` e `audit_logs`. Cada positiva exige uma chamada com sessão administrativa real e releitura dos efeitos. Total esperado: **14 resultados PASS**.
+
+**Status:** implementação versionada; **CI da nova suíte ainda não confirmado neste documento**. O P5 run #87 SUCCESS apresentado anteriormente não exercitou esta cobertura nova e não deve ser usado para homologá-la. Não usar dados reais/produção como fixtures.
+
+
 ## P5 Local Transactional Homologation — 19/11/2026
 
 O proprietário apresentou a execução manual mais recente do workflow **P5 Local Transactional Homologation** na branch `main`, run **#87**, concluída em **SUCCESS** (aprox. 3 min). A captura mostra a stack Supabase sintética e isolada, cenários transacionais/RPC, fluxo autenticado de CMS sintético e renderer público, mídia/Auth/Storage sintéticos, SEO/RPC e encerramento da stack aprovados. Isso comprova a homologação local sintética deste run; não é escrita ou teste de dados de produção, nem substitui o estado de Validate/Export Docs ou Vercel no SHA atual.

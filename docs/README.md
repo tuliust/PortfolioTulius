@@ -1,5 +1,10 @@
 # PortfolioTulius — documentação temática
 
+## Ciclo de segurança e continuidade — 19/11/2026
+
+Conferidos os serviços no SHA base `5b037b8`: Supabase `ACTIVE_HEALTHY` com 7 avisos `SECURITY DEFINER` e 1 aviso Auth; Vercel Production `READY` nesse SHA. A nova cobertura sintética das sete RPCs foi incorporada ao P5: conferir o workflow correspondente no novo SHA antes de declarar resultado. PATs antigos excluídos conforme informação do proprietário, identidade do segredo histórico não comprovada. O backup SQL atual continua **não executado** e requer procedimento privado. [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) · [Backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+
+
 ## Atualização de segurança e recuperação — 19/11/2026
 
 O proprietário apresentou evidência de **P5 Local Transactional Homologation #87 SUCCESS** e de **`rclone check`/ensaio isolado do Storage 143/143**; ver os guias de [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) e [Backup](05-operacao/BACKUP_E_RECUPERACAO.md), que delimitam o que foi reportado e o que não foi verificado independentemente. As capturas GitHub mostram três PATs fine-grained expirados e nenhum clássico; a identidade do PAT histórico segue não confirmada. Eventos OAuth de aplicativos no Security log são distintos de PATs. Um refresh token do Google compartilhado anteriormente requer revogação e reconexão do rclone; veja [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md). A verificação criptográfica objeto a objeto da cópia no Drive continua não confirmada.

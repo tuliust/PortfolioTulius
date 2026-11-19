@@ -1,5 +1,12 @@
 # Decisões vigentes do proprietário
 
+## Decisão operacional atualizada — 19/11/2026
+
+O proprietário declarou que **excluiu os PATs antigos**, superando a decisão histórica de mantê-los, mas a correspondência do PAT originalmente exposto permanece não comprovada por identidade. A revogação do token Google foi informada pelo proprietário, sem confirmação independente de reconexão do rclone. Não usar/criar novos PATs para esta atividade.
+
+Neste ciclo foram autorizados testes sintéticos locais e documentação via GitHub, inspeção de Supabase/Vercel somente leitura, sem mudanças produtivas de Auth/RLS/grants/migrations ou deploy manual. Backup PostgreSQL atual permanece pendente e depende de execução privada no VS Code, sem envio de credenciais ou dados para o repositório público.
+
+
 ## Aceite definitivo dos PDFs Desktop e Mobile — 18/11/2026
 
 Após reexportar e **inspecionar visualmente ambos os PDFs reais**, o proprietário declarou “Está tudo ok. Considere concluído.” A homologação **dos PDFs Desktop e Mobile está ENCERRADA POR ACEITE**. Referência de código funcional `609218bd2bfede558f22c44002e62e9e21b2aada`; contrato e evidências em [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md).

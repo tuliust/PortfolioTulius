@@ -1,5 +1,16 @@
 # Backups, restore e rollback
 
+## Plano de backup SQL atual — 19/11/2026 (a executar com VS Code local)
+
+**Status: NÃO EXECUTADO.** Leitura pelos conectores confirmou Supabase `portfolio` `ACTIVE_HEALTHY` e organização no plano **Free**, sem backup diário gerenciado. Os dumps SQL históricos apresentados datam de 10/11/2026 e não constituem backup atual de produção. A evidência de Storage 143/143 (e ensaio isolado reportado) é independente do PostgreSQL.
+
+Procedimento recomendado em máquina confiável, **fora do clone Git**: conferir a versão e o `supabase db dump --help`; obter a URL PostgreSQL no painel Supabase, sem a compartilhar na conversa ou versioná-la; exportar três arquivos datados usando `supabase db dump --db-url` com `-f roles.sql --role-only`, `-f schema.sql` e `-f data.sql --use-copy --data-only`. Seguir a [referência da CLI](https://supabase.com/docs/reference/cli/supabase-db-dump) e o [guia oficial de backup/restore](https://supabase.com/docs/guides/platform/migrating-within-supabase/backup-restore). Guardar com acesso restrito, hashes e uma segunda cópia protegida fora do mesmo volume.
+
+**Verificação obrigatória:** a CLI omite schemas internos gerenciados como `auth` e `storage` no dump padrão. Conferir de forma explícita o que foi exportado, incluindo Auth, roles, grants, RLS, funções e metadados pertinentes, antes de classificar a cópia como integral. Objetos Storage não são reconstituídos por SQL. Um restore de dados reais exige ambiente PostgreSQL 17 segregado, procedimento compatível e autorização específica: **não misturar dados produtivos com a stack local sintética de testes P5**. Não executar `supabase link`, `db push` ou migrações para este procedimento. Nenhum segredo, conteúdo real ou caminho privado deve ir ao GitHub.
+
+A integridade objeto a objeto da cópia Storage no Google Drive continua **não confirmada**, apesar das evidências por contagem/tamanho e do ensaio de recuperação isolado reportado pelo proprietário.
+
+
 ## Ensaio isolado do Storage — 19/11/2026
 
 **Resultado reportado: SUCCESS, 143/143 objetos.** Os logs e capturas apresentados pelo proprietário indicam verificação com `rclone check` e restauração de ensaio em destino isolado para os buckets `portfolio-public` (87 objetos) e `portfolio-private` (56), totalizando 143 objetos. Esta evidência encerra a pendência de ensaio isolado **conforme a execução apresentada**; não significa que esta auditoria tenha acessado os arquivos restaurados ou repetido a comparação de hashes de cada objeto no Google Drive.
