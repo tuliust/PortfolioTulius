@@ -16,6 +16,33 @@ A comparação criptográfica objeto a objeto da cópia do Storage no Google Dri
 
 **Validação local reportada pelo proprietário em 19/11/2026: SUCCESS.** Após instruções para abrir o `.7z` protegido no 7-Zip (solicitação de senha antes de listar nomes), executar **Testar**, baixar o arquivo do Drive e comparar o SHA-256 do pacote local com o da cópia baixada, o proprietário informou explicitamente: **“Tudo verificado. Tudo correto.”** A declaração é aceita como confirmação do procedimento local, **sem log dos hashes do arquivo `.7z` nem inspeção independente do conteúdo/algoritmo da criptografia nesta auditoria**. Os metadados do Drive foram reconferidos diretamente: arquivo de 68.436 bytes em pasta privada, ambos `shared=false`, permissões `user:owner`. Resultado operacional: **integridade da cópia externa CONFIRMADA PELO PROPRIETÁRIO**, não por auditoria criptográfica independente. Manter a senha segura e separada do backup; não incluir URLs privadas, IDs do Drive, nomes completos de arquivos particulares, conteúdo SQL ou hashes no GitHub. **A completude da exportação e a restauração integral do PostgreSQL, inclusive Auth/Storage gerenciado, permanecem NÃO CONFIRMADAS.**
 
+## Avaliação de cobertura do PostgreSQL — 19/11/2026 (somente leitura; sem restore)
+
+**Escopo efetivamente executado:** leitura dos catálogos de produção no SHA documental de referência [`ae3fbff`](https://github.com/tuliust/PortfolioTulius/commit/ae3fbff943dcfde7d6472c80d840edf53005f074), sem consultar linhas de usuários ou executar DDL/DML. Supabase `portfolio` permaneceu `ACTIVE_HEALTHY` (PostgreSQL 17); histórico de **12 migrations**. O catálogo retornou:
+
+| Schema | Tabelas | Evidência relevante |
+|---|---:|---|
+| `public` | 22 | 41 policies; CMS e conteúdo existentes |
+| `private` | 0 | 3 funções privadas |
+| `auth` | 27 | Schema gerenciado; dados de autenticação não comprovados nos dumps |
+| `storage` | 10 | 2 policies; metadados gerenciados não comprovados nos dumps |
+| `realtime` | 3 | Schema gerenciado, verificar necessidade no restauro |
+| `supabase_migrations` | 1 | Ledger a preservar/conferir separadamente |
+| `vault` | 1 | Material criptográfico/segredos fora do escopo da cópia SQL validada |
+
+Extensões identificadas por catálogo, sem leitura de dados ou segredos: `pg_stat_statements`, `pgcrypto`, `plpgsql`, `supabase_vault` e `uuid-ossp`. Contagens descrevem objetos **existentes em produção**, não presença correspondente nos arquivos exportados, nem distinguem automaticamente objetos personalizados de objetos gerenciados. O teste sintético P5 (14/14 RPCs no SHA funcional `226b234`) não constitui restauração dos dumps produtivos.
+
+**Limite técnico confirmado na [CLI Supabase](https://supabase.com/docs/reference/cli/supabase-db-dump):** `supabase db dump` usa filtros e omite schemas internos gerenciados, incluindo `auth` e `storage`. Os três dumps de 19/11 (roles, schema, data) são backups lógicos **parciais** para continuidade do conteúdo e demais objetos exportáveis. Mesmo com hashes locais 3/3 e pacote externo protegido com igualdade de SHA-256 confirmada pelo proprietário, **não** equivalem a snapshot completo de autenticação, políticas gerenciadas, dados gerenciados de Storage, configuração do serviço ou recuperação integral. O `roles.sql` de 297 bytes exige inspeção **local privada**, sem colar seu conteúdo em chats.
+
+**Etapas para um procedimento futuro de recuperação, dependentes de autorização específica:**
+
+1. **Inventariar localmente a cobertura real dos três arquivos**, sem compartilhar SQL, dados, IDs ou segredos: schemas, tabelas, funções, roles/grants, políticas, dependências, tamanho e integridade. Comparar com as 22 tabelas `public` e os objetos não gerenciados vigentes. A ausência de uma tabela ou role deve ser registrada como ausência, nunca compensada por suposição.
+2. **Definir RPO/RTO e escopo de recuperação** antes de tocar dados: CMS/`public` e mídias separadas versus restauração integral de Auth/Storage/configurações. Revisar [migração de histórico `supabase_migrations`](https://supabase.com/docs/guides/platform/migrating-within-supabase/backup-restore), customizações em schemas gerenciados e dependências das extensões. Não executar `supabase link`, `db push` ou nova migration com base nesta avaliação.
+3. **Somente com autorização explícita e ambiente real segregado**, preparar destino compatível com PostgreSQL 17 e permissões estritas, sem conexão com a stack P5 sintética, sem endereço público e sem contaminação do site atual. Validar previamente versão das ferramentas, extensões, papéis, grants, RLS e viabilidade de recuperação Auth. Não restaurar dados reais em cloud staging nem em produção por conveniência.
+4. **Homologar após restore segregado**: objetos/schema esperados, integridade referencial, contagens e permissões, RPCs administrativas, navegação CMS autenticada, mídia pública/privada recuperada **se** incluída no ensaio autorizado, e evidência de limpeza segura do ambiente após a homologação. Não presumir equivalência de chaves, tokens de sessão ou configurações de serviços externos.
+
+**Estado deste ciclo:** avaliação de cobertura e inventário catalogal **SUCCESS (somente leitura)**; criação de backup adicional de `auth`/`storage`: **NÃO EXECUTADA**; nova exportação SQL ou mutação produtiva: **NÃO EXECUTADA**; restauração integral com dados reais: **NÃO EXECUTADA**. O backup do Storage (143/143) é independente dos dumps; sua igualdade criptográfica no Drive permanece não confirmada. Nenhum item do [backlog standby](../06-governanca/BACKLOG_STANDBY.md) foi reaberto.
+
 ## Ensaio isolado do Storage — 19/11/2026
 
 **Resultado reportado: SUCCESS, 143/143 objetos.** Os logs e capturas apresentados pelo proprietário indicam verificação com `rclone check` e restauração de ensaio em destino isolado para os buckets `portfolio-public` (87 objetos) e `portfolio-private` (56), totalizando 143 objetos. Esta evidência encerra a pendência de ensaio isolado **conforme a execução apresentada**; não significa que esta auditoria tenha acessado os arquivos restaurados ou repetido a comparação de hashes de cada objeto no Google Drive.
