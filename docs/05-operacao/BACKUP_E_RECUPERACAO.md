@@ -1,5 +1,11 @@
 # Backups, restore e rollback
 
+## Ensaio isolado do Storage — 19/11/2026
+
+**Resultado reportado: SUCCESS, 143/143 objetos.** Os logs e capturas apresentados pelo proprietário indicam verificação com `rclone check` e restauração de ensaio em destino isolado para os buckets `portfolio-public` (87 objetos) e `portfolio-private` (56), totalizando 143 objetos. Esta evidência encerra a pendência de ensaio isolado **conforme a execução apresentada**; não significa que esta auditoria tenha acessado os arquivos restaurados ou repetido a comparação de hashes de cada objeto no Google Drive.
+
+O backup externo no Google Drive continua comprovado por quantidade e soma de tamanhos (143 arquivos; 15.946.053 bytes). A igualdade criptográfica entre cada objeto do Drive e a origem continua **não confirmada**. Preservar os diretórios privados e manifesto fora do Git; nunca registrar nomes individuais, caminhos privados, hashes ou credenciais aqui.
+
 ## Conferência adicional de 19/11/2026 — inventário de produção
 
 Consulta **somente leitura** à metadata `storage.objects` voltou a indicar **87 objetos públicos / 13.105.754 bytes** e **56 privados / 2.840.299 bytes** (total **143 / 15.946.053 bytes**). O catálogo `public.media_assets` registra **90 mídias publicadas**. Os valores coincidem com a soma de tamanhos e quantidades previamente confirmadas na cópia externa do Google Drive; **isso não é uma verificação de hash** nem um novo backup.

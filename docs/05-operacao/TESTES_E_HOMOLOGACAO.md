@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## P5 Local Transactional Homologation — 19/11/2026
+
+O proprietário apresentou a execução manual mais recente do workflow **P5 Local Transactional Homologation** na branch `main`, run **#87**, concluída em **SUCCESS** (aprox. 3 min). A captura mostra a stack Supabase sintética e isolada, cenários transacionais/RPC, fluxo autenticado de CMS sintético e renderer público, mídia/Auth/Storage sintéticos, SEO/RPC e encerramento da stack aprovados. Isso comprova a homologação local sintética deste run; não é escrita ou teste de dados de produção, nem substitui o estado de Validate/Export Docs ou Vercel no SHA atual.
+
+No mesmo contexto, o proprietário apresentou logs de `rclone check` e restauração isolada do Storage com **143/143 objetos** (87 públicos e 56 privados). Consulte [Backup e recuperação](BACKUP_E_RECUPERACAO.md) para o alcance e os limites da evidência. O registro é baseado nos logs/capturas apresentados, não em uma repetição independente desta auditoria.
+
 ## Evidência posterior à correção de logotipos — 18/11/2026
 
 No SHA funcional [`2bbbae59b427c909cf7407790c4c6b0f2bbab31c`](https://github.com/tuliust/PortfolioTulius/commit/2bbbae59b427c909cf7407790c4c6b0f2bbab31c), o renderer deixa de exigir `logoAlt` para mostrar a URL do logo da empresa. O teste `src/components/public/ExperienceStack.test.tsx` passou em **4/4** casos (desktop/mobile, alt ausente ou vazio, alt preenchido e monograma sem URL). [Validate #44292509459](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509459) **SUCCESS**: 65 arquivos e 292 testes, TypeScript, formatação, build e verificações adicionais aprovados. [Export Docs #44292509420](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509420), [PDF Visual QA #44292509358](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509358) e [P3 Lighthouse #44292509279](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509279) também **SUCCESS**, todos nesse mesmo SHA. A Vercel confirmou o deployment Production `dpl_ChxiYyQwEjNnb2YSTqHoQqh2dgJ5` **READY** no mesmo SHA, com aliases `tulius.work` e `www.tulius.work`.

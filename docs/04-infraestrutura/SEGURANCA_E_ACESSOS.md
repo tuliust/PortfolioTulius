@@ -1,5 +1,13 @@
 # Segurança, RLS, acessos e riscos
 
+## Revisão de PATs e eventos OAuth — 19/11/2026
+
+Capturas das configurações GitHub apresentadas pelo proprietário mostram **três PATs fine-grained expirados** e **nenhum PAT clássico cadastrado** na inspeção. Isso não identifica qual registro, se algum, corresponde ao PAT histórico: **a identidade e a revogação específica do PAT anteriormente exposto permanecem não confirmadas**. Expiração não deve ser descrita como revogação comprovada.
+
+Uma captura separada do Security log contém eventos `oauth_access.create`, `oauth_access.regenerate` e `oauth_authorization.create` associados aos aplicativos **Copilot Chat App** e **Copilot SWE Agent**. Esses são eventos de tokens/autorização OAuth de aplicativos GitHub; **não são evidência de criação, regeneração ou uso de PAT**. A captura não foi registrada aqui com IPs, sufixos ou valores de tokens.
+
+Além disso, um **refresh token do Google foi compartilhado anteriormente na conversa** durante a configuração do rclone. Recomenda-se revogar a autorização do rclone na Conta Google e reconectar o remoto com autenticação nova e escopo somente leitura; não copiar nem reutilizar o valor compartilhado. A revogação/reconexão não foi executada nesta auditoria. Consulte [Backup e recuperação](../05-operacao/BACKUP_E_RECUPERACAO.md) para o estado de recuperação do Storage.
+
 ## Auditoria de funções e credenciais — 19/11/2026 (somente leitura)
 
 **Serviço efetivo:** Supabase `portfolio` (`zfnrhzplwpjpdljraypt`), produção. O advisor `authenticated_security_definer_function_executable` continua retornando **7 WARN**; nenhuma permissão, função, RLS, Auth ou migration foi alterada. Leitura de `pg_proc`, `pg_policies` e privilégios efetivos mostrou que todas as sete RPCs abaixo são `SECURITY DEFINER`, **não executáveis por `anon`**, **executáveis por `authenticated`** e iniciam o corpo com `private.require_portfolio_admin()`:
