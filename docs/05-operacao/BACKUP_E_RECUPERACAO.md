@@ -1,13 +1,16 @@
 # Backups, restore e rollback
 
-## Preparação de cópia externa no Google Drive — 19/11/2026
+## Cópia externa do Storage no Google Drive — 19/11/2026
 
-A conferência via conector Google Drive identificou a pasta privada já existente **`04 - Backup`**, com arquivos históricos de SQL/roles e checksums de 10/11/2026, incluindo uma subpasta de cópia. Esses arquivos **não** representam o Storage atual de 143 objetos e foram preservados sem substituição.
+**Estado: upload externo SUCCESS por inventário, quantidade e tamanho; verificação criptográfica de conteúdo NÃO EXECUTADA.** Na pasta privada `04 - Backup`, a subpasta `Storage_2026-11-18_143_objetos` foi preenchida pelo proprietário, mantendo os dois diretórios `portfolio-public` e `portfolio-private` e suas subpastas internas. A verificação de **todas as subpastas** pelo conector Google Drive confirmou:
 
-Foi criada dentro de `04 - Backup` a pasta privada **`Storage_2026-11-18_143_objetos`**, contendo duas pastas privadas vazias: `portfolio-public` e `portfolio-private`. O Google Drive informou apenas o proprietário nas permissões e as listagens confirmaram **0 arquivos em cada pasta nova**. **Estado: estrutura de destino criada, transferência de 143 objetos NÃO EXECUTADA, backup externo NÃO CONFIRMADO**. Os dois backups verificados por conteúdo em 18/11 continuam no disco local do proprietário; o conector não teve acesso aos bytes desse disco.
+- `portfolio-public`: **87 arquivos**, **13.105.754 bytes**.
+- `portfolio-private`: **56 arquivos**, **2.840.299 bytes**.
+- Total: **143 arquivos**, **15.946.053 bytes**, em correspondência com o inventário/tamanho dos dois conjuntos locais verificados anteriormente por `rclone check --download`.
 
-Próxima etapa operacional: o proprietário deve transferir 87 objetos públicos e 56 privados da cópia local íntegra para as respectivas pastas no Drive, preservar subpastas e caminhos relativos, copiar com proteção adequada o manifesto SHA-256 privado, comparar inventário e hashes/tamanhos após upload e conferir as permissões. Não usar sincronização com exclusão ou sobrescrever as cópias SQL históricas. Nenhuma credencial, caminho local privado, ID ou URL de pasta do Drive foi versionado neste guia. Ensaio de recuperação em ambiente isolado permanece pendente.
+A inspeção de metadados de permissões do diretório de backup existente, da pasta do Storage, das duas subpastas e de arquivos de amostra retornou **`shared=false`, apenas permissão `user:owner`**. O armazenamento no Google Drive é separado do volume `C:` onde estão os backups locais; assim, há agora uma cópia física **externa verificada por nomes de pastas, quantidades e soma de tamanhos**. As cópias históricas de `roles.sql`, `schema.sql`, `data.sql` e `SHA256SUMS.txt`, datadas de 10/11/2026, não foram sobrescritas.
 
+**Limites:** o conector não realizou comparação byte a byte nem de SHA-256 entre cada objeto no Drive e o arquivo local; o manifesto SHA-256 local não foi inspecionado independentemente e não foi encontrado um manifesto adicional na raiz desta pasta do Storage. A equivalência exata de todos os caminhos relativos com a origem e uma **restauração isolada de ensaio** também não foram verificadas. Portanto, **integridade criptográfica e recuperabilidade externa permanecem NÃO CONFIRMADAS**. Não publicar no repositório dados dos arquivos, nomes individuais, hashes, caminhos locais privados nem links privados. Não reescrever/limpar o conteúdo histórico do Drive.
 
 ## Backup físico atual — 18/11/2026 (evidência local do proprietário)
 
