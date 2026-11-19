@@ -2,7 +2,7 @@
 
 ## Atualização operacional — 19/11/2026
 
-Com base nos logs e capturas apresentados pelo proprietário: **P5 Local Transactional Homologation #87 SUCCESS** e **ensaio isolado de restauração/verificação do Storage 143/143** (87 públicos, 56 privados). O checkout foi sincronizado com `main` em `906639c` antes desta atualização documental. As capturas GitHub mostram três PATs fine-grained expirados e nenhum clássico, mas não permitem confirmar a identidade ou revogação do PAT histórico. Eventos OAuth do Copilot Chat App/SWE Agent não são PATs. O refresh token Google compartilhado anteriormente deve ser revogado e o rclone reconectado; isso permanece como ação recomendada, não executada. A equivalência criptográfica por arquivo do Google Drive continua não confirmada. CI e Vercel devem ser aferidos para o novo commit documental após o push.
+Com base nos logs e capturas apresentados pelo proprietário: **P5 Local Transactional Homologation #87 SUCCESS** e **ensaio isolado de restauração/verificação do Storage 143/143** (87 públicos, 56 privados). O checkout foi sincronizado com `main` em `906639c` antes desta atualização documental. As capturas GitHub mostram três PATs fine-grained expirados e nenhum clássico, mas não permitem confirmar a identidade ou revogação do PAT histórico. Eventos OAuth do Copilot Chat App/SWE Agent não são PATs. O refresh token Google compartilhado anteriormente deve ser revogado e o rclone reconectado; isso permanece como ação recomendada, não executada. A equivalência criptográfica por arquivo do Google Drive continua não confirmada. No commit documental `9a0fdbb`, Validate (#44499437556) e Export Docs (#44499437574) terminaram em SUCCESS; Vercel Production ficou READY no mesmo SHA.
 
 ## Estado vigente — 18/11/2026
 
