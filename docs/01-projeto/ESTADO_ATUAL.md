@@ -1,10 +1,14 @@
 # Estado atual — PortfolioTulius
 
+## Backup PostgreSQL local — 19/11/2026
+
+O proprietário apresentou logs de execução bem-sucedida dos três dumps SQL do PostgreSQL remoto com Supabase CLI v3.0.0: `roles.sql` 297 bytes, `schema.sql` 89.193 bytes e `data.sql` 555.489 bytes. **Exportação: evidenciada por saída de terminal; hashes, cobertura integral de Auth/Storage/RLS e restauração de dados reais: NÃO CONFIRMADOS.** Arquivos mantidos localmente fora do Git; nenhuma cópia de dados reais foi inspecionada ou enviada ao repositório. [Procedimento, alcance e pendências](../05-operacao/BACKUP_E_RECUPERACAO.md).
+
 ## Encerramento dos testes de autorização sintéticos — 19/11/2026
 
 **Código funcional:** [`226b234`](https://github.com/tuliust/PortfolioTulius/commit/226b234164774a19026d613622f0d010538181f7). [**P5 Local Transactional #88**](https://github.com/tuliust/PortfolioTulius/actions/runs/44511446471) **SUCCESS**, com **14/14 verificações individuais** das sete RPCs `SECURITY DEFINER`: 7 negativas de usuários autenticados não administradores (`42501` e zero alterações nas oito tabelas monitoradas) e 7 positivas com sessão admin e persistência. No mesmo SHA: [Validate #1072](https://github.com/tuliust/PortfolioTulius/actions/runs/44511446604) SUCCESS, [Export Docs #329](https://github.com/tuliust/PortfolioTulius/actions/runs/44511446558) SUCCESS, Vercel Production `dpl_JBy5jFNSPmH5L5WfXucXyEGjQsoA` READY com `tulius.work` e `www.tulius.work`. **Sem mudanças em schema, Auth, grants, RLS, dados produtivos ou deploy manual.** Avisos Supabase: 7 WARN de RPC e 1 WARN de proteção de senhas vazadas permanecem abertos; resultado local não os elimina.
 
-O proprietário informou **exclusão dos PATs antigos** e revogação do token Google exposto. Não se verificou independentemente a correspondência do PAT histórico ou a reconexão do remoto rclone. **Backup PostgreSQL atual: NÃO EXECUTADO**; a cópia SQL histórica é datada de 10/11/2026. Armazenamento físico externo de 143 objetos e ensaio isolado reportados conforme logs anteriores, com comparação de hash da cópia Google Drive ainda não confirmada. [Segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md) · [Backup](../05-operacao/BACKUP_E_RECUPERACAO.md).
+O proprietário informou **exclusão dos PATs antigos** e revogação do token Google exposto. Não se verificou independentemente a correspondência do PAT histórico ou a reconexão do remoto rclone. **Exportação PostgreSQL atual: realizada localmente conforme logs do proprietário, sem validação de restauração integral**; a cópia SQL histórica é datada de 10/11/2026. Armazenamento físico externo de 143 objetos e ensaio isolado reportados conforme logs anteriores, com comparação de hash da cópia Google Drive ainda não confirmada. [Segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md) · [Backup](../05-operacao/BACKUP_E_RECUPERACAO.md).
 
 
 ## Atualização operacional — 19/11/2026

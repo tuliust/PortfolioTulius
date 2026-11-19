@@ -4,7 +4,7 @@
 
 O proprietário declarou que **excluiu os PATs antigos**, superando a decisão histórica de mantê-los, mas a correspondência do PAT originalmente exposto permanece não comprovada por identidade. A revogação do token Google foi informada pelo proprietário, sem confirmação independente de reconexão do rclone. Não usar/criar novos PATs para esta atividade.
 
-Neste ciclo foram autorizados testes sintéticos locais e documentação via GitHub, inspeção de Supabase/Vercel somente leitura, sem mudanças produtivas de Auth/RLS/grants/migrations ou deploy manual. Backup PostgreSQL atual permanece pendente e depende de execução privada no VS Code, sem envio de credenciais ou dados para o repositório público.
+Neste ciclo foram autorizados testes sintéticos locais e documentação via GitHub, inspeção de Supabase/Vercel somente leitura, sem mudanças produtivas de Auth/RLS/grants/migrations ou deploy manual. O proprietário executou no Windows três exportações SQL do PostgreSQL remoto em 19/11 (roles, schema e dados); o terminal reportou sucesso e tamanhos não nulos. A **integridade, abrangência integral de Auth/Storage e recuperação de dados reais não foram confirmadas**. Manter dumps e credenciais somente em armazenamento privado; não enviar dados reais ao repositório ou aos conectores.
 
 
 ## Aceite definitivo dos PDFs Desktop e Mobile — 18/11/2026
