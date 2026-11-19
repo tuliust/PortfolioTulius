@@ -2,7 +2,7 @@
 
 ## Backup PostgreSQL local — 19/11/2026
 
-O proprietário apresentou logs de execução bem-sucedida dos três dumps SQL do PostgreSQL remoto com Supabase CLI v3.0.0: `roles.sql` 297 bytes, `schema.sql` 89.193 bytes e `data.sql` 555.489 bytes. **Exportação: evidenciada por saída de terminal; hashes, cobertura integral de Auth/Storage/RLS e restauração de dados reais: NÃO CONFIRMADOS.** Arquivos mantidos localmente fora do Git; nenhuma cópia de dados reais foi inspecionada ou enviada ao repositório. [Procedimento, alcance e pendências](../05-operacao/BACKUP_E_RECUPERACAO.md).
+O proprietário apresentou logs de execução bem-sucedida dos três dumps SQL do PostgreSQL remoto com Supabase CLI v3.0.0: `roles.sql` 297 bytes, `schema.sql` 89.193 bytes e `data.sql` 555.489 bytes. **Exportação: evidenciada por saída de terminal; três SHA-256 calculados e exibidos localmente em etapa posterior.** O comando de geração de manifesto CSV não reportou erro, apenas aviso de parâmetro obsoleto; arquivo/manifesto não foram inspecionados independentemente. **Cobertura integral de Auth/Storage/RLS e restauração de dados reais: NÃO CONFIRMADAS.** Arquivos mantidos localmente fora do Git; nenhuma cópia de dados reais foi inspecionada ou enviada ao repositório. [Procedimento, alcance e pendências](../05-operacao/BACKUP_E_RECUPERACAO.md).
 
 ## Encerramento dos testes de autorização sintéticos — 19/11/2026
 
