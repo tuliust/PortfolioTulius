@@ -1,5 +1,11 @@
 # Backups, restore e rollback
 
+## Conferência adicional de 19/11/2026 — inventário de produção
+
+Consulta **somente leitura** à metadata `storage.objects` voltou a indicar **87 objetos públicos / 13.105.754 bytes** e **56 privados / 2.840.299 bytes** (total **143 / 15.946.053 bytes**). O catálogo `public.media_assets` registra **90 mídias publicadas**. Os valores coincidem com a soma de tamanhos e quantidades previamente confirmadas na cópia externa do Google Drive; **isso não é uma verificação de hash** nem um novo backup.
+
+**Pendências ainda reais:** (1) executar comparação `rclone check --download` entre a cópia local íntegra e a pasta do Google Drive por conexão legítima de leitura; (2) realizar ensaio de recuperação isolado de objetos e, separadamente, homologar o ambiente Supabase CLI + Docker local **com seed sintética** para testes das RPCs, **sem restaurar produção no staging**. Nenhuma dessas duas execuções locais foi realizada por esta auditoria. Não utilizar `sync`, `delete`, `db push`, `supabase link` nem credenciais produtivas em ensaios.
+
 ## Cópia externa do Storage no Google Drive — 19/11/2026
 
 **Estado: upload externo SUCCESS por inventário, quantidade e tamanho; verificação criptográfica de conteúdo NÃO EXECUTADA.** Na pasta privada `04 - Backup`, a subpasta `Storage_2026-11-18_143_objetos` foi preenchida pelo proprietário, mantendo os dois diretórios `portfolio-public` e `portfolio-private` e suas subpastas internas. A verificação de **todas as subpastas** pelo conector Google Drive confirmou:
