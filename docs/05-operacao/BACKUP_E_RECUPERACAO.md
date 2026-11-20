@@ -1,5 +1,12 @@
 # Backups, restore e rollback
 
+## Origem local informada para hashes está vazia — 20/11/2026
+
+**Evidência local apresentada pelo proprietário:** PowerShell `Get-ChildItem -LiteralPath ... -File -Recurse -Force` encontrou **0 arquivos e 0 bytes** dentro de **cada um** dos diretórios `portfolio-public` e `portfolio-private` situados na pasta local escolhida para a auditoria. As pastas existem (`Existe=True`), mas ambas estão vazias. Isso explica por que uma comparação local↔Drive dessa pasta **não pode homologar os 143 objetos**. O retorno anterior `HashesSHA256=1` não constitui evidência de um único objeto do backup: pode se referir a outro arquivo na raiz ou a comportamento de coleta da saída, ainda não esclarecido. Não interpretar a contagem zero como eliminação dos backups físicos reportados em 18/11; foram documentados **dois conjuntos locais** em locais não publicados, e é preciso primeiro identificar qual deles contém realmente os objetos antes de calcular os hashes.
+
+**Estado preciso:** para a pasta selecionada, cobertura local **0/143 (FAILURE no pré-requisito de comparação)**; existência e integridade de **outra** cópia física local **NÃO RECONFIRMADAS nesta rodada**. Inventário do Drive pelo novo remoto `portfolio-drive-pessoal:` permanece datado como **143 objetos e 15.946.053 bytes**, sem prova SHA-256 individual. Próxima ação: localizar a origem local correta por inventário de arquivos, sem excluir, mover, reconstruir nem baixar sobre qualquer diretório antes dessa identificação. **Comparação criptográfica local↔Drive: NÃO EXECUTADA**; erros de comunicação anteriores não são evidência de corrupção do remoto. Nenhuma escrita em produção, Drive ou arquivos; cinco fontes privadas mantidas para consolidação final.
+
+
 ## Primeira tentativa de SHA-256 após novo OAuth: inconclusiva — 20/11/2026
 
 **Evidência local apresentada pelo proprietário:** o novo remoto rclone pessoal confirmou `scope = drive.readonly` via `rclone config redacted` (**SUCCESS**). A seguir, a primeira rotina de `hashsum sha256 --download` exibiu **`Arquivos processados: 1` para a origem local**, mas o código PowerShell usava `return ,$mapa` para devolver um `Dictionary`; esse retorno pode produzir uma coleção externa de um elemento e torna o número `1` **não confiável como quantidade de arquivos/hash efetivamente calculados**. **Não registrar um objeto como único nem apontar perda de dados**; a contagem local precisa ser repetida com parser que lê as linhas sem essa camada.
