@@ -1,5 +1,12 @@
 # Backups, restore e rollback
 
+## Contraste agregado entre o backup e o PostgreSQL produtivo — 20/11/2026
+
+**Nova consulta em produção, exclusivamente `SELECT COUNT(*)` em tabelas dos schemas `public`, `auth` e `storage`, sem acesso ao conteúdo das linhas:** 22 tabelas de `public` totalizaram **825 registros**, 27 tabelas de `auth` totalizaram **90 registros** e 10 tabelas de `storage` totalizaram **226 registros**. Dois históricos gerenciados foram conferidos separadamente: `auth.schema_migrations` com **84 linhas** e `storage.migrations` com **81 linhas**. Os totais **excluindo apenas essas duas tabelas** são, respectivamente, **825, 6 e 145**, exatamente os totais agregados de linhas `COPY` informados pelo proprietário no backup de 19/11. O inventário atual confirma ainda **143 linhas em `storage.objects`** e **2 em `storage.buckets`**; esses valores são contagens de metadados, não hashes de objetos físicos.
+
+**Conclusão limitada:** conferência aritmética **SUCCESS**; as diferenças de 84 e 81 linhas são **numericamente explicadas** pelos dois históricos de migrations. Como não foram apresentados nomes de todas as tabelas `COPY` e contagens individuais do arquivo, **não está comprovado que essas sejam exatamente as tabelas omitidas pelo dump**, nem que cada tabela restante contenha as mesmas linhas. Além disso, produção em 20/11 e dump de 19/11 não constituem uma fotografia transacional comum. Não inferir completude, restauração das migrations de serviços gerenciados, equivalência de Auth/Storage ou recuperabilidade integral. **Nenhuma exportação, escrita ou restauração de produção foi executada.**
+
+
 ## Contagem de linhas de dados nos blocos `COPY` — 20/11/2026
 
 **Evidência apresentada pelo proprietário:** execução local de um leitor sequencial PowerShell no `data.sql` do backup de **19/11/2026**, sem transmitir o arquivo nem registros ao repositório. O leitor reconheceu os blocos `COPY ... FROM stdin;`, somou as linhas até cada terminador `\.`, verificou o fechamento dos blocos e reportou **0 cabeçalhos não reconhecidos**.
