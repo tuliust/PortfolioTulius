@@ -1,5 +1,14 @@
 # Backups, restore e rollback
 
+## Primeira tentativa de SHA-256 após novo OAuth: inconclusiva — 20/11/2026
+
+**Evidência local apresentada pelo proprietário:** o novo remoto rclone pessoal confirmou `scope = drive.readonly` via `rclone config redacted` (**SUCCESS**). A seguir, a primeira rotina de `hashsum sha256 --download` exibiu **`Arquivos processados: 1` para a origem local**, mas o código PowerShell usava `return ,$mapa` para devolver um `Dictionary`; esse retorno pode produzir uma coleção externa de um elemento e torna o número `1` **não confiável como quantidade de arquivos/hash efetivamente calculados**. **Não registrar um objeto como único nem apontar perda de dados**; a contagem local precisa ser repetida com parser que lê as linhas sem essa camada.
+
+A consulta de hash do remoto **não iniciou a comparação**, pois o rclone falhou ao obter o ID do diretório raiz na API Google Drive: requisição `GET .../drive/v3/files/root` terminou em **`EOF`**, sem resposta HTTP conclusiva. Isso é um **erro de comunicação/transporte**, não um erro de checksum nem prova de revogação de credencial ou corrupção. O sucesso anterior de `rclone size --json` no remoto pessoal (143 objetos; 15.946.053 bytes) permanece válido como inventário datado, não como evidência de integridade criptográfica. **Comparação SHA-256 objeto a objeto: NÃO EXECUTADA/CONFIRMADA**. Próximo passo: conferir contagem local sem retorno encapsulado, testar somente uma leitura remota curta e, após restabelecer estabilidade, comparar os 143 hashes usando leitura de bytes. Evitar repetir as leituras completas em sequência quando a conexão está instável.
+
+**Nenhuma escrita no Drive, PostgreSQL, Storage ou cópia local; nenhum token ou caminho privado foi publicado.** O acesso OAuth antigo continua com revogação histórica NÃO CONFIRMADA; nenhum restore real foi executado.
+
+
 ## Novo remoto OAuth pessoal: leitura de inventário validada — 20/11/2026
 
 **Evidência informada pelo proprietário:** após criar um novo cliente OAuth do Google no modo pessoal, tipo **aplicativo para computador**, configurou um remoto rclone separado do anterior e executou `rclone size --json` na pasta privada de cópia do Storage. A consulta retornou **`count=143`, `bytes=15946053`, `sizeless=0`**, com código de saída zero e mensagem explícita `SUCCESS` no PowerShell. Assim, a leitura de inventário pelo **novo remoto** foi **SUCCESS** e o bloqueio anterior de cota da API compartilhada **não ocorreu nesse teste**. O remoto antigo foi mantido; a identidade, a configuração secreta do cliente OAuth e o caminho privado não foram publicados.
