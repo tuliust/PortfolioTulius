@@ -1,5 +1,14 @@
 # PortfolioTulius — documentação temática
 
+## Estado consolidado da auditoria de backup e credenciais — 20/11/2026
+
+O ciclo de 18–20/11/2026 teve **SUCCESS na comparação SHA-256 de todos os 143 arquivos do Storage** entre um conjunto físico local selecionado e sua cópia privada do Google Drive (**143 iguais, 0 faltantes, 0 extras, 0 diferenças; 15.946.053 bytes**). A análise dos três dumps SQL locais também concluiu verificações de tamanho, SHA-256, estrutura pública e correspondência de nomes/contagens nas 57 tabelas de dados examinadas, **mas a recuperação integral do PostgreSQL 17 não foi comprovada**. Ver [consolidação e histórico do backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+
+Foi criado e validado um remoto rclone com OAuth pessoal em modo somente leitura. **Após as capturas que distinguiam `rclone` de `personal-mode-app`**, o proprietário informou ter removido a autorização do aplicativo compartilhado antigo e confirmou que o novo remoto ainda enumerava os 143 arquivos. A revogação é **confirmada por relato do proprietário**, sem verificação independente pós-revogação e sem identificação forense do refresh token histórico. Duas outras autorizações Google observadas não foram atribuídas ao rclone nem alteradas. **A identidade e revogação específica do PAT GitHub histórico continuam não confirmadas.** Ver [segurança e acessos](04-infraestrutura/SEGURANCA_E_ACESSOS.md).
+
+**Pendências controladas:** concluir/limitar formalmente a cobertura dos dumps, decidir e autorizar expressamente eventual restore PostgreSQL 17 genuinamente isolado (nunca no P5 sintético), e concluir a classificação probatória do PAT histórico; manter a ressalva sobre o refresh token OAuth específico. Nenhum teste de restore PostgreSQL real ou alteração produtiva foi executado neste ciclo. As cinco fontes privadas do Projeto permanecem sem atualização intermediária e serão consolidadas somente após encerramento definido pelo proprietário. **Os apontamentos históricos abaixo preservam a situação da data em que foram escritos; este quadro prevalece para a verificação do Storage já concluída.**
+
+
 ## Conferência local do conteúdo dos blocos SQL — 20/11/2026
 
 Dos **57 `COPY`** informados pelo proprietário, **29 blocos contêm pelo menos uma linha** e **28 são vazios**: `public` 22/22 com dados; `auth` 5/26; `storage` 2/9. **Cobertura e recuperação integral continuam não comprovadas.** Por solicitação expressa, as cinco fontes privadas anexadas ao Projeto serão **consolidadas somente ao encerramento desta sequência**, sem gerar atualizações intermediárias; o GitHub mantém apenas os guias canônicos sem material privado. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
