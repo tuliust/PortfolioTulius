@@ -1,5 +1,21 @@
 # Backups, restore e rollback
 
+## Encerramento da auditoria de continuidade — aceite do proprietário em 20/11/2026
+
+**Estado vigente:** o proprietário optou expressamente por **encerrar a auditoria sem restauração PostgreSQL real**, aceitando o risco residual de **recuperabilidade integral não comprovada**. Isso **não** converte a restauração em SUCCESS, não demonstra backup completo e não autoriza o uso de dados reais. RPO/RTO **não definidos**.
+
+| Etapa | Estado de encerramento | Evidência e limite |
+|---|---|---|
+| 1. Cobertura dos três SQL | **AUDITORIA ESTÁTICA CONCLUÍDA; COBERTURA PARCIAL** | Hashes locais 3/3 e análise estrutural; 57 blocos `COPY`, 976 linhas, nomes/contagens por tabela compatíveis; sem equivalência integral de roles, estrutura gerenciada, criptografia, Auth/Storage e serviços |
+| 2. Restore PostgreSQL 17 isolado | **NÃO EXECUTADO; RISCO RESIDUAL ACEITO** | Dispensa do ensaio **neste ciclo** por decisão explícita; restaurabilidade funcional integral **NÃO COMPROVADA** |
+| 3. Storage físico local↔Drive | **SUCCESS — 143/143 SHA-256 iguais** | Entre uma cópia local selecionada e o Drive em 20/11; não prova imutabilidade da produção ou independência das demais cópias |
+| 4. PAT GitHub histórico | **INVESTIGAÇÃO DOCUMENTAL ENCERRADA COM RESSALVA** | Duas contas inspecionadas sem PAT listado; três eventos de exclusão em uma; identidade e revogação do PAT exposto específico **NÃO CONFIRMADAS** |
+| 5. OAuth Google antigo | **REVOGAÇÃO DO APP CONFIRMADA PELO PROPRIETÁRIO; NOVO OAUTH SUCCESS** | Novo acesso `drive.readonly` enumerou 143 objetos / 15.946.053 bytes após a remoção; refresh token histórico específico **NÃO IDENTIFICADO** |
+
+**Conduta futura:** para afirmar recuperabilidade real, será necessário um **novo plano e autorização específica** de ensaio PostgreSQL 17 segregado, armazenamento protegido, ausência de conexões produtivas, revisão prévia dos SQL, validação de roles, extensões, dados, Auth/Storage e descarte seguro. **P5 usa apenas seed sintética.** Os três SQL, seus hashes individuais, o pacote protegido e os arquivos privados não devem ser publicados. Não foi feito restore, alteração de produção, Auth, RLS, Storage, migrations ou deploy manual.
+
+**Organização do histórico:** as seções cronológicas abaixo descrevem o estado **nas datas de cada teste**. Expressões antigas como “pendente” ou “hash não confirmado” documentam tentativas anteriores e **não revogam o quadro de encerramento acima**. Não apagar evidências ou reexecutar as verificações já concluídas sem nova justificativa técnica. [Decisão do proprietário](../06-governanca/DECISOES_VIGENTES.md) · [Segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md).
+
 ## Classificação final da cobertura SQL — auditoria estática de 20/11/2026
 
 **Resultado e limite do procedimento:** o proprietário executou novas inspeções **somente leitura no PowerShell** sobre os três dumps já exportados em 19/11/2026, sem transmitir conteúdo dos arquivos. Os três arquivos esperados foram localizados com os tamanhos já documentados (**297, 89.193 e 555.489 bytes — SUCCESS**); os hashes locais **3/3**, a correspondência agregada entre os **57 blocos `COPY` e as 57 tabelas produtivas (976 linhas)** e a igualdade **143/143** do Storage com o Drive são evidências **anteriores, não repetidas** nesta inspeção.

@@ -1,13 +1,18 @@
 # PortfolioTulius — documentação temática
 
-## Estado consolidado da auditoria de backup e credenciais — 20/11/2026
+## Encerramento da auditoria de backup e credenciais — aceite em 20/11/2026
 
-O ciclo de 18–20/11/2026 teve **SUCCESS na comparação SHA-256 de todos os 143 arquivos do Storage** entre um conjunto físico local selecionado e sua cópia privada do Google Drive (**143 iguais, 0 faltantes, 0 extras, 0 diferenças; 15.946.053 bytes**). A análise dos três dumps SQL locais também concluiu verificações de tamanho, SHA-256, estrutura pública e correspondência de nomes/contagens nas 57 tabelas de dados examinadas, **mas a recuperação integral do PostgreSQL 17 não foi comprovada**. Ver [consolidação e histórico do backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+**Decisão vigente:** o proprietário encerrou formalmente a auditoria de 18–20/11/2026, **aceitando o risco residual de restaurabilidade integral do PostgreSQL não comprovada**. Não foi realizado nem autorizado restore real em PostgreSQL 17 isolado; RPO e RTO permanecem **não definidos**. Encerramento **não** equivale a teste de recuperação bem-sucedido ou correção do risco.
 
-Foi criado e validado um remoto rclone com OAuth pessoal em modo somente leitura. **Após as capturas que distinguiam `rclone` de `personal-mode-app`**, o proprietário informou ter removido a autorização do aplicativo compartilhado antigo e confirmou que o novo remoto ainda enumerava os 143 arquivos. A revogação é **confirmada por relato do proprietário**, sem verificação independente pós-revogação e sem identificação forense do refresh token histórico. Duas outras autorizações Google observadas não foram atribuídas ao rclone nem alteradas. **A identidade e revogação específica do PAT GitHub histórico continuam não confirmadas.** Ver [segurança e acessos](04-infraestrutura/SEGURANCA_E_ACESSOS.md).
+| Assunto | Estado final | Referência canônica |
+|---|---|---|
+| Dumps PostgreSQL `roles.sql`, `schema.sql`, `data.sql` | Auditoria estática concluída, **cobertura parcial** | [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) |
+| Restauração real PostgreSQL 17 | **NÃO EXECUTADA**, risco residual aceito | [Decisões vigentes](06-governanca/DECISOES_VIGENTES.md) |
+| Storage local↔Drive | **SUCCESS: SHA-256 143/143**, par local selecionado | [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) |
+| PAT GitHub histórico | Metadados auditados; identificação e revogação individual **NÃO CONFIRMADAS** | [Segurança e acessos](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
+| OAuth Google antigo | Remoção do app confirmada pelo proprietário; novo acesso **SUCCESS**; token histórico exato não identificado | [Segurança e acessos](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
 
-**Pendências controladas:** concluir/limitar formalmente a cobertura dos dumps, decidir e autorizar expressamente eventual restore PostgreSQL 17 genuinamente isolado (nunca no P5 sintético), e concluir a classificação probatória do PAT histórico; manter a ressalva sobre o refresh token OAuth específico. Nenhum teste de restore PostgreSQL real ou alteração produtiva foi executado neste ciclo. As cinco fontes privadas do Projeto permanecem sem atualização intermediária e serão consolidadas somente após encerramento definido pelo proprietário. **Os apontamentos históricos abaixo preservam a situação da data em que foram escritos; este quadro prevalece para a verificação do Storage já concluída.**
-
+**Fonte de verdade e leitura:** este quadro e os guias acima consolidam o encerramento. As seções datadas abaixo permanecem **históricas**, inclusive quando registram tentativas preliminares, estados pendentes ou testes com falha posteriormente superados; não tratá-las como o estado atual. As cinco fontes privadas do Projeto **não** sincronizam automaticamente com GitHub: eventual consolidação deve ocorrer em lote e ser substituída manualmente, sem publicar conteúdo privado.
 
 ## Conferência local do conteúdo dos blocos SQL — 20/11/2026
 

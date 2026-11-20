@@ -1,5 +1,13 @@
 # Segurança, RLS, acessos e riscos
 
+## Encerramento da investigação de credenciais — aceite em 20/11/2026
+
+**A auditoria documental de credenciais foi encerrada por decisão expressa do proprietário, preservando limites de prova.** Capturas apresentadas para **duas contas GitHub distintas** mostraram **zero PATs fine-grained e zero classic listados**; o Security log de uma delas mostrou **três eventos de exclusão**. **A identidade, titularidade original e revogação individual do PAT historicamente exposto continuam NÃO CONFIRMADAS**. Nenhum token foi recuperado, reproduzido, testado ou criado.
+
+**Google:** o proprietário informou ter removido apenas a autorização do aplicativo compartilhado antigo `rclone` e preservado `personal-mode-app`; após a remoção, a leitura pelo remoto pessoal com `drive.readonly` terminou em **SUCCESS (143 objetos, 15.946.053 bytes, zero sem tamanho)**. A remoção do app foi **confirmada pelo proprietário**, mas não houve inspeção independente da tela posterior nem identificação forense do refresh token antigo específico. As duas autorizações `Projeto sem título` não foram atribuídas ao rclone nem modificadas.
+
+**Escopo do aceite:** encerrar a busca de metadados disponíveis, **sem atestar revogação individual de segredo não identificado**. O aceite de restaurabilidade SQL parcialmente comprovada é separado e consta em [Decisões vigentes](../06-governanca/DECISOES_VIGENTES.md) e [Backup e recuperação](../05-operacao/BACKUP_E_RECUPERACAO.md). Permanecem inalterados os riscos de advisor Supabase e outros riscos históricos; não se declarou correção. As seções abaixo são registros cronológicos e podem mostrar estados anteriores à conclusão desta investigação.
+
 ## Conferência cruzada dos PATs nas duas contas GitHub — 20/11/2026
 
 **Proveniência das capturas, conforme identificação do proprietário:** as telas anteriores de PATs e Security log pertencem à conta GitHub histórica distinta da titular nominal atual do repositório, `tuliustsangaropulos`. Novas capturas foram apresentadas pelo proprietário como obtidas com sessão na conta `tuliust`. A identidade da sessão das novas telas não foi verificada de forma independente por esta auditoria.

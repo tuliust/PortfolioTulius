@@ -1,5 +1,15 @@
 # Decisões vigentes do proprietário
 
+## Encerramento formal da auditoria de backup, recuperação e credenciais — 20/11/2026
+
+**Decisão expressa do proprietário:** encerrar o ciclo de auditoria de 18–20/11/2026 **sem executar restauração real dos dumps PostgreSQL**, aceitando formalmente o **risco residual de restaurabilidade integral não comprovada**. A aceitação é uma decisão de encerramento e gestão de risco, **não** evidência de que a recuperação funciona, de correção do risco ou de que os backups sejam completos. Nenhum restore, clone com dados reais ou importação está autorizado por esta decisão. O ambiente P5 continua exclusivamente sintético.
+
+**Classificação aprovada:** (1) avaliação estática e integridade dos três dumps **concluídas com cobertura parcial**; (2) restore real em PostgreSQL 17 segregado **NÃO EXECUTADO por decisão expressa**, com risco residual aceito para o fechamento; (3) SHA-256 de **143/143 objetos Storage** entre um par local selecionado e o Google Drive **SUCCESS** na data da verificação; (4) investigação de metadados dos PATs em duas contas **encerrada com ressalva**, sem identificação/revogação individual do PAT histórico; (5) remoção do OAuth compartilhado antigo **confirmada pelo proprietário** e leitura pelo novo OAuth pessoal **SUCCESS**, sem identificação forense do refresh token histórico exato.
+
+**Limites vigentes:** RPO e RTO **não definidos**; restauração completa de roles, Auth, Storage gerenciado, migrations, chaves/segredos e serviços Supabase **NÃO COMPROVADA**; os resultados de Auth/PAT/OAuth não devem ser reclassificados como provas individuais de revogação de tokens históricos. Eventual ensaio futuro com dados reais exige **plano segregado e nova autorização específica**, sem uso do P5 e sem alterações inferidas em produção.
+
+**Preservação e documentação:** nenhum código, CMS, dados, Auth/RLS, Storage, migration, configuração de produção ou deploy manual foi alterado para este aceite. A evidência e a classificação estão em [Backup e recuperação](../05-operacao/BACKUP_E_RECUPERACAO.md), [Segurança e acessos](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) e [Estado atual](../01-projeto/ESTADO_ATUAL.md). Os cinco snapshots privados do Projeto ChatGPT continuam fora do GitHub; sua eventual consolidação/substituição manual constitui trabalho separado, não sincronização automática. As decisões antigas abaixo são históricas e não prevalecem sobre este aceite expresso.
+
 ## Preferência de atualização das fontes privadas — 20/11/2026
 
 O proprietário solicitou **não atualizar os cinco snapshots Markdown anexados ao Projeto após cada ação**. Durante a sequência de manutenção, os resultados verificáveis continuam registrados nos guias canônicos da `main` quando materialmente relevantes. **A consolidação/substituição manual dos anexos privados será feita em um único lote ao final das execuções**, após indicação do proprietário. Não criar múltiplas versões intermediárias, duplicatas ativas ou publicar arquivos/dados privados no GitHub. Esta decisão não altera os controles técnicos, a documentação canônica, o backlog standby nem as regras de não intervenção produtiva.
