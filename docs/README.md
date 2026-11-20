@@ -1,5 +1,10 @@
 # PortfolioTulius — documentação temática
 
+## Conferência local do conteúdo dos blocos SQL — 20/11/2026
+
+Dos **57 `COPY`** informados pelo proprietário, **29 blocos contêm pelo menos uma linha** e **28 são vazios**: `public` 22/22 com dados; `auth` 5/26; `storage` 2/9. **Cobertura e recuperação integral continuam não comprovadas.** Por solicitação expressa, as cinco fontes privadas anexadas ao Projeto serão **consolidadas somente ao encerramento desta sequência**, sem gerar atualizações intermediárias; o GitHub mantém apenas os guias canônicos sem material privado. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+
+
 ## Confirmação da cobertura de `data.sql` — 20/11/2026
 
 A nova busca local apresentada pelo proprietário identificou **57 blocos `COPY`** no backup: **22 `public`, 26 `auth` e 9 `storage`**, além de 57 cabeçalhos de dados e nenhum `INSERT INTO`. Assim, os zeros da primeira busca eram **falsos negativos**. O arquivo contém instruções referentes a `auth` e `storage`, ao contrário da generalização anterior sobre a exclusão de schemas gerenciados, válida apenas com as distinções entre **estrutura** e **dados**. **Presença de comandos não prova todas as linhas, objetos gerenciados, restauração funcional nem preservação das chaves/arquivos do Storage**. [Detalhes e correção documental](05-operacao/BACKUP_E_RECUPERACAO.md).

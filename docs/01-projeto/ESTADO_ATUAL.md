@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Conferência de blocos com dados — 20/11/2026
+
+**Inspeção local declarada pelo proprietário:** em `data.sql`, **57 blocos `COPY`**, com **29 contendo ao menos uma linha e 28 vazios**. Distribuição: `public` **22/22 com dados**; `auth` **5/26 com dados**; `storage` **2/9 com dados**. Zero blocos em outros schemas identificados pela expressão utilizada. Isso confirma presença de linhas nos três schemas conforme o teste apresentado, **mas não valida quantidades de registros, completude ou restaurabilidade**. A fonte privada do Projeto será consolidada **apenas ao final desta sequência**, por preferência expressa do proprietário; não gerar novo snapshot a cada passo. [Detalhamento](../05-operacao/BACKUP_E_RECUPERACAO.md).
+
+
 ## Cobertura do arquivo de dados — revisão de 20/11/2026
 
 **Inspeção local informada pelo proprietário:** `data.sql` contém **57 instruções `COPY`** e 57 cabeçalhos; **22 em `public`, 26 em `auth`, 9 em `storage`**, e nenhum `INSERT INTO` identificado. Portanto, os zeros do teste anterior eram falsos negativos decorrentes do padrão de busca. Os blocos de `auth` e `storage` **estão presentes no arquivo de dados**, embora seu número de linhas e abrangência não tenham sido verificados. O `schema.sql` e os dados físicos do Storage têm escopos distintos. **Completude e recuperação integral: NÃO CONFIRMADAS.** Nenhum SQL real foi compartilhado ou restaurado. [Detalhamento](../05-operacao/BACKUP_E_RECUPERACAO.md).

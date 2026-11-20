@@ -1,5 +1,14 @@
 # Backups, restore e rollback
 
+## Presença de linhas nos blocos `COPY` — 20/11/2026 (confirmação local)
+
+**Resultado informado pelo proprietário:** após analisar localmente o `data.sql` com um leitor sequencial que identifica cada bloco `COPY` até seu terminador `\.`, a contagem foi: **`public`: 22 blocos, 22 com pelo menos uma linha, 0 vazios; `auth`: 26 blocos, 5 com linhas, 21 vazios; `storage`: 9 blocos, 2 com linhas, 7 vazios; `outros`: 0**. **Total: 57 blocos, 29 com pelo menos uma linha e 28 vazios**. O proprietário apresentou somente a tabela agregada, sem enviar SQL nem dados pessoais. As contagens são do arquivo exportado, não de uma conexão atual com o banco. Não há contagem de linhas por tabela, comparação registro a registro ou validação independente dos bytes.
+
+**Interpretação:** as **22 instruções de dados para `public` possuem linhas**, compatíveis numericamente com as 22 tabelas `public` existentes em produção; há também dados em **cinco blocos `auth`** e **dois `storage`**. Blocos vazios podem ser legítimos e não significam erro por si. A presença de linhas **não garante** quantidade total de registros, identidade dos objetos com o inventário, vínculos e dependências, preservação das chaves Auth, consistência entre datas de exportação ou restauração integral. **Integridade local de hashes e pacote externo foram confirmados pelo proprietário em etapas anteriores; ensaio integral de restore: NÃO EXECUTADO.**
+
+**Fontes privadas — preferência vigente do proprietário:** não substituir as fontes Markdown anexadas ao Projeto após cada ação; **acumular as mudanças e consolidar os cinco snapshots apenas ao fim da sequência de execuções**, mediante encerramento indicado pelo proprietário. A documentação pública canônica deve continuar atualizada conforme protocolo, sem publicar dados privados nem os próprios snapshots.
+
+
 ## Confirmação do formato e presença de blocos de dados — 20/11/2026
 
 **Resultado da inspeção local reportada pelo proprietário:** `data.sql` contém **57 instruções `COPY`** e **57 cabeçalhos de seção de dados**, subdivididos em **22 `COPY public.*`**, **26 `COPY auth.*`** e **9 `COPY storage.*`**. A soma 22 + 26 + 9 = 57. Os padrões pesquisados não encontraram `INSERT INTO` (0 no total). Os nomes das tabelas, linhas e conteúdo dos arquivos não foram compartilhados nem inspecionados por esta auditoria.

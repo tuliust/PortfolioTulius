@@ -1,5 +1,10 @@
 # Decisões vigentes do proprietário
 
+## Preferência de atualização das fontes privadas — 20/11/2026
+
+O proprietário solicitou **não atualizar os cinco snapshots Markdown anexados ao Projeto após cada ação**. Durante a sequência de manutenção, os resultados verificáveis continuam registrados nos guias canônicos da `main` quando materialmente relevantes. **A consolidação/substituição manual dos anexos privados será feita em um único lote ao final das execuções**, após indicação do proprietário. Não criar múltiplas versões intermediárias, duplicatas ativas ou publicar arquivos/dados privados no GitHub. Esta decisão não altera os controles técnicos, a documentação canônica, o backlog standby nem as regras de não intervenção produtiva.
+
+
 ## Decisão operacional atualizada — 19/11/2026
 
 O proprietário declarou que **excluiu os PATs antigos**, superando a decisão histórica de mantê-los, mas a correspondência do PAT originalmente exposto permanece não comprovada por identidade. A revogação do token Google foi informada pelo proprietário, sem confirmação independente de reconexão do rclone. Não usar/criar novos PATs para esta atividade.
