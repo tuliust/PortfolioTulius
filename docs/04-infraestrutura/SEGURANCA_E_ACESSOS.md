@@ -1,5 +1,15 @@
 # Segurança, RLS, acessos e riscos
 
+## Conferência cruzada dos PATs nas duas contas GitHub — 20/11/2026
+
+**Proveniência das capturas, conforme identificação do proprietário:** as telas anteriores de PATs e Security log pertencem à conta GitHub histórica distinta da titular nominal atual do repositório, `tuliustsangaropulos`. Novas capturas foram apresentadas pelo proprietário como obtidas com sessão na conta `tuliust`. A identidade da sessão das novas telas não foi verificada de forma independente por esta auditoria.
+
+**Conta antiga (`tuliustsangaropulos`):** zero PATs fine-grained e zero PATs classic atualmente listados nas telas; **três eventos `personal_access_token.destroy`** encontrados no Security log. O proprietário informou que excluíra os três PATs antes exibidos como expirados. A busca por `personal_access_token.credential_revoked` não retornou eventos; isso não invalida eventos de exclusão.
+
+**Conta atual (`tuliust`), segundo as novas capturas:** zero PATs fine-grained e zero classic listados; pesquisas por `personal_access_token.destroy` e `personal_access_token.credential_revoked` **sem eventos correspondentes** no período coberto pelo log. A pesquisa `oauth_authorization.destroy` localizou um evento referente a aplicativo terceiro, o qual **não é PAT**. A tela `OAuth Apps: No OAuth apps` descreve **aplicativos OAuth registrados pelo usuário**, e não prova a ausência de aplicações terceiras autorizadas.
+
+**Classificação:** exclusão de três PATs da conta histórica: **SUCCESS por eventos do Security log fornecidos**; ausência de PATs atualmente listados nas duas contas examinadas: **SUCCESS por inspeção de capturas**, condicionada à identificação das sessões pelo proprietário; associação de qualquer registro ao valor do **PAT historicamente exposto: NÃO CONFIRMADA**. O conjunto de evidências permite encerrar a busca de metadados disponível nas duas contas **com ressalva forense**, sem afirmar revogação individual daquele segredo nem excluir a possibilidade de credenciais não abrangidas pelas telas. Não foram criados, reproduzidos, autenticados ou testados tokens, e nenhum identificador de credencial, IP ou valor secreto foi publicado. Não foi efetuada mudança de código ou infraestrutura.
+
 ## PATs GitHub: três exclusões auditadas e limitação de identificação — 20/11/2026
 
 **Evidência nova fornecida pelo proprietário em capturas e transcrição do Security log:** as telas de configurações da conta GitHub examinada apresentam **zero tokens fine-grained listados** e **zero tokens classic listados**. O Security log dessa conta contém **três eventos `personal_access_token.destroy`**, relativos à exclusão de três PATs. O proprietário informou que anteriormente havia removido os três fine-grained expirados. A pesquisa por `personal_access_token.credential_revoked` não encontrou eventos; essa ausência **não contradiz os registros de exclusão**, pois são ações diferentes. Eventos `oauth_authorization.destroy` observados referem-se a autorizações de aplicativos e **não constituem prova de revogação de PATs**.
