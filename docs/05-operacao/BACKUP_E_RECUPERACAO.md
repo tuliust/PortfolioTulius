@@ -1,5 +1,12 @@
 # Backups, restore e rollback
 
+## Três pares locais candidatos à auditoria SHA-256 — 20/11/2026
+
+**Evidência fornecida pelo proprietário:** busca PowerShell local, somente leitura, encontrou **8 diretórios** de buckets sob as pastas pesquisadas do perfil Windows. Dois diretórios iniciais estão vazios (0 arquivos e 0 bytes cada), como observado anteriormente. Os outros **seis diretórios** formam três pares candidatos (IDs 3–4, 5–6 e 7–8) em que cada par apresenta `portfolio-public` com **87 arquivos / 13.105.754 bytes** e `portfolio-private` com **56 arquivos / 2.840.299 bytes**. Cada par soma **143 arquivos / 15.946.053 bytes**, coincidindo em inventário com a cópia privada no Google Drive verificada previamente pelo novo OAuth pessoal.
+
+**Interpretação:** há **três pares candidatos com inventário compatível**; a busca não demonstra, por si só, que os pares são cópias fisicamente independentes, que os arquivos têm conteúdos iguais, nem que o backup coincide bit a bit com a produção atual. O primeiro local selecionado para hash tinha os buckets vazios e **não era a origem física correta**; o único arquivo na raiz explica a contagem `HashesSHA256=1` com `rclone hashsum` sem implicar perda do acervo. **SHA-256 local↔Drive: ainda NÃO EXECUTADO/CONFIRMADO**; o próximo ensaio deve escolher um par, conferir que os dois diretórios possuem o mesmo pai, recalcular seus 143 hashes pelo conteúdo e compará-los aos hashes lidos remotamente, preservando os outros pares. Não publicar caminhos privados, nomes dos objetos nem hashes; nenhum arquivo foi movido, excluído ou regravado nesta investigação.
+
+
 ## Origem local informada para hashes está vazia — 20/11/2026
 
 **Evidência local apresentada pelo proprietário:** PowerShell `Get-ChildItem -LiteralPath ... -File -Recurse -Force` encontrou **0 arquivos e 0 bytes** dentro de **cada um** dos diretórios `portfolio-public` e `portfolio-private` situados na pasta local escolhida para a auditoria. As pastas existem (`Existe=True`), mas ambas estão vazias. Isso explica por que uma comparação local↔Drive dessa pasta **não pode homologar os 143 objetos**. O retorno anterior `HashesSHA256=1` não constitui evidência de um único objeto do backup: pode se referir a outro arquivo na raiz ou a comportamento de coleta da saída, ainda não esclarecido. Não interpretar a contagem zero como eliminação dos backups físicos reportados em 18/11; foram documentados **dois conjuntos locais** em locais não publicados, e é preciso primeiro identificar qual deles contém realmente os objetos antes de calcular os hashes.
