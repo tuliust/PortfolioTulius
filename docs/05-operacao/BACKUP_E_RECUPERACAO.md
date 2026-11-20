@@ -1,5 +1,14 @@
 # Backups, restore e rollback
 
+## SHA-256 Storage local versus Google Drive: 143/143 SUCCESS — 20/11/2026
+
+**Verificação executada pelo proprietário, em PowerShell e rclone, sem gravações:** selecionado o par local com os diretórios `portfolio-public` e `portfolio-private` (IDs 4 e 3 do inventário anterior), confirmando que compartilham a mesma raiz física e contêm **143 arquivos / 15.946.053 bytes**. A rotina calculou **143 hashes SHA-256 locais** com `Get-FileHash -Algorithm SHA256`, usando o caminho relativo ao diretório comum, e obteve **143 hashes SHA-256 remotos** por `rclone hashsum sha256 --download` autenticado no remoto OAuth pessoal `portfolio-drive-pessoal:`, com leitura dos bytes e saída concluída sem erro.
+
+**Comparação exata por caminho relativo e SHA-256:** **143/143 iguais, 0 faltantes, 0 extras, 0 divergentes — SUCCESS**. Nenhum nome de objeto, hash individual, credencial ou caminho privado foi publicado. A conexão pessoal havia apresentado anteriormente `rclone config redacted` com **`scope=drive.readonly` confirmado**. A comparação resolve a pendência específica de integridade criptográfica **entre o conjunto local selecionado e a cópia privada no Drive na data desta verificação**, superando as tentativas anteriores inconclusivas por origem local incorreta e problemas temporários de API.
+
+**Limites e pendências remanescentes:** os demais dois pares locais encontrados têm apenas inventário compatível, **sem comparação individual de hashes nesta rodada**. Igualdade com o backup remoto **não demonstra** que os objetos ainda correspondem bit a bit ao Storage de produção em 20/11/2026; a prova anterior de exportação/restauração isolada do Storage permanece datada de 18–19/11. O teste também **não valida restauração PostgreSQL 17**, roles/Auth completos ou recuperação integral do site. **Revogação do OAuth Google histórico, correspondência e revogação do PAT GitHub histórico, e restauração PostgreSQL genuinamente isolada continuam NÃO CONFIRMADAS/NÃO EXECUTADAS**, conforme seus próprios requisitos de evidência. Não houve escrita, mutação do Supabase, restore, deploy manual ou alteração do conteúdo dos backups.
+
+
 ## Três pares locais candidatos à auditoria SHA-256 — 20/11/2026
 
 **Evidência fornecida pelo proprietário:** busca PowerShell local, somente leitura, encontrou **8 diretórios** de buckets sob as pastas pesquisadas do perfil Windows. Dois diretórios iniciais estão vazios (0 arquivos e 0 bytes cada), como observado anteriormente. Os outros **seis diretórios** formam três pares candidatos (IDs 3–4, 5–6 e 7–8) em que cada par apresenta `portfolio-public` com **87 arquivos / 13.105.754 bytes** e `portfolio-private` com **56 arquivos / 2.840.299 bytes**. Cada par soma **143 arquivos / 15.946.053 bytes**, coincidindo em inventário com a cópia privada no Google Drive verificada previamente pelo novo OAuth pessoal.
