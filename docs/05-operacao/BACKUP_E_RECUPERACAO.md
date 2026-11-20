@@ -1,5 +1,12 @@
 # Backups, restore e rollback
 
+## Novo remoto OAuth pessoal: leitura de inventário validada — 20/11/2026
+
+**Evidência informada pelo proprietário:** após criar um novo cliente OAuth do Google no modo pessoal, tipo **aplicativo para computador**, configurou um remoto rclone separado do anterior e executou `rclone size --json` na pasta privada de cópia do Storage. A consulta retornou **`count=143`, `bytes=15946053`, `sizeless=0`**, com código de saída zero e mensagem explícita `SUCCESS` no PowerShell. Assim, a leitura de inventário pelo **novo remoto** foi **SUCCESS** e o bloqueio anterior de cota da API compartilhada **não ocorreu nesse teste**. O remoto antigo foi mantido; a identidade, a configuração secreta do cliente OAuth e o caminho privado não foram publicados.
+
+**Limites:** a captura do novo cliente indica modo pessoal e tipo Desktop, mas a saída apresentada **não contém auditoria do escopo `drive.readonly` do novo remoto**, apenas do remoto anterior. A revogação da autorização Google antiga **continua não comprovada**. **SHA-256 por objeto da cópia no Drive: NÃO EXECUTADO**; a verificação seguinte deve conferir primeiro `drive.readonly` com `rclone config redacted` e depois calcular SHA-256 por leitura do conteúdo em ambos os lados, comparando 143 arquivos e caminhos relativos. O acesso confirmado à nova cópia remota não substitui o ensaio PostgreSQL isolado, ainda não autorizado nem executado. Não houve alteração em Supabase, dados do Drive ou backup local.
+
+
 ## Bloqueio de leitura Drive por cota da API — 20/11/2026
 
 **Evidência local do proprietário (16h24 a 16h27, sem alterar arquivos):** tentativa de inventário por bucket via `rclone size --json` **interrompida antes do cálculo de hashes**. Primeiro ocorreu falha de resolução DNS para `www.googleapis.com`; em seguida, o teste `Resolve-DnsName` retornou **SUCCESS**, mas nova consulta `rclone size` ao diretório correto resultou em **HTTP 403 `RATE_LIMIT_EXCEEDED`** na API `drive.googleapis.com` (cota de *queries per minute*). A mensagem informou projeto consumidor compartilhado do Google; o próprio rclone v1.75.2 também alertou para descontinuação do `client_id` compartilhado durante 2026. A documentação oficial do rclone recomenda utilizar cliente OAuth próprio para reduzir a concorrência pela cota e evitar a interrupção futura: https://rclone.org/drive/#making-your-own-client-id.
