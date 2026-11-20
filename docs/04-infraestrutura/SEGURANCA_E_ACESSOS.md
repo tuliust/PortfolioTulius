@@ -1,5 +1,12 @@
 # Segurança, RLS, acessos e riscos
 
+## Escopo somente leitura do OAuth pessoal confirmado — 20/11/2026
+
+**Evidência apresentada pelo proprietário:** o comando local `rclone config redacted portfolio-drive-pessoal`, analisado por PowerShell, confirmou **`scope = drive.readonly` — SUCCESS**. Em seguida, houve leitura integral autenticada de **143 arquivos no Google Drive**, com `rclone hashsum sha256 --download`, e comparação de 143 hashes com a cópia local selecionada, sem erros ou divergências. Assim, o novo remoto pessoal encontra-se **funcional para auditoria de leitura** e a identidade criptográfica local↔Drive foi **SUCCESS** na data da execução, conforme [guia de backup](../05-operacao/BACKUP_E_RECUPERACAO.md). Trata-se de permissão de leitura para o **Drive da conta**, não de limitação à pasta de backup.
+
+**Atenção:** esta confirmação supersede apenas a antiga indicação de escopo do *novo remoto* ainda não auditado; **não demonstra revogação de acesso anterior**. A autorização do cliente OAuth compartilhado e o refresh token histórico possivelmente exposto permanecem com **revogação específica NÃO CONFIRMADA**; a habilitação do novo cliente pessoal, por si só, não revoga tokens antigos. Identidade e revogação do **PAT GitHub histórico: NÃO CONFIRMADAS**. Não divulgar, testar ou reutilizar os segredos históricos. Nenhuma configuração de autenticação foi alterada por esta atualização documental.
+
+
 ## Novo cliente OAuth pessoal e remoto de leitura — 20/11/2026
 
 **Evidências fornecidas pelo proprietário:** criado novo cliente OAuth Google do tipo **Desktop** pelo fluxo do modo pessoal, com remoto rclone separado do remoto anterior. Um comando `rclone size --json` autenticado no novo remoto retornou **143 objetos, 15.946.053 bytes e `sizeless=0`**, com saída `SUCCESS`: **nova credencial funcional para leitura de inventário CONFIRMADA**. Ao contrário das tentativas anteriores usando o cliente compartilhado, esta leitura não apresentou erro HTTP 403.
