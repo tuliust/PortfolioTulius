@@ -1,5 +1,12 @@
 # Backups, restore e rollback
 
+## Inventário remoto Storage novamente acessível — 20/11/2026
+
+**Evidência apresentada pelo proprietário:** `rclone lsd` da pasta privada correta de Storage no Google Drive apresentou as subpastas `portfolio-private` e `portfolio-public`. Na sequência, `rclone size --json` aplicado à **pasta correta** retornou `count=143`, `bytes=15946053` e `sizeless=0`, valores coincidentes com o inventário anterior de 143 objetos (87 públicos e 56 privados; 15.946.053 bytes). A primeira tentativa da rotina de hashes interrompeu na etapa de inventário porque o caminho informado para o Drive era incorreto; o acesso foi testado depois com o caminho completo corrigido, sem divulgar o caminho privado no GitHub.
+
+**Estado:** enumeração do diretório remoto e contagem/tamanho **SUCCESS na saída local apresentada**; identidade individual, conteúdo de cada objeto e comparação SHA-256 **NÃO EXECUTADOS/CONFIRMADOS** até novo resultado. O aviso do rclone sobre retirada de seu client_id compartilhado durante 2026 foi observado, não demonstrando falha atual de acesso, e requer acompanhamento para continuidade da conexão. Nenhuma escrita em Storage, Google Drive ou produção, reconexão OAuth ou restore foi confirmada. O acesso atual por rclone não comprova por si só a revogação do token Google histórico.
+
+
 ## Identificação das extensões e privilégios no SQL — 20/11/2026
 
 **Resultado local fornecido pelo proprietário:** auditoria somente leitura de `schema.sql` e `roles.sql` de 19/11, com script PowerShell corrigido. As **4 extensões declaradas** em `CREATE EXTENSION` são `pg_stat_statements`, `pgcrypto`, `supabase_vault` e `uuid-ossp`; `plpgsql` **não está declarada**. O banco produtivo contém exatamente essas quatro e também `plpgsql` (linguagem procedural instalada por padrão no PostgreSQL). Assim, a diferença numérica 4 versus 5 **está identificada** e não demonstra por si só falha na exportação.
