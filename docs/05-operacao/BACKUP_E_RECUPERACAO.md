@@ -1,5 +1,14 @@
 # Backups, restore e rollback
 
+## Correspondência de nomes e contagens por tabela nos dumps — 20/11/2026
+
+**Evidência local apresentada pelo proprietário:** PowerShell leu os 57 blocos `COPY` do arquivo `data.sql` exportado em 19/11, gerou, por schema, um resumo de **nomes de tabelas + quantidade de linhas por tabela**, ordenou os nomes ordinalmente e calculou SHA-256 do resumo, sem transmitir dados, nomes de tabelas ou o arquivo. As **três assinaturas comparadas com os resumos preparados previamente em leitura da produção conferiram integralmente (3/3 SUCCESS)**: `public` **22 tabelas/825 linhas**, `auth` **26/6**, `storage` **9/145**; total **57 tabelas/976 linhas**. Os valores das assinaturas individuais foram preservados fora do GitHub.
+
+**Significado:** a igualdade dessas assinaturas, calculadas pelo mesmo algoritmo sobre nomes e contagens, evidencia **correspondência por tabela**, não apenas de soma por schema, entre o dump local reportado e a consulta produtiva de referência. A comparação considera as 57 tabelas de dados e **exclui os históricos gerenciados `auth.schema_migrations` e `storage.migrations`**, encontrados separadamente no banco produtivo com 84 e 81 linhas. A extração local não foi auditada independentemente e a produção foi consultada em outro instante, portanto a igualdade **não demonstra snapshot transacional comum**, conteúdo idêntico das linhas, integridade das chaves estrangeiras no restore, completude de objetos gerenciados/roles/grants/RLS/configurações, arquivos binários do Storage ou restaurabilidade.
+
+**Estado:** correspondência de inventário de tabelas e linhas por tabela **SUCCESS conforme saída fornecida pelo proprietário**; completude do backup PostgreSQL e ensaio de recuperação **NÃO COMPROVADOS**. Próxima verificação: cobertura estrutural dos arquivos `schema.sql` e `roles.sql`, com saída apenas agregada e sem expor SQL ou credenciais. Nenhuma escrita em banco, alteração de Auth/Storage/RLS, migration, exportação adicional ou restore foi executada.
+
+
 ## Contraste agregado entre o backup e o PostgreSQL produtivo — 20/11/2026
 
 **Nova consulta em produção, exclusivamente `SELECT COUNT(*)` em tabelas dos schemas `public`, `auth` e `storage`, sem acesso ao conteúdo das linhas:** 22 tabelas de `public` totalizaram **825 registros**, 27 tabelas de `auth` totalizaram **90 registros** e 10 tabelas de `storage` totalizaram **226 registros**. Dois históricos gerenciados foram conferidos separadamente: `auth.schema_migrations` com **84 linhas** e `storage.migrations` com **81 linhas**. Os totais **excluindo apenas essas duas tabelas** são, respectivamente, **825, 6 e 145**, exatamente os totais agregados de linhas `COPY` informados pelo proprietário no backup de 19/11. O inventário atual confirma ainda **143 linhas em `storage.objects`** e **2 em `storage.buckets`**; esses valores são contagens de metadados, não hashes de objetos físicos.
