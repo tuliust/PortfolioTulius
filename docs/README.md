@@ -1,12 +1,17 @@
 # PortfolioTulius — documentação temática
 
+## Confirmação da cobertura de `data.sql` — 20/11/2026
+
+A nova busca local apresentada pelo proprietário identificou **57 blocos `COPY`** no backup: **22 `public`, 26 `auth` e 9 `storage`**, além de 57 cabeçalhos de dados e nenhum `INSERT INTO`. Assim, os zeros da primeira busca eram **falsos negativos**. O arquivo contém instruções referentes a `auth` e `storage`, ao contrário da generalização anterior sobre a exclusão de schemas gerenciados, válida apenas com as distinções entre **estrutura** e **dados**. **Presença de comandos não prova todas as linhas, objetos gerenciados, restauração funcional nem preservação das chaves/arquivos do Storage**. [Detalhes e correção documental](05-operacao/BACKUP_E_RECUPERACAO.md).
+
+
 ## Conferência dos arquivos SQL — 20/11/2026
 
-O proprietário relatou substituição manual das três fontes privadas revisadas. Em inspeção estrutural local dos dumps, encontrou **22 comandos de tabela `public`**, **41 comandos de policy** e **3 declarações de roles**; a busca anterior por linhas `COPY public.` retornou zero, **resultado inconclusivo** quanto ao conteúdo de `data.sql`, pois o padrão não reconhece todas as sintaxes possíveis. Permanecem pendentes a identificação do formato das instruções de dados e o ensaio isolado autorizado; **nenhuma escrita produtiva foi realizada**. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+O proprietário relatou substituição manual das três fontes privadas revisadas. Em inspeção estrutural local dos dumps, encontrou **22 comandos de tabela `public`**, **41 comandos de policy** e **3 declarações de roles**; a busca anterior por linhas `COPY public.` retornou zero, **falso negativo corrigido** pela verificação posterior de **57 `COPY` (22 `public`, 26 `auth`, 9 `storage`)**. Continuam pendentes a contagem de linhas de dados por schema, a avaliação de cobertura efetiva e o ensaio isolado autorizado; **nenhuma escrita produtiva foi realizada**. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
 
 ## Diagnóstico de cobertura de recuperação — 19/11/2026
 
-Nova avaliação **somente leitura** dos catálogos do PostgreSQL 17: `public` 22 tabelas/41 policies, `auth` 27 tabelas, `storage` 10 tabelas/2 policies, histórico de 12 migrations. Os dumps SQL e a cópia externa verificados pelo proprietário **não abrangem comprovadamente schemas gerenciados nem restauração integral**. Foi acrescentado um procedimento condicional de conferência de cobertura e recuperação isolada, **sem executar novas exportações, restauros, alterações produtivas ou itens do standby**. [Guia de recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) · [Estado atual](01-projeto/ESTADO_ATUAL.md).
+Nova avaliação **somente leitura** dos catálogos do PostgreSQL 17: `public` 22 tabelas/41 policies, `auth` 27 tabelas, `storage` 10 tabelas/2 policies, histórico de 12 migrations. Os dumps SQL e a cópia externa verificados pelo proprietário **contêm instruções de dados para `auth` e `storage` conforme verificação posterior**, mas ainda **não comprovam completude dos schemas gerenciados nem restauração integral**. Foi acrescentado um procedimento condicional de conferência de cobertura e recuperação isolada, **sem executar novas exportações, restauros, alterações produtivas ou itens do standby**. [Guia de recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) · [Estado atual](01-projeto/ESTADO_ATUAL.md).
 
 ## Ciclo de segurança e continuidade — 19/11/2026
 

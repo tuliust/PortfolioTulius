@@ -1,12 +1,17 @@
 # Estado atual — PortfolioTulius
 
+## Cobertura do arquivo de dados — revisão de 20/11/2026
+
+**Inspeção local informada pelo proprietário:** `data.sql` contém **57 instruções `COPY`** e 57 cabeçalhos; **22 em `public`, 26 em `auth`, 9 em `storage`**, e nenhum `INSERT INTO` identificado. Portanto, os zeros do teste anterior eram falsos negativos decorrentes do padrão de busca. Os blocos de `auth` e `storage` **estão presentes no arquivo de dados**, embora seu número de linhas e abrangência não tenham sido verificados. O `schema.sql` e os dados físicos do Storage têm escopos distintos. **Completude e recuperação integral: NÃO CONFIRMADAS.** Nenhum SQL real foi compartilhado ou restaurado. [Detalhamento](../05-operacao/BACKUP_E_RECUPERACAO.md).
+
+
 ## Inspeção estrutural local dos dumps — 20/11/2026
 
-Conforme terminal apresentado pelo proprietário: `schema.sql` apresentou **22** comandos `CREATE TABLE` no escopo `public` e **41** comandos `CREATE POLICY` (coincidência numérica com a produção), `roles.sql` retornou **3** declarações `CREATE/ALTER ROLE`. A busca restrita por `COPY public.` em `data.sql` retornou **zero**, sem provar ausência dos dados, pois a expressão não contempla nomes entre aspas, outras formas de qualificação ou `INSERT INTO`. Pesquisas correspondentes para `auth` e `storage` também retornaram zero, sem comprovar cobertura desses schemas gerenciados. **Formato de dados e restaurabilidade: NÃO CONFIRMADOS**. O proprietário declarou ter substituído manualmente três fontes privadas atualizadas no Projeto, sem inspeção independente da configuração. [Análise e próximo teste somente local](../05-operacao/BACKUP_E_RECUPERACAO.md).
+Conforme terminal apresentado pelo proprietário: `schema.sql` apresentou **22** comandos `CREATE TABLE` no escopo `public` e **41** comandos `CREATE POLICY` (coincidência numérica com a produção), `roles.sql` retornou **3** declarações `CREATE/ALTER ROLE`. A primeira busca restrita por `COPY public.` em `data.sql` retornou **zero**, mas o exame posterior com padrão ampliado demonstrou **22 `COPY` em `public`, 26 em `auth` e 9 em `storage`**, com **57 cabeçalhos** e **0 `INSERT INTO`**. **Formato dos comandos confirmado por contagens; linhas de dados e restaurabilidade: NÃO CONFIRMADAS**. O proprietário declarou ter substituído manualmente três fontes privadas atualizadas no Projeto, sem inspeção independente da configuração. [Análise e próximo teste somente local](../05-operacao/BACKUP_E_RECUPERACAO.md).
 
 ## Cobertura de recuperação — avaliação 19/11/2026
 
-**Leitura de catálogo executada, sem dados reais:** `public` 22 tabelas (41 policies), `auth` 27, `storage` 10 (2 policies), `realtime` 3, `supabase_migrations` 1 e `vault` 1; `private` contém 3 funções e nenhuma tabela; 12 migrations no ledger. A CLI padrão exclui schemas gerenciados como `auth` e `storage`. **Diagnóstico e roteiro de recuperação: documentados; backup complementar, conferência estrutural local dos arquivos SQL e restore de dados reais: NÃO EXECUTADOS.** Não houve alteração de produção, Auth/RLS, migração, deploy manual ou reabertura do standby. [Contrato de backup e limites](../05-operacao/BACKUP_E_RECUPERACAO.md).
+**Leitura de catálogo executada, sem dados reais:** `public` 22 tabelas (41 policies), `auth` 27, `storage` 10 (2 policies), `realtime` 3, `supabase_migrations` 1 e `vault` 1; `private` contém 3 funções e nenhuma tabela; 12 migrations no ledger. O dump padrão de **estrutura** filtra objetos gerenciados como `auth` e `storage`, mas o `data.sql` real contém instruções `COPY` referentes a ambos os schemas. **Diagnóstico e roteiro de recuperação: documentados; backup complementar, conferência estrutural local dos arquivos SQL e restore de dados reais: NÃO EXECUTADOS.** Não houve alteração de produção, Auth/RLS, migração, deploy manual ou reabertura do standby. [Contrato de backup e limites](../05-operacao/BACKUP_E_RECUPERACAO.md).
 
 ## Backup PostgreSQL local — 19/11/2026
 
