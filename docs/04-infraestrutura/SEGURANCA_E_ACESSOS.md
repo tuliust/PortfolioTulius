@@ -1,5 +1,12 @@
 # Segurança, RLS, acessos e riscos
 
+## Novo cliente OAuth pessoal e remoto de leitura — 20/11/2026
+
+**Evidências fornecidas pelo proprietário:** criado novo cliente OAuth Google do tipo **Desktop** pelo fluxo do modo pessoal, com remoto rclone separado do remoto anterior. Um comando `rclone size --json` autenticado no novo remoto retornou **143 objetos, 15.946.053 bytes e `sizeless=0`**, com saída `SUCCESS`: **nova credencial funcional para leitura de inventário CONFIRMADA**. Ao contrário das tentativas anteriores usando o cliente compartilhado, esta leitura não apresentou erro HTTP 403.
+
+**Escopo do novo remoto:** `drive.readonly` foi orientado durante a configuração, mas **ainda não confirmado por saída própria**, que será exigida antes do teste de SHA-256. **Revogação da autorização antiga do Google: NÃO CONFIRMADA**; não concluir pela revogação do refresh token exposto só porque o cliente novo funciona. Cliente compartilhado antigo mantido, sem modificação ou revogação atestada. O novo OAuth não foi publicado em GitHub, e valores de Client ID, Client Secret e tokens não foram solicitados nem exibidos. **PAT histórico: identidade e revogação específica continuam NÃO CONFIRMADAS.**
+
+
 ## Escopo confirmado do rclone e autorização Google ainda ativa — 20/11/2026
 
 **Evidência fornecida pelo proprietário:** leitura com `rclone config redacted portfolio-drive` mostrou somente a configuração não secreta `scope = drive.readonly`; corresponde à permissão Google de **ver e baixar todos os arquivos do Google Drive**, com escopo de **todo o Drive, não exclusivamente da pasta de backups**. Captura do painel de autorizações do Google mostra **acesso ativo do aplicativo rclone**, indicado como concedido em **19/11/2026 às 06:19** (ontem, em 20/11). Essa evidência **não comprova a revogação da autorização anterior** associada ao refresh token anteriormente exposto, nem permite afirmar que o acesso ativo é novo ou antigo. **Revogação histórica: NÃO CONFIRMADA; nova reconexão e leitura autenticada após revogação: NÃO CONFIRMADAS.** Recomenda-se confirmar a revogação específica no painel do proprietário e só depois reautorizar o remoto por `rclone config reconnect portfolio-drive:` caso necessário. Não publicar/configurar tokens, não solicitar o arquivo `rclone.conf`, e não descrever a permissão `drive.readonly` como restrita à pasta de backup.
