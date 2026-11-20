@@ -1,5 +1,19 @@
 # Backups, restore e rollback
 
+## Contagem de linhas de dados nos blocos `COPY` — 20/11/2026
+
+**Evidência apresentada pelo proprietário:** execução local de um leitor sequencial PowerShell no `data.sql` do backup de **19/11/2026**, sem transmitir o arquivo nem registros ao repositório. O leitor reconheceu os blocos `COPY ... FROM stdin;`, somou as linhas até cada terminador `\\.`, verificou o fechamento dos blocos e reportou **0 cabeçalhos não reconhecidos**.
+
+| Schema | Blocos `COPY` | Com pelo menos uma linha | Vazios | Linhas de dados contadas |
+|---|---:|---:|---:|---:|
+| `public` | 22 | 22 | 0 | **825** |
+| `auth` | 26 | 5 | 21 | **6** |
+| `storage` | 9 | 2 | 7 | **145** |
+| **Total** | **57** | **29** | **28** | **976** |
+
+**Resultado da conferência aritmética: SUCCESS para a consistência das contagens reportadas** (57 = 22 + 26 + 9; 29 blocos com linhas; 28 vazios; 976 = 825 + 6 + 145). **Não houve inspeção independente dos bytes.** O contador mede linhas dentro dos `COPY`, não comprova equivalência registro a registro ou por tabela frente a uma fotografia consistente da produção. Permanecem **NÃO CONFIRMADOS**: completude do backup PostgreSQL (inclusive estrutura gerenciada, roles, grants, RLS, funções, dependências e configurações), comparação de inventário por tabela, compatibilidade das chaves e serviços Auth/Storage, e restaurabilidade. **Restore com dados reais: NÃO EXECUTADO**, sujeito à autorização específica e destino segregado. Nenhum dado, segredo, caminho local, dump ou manifesto foi publicado; nenhum serviço produtivo foi alterado.
+
+
 ## Presença de linhas nos blocos `COPY` — 20/11/2026 (confirmação local)
 
 **Resultado informado pelo proprietário:** após analisar localmente o `data.sql` com um leitor sequencial que identifica cada bloco `COPY` até seu terminador `\.`, a contagem foi: **`public`: 22 blocos, 22 com pelo menos uma linha, 0 vazios; `auth`: 26 blocos, 5 com linhas, 21 vazios; `storage`: 9 blocos, 2 com linhas, 7 vazios; `outros`: 0**. **Total: 57 blocos, 29 com pelo menos uma linha e 28 vazios**. O proprietário apresentou somente a tabela agregada, sem enviar SQL nem dados pessoais. As contagens são do arquivo exportado, não de uma conexão atual com o banco. Não há contagem de linhas por tabela, comparação registro a registro ou validação independente dos bytes.
