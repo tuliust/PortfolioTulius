@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Inspeção estrutural local dos dumps — 20/11/2026
+
+Conforme terminal apresentado pelo proprietário: `schema.sql` apresentou **22** comandos `CREATE TABLE` no escopo `public` e **41** comandos `CREATE POLICY` (coincidência numérica com a produção), `roles.sql` retornou **3** declarações `CREATE/ALTER ROLE`. A busca restrita por `COPY public.` em `data.sql` retornou **zero**, sem provar ausência dos dados, pois a expressão não contempla nomes entre aspas, outras formas de qualificação ou `INSERT INTO`. Pesquisas correspondentes para `auth` e `storage` também retornaram zero, sem comprovar cobertura desses schemas gerenciados. **Formato de dados e restaurabilidade: NÃO CONFIRMADOS**. O proprietário declarou ter substituído manualmente três fontes privadas atualizadas no Projeto, sem inspeção independente da configuração. [Análise e próximo teste somente local](../05-operacao/BACKUP_E_RECUPERACAO.md).
+
 ## Cobertura de recuperação — avaliação 19/11/2026
 
 **Leitura de catálogo executada, sem dados reais:** `public` 22 tabelas (41 policies), `auth` 27, `storage` 10 (2 policies), `realtime` 3, `supabase_migrations` 1 e `vault` 1; `private` contém 3 funções e nenhuma tabela; 12 migrations no ledger. A CLI padrão exclui schemas gerenciados como `auth` e `storage`. **Diagnóstico e roteiro de recuperação: documentados; backup complementar, conferência estrutural local dos arquivos SQL e restore de dados reais: NÃO EXECUTADOS.** Não houve alteração de produção, Auth/RLS, migração, deploy manual ou reabertura do standby. [Contrato de backup e limites](../05-operacao/BACKUP_E_RECUPERACAO.md).

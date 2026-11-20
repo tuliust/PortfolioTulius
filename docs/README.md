@@ -1,5 +1,9 @@
 # PortfolioTulius — documentação temática
 
+## Conferência dos arquivos SQL — 20/11/2026
+
+O proprietário relatou substituição manual das três fontes privadas revisadas. Em inspeção estrutural local dos dumps, encontrou **22 comandos de tabela `public`**, **41 comandos de policy** e **3 declarações de roles**; a busca anterior por linhas `COPY public.` retornou zero, **resultado inconclusivo** quanto ao conteúdo de `data.sql`, pois o padrão não reconhece todas as sintaxes possíveis. Permanecem pendentes a identificação do formato das instruções de dados e o ensaio isolado autorizado; **nenhuma escrita produtiva foi realizada**. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+
 ## Diagnóstico de cobertura de recuperação — 19/11/2026
 
 Nova avaliação **somente leitura** dos catálogos do PostgreSQL 17: `public` 22 tabelas/41 policies, `auth` 27 tabelas, `storage` 10 tabelas/2 policies, histórico de 12 migrations. Os dumps SQL e a cópia externa verificados pelo proprietário **não abrangem comprovadamente schemas gerenciados nem restauração integral**. Foi acrescentado um procedimento condicional de conferência de cobertura e recuperação isolada, **sem executar novas exportações, restauros, alterações produtivas ou itens do standby**. [Guia de recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) · [Estado atual](01-projeto/ESTADO_ATUAL.md).
