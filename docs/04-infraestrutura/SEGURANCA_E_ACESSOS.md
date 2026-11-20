@@ -1,5 +1,12 @@
 # Segurança, RLS, acessos e riscos
 
+## Escopo confirmado do rclone e autorização Google ainda ativa — 20/11/2026
+
+**Evidência fornecida pelo proprietário:** leitura com `rclone config redacted portfolio-drive` mostrou somente a configuração não secreta `scope = drive.readonly`; corresponde à permissão Google de **ver e baixar todos os arquivos do Google Drive**, com escopo de **todo o Drive, não exclusivamente da pasta de backups**. Captura do painel de autorizações do Google mostra **acesso ativo do aplicativo rclone**, indicado como concedido em **19/11/2026 às 06:19** (ontem, em 20/11). Essa evidência **não comprova a revogação da autorização anterior** associada ao refresh token anteriormente exposto, nem permite afirmar que o acesso ativo é novo ou antigo. **Revogação histórica: NÃO CONFIRMADA; nova reconexão e leitura autenticada após revogação: NÃO CONFIRMADAS.** Recomenda-se confirmar a revogação específica no painel do proprietário e só depois reautorizar o remoto por `rclone config reconnect portfolio-drive:` caso necessário. Não publicar/configurar tokens, não solicitar o arquivo `rclone.conf`, e não descrever a permissão `drive.readonly` como restrita à pasta de backup.
+
+Não há novos dados sobre a identidade do PAT histórico; a exclusão dos PATs antigos continua registrada como informação do proprietário, **sem comprovação de correspondência e revogação do segredo específico**. Nenhum token foi criado, exibido ou reutilizado nesta auditoria.
+
+
 ## Atualização do ciclo de segurança — 19/11/2026
 
 **Credenciais (declarações do proprietário):** os PATs antigos foram excluídos. Isso não demonstra qual deles era o segredo histórico anteriormente exposto; nenhum PAT foi gerado, consultado ou reutilizado neste ciclo. A revogação do token Google exposto foi informada pelo proprietário anteriormente, mas não verificada independentemente; a reconexão do rclone permanece não confirmada. Preservar os registros históricos abaixo sem confundir PATs com eventos OAuth de aplicativos.
