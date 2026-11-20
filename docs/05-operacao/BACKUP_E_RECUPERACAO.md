@@ -2,7 +2,7 @@
 
 ## Contagem de linhas de dados nos blocos `COPY` — 20/11/2026
 
-**Evidência apresentada pelo proprietário:** execução local de um leitor sequencial PowerShell no `data.sql` do backup de **19/11/2026**, sem transmitir o arquivo nem registros ao repositório. O leitor reconheceu os blocos `COPY ... FROM stdin;`, somou as linhas até cada terminador `\\.`, verificou o fechamento dos blocos e reportou **0 cabeçalhos não reconhecidos**.
+**Evidência apresentada pelo proprietário:** execução local de um leitor sequencial PowerShell no `data.sql` do backup de **19/11/2026**, sem transmitir o arquivo nem registros ao repositório. O leitor reconheceu os blocos `COPY ... FROM stdin;`, somou as linhas até cada terminador `\.`, verificou o fechamento dos blocos e reportou **0 cabeçalhos não reconhecidos**.
 
 | Schema | Blocos `COPY` | Com pelo menos uma linha | Vazios | Linhas de dados contadas |
 |---|---:|---:|---:|---:|
