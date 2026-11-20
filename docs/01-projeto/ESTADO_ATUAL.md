@@ -1,5 +1,14 @@
 # Estado atual — PortfolioTulius
 
+## Consolidação de evidências de segurança e recuperação — 20/11/2026
+
+**Verificações já concluídas conforme os registros datados:** a homologação sintética das sete RPCs administrativas passou **14/14 no P5 #88**, sem uso de dados reais. Os três dumps PostgreSQL de 19/11 tiveram hashes locais **3/3** conferidos pelo proprietário, além de pacote externo protegido no Drive e verificações de esquema, permissões e conteúdo estrutural; os **57 blocos `COPY`** totalizam **976 linhas**, e os resumos de nomes/contagens por tabela coincidiram **3/3** com a consulta de referência à produção. **Ainda não foi provado restore completo do PostgreSQL/Auth/Storage gerenciado.**
+
+**Storage físico:** ensaio isolado de **143/143 objetos** reportado anteriormente. Depois de tentativas iniciais com caminho remoto incorreto e origem local sem arquivos, um par local foi selecionado corretamente e o proprietário apresentou **143/143 SHA-256 iguais ao Google Drive, 0 faltantes/extras/divergentes** em 20/11. O novo cliente OAuth pessoal `drive.readonly` permaneceu funcional após a remoção do aplicativo Google antigo, **confirmada pelo proprietário**, mas sem auditoria independente da revogação do token histórico exato. Os PATs conhecidos foram excluídos conforme declaração do proprietário; a identidade e revogação específica do PAT histórico **não foram comprovadas**.
+
+**Pendência principal:** ensaio de restauração PostgreSQL real em ambiente segregado **NÃO EXECUTADO**, dependente de autorização específica. As ressalvas de segurança permanecem documentadas; não foi executada alteração produtiva, nova exportação ou restauração neste registro. As cinco fontes privadas do Projeto serão consolidadas somente ao fim da sequência de atividades. [Backup e recuperação](../05-operacao/BACKUP_E_RECUPERACAO.md) · [Segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Conferência de blocos com dados — 20/11/2026
 
 **Inspeção local declarada pelo proprietário:** em `data.sql`, **57 blocos `COPY`**, com **29 contendo ao menos uma linha e 28 vazios**. Distribuição: `public` **22/22 com dados**; `auth` **5/26 com dados**; `storage` **2/9 com dados**. Zero blocos em outros schemas identificados pela expressão utilizada. Isso confirma presença de linhas nos três schemas conforme o teste apresentado, **mas não valida quantidades de registros, completude ou restaurabilidade**. A fonte privada do Projeto será consolidada **apenas ao final desta sequência**, por preferência expressa do proprietário; não gerar novo snapshot a cada passo. [Detalhamento](../05-operacao/BACKUP_E_RECUPERACAO.md).
