@@ -1,5 +1,12 @@
 # Backups, restore e rollback
 
+## Bloqueio de leitura Drive por cota da API — 20/11/2026
+
+**Evidência local do proprietário (16h24 a 16h27, sem alterar arquivos):** tentativa de inventário por bucket via `rclone size --json` **interrompida antes do cálculo de hashes**. Primeiro ocorreu falha de resolução DNS para `www.googleapis.com`; em seguida, o teste `Resolve-DnsName` retornou **SUCCESS**, mas nova consulta `rclone size` ao diretório correto resultou em **HTTP 403 `RATE_LIMIT_EXCEEDED`** na API `drive.googleapis.com` (cota de *queries per minute*). A mensagem informou projeto consumidor compartilhado do Google; o próprio rclone v1.75.2 também alertou para descontinuação do `client_id` compartilhado durante 2026. A documentação oficial do rclone recomenda utilizar cliente OAuth próprio para reduzir a concorrência pela cota e evitar a interrupção futura: https://rclone.org/drive/#making-your-own-client-id.
+
+**Interpretação e estado:** a falha decorreu de indisponibilidade temporária de resolução de nome e, após a recuperação do DNS, **cota da API excedida**, não de divergência de conteúdo ou de arquivos comprovadamente ausentes. O sucesso anterior no mesmo dia permanece limitado a **143 objetos, 15.946.053 bytes, `sizeless=0`** na pasta correta. **Comparação SHA-256 de 143/143: NÃO EXECUTADA**; não reinterpretar a falha HTTP como teste de integridade negativo. Não insistir em chamadas repetidas sob cota excedida. Planejar cliente OAuth privado, mantendo `drive.readonly`, sem divulgar ID/segredo/token; confirmar separadamente a revogação do OAuth antigo. **Nenhuma configuração do rclone foi modificada nesta rodada, nem houve escrita no Drive, Storage ou PostgreSQL.**
+
+
 ## Inventário remoto Storage novamente acessível — 20/11/2026
 
 **Evidência apresentada pelo proprietário:** `rclone lsd` da pasta privada correta de Storage no Google Drive apresentou as subpastas `portfolio-private` e `portfolio-public`. Na sequência, `rclone size --json` aplicado à **pasta correta** retornou `count=143`, `bytes=15946053` e `sizeless=0`, valores coincidentes com o inventário anterior de 143 objetos (87 públicos e 56 privados; 15.946.053 bytes). A primeira tentativa da rotina de hashes interrompeu na etapa de inventário porque o caminho informado para o Drive era incorreto; o acesso foi testado depois com o caminho completo corrigido, sem divulgar o caminho privado no GitHub.
