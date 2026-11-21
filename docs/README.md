@@ -1,5 +1,9 @@
 # PortfolioTulius — documentação temática
 
+## Nova conferência dos backups Storage e PostgreSQL — 21/11/2026
+
+**Storage local ↔ Google Drive: SUCCESS no conteúdo, 143/143 arquivos e 0 diferenças.** O proprietário executou `rclone check --download` no conjunto de 18/11 depois da reorganização local; o comando concluiu com código de saída 0. Os inventários independentes também registraram 143 arquivos e 15.946.053 bytes em cada lado. O pacote PostgreSQL de 19/11 foi encontrado como arquivo `.7z` único de 68.436 bytes (**presença e tamanho confirmados; restauração NÃO testada**). O Drive permanece um snapshot, sem sincronização automática comprovada. [Evidência e limites no guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
+
 **Use primeiro o mapa por assunto.** Os registros cronológicos posteriores são evidências datadas, não tarefas automaticamente autorizadas.
 
 ## Por assunto
