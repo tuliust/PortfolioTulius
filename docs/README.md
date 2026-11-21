@@ -1,5 +1,9 @@
 # PortfolioTulius — documentação temática
 
+## Convenção local para backups privados — 21/11/2026
+
+A cópia de trabalho pode manter um diretório `_backups_privados/` **ignorado no Git e no Vercel CLI**; ele nunca deve ser versionado ou publicado. O isolamento foi previsto no repositório; a renomeação e movimentação de pastas no Windows **não são confirmadas pelos serviços**. A cópia externa e a limitação de recuperabilidade PostgreSQL continuam vigentes. Procedimento e ressalvas: [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md).
+
 ## Encerramento da auditoria de backup e credenciais — aceite em 20/11/2026
 
 **Decisão vigente:** o proprietário encerrou formalmente a auditoria de 18–20/11/2026, **aceitando o risco residual de restaurabilidade integral do PostgreSQL não comprovada**. Não foi realizado nem autorizado restore real em PostgreSQL 17 isolado; RPO e RTO permanecem **não definidos**. Encerramento **não** equivale a teste de recuperação bem-sucedido ou correção do risco.

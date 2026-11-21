@@ -9,3 +9,6 @@ dist/
 # Supabase CLI local runtime state (never commit or sync).
 supabase/.temp/
 supabase/.branches/
+
+# Local-only private backups; never stage, commit, or deploy.
+/_backups_privados/

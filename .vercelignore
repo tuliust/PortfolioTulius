@@ -1,0 +1,2 @@
+# Prevent local private backups from being uploaded via Vercel CLI.
+_backups_privados/

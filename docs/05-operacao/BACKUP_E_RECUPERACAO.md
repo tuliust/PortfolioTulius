@@ -1,5 +1,11 @@
 # Backups, restore e rollback
 
+## Isolamento de backups privados na cópia local — 21/11/2026
+
+A organização local solicitada prevê um subdiretório **`_backups_privados/` na raiz da cópia de trabalho**, protegido por `.gitignore` e `.vercelignore`. Esse diretório é **estritamente privado e não versionado**: nunca adicionar manualmente com `git add -f`, publicar, enviar para o build ou incluí-lo em logs e artefatos. A cópia externa protegida do backup deve continuar separada (o diretório local não é redundância contra falhas do mesmo disco). Ao executar operações de limpeza, preservar esse conteúdo: `git clean -fdx` pode excluir diretórios ignorados.
+
+**Limites de evidência:** a inclusão das regras de exclusão no GitHub **não demonstra** que os arquivos foram movidos no computador, que a pasta local foi renomeada, ou que os backups foram novamente conferidos. Essas operações exigem inventário e verificação na máquina do proprietário. O nome da pasta do Windows não altera o repositório remoto `tuliust/PortfolioTulius`, a integração Git da Vercel ou o projeto Supabase; nenhuma configuração desses serviços precisa mudar somente por causa dessa renomeação.
+
 ## Encerramento da auditoria de continuidade — aceite do proprietário em 20/11/2026
 
 **Estado vigente:** o proprietário optou expressamente por **encerrar a auditoria sem restauração PostgreSQL real**, aceitando o risco residual de **recuperabilidade integral não comprovada**. Isso **não** converte a restauração em SUCCESS, não demonstra backup completo e não autoriza o uso de dados reais. RPO/RTO **não definidos**.
