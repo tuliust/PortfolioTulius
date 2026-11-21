@@ -1,5 +1,11 @@
 # Backups, restore e rollback
 
+## Fechamento da reorganização local — confirmação em 21/11/2026
+
+Conforme verificação de PowerShell encaminhada pelo proprietário, `PortfolioTulius-restore-isolado` **não foi encontrado no caminho original** (`Test-Path=False`), enquanto **três configurações históricas** permanecem preservadas sob `_backups_privados/` (`Count=3`) e a pasta principal renomeada `PortfolioTulius` existe (`Test-Path=True`). Isso **confirma a retirada do caminho antigo**, mas **não comprova** se a pasta auxiliar foi enviada à Lixeira ou excluída definitivamente. O usuário confirmou ainda o `git pull --ff-only` local até `99052f41db731d19e746b039c10c40d134aabffe` e informou a substituição manual dos cinco arquivos privados de referência no Projeto ChatGPT. Não repetir a remoção ou os scripts anteriores.
+
+Os conjuntos locais preservados continuam com inventários antes confirmados de **144 arquivos Storage, 170 arquivos históricos e três configurações antigas**; `.gitignore` e `.vercelignore` impedem versionamento normal e envio CLI dos backups privados. **Limitações inalteradas:** proteção não impede `git add -f` nem outras cópias manuais; SHA-256 entre o Storage local reorganizado e o Drive **não foi repetido**; retenção externa preservada; restauração integral PostgreSQL **NÃO COMPROVADA**, com risco residual aceito em 20/11. O encerramento da limpeza local não altera produção, dados, Auth, RLS, migrations ou configurações Vercel/Supabase.
+
 ## Isolamento de backups privados na cópia local — 21/11/2026
 
 A organização local solicitada prevê um subdiretório **`_backups_privados/` na raiz da cópia de trabalho**, protegido por `.gitignore` e `.vercelignore`. Esse diretório é **estritamente privado e não versionado**: nunca adicionar manualmente com `git add -f`, publicar, enviar para o build ou incluí-lo em logs e artefatos. A cópia externa protegida do backup deve continuar separada (o diretório local não é redundância contra falhas do mesmo disco). Ao executar operações de limpeza, preservar esse conteúdo: `git clean -fdx` pode excluir diretórios ignorados.

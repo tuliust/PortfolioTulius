@@ -1,5 +1,9 @@
 # PortfolioTulius — documentação temática
 
+## Encerramento da organização local — confirmação do proprietário em 21/11/2026
+
+O proprietário confirmou por PowerShell: o diretório auxiliar histórico de restore **não existe mais no local original**, as **três configurações** copiadas estão preservadas no diretório local privado ignorado pelo Git e a pasta de trabalho renomeada existe. O Git local foi atualizado por `git pull --ff-only` até `main@99052f41` (evidência do terminal). Também informou ter substituído os **cinco anexos privados** do Projeto ChatGPT pelas revisões consolidadas. O destino da pasta auxiliar (Lixeira versus exclusão definitiva) **não foi demonstrado**; não houve nova validação SHA-256 local↔Drive nem restore PostgreSQL. [Limites e contexto](05-operacao/BACKUP_E_RECUPERACAO.md).
+
 ## Convenção local para backups privados — 21/11/2026
 
 **Execução local confirmada pelo proprietário em 21/11/2026 (log PowerShell):** renomeação para `PortfolioTulius`, `main@5a408035` limpo, `_backups_privados/` ignorado, 144 arquivos da cópia Storage, 170 do histórico e três configurações legadas preservadas. A tentativa de executar o script novamente usou o nome antigo e falhou, sem desfazer a primeira execução. A exclusão do diretório auxiliar remanescente e o estado final da Lixeira não foram confirmados. [Detalhamento e limites](05-operacao/BACKUP_E_RECUPERACAO.md).
