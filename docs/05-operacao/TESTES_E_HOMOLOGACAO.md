@@ -60,9 +60,9 @@ Na mesma execução foram **PASS**: teste projeto→galeria→projeto, proteçã
 ## Desenvolvimento local
 `pnpm install --frozen-lockfile`; `pnpm format:check`; `pnpm typecheck`; `pnpm test`; `pnpm build`; `pnpm check`; `pnpm smoke:build`. O [`package.json`](../../package.json) é fonte dos comandos. Não usar formatador que reescreva código para uma tarefa só documental.
 
-## Seis workflows operacionais e cinco arquivados
+## Sete workflows operacionais e cinco arquivados
 
-Os seis primeiros seguem em `.github/workflows/`. Os cinco seguintes foram **retirados da execução em 11/11/2026** e apontam para cópias históricas (não são acionáveis no GitHub Actions). [Registro de retirada](../historico/workflows-retirados-2026-11-11/README.md).
+Os sete primeiros seguem em `.github/workflows/` (o sétimo, de QA visual/PDF, foi incorporado após a fotografia de 11/11). Os cinco seguintes foram **retirados da execução em 11/11/2026** e apontam para cópias históricas (não são acionáveis no GitHub Actions). [Registro de retirada](../historico/workflows-retirados-2026-11-11/README.md).
 | Workflow | Papel |
 |---|---|
 | [`validate.yml`](../../.github/workflows/validate.yml) | Format, TS, testes, build e smoke |
@@ -71,6 +71,7 @@ Os seis primeiros seguem em `.github/workflows/`. Os cinco seguintes foram **ret
 | [`p5-local-transactional.yml`](../../.github/workflows/p5-local-transactional.yml) | Auth/RPC/Storage sintéticos isolados |
 | [`hygiene-audit.yml`](../../.github/workflows/hygiene-audit.yml) | Verificações offline |
 | [`export-docs-snapshot.yml`](../../.github/workflows/export-docs-snapshot.yml) | Exportar documentos |
+| [`pdf-export-visual.yml`](../../.github/workflows/pdf-export-visual.yml) | QA visual e físico dos modos de exportação PDF |
 | [`p1-p3-isolated-preview.yml`](../historico/workflows-retirados-2026-11-11/p1-p3-isolated-preview.yml) | Prévia/editorial isolada |
 | [`p2-transactional-staging.yml`](../historico/workflows-retirados-2026-11-11/p2-transactional-staging.yml) | Staging cloud manual antigo, não executar por inferência |
 | [`publish-experience-media-once.yml`](../historico/workflows-retirados-2026-11-11/publish-experience-media-once.yml) | Publicação pontual com escrita |

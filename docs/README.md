@@ -1,5 +1,38 @@
 # PortfolioTulius — documentação temática
 
+**Use primeiro o mapa por assunto.** Os registros cronológicos posteriores são evidências datadas, não tarefas automaticamente autorizadas.
+
+## Por assunto
+
+| Necessidade | Fonte de referência |
+|---|---|
+| Estado do projeto | [Estado atual](01-projeto/ESTADO_ATUAL.md) |
+| Componentes e dados | [Arquitetura](01-projeto/ARQUITETURA.md) |
+| Cores, tipografia, identidade | [Design](02-design/IDENTIDADE_VISUAL.md) |
+| Desktop, mobile e acessibilidade | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
+| Painel e ajustes de conteúdo | [CMS](03-cms/GUIA_ADMINISTRATIVO.md) |
+| Campos, tabelas e renderer | [Modelo de dados](03-cms/MODELO_DE_DADOS.md) |
+| Fotos, SVG, upload, Storage | [Mídias](03-cms/MIDIAS_E_STORAGE.md) |
+| Banco, migrations, RPCs, Auth | [Supabase](04-infraestrutura/SUPABASE.md) |
+| Permissões, políticas, chaves | [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
+| Domínios, publicação e SEO | [Vercel](04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
+| CI, Lighthouse, homologação | [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
+| Exportação PDF Desktop/Mobile, aceite e impressão | [Guia PDF](05-operacao/EXPORTACAO_PDF.md) |
+| Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
+| Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
+| Branches antigas e limpeza manual | [Referências de branches](06-governanca/BRANCHES_E_REFERENCIAS.md) |
+| Encerramento oficial das Etapas 01–05 | [Termo final e validações](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) |
+| Como manter os guias atualizados após mudanças | [Protocolo de atualização](06-governanca/PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md) |
+| O que já foi decidido | [Decisões](06-governanca/DECISOES_VIGENTES.md) |
+| Itens a não executar agora | [Backlog standby](06-governanca/BACKLOG_STANDBY.md) |
+| Consultas por ChatGPT/Codex | [Guia para IA](06-governanca/GUIA_USO_POR_IA.md) |
+
+## Política de leitura
+
+Primeiro [`AGENTS.md`](../AGENTS.md), o guia temático e o código atual. Em conflitos: pedido vigente → código/serviços por SHA → CI do mesmo SHA → contratos canônicos → histórico datado. Distinguir teste sintético de escrita produtiva, deployment READY de CI verde e risco aceito de correção.
+
+**Informações superadas em relatórios antigos:** a RPC P2 está em produção; a coluna de crédito de mídia foi removida; o staging escolhido é Supabase CLI/Docker local. Os itens do [standby](06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas.
+
 ## Encerramento da organização local — confirmação do proprietário em 21/11/2026
 
 O proprietário confirmou por PowerShell: o diretório auxiliar histórico de restore **não existe mais no local original**, as **três configurações** copiadas estão preservadas no diretório local privado ignorado pelo Git e a pasta de trabalho renomeada existe. O Git local foi atualizado por `git pull --ff-only` até `main@99052f41` (evidência do terminal). Também informou ter substituído os **cinco anexos privados** do Projeto ChatGPT pelas revisões consolidadas. O destino da pasta auxiliar (Lixeira versus exclusão definitiva) **não foi demonstrado**; não houve nova validação SHA-256 local↔Drive nem restore PostgreSQL. [Limites e contexto](05-operacao/BACKUP_E_RECUPERACAO.md).
@@ -84,37 +117,6 @@ No SHA [`8ed19b0`](https://github.com/tuliust/PortfolioTulius/commit/8ed19b09834
 Os parágrafos de 16/11 que citam `9915964`, `aeffc5f` ou `ad5863c` são marcos datados e não devem ser lidos como o SHA funcional ou de produção mais recente. O teste autenticado completo do CMS não foi executado nesta rodada.
 
 **ÍNDICE CANÔNICO | Revisão 16/11/2026 | revisão editorial encerrada por aceite do proprietário.** Código funcional [`aeffc5f`](https://github.com/tuliust/PortfolioTulius/commit/aeffc5feabc7dfeab426046eb9748e5b8ef81c45), Validate **SUCCESS**; [P3 #43842659962](https://github.com/tuliust/PortfolioTulius/actions/runs/43842659962) **FAILURE** por duas assertivas obsoletas de quatro projetos (agora cinco) e LCP mobile de 3.609,314 ms. Commit documental pré-encerramento [`ad5863c`](https://github.com/tuliust/PortfolioTulius/commit/ad5863c0dbb1386d41482a6d9bbe9dc9a9ba60fc). Baseline `0627947` (11/11) permanece histórica; conferir sempre a `main` atual.
-
-## Por assunto
-
-| Necessidade | Fonte de referência |
-|---|---|
-| Estado do projeto | [Estado atual](01-projeto/ESTADO_ATUAL.md) |
-| Componentes e dados | [Arquitetura](01-projeto/ARQUITETURA.md) |
-| Cores, tipografia, identidade | [Design](02-design/IDENTIDADE_VISUAL.md) |
-| Desktop, mobile e acessibilidade | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
-| Painel e ajustes de conteúdo | [CMS](03-cms/GUIA_ADMINISTRATIVO.md) |
-| Campos, tabelas e renderer | [Modelo de dados](03-cms/MODELO_DE_DADOS.md) |
-| Fotos, SVG, upload, Storage | [Mídias](03-cms/MIDIAS_E_STORAGE.md) |
-| Banco, migrations, RPCs, Auth | [Supabase](04-infraestrutura/SUPABASE.md) |
-| Permissões, políticas, chaves | [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
-| Domínios, publicação e SEO | [Vercel](04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
-| CI, Lighthouse, homologação | [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
-| Exportação PDF Desktop/Mobile, aceite e impressão | [Guia PDF](05-operacao/EXPORTACAO_PDF.md) |
-| Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
-| Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
-| Branches antigas e limpeza manual | [Referências de branches](06-governanca/BRANCHES_E_REFERENCIAS.md) |
-| Encerramento oficial das Etapas 01–05 | [Termo final e validações](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) |
-| Como manter os guias atualizados após mudanças | [Protocolo de atualização](06-governanca/PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md) |
-| O que já foi decidido | [Decisões](06-governanca/DECISOES_VIGENTES.md) |
-| Itens a não executar agora | [Backlog standby](06-governanca/BACKLOG_STANDBY.md) |
-| Consultas por ChatGPT/Codex | [Guia para IA](06-governanca/GUIA_USO_POR_IA.md) |
-
-## Política de leitura
-
-Primeiro [`AGENTS.md`](../AGENTS.md), o guia temático e o código atual. Em conflitos: pedido vigente → código/serviços por SHA → CI do mesmo SHA → contratos canônicos → histórico datado. Distinguir teste sintético de escrita produtiva, deployment READY de CI verde e risco aceito de correção.
-
-**Informações superadas em relatórios antigos:** a RPC P2 está em produção; a coluna de crédito de mídia foi removida; o staging escolhido é Supabase CLI/Docker local. Os itens do [standby](06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas.
 
 ## Registro consolidado do ciclo de ajustes — 12/11/2026
 
