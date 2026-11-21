@@ -2,6 +2,8 @@
 
 ## Convenção local para backups privados — 21/11/2026
 
+**Execução local confirmada pelo proprietário em 21/11/2026 (log PowerShell):** renomeação para `PortfolioTulius`, `main@5a408035` limpo, `_backups_privados/` ignorado, 144 arquivos da cópia Storage, 170 do histórico e três configurações legadas preservadas. A tentativa de executar o script novamente usou o nome antigo e falhou, sem desfazer a primeira execução. A exclusão do diretório auxiliar remanescente e o estado final da Lixeira não foram confirmados. [Detalhamento e limites](05-operacao/BACKUP_E_RECUPERACAO.md).
+
 A cópia de trabalho pode manter um diretório `_backups_privados/` **ignorado no Git e no Vercel CLI**; ele nunca deve ser versionado ou publicado. O isolamento foi previsto no repositório; a renomeação e movimentação de pastas no Windows **não são confirmadas pelos serviços**. A cópia externa e a limitação de recuperabilidade PostgreSQL continuam vigentes. Procedimento e ressalvas: [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md).
 
 ## Encerramento da auditoria de backup e credenciais — aceite em 20/11/2026
