@@ -427,9 +427,10 @@ function ExperienceMobileBody({
   for (const item of items) {
     if (
       item.value ||
-      projects.some((entry) =>
-        entry.item === item ||
-        (!entry.item && experienceTitleKey(entry.title) === experienceTitleKey(item.title)),
+      projects.some(
+        (entry) =>
+          entry.item === item ||
+          (!entry.item && experienceTitleKey(entry.title) === experienceTitleKey(item.title)),
       )
     )
       continue
@@ -621,10 +622,21 @@ function ExperienceCard({
     ...(section.desktopPanelB ?? section.panelB),
   ].filter((item) => item.isHidden !== true)
   const items = section.experienceProjects
-    ? [...legacyItems.filter((item) => experienceTitleKey(item.title) === "competencias aplicadas"), ...experienceProjectItems(section.experienceProjects)]
+    ? [
+        ...legacyItems.filter(
+          (item) => experienceTitleKey(item.title) === "competencias aplicadas",
+        ),
+        ...experienceProjectItems(section.experienceProjects),
+      ]
     : legacyItems
   const displaySection = section.experienceProjects
-    ? { ...section, experienceMedia: { ...section.experienceMedia, slides: experienceProjectSlides(section.experienceProjects) } }
+    ? {
+        ...section,
+        experienceMedia: {
+          ...section.experienceMedia,
+          slides: experienceProjectSlides(section.experienceProjects),
+        },
+      }
     : section
   const competencies =
     items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []
@@ -669,7 +681,11 @@ function ExperienceCard({
             activeSlide={activeSlide}
             onSlideChange={setActiveSlide}
           />
-          <PhotoGallery section={displaySection} active={activeSlide} onSlideChange={setActiveSlide} />
+          <PhotoGallery
+            section={displaySection}
+            active={activeSlide}
+            onSlideChange={setActiveSlide}
+          />
         </div>
       )}
       {isMobile && (
@@ -758,7 +774,12 @@ export function PdfExperienceSection({
     ...(section.desktopPanelB ?? section.panelB),
   ].filter((item) => item.isHidden !== true)
   const items = section.experienceProjects
-    ? [...legacyItems.filter((item) => experienceTitleKey(item.title) === "competencias aplicadas"), ...experienceProjectItems(section.experienceProjects)]
+    ? [
+        ...legacyItems.filter(
+          (item) => experienceTitleKey(item.title) === "competencias aplicadas",
+        ),
+        ...experienceProjectItems(section.experienceProjects),
+      ]
     : legacyItems
   const competencies =
     items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []

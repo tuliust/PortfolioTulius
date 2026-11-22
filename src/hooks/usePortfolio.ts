@@ -79,13 +79,13 @@ function toSection(
     desktopPanelB: composition.desktopB,
     experienceMedia: selectSectionExperienceMedia(row.content_blocks, includeDrafts),
     experienceProjects: row.content_blocks
-      ?.filter((block) =>
-        block.mobile_panel === "a" &&
-        (includeDrafts ? block.status !== "archived" : block.status === "published"),
+      ?.filter(
+        (block) =>
+          block.mobile_panel === "a" &&
+          (includeDrafts ? block.status !== "archived" : block.status === "published"),
       )
       .sort((a, b) => a.sort_order - b.sort_order)
-      .find((block) => block.content_json?.experienceProjects)
-      ?.content_json?.experienceProjects,
+      .find((block) => block.content_json?.experienceProjects)?.content_json?.experienceProjects,
   }
 }
 

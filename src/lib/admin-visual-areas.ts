@@ -41,7 +41,12 @@ export function adminVisualAreas(slug?: string): AdminVisualArea[] {
         description: "Logotipo, competências e trajetória · bloco A",
         source: "a",
       },
-      { id: "center", label: "Projetos", description: "Textos e galeria em um único editor", source: "a" },
+      {
+        id: "center",
+        label: "Projetos",
+        description: "Textos e galeria em um único editor",
+        source: "a",
+      },
     ]
   return []
 }

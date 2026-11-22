@@ -66,8 +66,6 @@ describe("Experiências unificadas sem perda de conteúdo", () => {
   it("rejeita identificadores repetidos sem descartar dados de origem", () => {
     const projects = legacyExperienceProjects(blocks)
     projects[1].id = projects[0].id
-    expect(validateExperienceProjects(projects)).toContain(
-      "Projeto 2: identificador duplicado.",
-    )
+    expect(validateExperienceProjects(projects)).toContain("Projeto 2: identificador duplicado.")
   })
 })

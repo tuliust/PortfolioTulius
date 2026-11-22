@@ -52,7 +52,9 @@ export function ExperienceProjectsEditor({
     setLoading(true)
     const response = await supabase
       .from("content_blocks")
-      .select("id,section_id,block_type,mobile_panel,sort_order,status,is_placeholder,editorial_note,content_json,updated_at")
+      .select(
+        "id,section_id,block_type,mobile_panel,sort_order,status,is_placeholder,editorial_note,content_json,updated_at",
+      )
       .eq("section_id", sectionId)
       .order("sort_order")
     setLoading(false)
@@ -69,7 +71,9 @@ export function ExperienceProjectsEditor({
     setBlocks(nextBlocks)
     setSaved(structuredClone(nextProjects))
     setProjects(nextProjects)
-    setExpanded(nextProjects.find((entry) => entry.item && entry.item.isHidden !== true)?.id ?? null)
+    setExpanded(
+      nextProjects.find((entry) => entry.item && entry.item.isHidden !== true)?.id ?? null,
+    )
     setMessage("")
     return true
   }
@@ -89,8 +93,9 @@ export function ExperienceProjectsEditor({
   }, [sectionId])
 
   function edit(id: string, patch: Partial<ExperienceProject>) {
-    setProjects((current) =>
-      current?.map((project) => (project.id === id ? { ...project, ...patch } : project)) ?? null,
+    setProjects(
+      (current) =>
+        current?.map((project) => (project.id === id ? { ...project, ...patch } : project)) ?? null,
     )
   }
 
@@ -116,7 +121,12 @@ export function ExperienceProjectsEditor({
         .filter((entry) => entry.id !== slideId)
         .map((entry) =>
           entry.id === projectId
-            ? { ...entry, slide: source.slide, slideOrder: source.slideOrder, includeInGallery: true }
+            ? {
+                ...entry,
+                slide: source.slide,
+                slideOrder: source.slideOrder,
+                includeInGallery: true,
+              }
             : entry,
         ),
     )
@@ -195,7 +205,9 @@ export function ExperienceProjectsEditor({
         !read.data ||
         !sameJson(read.data.content_json?.experienceProjects, projects)
       ) {
-        setMessage("Gravação solicitada, mas releitura não confirmada. Não salve novamente sem conferir.")
+        setMessage(
+          "Gravação solicitada, mas releitura não confirmada. Não salve novamente sem conferir.",
+        )
         return false
       }
       if (!(await load())) {
@@ -212,7 +224,8 @@ export function ExperienceProjectsEditor({
 
   useEffect(() => registerAdminSaveAction(save, () => dirty), [save, dirty])
 
-  const visibleProjects = projects?.filter((project) => project.item && project.item.isHidden !== true) ?? []
+  const visibleProjects =
+    projects?.filter((project) => project.item && project.item.isHidden !== true) ?? []
   const hiddenProjects = projects?.filter((project) => project.item?.isHidden === true) ?? []
   const unlinkedSlides = projects?.filter((project) => !project.item && project.slide) ?? []
   const totalSlides = projects ? experienceProjectSlides(projects).length : 0
@@ -230,11 +243,26 @@ export function ExperienceProjectsEditor({
             aria-expanded={open}
             onClick={() => setExpanded(open ? null : project.id)}
           >
-            <strong>{item.title || "Projeto sem título"}{item.isHidden && " · Ocultado"}</strong>
+            <strong>
+              {item.title || "Projeto sem título"}
+              {item.isHidden && " · Ocultado"}
+            </strong>
           </button>
           <div className="order-buttons">
-            <button type="button" aria-label={"Mover " + item.title + " para cima"} onClick={() => move(project.id, -1)}>↑</button>
-            <button type="button" aria-label={"Mover " + item.title + " para baixo"} onClick={() => move(project.id, 1)}>↓</button>
+            <button
+              type="button"
+              aria-label={"Mover " + item.title + " para cima"}
+              onClick={() => move(project.id, -1)}
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              aria-label={"Mover " + item.title + " para baixo"}
+              onClick={() => move(project.id, 1)}
+            >
+              ↓
+            </button>
           </div>
         </div>
         {open && (
@@ -276,7 +304,10 @@ export function ExperienceProjectsEditor({
                   onChange={(event) =>
                     edit(project.id, {
                       includeInGallery: event.target.checked,
-                      slide: event.target.checked && !project.slide ? { title: item.title } : project.slide,
+                      slide:
+                        event.target.checked && !project.slide
+                          ? { title: item.title }
+                          : project.slide,
                       slideOrder: project.slideOrder ?? totalSlides,
                     })
                   }
@@ -334,12 +365,22 @@ export function ExperienceProjectsEditor({
   return (
     <div className="admin-card editor-form" aria-label="Projetos e imagens unificados">
       <h3>Projetos e realizações</h3>
-      <p>Uma ficha por projeto. Título, descrição e imagem são gerenciados juntos; a galeria pode ter menos imagens que a lista.</p>
+      <p>
+        Uma ficha por projeto. Título, descrição e imagem são gerenciados juntos; a galeria pode ter
+        menos imagens que a lista.
+      </p>
       {loading && <p role="status">Carregando projetos…</p>}
-      {!loading && !projects && <p role="alert">Conteúdo não disponível. Nenhuma gravação permitida.</p>}
+      {!loading && !projects && (
+        <p role="alert">Conteúdo não disponível. Nenhuma gravação permitida.</p>
+      )}
       {projects && (
         <>
-          <p><strong>{visibleProjects.length} projetos visíveis · {totalSlides} slides · {unlinkedSlides.length} imagens sem vínculo.</strong></p>
+          <p>
+            <strong>
+              {visibleProjects.length} projetos visíveis · {totalSlides} slides ·{" "}
+              {unlinkedSlides.length} imagens sem vínculo.
+            </strong>
+          </p>
           <div className="block-items">{visibleProjects.map(renderProject)}</div>
           <button
             type="button"
@@ -355,7 +396,10 @@ export function ExperienceProjectsEditor({
           {unlinkedSlides.length > 0 && (
             <section className="admin-card">
               <h4>Slides históricos sem vínculo seguro</h4>
-              <p>As imagens e legendas estão preservadas. Escolha explicitamente o projeto correspondente; não é feito vínculo automático por posição ou título duplicado.</p>
+              <p>
+                As imagens e legendas estão preservadas. Escolha explicitamente o projeto
+                correspondente; não é feito vínculo automático por posição ou título duplicado.
+              </p>
               {unlinkedSlides.map((project) => (
                 <div className="block-item-editor" key={project.id}>
                   <div className="field-grid">
@@ -364,17 +408,26 @@ export function ExperienceProjectsEditor({
                       <input
                         value={project.slide!.title}
                         onChange={(event) =>
-                          edit(project.id, { slide: { ...project.slide!, title: event.target.value } })
+                          edit(project.id, {
+                            slide: { ...project.slide!, title: event.target.value },
+                          })
                         }
                       />
                     </label>
                     <label className="field-wide">
                       Associar ao projeto
-                      <select value="" onChange={(event) => attachSlide(project.id, event.target.value)}>
+                      <select
+                        value=""
+                        onChange={(event) => attachSlide(project.id, event.target.value)}
+                      >
                         <option value="">Manter slide independente</option>
-                        {projects.filter((entry) => entry.item && !entry.slide).map((entry) => (
-                          <option value={entry.id} key={entry.id}>{entry.item!.title}</option>
-                        ))}
+                        {projects
+                          .filter((entry) => entry.item && !entry.slide)
+                          .map((entry) => (
+                            <option value={entry.id} key={entry.id}>
+                              {entry.item!.title}
+                            </option>
+                          ))}
                       </select>
                     </label>
                     <label className="field-wide">
@@ -382,7 +435,9 @@ export function ExperienceProjectsEditor({
                       <input
                         value={project.slide!.caption ?? ""}
                         onChange={(event) =>
-                          edit(project.id, { slide: { ...project.slide!, caption: event.target.value } })
+                          edit(project.id, {
+                            slide: { ...project.slide!, caption: event.target.value },
+                          })
                         }
                       />
                     </label>
@@ -412,7 +467,10 @@ export function ExperienceProjectsEditor({
           )}
           <AdminNotice message={message} />
           {saving && <p role="status">Salvando e verificando dados…</p>}
-          <p className="site-editor-note">O salvamento usa a RPC de bloco existente. Blocos históricos A/B e mídia original não são excluídos.</p>
+          <p className="site-editor-note">
+            O salvamento usa a RPC de bloco existente. Blocos históricos A/B e mídia original não
+            são excluídos.
+          </p>
         </>
       )}
     </div>

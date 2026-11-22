@@ -1558,118 +1558,164 @@ export function ContentStudio({
                       </div>
                       {activeVisualArea === "right" && (
                         <>
-                      <div className="experience-admin-slide-heading">
-                        <h3>Slides relacionados aos projetos</h3>
-                        <AdminInfoTip
-                          label="Slides relacionados aos projetos"
-                          description="Cada título de slide é um projeto clicável na página pública. Se existir um item visível com o mesmo título nos blocos A ou B, seu texto será exibido junto ao projeto; caso contrário, aparece apenas o título do slide. Alterar a ordem dos slides também altera a ordem dos projetos. Indicadores permanecem independentes."
-                        />
-                      </div>
-                      {(draft.content_json.experienceMedia?.slides ?? []).map(
-                        (slide, slideIndex) => (
-                          <div className="block-item-editor" key={slideIndex}>
-                            <div className="block-item-head">
-                              <strong>Slide {slideIndex + 1}</strong>
-                              <div className="order-buttons">
-                                <button
-                                  type="button"
-                                  aria-label="Slide anterior na ordem"
-                                  onClick={() => {
-                                    if (slideIndex === 0) return
-                                    const slides = [
-                                      ...(draft.content_json.experienceMedia?.slides ?? []),
-                                    ]
-                                    ;[slides[slideIndex - 1], slides[slideIndex]] = [
-                                      slides[slideIndex],
-                                      slides[slideIndex - 1],
-                                    ]
-                                    setDraft({
-                                      ...draft,
-                                      content_json: {
-                                        ...draft.content_json,
-                                        experienceMedia: {
-                                          ...draft.content_json.experienceMedia,
-                                          slides,
-                                        },
-                                      },
-                                    })
-                                  }}
-                                >
-                                  <Icon name="up" size={17} />
-                                </button>
-                                <button
-                                  type="button"
-                                  aria-label="Slide seguinte na ordem"
-                                  onClick={() => {
-                                    const slides = [
-                                      ...(draft.content_json.experienceMedia?.slides ?? []),
-                                    ]
-                                    if (slideIndex >= slides.length - 1) return
-                                    ;[slides[slideIndex + 1], slides[slideIndex]] = [
-                                      slides[slideIndex],
-                                      slides[slideIndex + 1],
-                                    ]
-                                    setDraft({
-                                      ...draft,
-                                      content_json: {
-                                        ...draft.content_json,
-                                        experienceMedia: {
-                                          ...draft.content_json.experienceMedia,
-                                          slides,
-                                        },
-                                      },
-                                    })
-                                  }}
-                                >
-                                  <Icon name="down" size={17} />
-                                </button>
-                                <button
-                                  type="button"
-                                  aria-label="Excluir slide"
-                                  onClick={async () => {
-                                    if (
-                                      !(await adminConfirm("Excluir este slide?", {
-                                        title: "Excluir slide",
-                                        confirmLabel: "Excluir",
-                                        tone: "danger",
-                                      }))
-                                    )
-                                      return
-                                    const slides = (
-                                      draft.content_json.experienceMedia?.slides ?? []
-                                    ).filter((_, i) => i !== slideIndex)
-                                    setDraft({
-                                      ...draft,
-                                      content_json: {
-                                        ...draft.content_json,
-                                        experienceMedia: {
-                                          ...draft.content_json.experienceMedia,
-                                          slides,
-                                        },
-                                      },
-                                    })
-                                  }}
-                                >
-                                  <Icon name="close" size={17} />
-                                </button>
-                              </div>
-                            </div>
-                            <div className="field-grid experience-slide-fields">
-                              {(
-                                [
-                                  ["title", "Título do projeto"],
-                                  ["caption", "Legenda da imagem"],
-                                ] as const
-                              ).map(([key, label]) => (
-                                <label className="experience-slide-field" key={key}>
-                                  {label}
-                                  <input
-                                    value={slide[key] ?? ""}
-                                    onChange={(event) => {
+                          <div className="experience-admin-slide-heading">
+                            <h3>Slides relacionados aos projetos</h3>
+                            <AdminInfoTip
+                              label="Slides relacionados aos projetos"
+                              description="Cada título de slide é um projeto clicável na página pública. Se existir um item visível com o mesmo título nos blocos A ou B, seu texto será exibido junto ao projeto; caso contrário, aparece apenas o título do slide. Alterar a ordem dos slides também altera a ordem dos projetos. Indicadores permanecem independentes."
+                            />
+                          </div>
+                          {(draft.content_json.experienceMedia?.slides ?? []).map(
+                            (slide, slideIndex) => (
+                              <div className="block-item-editor" key={slideIndex}>
+                                <div className="block-item-head">
+                                  <strong>Slide {slideIndex + 1}</strong>
+                                  <div className="order-buttons">
+                                    <button
+                                      type="button"
+                                      aria-label="Slide anterior na ordem"
+                                      onClick={() => {
+                                        if (slideIndex === 0) return
+                                        const slides = [
+                                          ...(draft.content_json.experienceMedia?.slides ?? []),
+                                        ]
+                                        ;[slides[slideIndex - 1], slides[slideIndex]] = [
+                                          slides[slideIndex],
+                                          slides[slideIndex - 1],
+                                        ]
+                                        setDraft({
+                                          ...draft,
+                                          content_json: {
+                                            ...draft.content_json,
+                                            experienceMedia: {
+                                              ...draft.content_json.experienceMedia,
+                                              slides,
+                                            },
+                                          },
+                                        })
+                                      }}
+                                    >
+                                      <Icon name="up" size={17} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      aria-label="Slide seguinte na ordem"
+                                      onClick={() => {
+                                        const slides = [
+                                          ...(draft.content_json.experienceMedia?.slides ?? []),
+                                        ]
+                                        if (slideIndex >= slides.length - 1) return
+                                        ;[slides[slideIndex + 1], slides[slideIndex]] = [
+                                          slides[slideIndex],
+                                          slides[slideIndex + 1],
+                                        ]
+                                        setDraft({
+                                          ...draft,
+                                          content_json: {
+                                            ...draft.content_json,
+                                            experienceMedia: {
+                                              ...draft.content_json.experienceMedia,
+                                              slides,
+                                            },
+                                          },
+                                        })
+                                      }}
+                                    >
+                                      <Icon name="down" size={17} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      aria-label="Excluir slide"
+                                      onClick={async () => {
+                                        if (
+                                          !(await adminConfirm("Excluir este slide?", {
+                                            title: "Excluir slide",
+                                            confirmLabel: "Excluir",
+                                            tone: "danger",
+                                          }))
+                                        )
+                                          return
+                                        const slides = (
+                                          draft.content_json.experienceMedia?.slides ?? []
+                                        ).filter((_, i) => i !== slideIndex)
+                                        setDraft({
+                                          ...draft,
+                                          content_json: {
+                                            ...draft.content_json,
+                                            experienceMedia: {
+                                              ...draft.content_json.experienceMedia,
+                                              slides,
+                                            },
+                                          },
+                                        })
+                                      }}
+                                    >
+                                      <Icon name="close" size={17} />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="field-grid experience-slide-fields">
+                                  {(
+                                    [
+                                      ["title", "Título do projeto"],
+                                      ["caption", "Legenda da imagem"],
+                                    ] as const
+                                  ).map(([key, label]) => (
+                                    <label className="experience-slide-field" key={key}>
+                                      {label}
+                                      <input
+                                        value={slide[key] ?? ""}
+                                        onChange={(event) => {
+                                          const slides = [
+                                            ...(draft.content_json.experienceMedia?.slides ?? []),
+                                          ]
+                                          slides[slideIndex] = {
+                                            ...slide,
+                                            [key]: event.target.value,
+                                          }
+                                          setDraft({
+                                            ...draft,
+                                            content_json: {
+                                              ...draft.content_json,
+                                              experienceMedia: {
+                                                ...draft.content_json.experienceMedia,
+                                                slides,
+                                              },
+                                            },
+                                          })
+                                        }}
+                                      />
+                                    </label>
+                                  ))}
+                                  <PublishedMediaPicker
+                                    label="Fotografia do slide"
+                                    recommendedSize="1600 × 1600 px (desktop e mobile)"
+                                    guidance="Imagem inteira no quadro responsivo; prefira WebP ou PNG."
+                                    ratio="1 / 1"
+                                    allowFraming={false}
+                                    framing={slide.framing}
+                                    onFramingChange={(framing) => {
                                       const slides = [
                                         ...(draft.content_json.experienceMedia?.slides ?? []),
                                       ]
-                                      slides[slideIndex] = { ...slide, [key]: event.target.value }
+                                      slides[slideIndex] = { ...slide, framing }
+                                      setDraft({
+                                        ...draft,
+                                        content_json: {
+                                          ...draft.content_json,
+                                          experienceMedia: {
+                                            ...draft.content_json.experienceMedia,
+                                            slides,
+                                          },
+                                        },
+                                      })
+                                    }}
+                                    value={slide.image ?? ""}
+                                    onChange={(image, alt) => {
+                                      const slides = [
+                                        ...(draft.content_json.experienceMedia?.slides ?? []),
+                                      ]
+                                      slides[slideIndex] = { ...slide, image, alt }
                                       setDraft({
                                         ...draft,
                                         content_json: {
@@ -1682,72 +1728,32 @@ export function ContentStudio({
                                       })
                                     }}
                                   />
-                                </label>
-                              ))}
-                              <PublishedMediaPicker
-                                label="Fotografia do slide"
-                                recommendedSize="1600 × 1600 px (desktop e mobile)"
-                                guidance="Imagem inteira no quadro responsivo; prefira WebP ou PNG."
-                                ratio="1 / 1"
-                                allowFraming={false}
-                                framing={slide.framing}
-                                onFramingChange={(framing) => {
-                                  const slides = [
-                                    ...(draft.content_json.experienceMedia?.slides ?? []),
-                                  ]
-                                  slides[slideIndex] = { ...slide, framing }
-                                  setDraft({
-                                    ...draft,
-                                    content_json: {
-                                      ...draft.content_json,
-                                      experienceMedia: {
-                                        ...draft.content_json.experienceMedia,
-                                        slides,
-                                      },
-                                    },
-                                  })
-                                }}
-                                value={slide.image ?? ""}
-                                onChange={(image, alt) => {
-                                  const slides = [
-                                    ...(draft.content_json.experienceMedia?.slides ?? []),
-                                  ]
-                                  slides[slideIndex] = { ...slide, image, alt }
-                                  setDraft({
-                                    ...draft,
-                                    content_json: {
-                                      ...draft.content_json,
-                                      experienceMedia: {
-                                        ...draft.content_json.experienceMedia,
-                                        slides,
-                                      },
-                                    },
-                                  })
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ),
-                      )}
-                      <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={() => {
-                          const slides = [
-                            ...(draft.content_json.experienceMedia?.slides ?? []),
-                            { title: "Novo projeto" },
-                          ]
-                          setDraft({
-                            ...draft,
-                            content_json: {
-                              ...draft.content_json,
-                              experienceMedia: { ...draft.content_json.experienceMedia, slides },
-                            },
-                          })
-                        }}
-                      >
-                        Adicionar slide
-                      </button>
+                                </div>
+                              </div>
+                            ),
+                          )}
+                          <button
+                            type="button"
+                            className="secondary-button"
+                            onClick={() => {
+                              const slides = [
+                                ...(draft.content_json.experienceMedia?.slides ?? []),
+                                { title: "Novo projeto" },
+                              ]
+                              setDraft({
+                                ...draft,
+                                content_json: {
+                                  ...draft.content_json,
+                                  experienceMedia: {
+                                    ...draft.content_json.experienceMedia,
+                                    slides,
+                                  },
+                                },
+                              })
+                            }}
+                          >
+                            Adicionar slide
+                          </button>
                         </>
                       )}
                     </fieldset>
@@ -1760,7 +1766,11 @@ export function ContentStudio({
                 )}
                 <div
                   className="block-items"
-                  style={hasCareerTrajectory && activeVisualArea === "left" ? { display: "none" } : undefined}
+                  style={
+                    hasCareerTrajectory && activeVisualArea === "left"
+                      ? { display: "none" }
+                      : undefined
+                  }
                 >
                   {experienceSlug === "perfil" && draft.mobile_panel === "a" ? (
                     <HeroLeftEditor

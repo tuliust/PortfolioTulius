@@ -22,7 +22,9 @@ export function legacyExperienceProjects(blocks: LegacyExperienceBlock[]): Exper
     return structuredClone(a.content_json.experienceProjects)
   }
   const projects: ExperienceProject[] = []
-  for (const block of blocks.filter((entry) => entry.mobile_panel === "a" || entry.mobile_panel === "b").sort((left, right) => left.mobile_panel.localeCompare(right.mobile_panel))) {
+  for (const block of blocks
+    .filter((entry) => entry.mobile_panel === "a" || entry.mobile_panel === "b")
+    .sort((left, right) => left.mobile_panel.localeCompare(right.mobile_panel))) {
     for (const [index, item] of (block.content_json.items ?? []).entries()) {
       if (experienceTitleKey(item.title) === "competencias aplicadas") continue
       projects.push({
@@ -32,10 +34,11 @@ export function legacyExperienceProjects(blocks: LegacyExperienceBlock[]): Exper
     }
   }
   for (const [index, slide] of (a?.content_json.experienceMedia?.slides ?? []).entries()) {
-    const matches = projects.filter((project) =>
-      project.item &&
-      project.item.isHidden !== true &&
-      experienceTitleKey(project.item.title) === experienceTitleKey(slide.title),
+    const matches = projects.filter(
+      (project) =>
+        project.item &&
+        project.item.isHidden !== true &&
+        experienceTitleKey(project.item.title) === experienceTitleKey(slide.title),
     )
     if (matches.length === 1 && !matches[0].slide) {
       matches[0].slide = structuredClone(slide)
@@ -76,10 +79,13 @@ export function validateExperienceProjects(projects: ExperienceProject[]): strin
   }
   const ids = new Set<string>()
   for (const [index, project] of projects.entries()) {
-    if (!project.id || ids.has(project.id)) errors.push("Projeto " + (index + 1) + ": identificador duplicado.")
+    if (!project.id || ids.has(project.id))
+      errors.push("Projeto " + (index + 1) + ": identificador duplicado.")
     ids.add(project.id)
-    if (project.item && !project.item.title.trim()) errors.push("Projeto " + (index + 1) + ": título obrigatório.")
-    if (project.slide && !project.slide.title.trim()) errors.push("Slide " + (index + 1) + ": título obrigatório.")
+    if (project.item && !project.item.title.trim())
+      errors.push("Projeto " + (index + 1) + ": título obrigatório.")
+    if (project.slide && !project.slide.title.trim())
+      errors.push("Slide " + (index + 1) + ": título obrigatório.")
   }
   return errors
 }

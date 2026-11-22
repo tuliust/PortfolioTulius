@@ -990,39 +990,39 @@ function SiteEditor({
                           </p>
                         </div>
                         {!(selectedIsExperience && selectedArea.id === "center") && (
-                        <div
-                          className="site-editor-subview-actions"
-                          role="group"
-                          aria-label="Outras configurações da área"
-                        >
-                          {editorSubView !== "content" && (
+                          <div
+                            className="site-editor-subview-actions"
+                            role="group"
+                            aria-label="Outras configurações da área"
+                          >
+                            {editorSubView !== "content" && (
+                              <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={() => void chooseEditorSubView("content")}
+                              >
+                                Voltar à edição
+                              </button>
+                            )}
                             <button
                               type="button"
-                              className="secondary-button"
-                              onClick={() => void chooseEditorSubView("content")}
+                              className={editorSubView === "advanced" ? "active" : ""}
+                              aria-pressed={editorSubView === "advanced"}
+                              onClick={() => void chooseEditorSubView("advanced")}
                             >
-                              Voltar à edição
+                              Avançado
                             </button>
-                          )}
-                          <button
-                            type="button"
-                            className={editorSubView === "advanced" ? "active" : ""}
-                            aria-pressed={editorSubView === "advanced"}
-                            onClick={() => void chooseEditorSubView("advanced")}
-                          >
-                            Avançado
-                          </button>
-                          <button
-                            type="button"
-                            className={editorSubView === "mobile" ? "active" : ""}
-                            aria-label="Configurações mobile"
-                            title="Configurações mobile"
-                            aria-pressed={editorSubView === "mobile"}
-                            onClick={() => void chooseEditorSubView("mobile")}
-                          >
-                            <Icon name="smartphone" size={18} />
-                          </button>
-                        </div>
+                            <button
+                              type="button"
+                              className={editorSubView === "mobile" ? "active" : ""}
+                              aria-label="Configurações mobile"
+                              title="Configurações mobile"
+                              aria-pressed={editorSubView === "mobile"}
+                              onClick={() => void chooseEditorSubView("mobile")}
+                            >
+                              <Icon name="smartphone" size={18} />
+                            </button>
+                          </div>
                         )}
                       </div>
                       {editorSubView === "content" &&
@@ -1068,17 +1068,19 @@ function SiteEditor({
                           onDirtyChange={setContentDirty}
                           onSaved={reload}
                         />
-                      ) : selectedArea.source !== "section" && (
-                        <ContentStudio
-                          key={selected.id + "-content-" + selectedArea.id + "-" + editorSubView}
-                          sections={sections}
-                          sectionIdOverride={selected.id}
-                          editorArea={selectedArea}
-                          editorView={editorSubView}
-                          embedded
-                          onDirtyChange={setContentDirty}
-                          onSaved={reload}
-                        />
+                      ) : (
+                        selectedArea.source !== "section" && (
+                          <ContentStudio
+                            key={selected.id + "-content-" + selectedArea.id + "-" + editorSubView}
+                            sections={sections}
+                            sectionIdOverride={selected.id}
+                            editorArea={selectedArea}
+                            editorView={editorSubView}
+                            embedded
+                            onDirtyChange={setContentDirty}
+                            onSaved={reload}
+                          />
+                        )
                       )}
                     </>
                   )}

@@ -51,7 +51,9 @@ export function experienceTitleKey(title: string): string {
     .trim()
 }
 
-export function matchExperienceSlides<T extends { title: string; isHidden?: boolean; experienceProjectId?: string }>(
+export function matchExperienceSlides<
+  T extends { title: string; isHidden?: boolean; experienceProjectId?: string },
+>(
   slides: readonly { title: string; projectId?: string }[],
   items: readonly T[],
 ): { slideIndex: number; title: string; item?: T }[] {
