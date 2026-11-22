@@ -23,7 +23,14 @@ describe("CMS — navegação por áreas nas 14 seções", () => {
       const areas = siteEditorAreas(slug)
       expect(areas[0].id).toBe("section")
       expect(areas.find((area) => area.id === "left")).toBeDefined()
-      const isExperience = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug)
+      const isExperience = [
+        "invest-rs",
+        "prefeitura-sp",
+        "vale",
+        "globo-sportv",
+        "inpress",
+        "cdi",
+      ].includes(slug)
       expect(Boolean(areas.find((area) => area.id === "right"))).toBe(!isExperience)
       expect(areas.some((area) => area.id === "center")).toBe(
         [
