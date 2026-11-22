@@ -1,4 +1,4 @@
-import type { ContentItem, ExperienceMedia } from "../types/content"
+import type { ContentItem, ExperienceMedia, ExperienceProject } from "../types/content"
 
 // Presentation lives in block_placements; content_json remains the sole content source.
 export type PlacementPresentation = {
@@ -25,6 +25,7 @@ export type ContentBlockRow = {
     /** Optional positive number of linked items for this block. */
     collection_limit?: number
     experienceMedia?: ExperienceMedia
+    experienceProjects?: ExperienceProject[]
     editorAnchor?: string
   } | null
 }

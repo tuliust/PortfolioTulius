@@ -148,6 +148,8 @@ export type ContentItem = {
   placeholder?: boolean
   /** Editorial card retained in the CMS but excluded from public experience lists. */
   isHidden?: boolean
+  /** Stable link to the canonical experience project; not used by other sections. */
+  experienceProjectId?: string
   icon?: "arrow" | "none"
   targetSlug?: string
   metricIcon?: MetricIconName
@@ -176,10 +178,23 @@ export type ContentItem = {
 
 export type ExperienceSlide = {
   title: string
+  /** Optional stable reference; legacy slides are matched by title only. */
+  projectId?: string
   image?: string
   alt?: string
   caption?: string
   framing?: MediaFraming
+}
+
+export type ExperienceProject = {
+  id: string
+  /** Null for legacy slides that have no unambiguous textual match. */
+  item?: ContentItem
+  slide?: ExperienceSlide
+  /** Original gallery position, independent of text order until editorial review. */
+  slideOrder?: number
+  /** Hiding a slide never erases its image or metadata. */
+  includeInGallery?: boolean
 }
 
 export type ExperienceMedia = {
@@ -204,6 +219,8 @@ export type PortfolioSection = {
   visible: boolean
   navLabel?: string
   experienceMedia?: ExperienceMedia
+  /** Canonical editorial collection when published in the experience's block A. */
+  experienceProjects?: ExperienceProject[]
   panelA: ContentItem[]
   panelB: ContentItem[]
   desktopPanelA?: ContentItem[]

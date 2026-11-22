@@ -51,8 +51,8 @@ export function experienceTitleKey(title: string): string {
     .trim()
 }
 
-export function matchExperienceSlides<T extends { title: string; isHidden?: boolean }>(
-  slides: readonly { title: string }[],
+export function matchExperienceSlides<T extends { title: string; isHidden?: boolean; experienceProjectId?: string }>(
+  slides: readonly { title: string; projectId?: string }[],
   items: readonly T[],
 ): { slideIndex: number; title: string; item?: T }[] {
   return slides.map((slide, slideIndex) => ({
@@ -60,7 +60,10 @@ export function matchExperienceSlides<T extends { title: string; isHidden?: bool
     title: slide.title,
     item: items.find(
       (item) =>
-        !item.isHidden && experienceTitleKey(item.title) === experienceTitleKey(slide.title),
+        !item.isHidden &&
+        (slide.projectId
+          ? item.experienceProjectId === slide.projectId
+          : experienceTitleKey(item.title) === experienceTitleKey(slide.title)),
     ),
   }))
 }

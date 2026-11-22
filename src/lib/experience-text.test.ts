@@ -65,6 +65,19 @@ describe("Slide-to-project matching and trajectory deduplication", () => {
     expect(mapped[2].item).toBeUndefined()
     expect(mapped[3].item).toBeUndefined()
   })
+  it("matches by stable project ID even when titles are identical", () => {
+    const slides = [
+      { title: "Conteúdos digitais", projectId: "b:1" },
+      { title: "Conteúdos digitais", projectId: "a:2" },
+    ]
+    const items = [
+      { title: "Conteúdos digitais", experienceProjectId: "a:2" },
+      { title: "Conteúdos digitais", experienceProjectId: "b:1" },
+    ]
+    const matches = matchExperienceSlides(slides, items)
+    expect(matches[0].item).toBe(items[1])
+    expect(matches[1].item).toBe(items[0])
+  })
   it("keeps unrelated career responsibilities and non-bullet introductions", () => {
     const source = [
       "Atuação institucional com interlocução internacional.",

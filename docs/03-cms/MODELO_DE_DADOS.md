@@ -1,4 +1,11 @@
 # Contrato CMS → Supabase → renderer
+
+## Fonte canônica das Experiências — 22/11/2026
+
+O bloco A de cada experiência pode conter `content_json.experienceProjects`: array JSONB com `{ id, item?, slide?, slideOrder?, includeInGallery? }`. `item` preserva o `ContentItem` com `isHidden` e estilos; `slide` preserva imagem, alt, legenda e enquadramento; `id` é estável; `includeInGallery=false` oculta imagem sem apagá-la. Slides sem projeto ficam como entradas sem `item` até revisão editorial.
+
+`usePortfolio` expõe a coleção somente a partir de A publicado (ou prévia autorizada). `ExperienceStack` e PDF derivam textos e galeria da mesma coleção por `experienceProjectId/projectId`. Na ausência da coleção, permanecem os blocos e slides anteriores como fallback. `career_experiences.description`, competências e logo não mudam. **Sem migrations, tabelas novas ou alterações de RLS e Storage.**
+
 **Status:** referência canônica · **Revisão:** 16/11/2026. Conferir [migrations](../../supabase/migrations/), [tipos](../../src/types/content.ts) e banco real antes de mudar schema.
 
 ## Grupos de tabelas públicas (22 com RLS)

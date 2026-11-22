@@ -13,6 +13,7 @@ import { HeroColorPicker } from "./HeroVisualPickers"
 import { useEditorIdentityOptions } from "./EditorIdentityFields"
 import { editorAnchorError, normalizeEditorAnchor } from "../../lib/editor-anchor"
 import { siteEditorAreas, editorCopyInArea } from "../../lib/site-editor-areas"
+import { ExperienceProjectsEditor } from "./ExperienceProjectsEditor"
 import { AdminNotice } from "./AdminNotice"
 import {
   adminConfirm,
@@ -988,6 +989,7 @@ function SiteEditor({
                                 : "Exibição, responsividade e apresentação mobile."}
                           </p>
                         </div>
+                        {!(selectedIsExperience && selectedArea.id === "center") && (
                         <div
                           className="site-editor-subview-actions"
                           role="group"
@@ -1021,6 +1023,7 @@ function SiteEditor({
                             <Icon name="smartphone" size={18} />
                           </button>
                         </div>
+                        )}
                       </div>
                       {editorSubView === "content" &&
                         editorCopyInArea(selected.slug, selectedArea.id) && (
@@ -1058,7 +1061,14 @@ function SiteEditor({
                             />
                           </section>
                         )}
-                      {selectedArea.source !== "section" && (
+                      {selectedIsExperience && selectedArea.id === "center" ? (
+                        <ExperienceProjectsEditor
+                          key={selected.id + "-unified-projects"}
+                          sectionId={selected.id}
+                          onDirtyChange={setContentDirty}
+                          onSaved={reload}
+                        />
+                      ) : selectedArea.source !== "section" && (
                         <ContentStudio
                           key={selected.id + "-content-" + selectedArea.id + "-" + editorSubView}
                           sections={sections}

@@ -37,18 +37,11 @@ export function adminVisualAreas(slug?: string): AdminVisualArea[] {
     return [
       {
         id: "left",
-        label: "Esquerda",
-        description: "Empresa, logo e competências · bloco A",
+        label: "Empresa",
+        description: "Logotipo, competências e trajetória · bloco A",
         source: "a",
       },
-      { id: "center", label: "Centro", description: "Projetos · blocos A e B", source: "b" },
-      {
-        id: "right",
-        label: "Direita",
-        description: "Galeria de imagens · bloco A",
-        source: "a",
-        focus: "experience-gallery",
-      },
+      { id: "center", label: "Projetos", description: "Textos e galeria em um único editor", source: "a" },
     ]
   return []
 }

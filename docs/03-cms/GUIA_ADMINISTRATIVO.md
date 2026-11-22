@@ -1,5 +1,13 @@
 # Guia operacional do CMS
 
+## Experiências — editor único de projetos e imagens (22/11/2026)
+
+Em **Editor do site → Experiências Profissionais → empresa → Projetos**, cada ficha reúne título, descrição, visibilidade, fotografia, legenda e participação na galeria. **Empresa** mantém logotipo, competências e Trajetória. A lista central e a galeria usam o mesmo título após a gravação da coleção canônica. Projetos sem imagem são admitidos.
+
+**Compatibilidade:** se `content_blocks.content_json.experienceProjects` não existir no bloco A, a tela compõe um rascunho não destrutivo a partir dos blocos A/B e da galeria anterior. O primeiro salvamento cria a coleção no JSONB de A, usando `save_section_block_atomic` com CAS e releitura. Os campos históricos de A/B e a galeria original **não são excluídos**. Não há conversão automática de dados produtivos por deploy.
+
+**Slides ambíguos:** só há associação automática para título único e projeto visível. Os demais ficam em “Slides históricos sem vínculo seguro”, com título, mídia e legenda preservados até a vinculação explícita. ID estável vincula projeto e galeria após a escolha. A ocultação de um slide não apaga seu arquivo. Mudanças não confirmadas pela releitura não devem ser reenviadas automaticamente.
+
 ## Logotipo opcional das Experiências — 18/11/2026
 
 No **Editor do site → Experiências Profissionais → empresa → bloco A**, o campo **Logotipo da empresa** persiste a URL em `content_blocks.content_json.experienceMedia.logo`. O texto alternativo (`logoAlt`) continua opcional no editor e no catálogo: sua ausência **não** impede a exibição do arquivo na barra das empresas e no cabeçalho desktop. O renderer `CompanyMark` usa a existência de `logo` como condição para `<img>` e, quando `logoAlt` não está informado, renderiza `alt=""` porque o nome da empresa já aparece em texto adjacente; quando existe alt, preserva-o. Na ausência de URL, exibe o monograma. O seletor ainda copia título/alt no instante da escolha, sem tornar alt obrigatório. Regressão coberta em `src/components/public/ExperienceStack.test.tsx`. Intervenção somente em React e documentação; sem gravação de CMS, Storage ou schema.

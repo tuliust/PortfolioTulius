@@ -1556,6 +1556,8 @@ export function ContentStudio({
                           }
                         />
                       </div>
+                      {activeVisualArea === "right" && (
+                        <>
                       <div className="experience-admin-slide-heading">
                         <h3>Slides relacionados aos projetos</h3>
                         <AdminInfoTip
@@ -1746,6 +1748,8 @@ export function ContentStudio({
                       >
                         Adicionar slide
                       </button>
+                        </>
+                      )}
                     </fieldset>
                   )}
                 {editorArea && experienceSlug !== "perfil" && (
@@ -1754,7 +1758,10 @@ export function ContentStudio({
                     <p>{sectionGroup[1]}</p>
                   </div>
                 )}
-                <div className="block-items">
+                <div
+                  className="block-items"
+                  style={hasCareerTrajectory && activeVisualArea === "left" ? { display: "none" } : undefined}
+                >
                   {experienceSlug === "perfil" && draft.mobile_panel === "a" ? (
                     <HeroLeftEditor
                       items={draft.content_json.items ?? []}

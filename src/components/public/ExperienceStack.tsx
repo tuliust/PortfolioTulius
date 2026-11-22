@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
+import { experienceProjectItems, experienceProjectSlides } from "../../lib/experience-projects"
 import { imageFramingStyle } from "../../lib/media-framing"
 import { heroSizeClass, heroTextStyle } from "../../lib/hero-formatting"
 import { Icon } from "../ui/Icons"
@@ -412,8 +413,10 @@ function ExperienceMobileBody({
   const projects: { title: string; item?: ContentItem; slideIndices: number[] }[] = []
 
   for (const { title, item, slideIndex } of matches) {
-    const project = projects.find(
-      (entry) => experienceTitleKey(entry.title) === experienceTitleKey(title),
+    const project = projects.find((entry) =>
+      item
+        ? entry.item === item
+        : !entry.item && experienceTitleKey(entry.title) === experienceTitleKey(title),
     )
     if (project) {
       project.slideIndices.push(slideIndex)
@@ -424,7 +427,10 @@ function ExperienceMobileBody({
   for (const item of items) {
     if (
       item.value ||
-      projects.some((entry) => experienceTitleKey(entry.title) === experienceTitleKey(item.title))
+      projects.some((entry) =>
+        entry.item === item ||
+        (!entry.item && experienceTitleKey(entry.title) === experienceTitleKey(item.title)),
+      )
     )
       continue
     projects.push({ title: item.title, item, slideIndices: [] })
@@ -610,10 +616,16 @@ function ExperienceCard({
   isMobile: boolean
   detail?: string
 }) {
-  const items = [
+  const legacyItems = [
     ...(section.desktopPanelA ?? section.panelA),
     ...(section.desktopPanelB ?? section.panelB),
   ].filter((item) => item.isHidden !== true)
+  const items = section.experienceProjects
+    ? [...legacyItems.filter((item) => experienceTitleKey(item.title) === "competencias aplicadas"), ...experienceProjectItems(section.experienceProjects)]
+    : legacyItems
+  const displaySection = section.experienceProjects
+    ? { ...section, experienceMedia: { ...section.experienceMedia, slides: experienceProjectSlides(section.experienceProjects) } }
+    : section
   const competencies =
     items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []
   const projectItems = items.filter((item) => item.title.toLowerCase() !== "competências aplicadas")
@@ -651,13 +663,13 @@ function ExperienceCard({
             <ExperienceCompetencies tags={competencies} />
           </header>
           <ExperienceContent
-            section={section}
+            section={displaySection}
             items={projectItems}
             detail={detail}
             activeSlide={activeSlide}
             onSlideChange={setActiveSlide}
           />
-          <PhotoGallery section={section} active={activeSlide} onSlideChange={setActiveSlide} />
+          <PhotoGallery section={displaySection} active={activeSlide} onSlideChange={setActiveSlide} />
         </div>
       )}
       {isMobile && (
@@ -714,7 +726,7 @@ function ExperienceCard({
             data-panel="b"
           >
             <ExperienceMobileBody
-              section={section}
+              section={displaySection}
               items={projectItems}
               detail={detail}
               view={mobileView}
@@ -741,10 +753,13 @@ export function PdfExperienceSection({
   isMobile: boolean
   detail?: string
 }) {
-  const items = [
+  const legacyItems = [
     ...(section.desktopPanelA ?? section.panelA),
     ...(section.desktopPanelB ?? section.panelB),
   ].filter((item) => item.isHidden !== true)
+  const items = section.experienceProjects
+    ? [...legacyItems.filter((item) => experienceTitleKey(item.title) === "competencias aplicadas"), ...experienceProjectItems(section.experienceProjects)]
+    : legacyItems
   const competencies =
     items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []
   const projects = items.filter(

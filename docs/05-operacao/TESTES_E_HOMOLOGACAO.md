@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## Regressão planejada do editor unificado — 22/11/2026
+
+Testes em `src/lib/experience-projects.test.ts` cobrem composição A/B, itens ocultos, vínculos ambíguos, imagens preservadas e título único por identificador. `src/lib/experience-text.test.ts` cobre ID estável mesmo com títulos repetidos. A leitura SQL anterior confirmou 5 projetos textuais visíveis por empresa e 19 slides (Invest RS: 4; demais: 3). Nenhuma escrita produtiva foi realizada nessa inspeção.
+
+**Limites:** resultado de Validate/P5 e SHA devem ser registrados depois de executados. Edição autenticada completa `editar → salvar → reler` do novo editor em ambiente sintético e validação visual Desktop/Mobile/PDF **não são comprovadas apenas pela existência dos testes unitários**. O primeiro salvamento de cada empresa exige conferência editorial dos vínculos.
+
 ## Cobertura individual das sete RPCs — ciclo de 19/11/2026
 
 A nova suíte `scripts/p5-local-rpc-authorization.mjs` é executada por `.github/workflows/p5-local-transactional.yml` após o P5 original, usando Supabase CLI + Docker local com `seed.local.synthetic.sql` e endpoint estrito `127.0.0.1:54321`. As credenciais são obtidas somente da stack local; a suíte não faz chamadas ao projeto cloud. As verificações anteriores P5/P2/P4 permanecem intactas.
