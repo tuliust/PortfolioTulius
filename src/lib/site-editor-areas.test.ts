@@ -23,7 +23,8 @@ describe("CMS — navegação por áreas nas 14 seções", () => {
       const areas = siteEditorAreas(slug)
       expect(areas[0].id).toBe("section")
       expect(areas.find((area) => area.id === "left")).toBeDefined()
-      expect(areas.find((area) => area.id === "right")).toBeDefined()
+      const isExperience = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"].includes(slug)
+      expect(Boolean(areas.find((area) => area.id === "right"))).toBe(!isExperience)
       expect(areas.some((area) => area.id === "center")).toBe(
         [
           "sobre",
@@ -39,7 +40,7 @@ describe("CMS — navegação por áreas nas 14 seções", () => {
       expect(areas.some((area) => area.source === "a")).toBe(true)
     }
   })
-  it("preserva a origem de cada painel, inclusive projetos e galeria", () => {
+  it("preserva a origem de cada painel e unifica projetos e galeria em A", () => {
     expect(siteEditorAreas("sobre").map((a) => a.source)).toEqual(["section", "section", "a", "b"])
     expect(siteEditorAreas("resultados").map((a) => a.source)).toEqual([
       "section",
@@ -47,7 +48,7 @@ describe("CMS — navegação por áreas nas 14 seções", () => {
       "a",
       "b",
     ])
-    expect(siteEditorAreas("invest-rs").map((a) => a.source)).toEqual(["section", "a", "b", "a"])
+    expect(siteEditorAreas("invest-rs").map((a) => a.source)).toEqual(["section", "a", "a"])
     expect(siteEditorAreas("contato").map((a) => a.source)).toEqual(["section", "a", "b"])
     expect(editorCopyInArea("perfil", "left")).toBe(false)
     expect(editorCopyInArea("sobre", "left")).toBe(true)

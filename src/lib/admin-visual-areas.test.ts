@@ -9,12 +9,13 @@ describe("Regiões visuais do editor", () => {
     expect(adminVisualAreas("resultados").map((x) => x.source)).toEqual(["section", "a", "b"])
   })
   it.each(["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"])(
-    "Experiência %s: galeria reutiliza A, projetos B e A",
+    "Experiência %s: projetos e galeria compartilham editor canônico em A",
     (slug) => {
       const areas = adminVisualAreas(slug)
-      expect(areas.map((x) => x.label)).toEqual(["Esquerda", "Centro", "Direita"])
-      expect(areas.map((x) => x.source)).toEqual(["a", "b", "a"])
-      expect(areas[2].focus).toBe("experience-gallery")
+      expect(areas.map((x) => x.label)).toEqual(["Empresa", "Projetos"])
+      expect(areas.map((x) => x.source)).toEqual(["a", "a"])
+      expect(areas[1].id).toBe("center")
+      expect(areas.every((area) => !area.focus)).toBe(true)
     },
   )
   it("Não cria centro fictício nos painéis de duas colunas", () => {

@@ -482,23 +482,28 @@ try {
   await chooseArea("Centro")
   await waitFor(page, () =>
     document.querySelector(".studio-inline-layout .block-items") !== null)
-  await verifyZones("Experiências Profissionais", triple)
-  await chooseArea("Centro")
-  await waitFor(page, () => document.querySelectorAll(".site-editor-center-blocks button").length === 2)
-  const centerSources = await page.evaluate(() =>
-    [...document.querySelectorAll(".site-editor-center-blocks button")].map((x) => x.textContent?.trim()))
-  assert(centerSources.includes("Projetos do bloco A") &&
-    centerSources.includes("Projetos do bloco B"), "Projetos A/B indisponíveis no Centro.")
-  await page.evaluate(() =>
-    [...document.querySelectorAll(".site-editor-center-blocks button")]
-      .find((x) => x.textContent?.includes("bloco A"))?.click())
+  const experienceAreas = ["Seção", "Empresa", "Projetos"]
+  await verifyZones("Experiências Profissionais", experienceAreas)
+  await chooseArea("Projetos")
   await waitFor(page, () =>
-    [...document.querySelectorAll(".site-editor-center-blocks button")]
-      .find((x) => x.textContent?.includes("bloco A"))?.getAttribute("aria-pressed") === "true")
-  await chooseArea("Direita")
+    document.querySelector(".admin-card.editor-form .block-items")?.querySelectorAll(
+      ".block-item-editor").length === 5)
+  const unified = await page.evaluate(() => ({
+    visibleProjects: document.querySelector(".admin-card.editor-form .block-items")
+      ?.querySelectorAll(".block-item-editor").length,
+    title: document.querySelector(".admin-card.editor-form h3")?.textContent?.trim(),
+    summary: document.querySelector(".admin-card.editor-form strong")?.textContent,
+    legacySwitcher: document.querySelectorAll(".site-editor-center-blocks button").length,
+  }))
+  assert(unified.visibleProjects === 5 &&
+    unified.title === "Projetos e realizações" &&
+    unified.summary?.includes("4 slides") &&
+    unified.legacySwitcher === 0,
+    "Editor unificado da Invest RS indisponível: " + JSON.stringify(unified))
+  await chooseArea("Empresa")
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
-  report("VISUAL_AREAS", { sections: 3, positions: triple,
-    desktopPortraitOnly: true, sharedExperienceGallery: true })
+  report("VISUAL_AREAS", { sections: 3, experienceAreas,
+    desktopPortraitOnly: true, unifiedProjects: 5, gallerySlides: 4 })
 
   const ordinarySections = ["Comunicação e estratégia", "Formação",
     "Ferramentas", "Depoimentos", "Contato"]
@@ -526,7 +531,7 @@ try {
       [...document.querySelectorAll(".site-editor-experience-options button")]
         .some((button) => button.classList.contains("active") &&
           button.textContent?.includes(label)), name)
-    await waitFor(page, () => document.querySelectorAll(".site-editor-area-tabs button").length === 4)
+    await waitFor(page, () => document.querySelectorAll(".site-editor-area-tabs button").length === 3)
   }
   report("ALL_SECTIONS", { total: 14, ordinary: ordinarySections.length,
     experiences: experienceNames.length, areaRouting: true })
