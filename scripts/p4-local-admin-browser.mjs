@@ -1267,11 +1267,11 @@ try {
     await page.waitForSelector(".site-editor-experience-current", { timeout: 15000 })
     const openedLeft = await page.evaluate(() => {
       const tab = [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
-        .find((node) => node.textContent?.includes("Esquerda"))
+        .find((node) => node.textContent?.includes("Empresa"))
       tab?.click()
       return Boolean(tab)
     })
-    ensure(openedLeft, "CAREER_UI_LEFT_TAB")
+    ensure(openedLeft, "CAREER_UI_COMPANY_TAB")
     await page.waitForSelector(".experience-inline-trajectory textarea",
       { timeout: 15000 })
   }
