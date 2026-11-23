@@ -1,5 +1,11 @@
 # Guia operacional do CMS
 
+## Limpeza produtiva e estado das seis Experiências — 23/11/2026
+
+**EXECUTADO E RELIDO NO SUPABASE:** foram excluídos apenas os **23 itens históricos com `isHidden=true`** dos arrays legados dos blocos A/B e os **2 slides sem vínculo inequívoco da Invest RS**. As seis empresas têm agora **5 fichas canônicas cada (30 projetos)** e **17 slides vinculados**: Invest RS 2, as demais 3. O conteúdo de `content_json.experienceProjects` do bloco A é agora a fonte pública dos campos e flags; as cópias legadas dos projetos *visíveis* foram mantidas para compatibilidade. Não há mais seções de itens históricos ocultos ou de slides órfãos no painel. Nenhum objeto de Storage nem registro da biblioteca de mídia foi excluído. Competências e Trajetória permanecem nas fontes anteriores.
+
+A operação foi **atômica**, com verificação dos hashes dos 12 blocos antes da gravação e contagens finais exigidas de 30/17/23/2 (projetos/slides/itens legados eliminados/slides órfãos eliminados). Cópia privada dos **25 registros editoriais removidos** foi preservada fora do GitHub; restauração não ensaiada. A limpeza dos históricos **não se aplica** às fichas atuais: ao desmarcar as duas opções, o projeto continua armazenado e pode ser reativado.
+
 ## Experiências — edição integrada do centro e dos slides (23/11/2026)
 
 **Caminho:** Editor do site → Experiências Profissionais → empresa → **Projetos**. Cada ficha contém **Título central** e **Descrição central** para a coluna do meio, mais **Título do slide**, **Descrição do slide** e **Imagem do slide** para a galeria à direita, incluindo alt, enquadramento e ordem. Os títulos e as descrições das duas áreas são independentes.

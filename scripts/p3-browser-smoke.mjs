@@ -1023,7 +1023,7 @@ try {
       await page.focus("#invest-rs .desktop-panel .experience-gallery-controls button[aria-label^='Próxima foto']")
       await page.keyboard.press("Enter")
       await page.waitForFunction(() =>
-        document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "plataforma de eventos e relacionamento",
+        document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "guia de boas-vindas",
         { timeout: 10000 },
       )
       const galleryToProject = await page.evaluate(() => ({
@@ -1038,14 +1038,56 @@ try {
         console.log("P3_PROJECT_GALLERY_REGRESSION " + JSON.stringify({ projectToGallery, galleryToProject }))
       } else if (
         projectToGallery.galleryTitle?.toLocaleLowerCase("pt-BR") !== "organização de eventos" ||
-        projectToGallery.count !== "2 / 4" ||
-        galleryToProject.activeProject?.toLocaleLowerCase("pt-BR") !== "plataforma de eventos e relacionamento" ||
-        galleryToProject.galleryTitle?.toLocaleLowerCase("pt-BR") !== "plataforma de eventos e relacionamento"
+        projectToGallery.count !== "2 / 2" ||
+        galleryToProject.activeProject?.toLocaleLowerCase("pt-BR") !== "guia de boas-vindas" ||
+        galleryToProject.galleryTitle?.toLocaleLowerCase("pt-BR") !== "guia de boas-vindas"
       ) {
         failures++
         console.log("P3_PROJECT_GALLERY_REGRESSION " + JSON.stringify({ projectToGallery, galleryToProject }))
       } else {
         console.log("P3_PROJECT_GALLERY_LINK " + JSON.stringify({ result: "PASS", projectToGallery, galleryToProject }))
+      }
+      // A visitor action must restart the slide timer at eight seconds;
+      // subsequent unattended transitions return to the three-second cadence.
+      const autoplayConditions = await page.evaluate(() => ({
+        hidden: document.hidden,
+        reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        currentCompany: document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href"),
+      }))
+      if (autoplayConditions.hidden || autoplayConditions.reduced ||
+          autoplayConditions.currentCompany !== "#invest-rs") {
+        failures++
+        console.log("P3_EXPERIENCE_AUTOPLAY_PRECONDITION " + JSON.stringify(autoplayConditions))
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 3300))
+        const held = await page.$eval(
+          "#invest-rs .desktop-panel .experience-gallery-controls [aria-live]",
+          (node) => node.textContent?.trim(),
+        )
+        await page.waitForFunction(() =>
+          document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim() === "2 / 2",
+          { timeout: 7000 },
+        )
+        const afterEight = await page.evaluate(() => ({
+          count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
+          selected: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
+        }))
+        await page.waitForFunction(() =>
+          document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim() === "1 / 2",
+          { timeout: 5000 },
+        )
+        const afterThree = await page.evaluate(() => ({
+          count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
+          selected: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
+        }))
+        const works = held === "1 / 2" &&
+          afterEight.count === "2 / 2" &&
+          afterEight.selected?.toLocaleLowerCase("pt-BR") === "organização de eventos" &&
+          afterThree.count === "1 / 2" &&
+          afterThree.selected?.toLocaleLowerCase("pt-BR") === "guia de boas-vindas"
+        if (!works) failures++
+        console.log("P3_EXPERIENCE_AUTOPLAY " +
+          JSON.stringify({ result: works ? "PASS" : "FAIL", held, afterEight, afterThree }))
       }
       const refinements = await page.evaluate(() => {
         const section = document.querySelector("#contato")

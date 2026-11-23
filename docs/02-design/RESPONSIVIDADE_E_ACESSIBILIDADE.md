@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Estado real do carrossel das Experiências — 23/11/2026
+
+Com a coleção canônica publicada, cada empresa tem cinco realizações centrais; a Invest RS exibe **dois slides vinculados** (Guia de Boas-Vindas, Organização de eventos), enquanto as outras empresas exibem três. O destaque do item central segue a troca de slide, por ID; títulos diferentes entre centro e slide não impedem a associação. A troca automática é de 3 s, com retomada após 8 s quando há interação. A implementação respeita `prefers-reduced-motion`, visibilidade da aba, empresa ativa e galerias com menos de dois slides. P3 valida o ciclo real no navegador; o estado da execução deve ser consultado pelo SHA.
+
 ## Experiências — sincronização e avanço automático (23/11/2026)
 
 A galeria troca a cada **3 segundos** enquanto a empresa é a seção ativa. Ao clicar em projeto central, seta ou marcador, o próximo avanço só acontece **8 segundos** depois; o ciclo subsequente volta a 3 s. O destaque do cartão central acompanha o ID do slide em desktop e o acordeão sincroniza o projeto correspondente no mobile. Centro/slide podem ser ocultos independentemente, sem obrigar todos os projetos a ter imagem.

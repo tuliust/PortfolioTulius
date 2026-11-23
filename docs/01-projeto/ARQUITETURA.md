@@ -1,5 +1,11 @@
 # Arquitetura do PortfolioTulius
 
+## Consolidação dos seis conjuntos de projetos em produção — 23/11/2026
+
+O Supabase já contém **5 registros canônicos por experiência** (30 projetos e 17 slides), associados por ID estável. O editor e o renderer consultam a mesma coleção JSONB em A. Os arrays legados permanecem somente com o conteúdo que era publicado; itens `isHidden=true` e slides órfãos foram removidos daqueles arrays. A função de importação por título é agora apenas fallback de compatibilidade, não a fonte efetiva das seis seções.
+
+A transação foi restrita a 12 blocos de experiências, conferiu hashes das versões anteriores sob lock e verificou contagens após a execução. Nenhuma escrita em RLS/Auth/Storage, schema ou conteúdo de outras seções foi necessária. A cópia privada dos 25 objetos JSON excluídos não está no repositório.
+
 ## Experiências com duas áreas e sincronização por ID (23/11/2026)
 
 ExperienceProjectsEditor.tsx salva uma ficha com textos de centro e slide separados e flags independentes showInCenter/includeInGallery, no JSONB do bloco A por RPC/CAS, com releitura. experience-projects.ts deriva duas listas da mesma coleção; ExperienceStack.tsx vincula o slide ativo ao item central por ID, mesmo com títulos diferentes. Sem vínculo central visível, nenhum item deve receber destaque arbitrário.

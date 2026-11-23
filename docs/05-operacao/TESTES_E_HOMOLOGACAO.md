@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## Estado comprovado: editor sincronizado e higienização de produção — 23/11/2026
+
+**GitHub:** Validate `SUCCESS`, P5 sintético `SUCCESS` (89 cenários, incluindo edição/salvamento/releitura e ocultação dupla), exportação documental `SUCCESS`, Vercel Production `READY`, todos verificados para a implementação `b3672e1`. **Supabase:** após limpeza atômica, contagens verificadas de **30 projetos / 17 slides vinculados / 0 itens históricos `isHidden` / 0 slides órfãos** nas seis experiências. A migração de produção não executou um login administrativo real; o ensaio autenticado correspondente ocorreu no ambiente isolado com seed sintética.
+
+O teste de navegação P3 foi atualizado para a nova galeria de **2 slides** da Invest RS e passou a verificar também o atraso de 8 s após clique, a rotação subsequente de 3 s e a sincronização dos destaques. Não considerar essas verificações `SUCCESS` antes da execução do novo SHA. P3 anterior terminou `FAILURE` por teste da galeria desatualizado, falha transitória de ordenação SEO no carregamento e LCP mobile acima da meta (3.510,835 ms em uma execução anterior). O orçamento **≤ 3.500 ms** permanece inalterado.
+
 ## Regressão do editor de Experiências — alteração de 23/11/2026
 
 O P5 local inclui, em scripts/p4-local-admin-browser.mjs, uma sequência autenticada sobre dados **inteiramente sintéticos**: editar título central, título/descrição do slide, salvar pelo CMS, reler conteúdo canônico do bloco A, conferir o renderer público; em seguida desmarcar os dois destinos, salvar/reler e conferir que o projeto fica ausente do público sem perder a referência da imagem. A execução/resultado deverão ser verificados pelo SHA da mudança do script, não inferidos da adição do código.

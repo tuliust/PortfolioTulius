@@ -1,5 +1,11 @@
 # Contrato CMS → Supabase → renderer
 
+## Contrato efetivo de Experiências no Supabase — 23/11/2026
+
+Após limpeza transacional das seis seções, cada bloco A **publicado** contém `content_json.experienceProjects` com **5 fichas** (`id` estável, `item`, `slide?`, `showInCenter`, `includeInGallery`, `slideOrder?`). A área central usa `item.title/text` e a direita usa `slide.title/caption/image`; a associação pública não depende da igualdade dos títulos. São **30 projetos e 17 slides canônicos**, sem projetos históricos marcados `isHidden=true`; a Invest RS tem 2 slides, os outros trabalhos têm 3. Nas arrays antigas `items` (A/B) restam os cinco projetos visíveis e, no A, `Competências aplicadas`; a galeria legada conserva somente os slides vinculados.
+
+A migração não alterou tabelas, views, migrations, políticas RLS, Auth, catálogo/Storage, Trajetórias ou campos de identidade; o banco recebeu alterações JSONB seletivas nos blocos-alvo. Uma ficha nova com `showInCenter=false` e `includeInGallery=false` continua armazenada, diferentemente dos itens históricos removidos por solicitação expressa.
+
 ## Campos do projeto único por experiência (23/11/2026)
 
 O bloco A armazena content_json.experienceProjects: objetos { id, item, slide?, showInCenter?, includeInGallery?, slideOrder? }. item.title e item.text abastecem só o centro; slide.title, slide.caption, slide.image, slide.alt e slide.framing só a direita. showInCenter=false oculta apenas o cartão central; includeInGallery=false oculta apenas a imagem; ambas falsas preservam uma ficha oculta no CMS. O slide exige título, descrição e imagem quando publicado. O ID vincula slide.projectId a item.experienceProjectId, sem casar pelo título.

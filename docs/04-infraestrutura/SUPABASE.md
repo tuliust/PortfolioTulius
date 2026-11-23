@@ -1,5 +1,11 @@
 # Supabase — configuração de produção
 
+## Limpeza concluída e verificada — Experiências, 23/11/2026
+
+**Execução material:** em transação única com lock e comparação dos hashes dos 12 blocos de destino, foram removidos **23 itens legados ocultos** e **2 slides órfãos** (ambos em Invest RS). Foram geradas **30 fichas editoriais canônicas** e preservados **17 slides com vínculo único**: Invest RS 2; Prefeitura-SP, Vale, Globo/SporTV, InPress e CDI 3 cada. Todos os seis blocos A passaram a conter `experienceProjects`; os blocos B tiveram apenas os itens históricos `isHidden=true` retirados. Leitura após commit confirmou em cada empresa: 5 projetos, 0 itens ocultos legados, 2 ou 3 slides legados, e o mesmo número de slides canônicos.
+
+**Recuperabilidade:** cópia privada dos 23 objetos de itens e dos 2 objetos de slide removidos foi salva fora do repositório; hashes dos objetos exportados coincidiram com os hashes calculados no PostgreSQL antes da exclusão. A cópia **não é um dump completo do banco** e não houve ensaio de restauração. SQL administrativo sem sessão Auth não criou revisões automáticas; preservar esse risco. Nenhum arquivo de Storage, `media_assets`, schema, migration, tabela, Auth ou policy foi excluído/modificado.
+
 ## Limpeza JSONB restrita das seis Experiências — 23/11/2026
 
 Solicitação autoriza remover os **23 itens legados com isHidden=true** em A/B e os **dois slides sem correspondência inequívoca** da Invest RS. Preservar os 30 textos visíveis, competências, logo, legendas/imagens dos slides vinculados, Trajetória, e não apagar arquivos de Storage/media_assets. Criar coleção canônica no bloco A por empresa, uma ficha por projeto visível, com vinculação apenas dos slides correspondentes. Não há tabela, migration, RLS ou Auth novos.
