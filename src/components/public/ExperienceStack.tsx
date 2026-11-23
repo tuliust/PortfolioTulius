@@ -2,6 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { experienceProjectItems, experienceProjectSlides } from "../../lib/experience-projects"
+import {
+  EXPERIENCE_AUTOPLAY_INTERVAL_MS,
+  EXPERIENCE_AUTOPLAY_AFTER_CLICK_MS,
+  nextExperienceSlideIndex,
+} from "../../lib/experience-slide-timing"
 import { imageFramingStyle } from "../../lib/media-framing"
 import { heroSizeClass, heroTextStyle } from "../../lib/hero-formatting"
 import { Icon } from "../ui/Icons"
@@ -242,7 +247,7 @@ function ExperienceContent({
   const linkedItem = projectSlides.find((slide) => slide.slideIndex === activeSlide)?.item
   const linkedIndex = linkedItem ? projectItems.indexOf(linkedItem) : -1
   const activeProject =
-    manualSelection?.slideIndex === activeSlide ? manualSelection.index : Math.max(0, linkedIndex)
+    manualSelection?.slideIndex === activeSlide ? manualSelection.index : linkedIndex
   useEffect(() => setManualSelection(null), [activeSlide, section.slug])
   const extraMetrics = items.filter(
     (item) => Boolean(item.value) && !projectSlides.some(({ item: selected }) => selected === item),
@@ -312,6 +317,7 @@ function ExperienceContent({
                       onSlideChange(linkedSlide.slideIndex)
                     } else {
                       setManualSelection({ index: projectIndex, slideIndex: activeSlide })
+                      onSlideChange(activeSlide)
                     }
                   }}
                 >
@@ -439,10 +445,18 @@ function ExperienceMobileBody({
   const extraMetrics = items.filter(
     (item) => Boolean(item.value) && !matches.some(({ item: matched }) => matched === item),
   )
+  useEffect(() => {
+    const linked = matches.find((match) => match.slideIndex === activeSlide)?.item
+    const index = linked ? projects.findIndex((project) => project.item === linked) : -1
+    if (index >= 0) setSelectedProject(index)
+  }, [activeSlide, section.slug])
+
   const selectProject = (index: number) => {
     setSelectedProject(index)
     if (projects[index]?.slideIndices.length) {
       onSlideChange(projects[index].slideIndices[0])
+    } else {
+      onSlideChange(activeSlide)
     }
     // React first commits the new accordion panel. Scroll its heading into
     // view below the fixed site header, company index and sticky company copy.
@@ -610,11 +624,13 @@ function ExperienceCard({
   section,
   order,
   isMobile,
+  isActive,
   detail,
 }: {
   section: PortfolioSection
   order: number
   isMobile: boolean
+  isActive: boolean
   detail?: string
 }) {
   const legacyItems = [
@@ -642,6 +658,38 @@ function ExperienceCard({
     items.find((item) => item.title.toLowerCase() === "competências aplicadas")?.tags ?? []
   const projectItems = items.filter((item) => item.title.toLowerCase() !== "competências aplicadas")
   const [activeSlide, setActiveSlide] = useState(0)
+  const [autoplayDelay, setAutoplayDelay] = useState(EXPERIENCE_AUTOPLAY_INTERVAL_MS)
+  const [autoplayReset, setAutoplayReset] = useState(0)
+  const slideCount = displaySection.experienceMedia?.slides?.length ?? 0
+
+  const selectSlide = (index: number) => {
+    setActiveSlide(index)
+    setAutoplayDelay(EXPERIENCE_AUTOPLAY_AFTER_CLICK_MS)
+    setAutoplayReset((current) => current + 1)
+  }
+
+  useEffect(() => {
+    if (!isActive || slideCount < 2 || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      return
+    }
+    let timer: number | undefined
+    const advance = () => {
+      setActiveSlide((current) => nextExperienceSlideIndex(current, slideCount))
+      setAutoplayDelay(EXPERIENCE_AUTOPLAY_INTERVAL_MS)
+    }
+    const schedule = () => {
+      window.clearTimeout(timer)
+      if (!document.hidden) timer = window.setTimeout(advance, autoplayDelay)
+    }
+    const onVisibility = () => schedule()
+    schedule()
+    document.addEventListener("visibilitychange", onVisibility)
+    return () => {
+      window.clearTimeout(timer)
+      document.removeEventListener("visibilitychange", onVisibility)
+    }
+  }, [isActive, slideCount, activeSlide, autoplayDelay, autoplayReset])
+
   const [mobileView, setMobileView] = useState<"projects" | "trajectory">("projects")
   const changeMobileView = (next: "projects" | "trajectory") => {
     setMobileView(next)
@@ -679,13 +727,15 @@ function ExperienceCard({
             items={projectItems}
             detail={detail}
             activeSlide={activeSlide}
-            onSlideChange={setActiveSlide}
+            onSlideChange={selectSlide}
           />
-          <PhotoGallery
-            section={displaySection}
-            active={activeSlide}
-            onSlideChange={setActiveSlide}
-          />
+          {slideCount > 0 && (
+            <PhotoGallery
+              section={displaySection}
+              active={activeSlide}
+              onSlideChange={selectSlide}
+            />
+          )}
         </div>
       )}
       {isMobile && (
@@ -747,7 +797,7 @@ function ExperienceCard({
               detail={detail}
               view={mobileView}
               activeSlide={activeSlide}
-              onSlideChange={setActiveSlide}
+              onSlideChange={selectSlide}
             />
           </div>
         </div>
@@ -1055,6 +1105,7 @@ export function ExperienceStack({
           section={section}
           order={index}
           isMobile={isMobile}
+          isActive={active === section.slug}
           detail={careerDetails[section.slug]}
         />
       ))}

@@ -3,15 +3,16 @@ import { supabase } from "../../lib/supabase"
 import { isSafeEditorialImage } from "../../lib/validation"
 import { sameJson, tryCompositeSave } from "../../lib/p2-composite-save"
 import {
+  experienceProjectItems,
   experienceProjectSlides,
   legacyExperienceProjects,
   validateExperienceProjects,
   type LegacyExperienceBlock,
 } from "../../lib/experience-projects"
-import type { ExperienceProject, ExperienceSlide } from "../../types/content"
+import type { ExperienceProject } from "../../types/content"
 import { PublishedMediaPicker } from "./PublishedMediaPicker"
 import { AdminNotice } from "./AdminNotice"
-import { registerAdminSaveAction } from "./AdminConfirmationHost"
+import { adminConfirm, registerAdminSaveAction } from "./AdminConfirmationHost"
 
 type EditorBlock = LegacyExperienceBlock & {
   section_id: string
@@ -23,6 +24,10 @@ type EditorBlock = LegacyExperienceBlock & {
   updated_at: string
 }
 
+/**
+ * One editorial project, two independently published areas.
+ * The original A/B blocks are never rewritten by this editor.
+ */
 export function ExperienceProjectsEditor({
   sectionId,
   onDirtyChange,
@@ -43,7 +48,7 @@ export function ExperienceProjectsEditor({
 
   useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
 
-  async function load() {
+  async function load(): Promise<boolean> {
     if (!supabase) {
       setMessage("Cliente de conteúdo indisponível.")
       setLoading(false)
@@ -71,25 +76,17 @@ export function ExperienceProjectsEditor({
     setBlocks(nextBlocks)
     setSaved(structuredClone(nextProjects))
     setProjects(nextProjects)
-    setExpanded(
-      nextProjects.find((entry) => entry.item && entry.item.isHidden !== true)?.id ?? null,
-    )
+    setExpanded(nextProjects[0]?.id ?? null)
     setMessage("")
     return true
   }
 
   useEffect(() => {
-    let active = true
     setBlocks([])
     setSaved(null)
     setProjects(null)
     setLoading(true)
-    void (async () => {
-      if (active) await load()
-    })()
-    return () => {
-      active = false
-    }
+    void load()
   }, [sectionId])
 
   function edit(id: string, patch: Partial<ExperienceProject>) {
@@ -111,26 +108,14 @@ export function ExperienceProjectsEditor({
     })
   }
 
-  function attachSlide(slideId: string, projectId: string) {
-    if (!projects || !projectId) return
-    const source = projects.find((entry) => entry.id === slideId)
-    const target = projects.find((entry) => entry.id === projectId)
-    if (!source?.slide || !target?.item || target.slide) return
-    setProjects(
-      projects
-        .filter((entry) => entry.id !== slideId)
-        .map((entry) =>
-          entry.id === projectId
-            ? {
-                ...entry,
-                slide: source.slide,
-                slideOrder: source.slideOrder,
-                includeInGallery: true,
-              }
-            : entry,
-        ),
-    )
-    setExpanded(projectId)
+  async function remove(id: string) {
+    if (!(await adminConfirm("Excluir este projeto e seu slide da coleção editorial?", {
+      title: "Excluir projeto",
+      confirmLabel: "Excluir",
+      tone: "danger",
+    }))) return
+    setProjects((current) => current?.filter((project) => project.id !== id) ?? null)
+    if (expanded === id) setExpanded(null)
   }
 
   async function save(): Promise<boolean> {
@@ -139,10 +124,13 @@ export function ExperienceProjectsEditor({
     if (!a) return false
     const errors = validateExperienceProjects(projects)
     for (const project of projects) {
-      if (project.slide?.image && !isSafeEditorialImage(project.slide.image))
-        errors.push("Uma imagem do projeto não possui URL segura.")
-      if (project.item?.image && !isSafeEditorialImage(project.item.image))
-        errors.push("Um item possui URL de imagem insegura.")
+      if (project.includeInGallery !== false && project.slide?.image &&
+          !isSafeEditorialImage(project.slide.image)) {
+        errors.push("A imagem do slide exige uma URL segura.")
+      }
+      if (project.item?.image && !isSafeEditorialImage(project.item.image)) {
+        errors.push("Uma imagem de projeto possui URL insegura.")
+      }
     }
     if (errors.length) {
       setMessage(errors.join(" "))
@@ -150,8 +138,6 @@ export function ExperienceProjectsEditor({
     }
     setSaving(true)
     try {
-      // Block B remains unchanged, but its initial version must still match
-      // so an unrelated newer project is not accidentally shadowed.
       const latest = await supabase
         .from("content_blocks")
         .select("id,updated_at")
@@ -206,7 +192,7 @@ export function ExperienceProjectsEditor({
         !sameJson(read.data.content_json?.experienceProjects, projects)
       ) {
         setMessage(
-          "Gravação solicitada, mas releitura não confirmada. Não salve novamente sem conferir.",
+          "Gravação solicitada, mas releitura não confirmada. Recarregue antes de reenviar.",
         )
         return false
       }
@@ -214,7 +200,7 @@ export function ExperienceProjectsEditor({
         setMessage("Gravado, mas não foi possível recarregar. Reabra antes de reenviar.")
         return false
       }
-      setMessage("Projetos e imagens gravados e conferidos no bloco A.")
+      setMessage("Projetos e slides gravados e conferidos no Supabase.")
       onSaved?.()
       return true
     } finally {
@@ -224,16 +210,18 @@ export function ExperienceProjectsEditor({
 
   useEffect(() => registerAdminSaveAction(save, () => dirty), [save, dirty])
 
-  const visibleProjects =
-    projects?.filter((project) => project.item && project.item.isHidden !== true) ?? []
-  const hiddenProjects = projects?.filter((project) => project.item?.isHidden === true) ?? []
-  const unlinkedSlides = projects?.filter((project) => !project.item && project.slide) ?? []
-  const totalSlides = projects ? experienceProjectSlides(projects).length : 0
+  const centralCount = projects ? experienceProjectItems(projects).length : 0
+  const galleryCount = projects ? experienceProjectSlides(projects).length : 0
+  const hiddenCount = projects
+    ? projects.filter((project) => project.showInCenter === false && project.includeInGallery === false).length
+    : 0
 
-  function renderProject(project: ExperienceProject) {
+  function renderProject(project: ExperienceProject, index: number) {
     if (!project.item) return null
     const item = project.item
     const open = expanded === project.id
+    const centerVisible = project.showInCenter !== false
+    const galleryVisible = project.includeInGallery !== false && Boolean(project.slide)
     return (
       <article className="block-item-editor" key={project.id}>
         <div className="block-item-head">
@@ -243,33 +231,73 @@ export function ExperienceProjectsEditor({
             aria-expanded={open}
             onClick={() => setExpanded(open ? null : project.id)}
           >
-            <strong>
-              {item.title || "Projeto sem título"}
-              {item.isHidden && " · Ocultado"}
-            </strong>
+            <strong>{item.title || project.slide?.title || "Projeto sem título"}</strong>
+            <span className="block-item-toggle-label">
+              {centerVisible ? "Centro" : ""}{centerVisible && galleryVisible ? " + " : ""}
+              {galleryVisible ? "Slide" : ""}
+              {!centerVisible && !galleryVisible ? "Oculto" : ""}
+            </span>
           </button>
           <div className="order-buttons">
             <button
               type="button"
+              disabled={index === 0}
               aria-label={"Mover " + item.title + " para cima"}
               onClick={() => move(project.id, -1)}
-            >
-              ↑
-            </button>
+            >↑</button>
             <button
               type="button"
+              disabled={index === (projects?.length ?? 0) - 1}
               aria-label={"Mover " + item.title + " para baixo"}
               onClick={() => move(project.id, 1)}
-            >
-              ↓
-            </button>
+            >↓</button>
+            <button
+              type="button"
+              aria-label={"Excluir projeto " + item.title}
+              onClick={() => void remove(project.id)}
+            >×</button>
           </div>
         </div>
         {open && (
           <div className="block-item-body">
-            <div className="field-grid">
+            <fieldset className="field-grid">
+              <legend>Onde exibir este projeto?</legend>
+              <label className="toggle-field">
+                <input
+                  type="checkbox"
+                  checked={centerVisible}
+                  onChange={(event) =>
+                    edit(project.id, { showInCenter: event.target.checked })
+                  }
+                />
+                Exibir na área central
+              </label>
+              <label className="toggle-field">
+                <input
+                  type="checkbox"
+                  checked={galleryVisible}
+                  onChange={(event) =>
+                    edit(project.id, {
+                      includeInGallery: event.target.checked,
+                      slide: event.target.checked && !project.slide
+                        ? { title: item.title, caption: "", image: "" }
+                        : project.slide,
+                      slideOrder: project.slideOrder ?? galleryCount,
+                    })
+                  }
+                />
+                Exibir nos slides da direita
+              </label>
+              {!centerVisible && !galleryVisible && (
+                <p className="field-wide">
+                  Oculto no site. Os campos permanecem disponíveis para futura reativação.
+                </p>
+              )}
+            </fieldset>
+            <fieldset className="field-grid">
+              <legend>Área central · Projetos e realizações</legend>
               <label className="field-wide">
-                Título do projeto · compartilhado pelo texto e pela galeria
+                Título central
                 <input
                   value={item.title}
                   onChange={(event) =>
@@ -278,7 +306,7 @@ export function ExperienceProjectsEditor({
                 />
               </label>
               <label className="field-wide">
-                Descrição do projeto
+                Descrição central
                 <textarea
                   rows={3}
                   value={item.text ?? ""}
@@ -287,75 +315,97 @@ export function ExperienceProjectsEditor({
                   }
                 />
               </label>
-              <label className="toggle-field">
+            </fieldset>
+            <fieldset className="field-grid">
+              <legend>Área direita · Slide do projeto</legend>
+              <label className="field-wide">
+                Título do slide
                 <input
-                  type="checkbox"
-                  checked={item.isHidden !== true}
-                  onChange={(event) =>
-                    edit(project.id, { item: { ...item, isHidden: !event.target.checked } })
-                  }
-                />
-                Exibir o projeto na lista pública
-              </label>
-              <label className="toggle-field">
-                <input
-                  type="checkbox"
-                  checked={Boolean(project.slide && project.includeInGallery !== false)}
+                  value={project.slide?.title ?? ""}
                   onChange={(event) =>
                     edit(project.id, {
-                      includeInGallery: event.target.checked,
-                      slide:
-                        event.target.checked && !project.slide
-                          ? { title: item.title }
-                          : project.slide,
-                      slideOrder: project.slideOrder ?? totalSlides,
+                      slide: {
+                        ...project.slide,
+                        title: event.target.value,
+                      },
                     })
                   }
                 />
-                Exibir também na galeria de imagens
               </label>
-              {project.slide && (
-                <>
-                  <label>
-                    Ordem na galeria (1 = primeiro)
-                    <input
-                      type="number"
-                      min="1"
-                      value={(project.slideOrder ?? totalSlides) + 1}
-                      onChange={(event) =>
-                        edit(project.id, {
-                          slideOrder: Math.max(0, Number(event.target.value) - 1),
-                        })
-                      }
-                    />
-                  </label>
-                  <label className="field-wide">
-                    Legenda da imagem
-                    <input
-                      value={project.slide.caption ?? ""}
-                      onChange={(event) =>
-                        edit(project.id, {
-                          slide: { ...project.slide!, caption: event.target.value },
-                        })
-                      }
-                    />
-                  </label>
-                  <div className="field-wide">
-                    <PublishedMediaPicker
-                      label="Fotografia do projeto"
-                      recommendedSize="1600 × 1600 px (desktop e mobile)"
-                      guidance="Mantenha imagem aprovada, alt e enquadramento."
-                      ratio="1 / 1"
-                      value={project.slide.image ?? ""}
-                      allowFraming={false}
-                      onChange={(image, alt) =>
-                        edit(project.id, { slide: { ...project.slide!, image, alt } })
-                      }
-                    />
-                  </div>
-                </>
-              )}
-            </div>
+              <label className="field-wide">
+                Descrição do slide
+                <textarea
+                  rows={3}
+                  value={project.slide?.caption ?? ""}
+                  onChange={(event) =>
+                    edit(project.id, {
+                      slide: {
+                        ...project.slide,
+                        title: project.slide?.title ?? "",
+                        caption: event.target.value,
+                      },
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Ordem do slide (1 = primeiro)
+                <input
+                  type="number"
+                  min="1"
+                  value={(project.slideOrder ?? galleryCount) + 1}
+                  onChange={(event) =>
+                    edit(project.id, {
+                      slideOrder: Math.max(0, Number(event.target.value) - 1),
+                    })
+                  }
+                />
+              </label>
+              <label className="field-wide">
+                Texto alternativo da imagem
+                <input
+                  value={project.slide?.alt ?? ""}
+                  onChange={(event) =>
+                    edit(project.id, {
+                      slide: {
+                        ...project.slide,
+                        title: project.slide?.title ?? "",
+                        alt: event.target.value,
+                      },
+                    })
+                  }
+                />
+              </label>
+              <div className="field-wide">
+                <PublishedMediaPicker
+                  label="Imagem do slide"
+                  recommendedSize="1600 × 1600 px (desktop e mobile)"
+                  guidance="Use imagem própria ou aprovada. O enquadramento e o texto alternativo são preservados."
+                  ratio="1 / 1"
+                  value={project.slide?.image ?? ""}
+                  framing={project.slide?.framing}
+                  onFramingChange={(framing) =>
+                    edit(project.id, {
+                      slide: {
+                        ...project.slide,
+                        title: project.slide?.title ?? "",
+                        framing,
+                      },
+                    })
+                  }
+                  onChange={(image, alt) =>
+                    edit(project.id, {
+                      slide: {
+                        ...project.slide,
+                        title: project.slide?.title ?? "",
+                        image,
+                        alt,
+                      },
+                    })
+                  }
+                />
+              </div>
+            </fieldset>
           </div>
         )}
       </article>
@@ -363,113 +413,44 @@ export function ExperienceProjectsEditor({
   }
 
   return (
-    <div className="admin-card editor-form" aria-label="Projetos e imagens unificados">
+    <div className="admin-card editor-form" aria-label="Projetos e slides unificados">
       <h3>Projetos e realizações</h3>
       <p>
-        Uma ficha por projeto. Título, descrição e imagem são gerenciados juntos; a galeria pode ter
-        menos imagens que a lista.
+        Edite os textos do centro e os textos e imagens da galeria na mesma ficha.
+        Marque onde cada projeto aparece; com as duas opções desmarcadas, ele fica oculto.
       </p>
       {loading && <p role="status">Carregando projetos…</p>}
-      {!loading && !projects && (
-        <p role="alert">Conteúdo não disponível. Nenhuma gravação permitida.</p>
-      )}
+      {!loading && !projects && <p role="alert">Conteúdo indisponível. Nenhuma gravação permitida.</p>}
       {projects && (
         <>
           <p>
             <strong>
-              {visibleProjects.length} projetos visíveis · {totalSlides} slides ·{" "}
-              {unlinkedSlides.length} imagens sem vínculo.
+              {centralCount} no centro · {galleryCount} nos slides · {hiddenCount} ocultos
             </strong>
           </p>
-          <div className="block-items">{visibleProjects.map(renderProject)}</div>
+          <div className="block-items">{projects.map(renderProject)}</div>
           <button
             type="button"
             className="secondary-button"
             onClick={() => {
               const id = crypto.randomUUID()
-              setProjects([...projects, { id, item: { title: "Novo projeto", text: "" } }])
+              setProjects([
+                ...projects,
+                {
+                  id,
+                  item: { title: "Novo projeto", text: "" },
+                  showInCenter: true,
+                  includeInGallery: false,
+                },
+              ])
               setExpanded(id)
             }}
-          >
-            Adicionar projeto
-          </button>
-          {unlinkedSlides.length > 0 && (
-            <section className="admin-card">
-              <h4>Slides históricos sem vínculo seguro</h4>
-              <p>
-                As imagens e legendas estão preservadas. Escolha explicitamente o projeto
-                correspondente; não é feito vínculo automático por posição ou título duplicado.
-              </p>
-              {unlinkedSlides.map((project) => (
-                <div className="block-item-editor" key={project.id}>
-                  <div className="field-grid">
-                    <label className="field-wide">
-                      Título do slide histórico
-                      <input
-                        value={project.slide!.title}
-                        onChange={(event) =>
-                          edit(project.id, {
-                            slide: { ...project.slide!, title: event.target.value },
-                          })
-                        }
-                      />
-                    </label>
-                    <label className="field-wide">
-                      Associar ao projeto
-                      <select
-                        value=""
-                        onChange={(event) => attachSlide(project.id, event.target.value)}
-                      >
-                        <option value="">Manter slide independente</option>
-                        {projects
-                          .filter((entry) => entry.item && !entry.slide)
-                          .map((entry) => (
-                            <option value={entry.id} key={entry.id}>
-                              {entry.item!.title}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                    <label className="field-wide">
-                      Legenda
-                      <input
-                        value={project.slide!.caption ?? ""}
-                        onChange={(event) =>
-                          edit(project.id, {
-                            slide: { ...project.slide!, caption: event.target.value },
-                          })
-                        }
-                      />
-                    </label>
-                    <div className="field-wide">
-                      <PublishedMediaPicker
-                        label="Imagem do slide histórico"
-                        recommendedSize="1600 × 1600 px"
-                        ratio="1 / 1"
-                        value={project.slide?.image ?? ""}
-                        allowFraming={false}
-                        onChange={(image, alt) =>
-                          edit(project.id, { slide: { ...project.slide!, image, alt } })
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </section>
-          )}
-          {hiddenProjects.length > 0 && (
-            <details className="admin-card">
-              <summary>Itens históricos ocultos ({hiddenProjects.length})</summary>
-              <p>Preservados sem exclusão; é possível reativá-los se necessário.</p>
-              <div className="block-items">{hiddenProjects.map(renderProject)}</div>
-            </details>
-          )}
+          >Adicionar projeto</button>
           <AdminNotice message={message} />
           {saving && <p role="status">Salvando e verificando dados…</p>}
           <p className="site-editor-note">
-            O salvamento usa a RPC de bloco existente. Blocos históricos A/B e mídia original não
-            são excluídos.
+            Cada projeto possui um único registro editorial no bloco A.
+            A exclusão remove a ficha após salvar; não exclui arquivos da biblioteca de mídia.
           </p>
         </>
       )}

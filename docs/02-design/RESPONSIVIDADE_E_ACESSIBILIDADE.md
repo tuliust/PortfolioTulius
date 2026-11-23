@@ -1,5 +1,11 @@
 # Responsividade, UX e acessibilidade
 
+## Experiências — sincronização e avanço automático (23/11/2026)
+
+A galeria troca a cada **3 segundos** enquanto a empresa é a seção ativa. Ao clicar em projeto central, seta ou marcador, o próximo avanço só acontece **8 segundos** depois; o ciclo subsequente volta a 3 s. O destaque do cartão central acompanha o ID do slide em desktop e o acordeão sincroniza o projeto correspondente no mobile. Centro/slide podem ser ocultos independentemente, sem obrigar todos os projetos a ter imagem.
+
+A rotação é suspensa com a aba oculta, menos de dois slides, empresa inativa ou preferência de usuário por movimento reduzido. Preservar foco, alvos móveis, contraste, alt e geometria existente; validar especialmente rotação, seleção e screenshots que dependem do primeiro slide.
+
 ## Resultado vigente do PDF — 18/11/2026
 
 Após a regressão real de impressão descrita ao final deste documento, o proprietário reexportou **Desktop e Mobile** e confirmou o **aceite visual** de ambos. O Desktop usa o iframe de referência 1440 px e não perde painéis em uma aba estreita; o Mobile mantém os cinco diferenciais na mesma folha e conserva a paginação física de referência 390 px. Código funcional `609218b`, QA sintético **SUCCESS**; não houve alteração do CSS ou da experiência pública. Contrato atual: [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md). Registros anteriores sobre “aceite pendente” são históricos.

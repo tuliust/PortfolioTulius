@@ -188,13 +188,16 @@ export type ExperienceSlide = {
 
 export type ExperienceProject = {
   id: string
-  /** Null for legacy slides that have no unambiguous textual match. */
+  /** Central column: independent title and description. */
   item?: ContentItem
+  /** Right-hand gallery: independent title, caption and approved image. */
   slide?: ExperienceSlide
-  /** Original gallery position, independent of text order until editorial review. */
-  slideOrder?: number
-  /** Hiding a slide never erases its image or metadata. */
+  /** False hides only the central card, without deleting the project. */
+  showInCenter?: boolean
+  /** False hides only the slide, without deleting its image reference. */
   includeInGallery?: boolean
+  /** Preserves the previously published gallery order. */
+  slideOrder?: number
 }
 
 export type ExperienceMedia = {

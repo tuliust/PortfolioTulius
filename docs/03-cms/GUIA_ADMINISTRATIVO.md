@@ -1,5 +1,15 @@
 # Guia operacional do CMS
 
+## Experiências — edição integrada do centro e dos slides (23/11/2026)
+
+**Caminho:** Editor do site → Experiências Profissionais → empresa → **Projetos**. Cada ficha contém **Título central** e **Descrição central** para a coluna do meio, mais **Título do slide**, **Descrição do slide** e **Imagem do slide** para a galeria à direita, incluindo alt, enquadramento e ordem. Os títulos e as descrições das duas áreas são independentes.
+
+Existem dois controles: **Exibir na área central** e **Exibir nos slides da direita**. Ambos marcados publicam nos dois lugares; somente um marcado publica apenas nesse destino; ambos desmarcados ocultam a ficha do site sem eliminá-la do painel. Um slide publicado exige título, descrição e imagem segura; um item central publicado exige título e descrição. A galeria pode ficar vazia. Excluir projeto exige confirmação e só efetiva a mudança ao salvar; não exclui arquivos da biblioteca de mídia.
+
+Não há mais seções **Slides históricos sem vínculo seguro** ou **Itens históricos ocultos**. O fallback de experiências ainda não convertidas gera fichas apenas de itens visíveis e slides com correspondência textual inequívoca. A remoção física dos registros legados do JSONB ocorre como operação controlada distinta. Não confundir os itens históricos descartados com fichas que o editor passar a ocultar usando os dois controles.
+
+Na página pública, o slide ativo seleciona o cartão central pelo ID estável, quando esse cartão estiver visível. A troca automática acontece a cada **3 s**; depois de clicar em projeto/seta/marcador, a próxima troca é após **8 s**, e então retorna a 3 s. Pausa em aba oculta, empresa inativa, preferência por movimento reduzido ou galeria com menos de dois slides.
+
 ## Experiências — editor único de projetos e imagens (22/11/2026)
 
 Em **Editor do site → Experiências Profissionais → empresa → Projetos**, cada ficha reúne título, descrição, visibilidade, fotografia, legenda e participação na galeria. **Empresa** mantém logotipo, competências e Trajetória. A lista central e a galeria usam o mesmo título após a gravação da coleção canônica. Projetos sem imagem são admitidos.

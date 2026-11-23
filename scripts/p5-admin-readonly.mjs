@@ -493,17 +493,24 @@ try {
       ?.querySelectorAll(".block-item-editor").length,
     title: document.querySelector(".admin-card.editor-form h3")?.textContent?.trim(),
     summary: document.querySelector(".admin-card.editor-form strong")?.textContent,
+    switchFields: [...document.querySelectorAll(".admin-card.editor-form .toggle-field")]
+      .map((node) => node.textContent?.trim()),
+    legacyHeadings: document.querySelectorAll(".admin-card.editor-form details").length,
     legacySwitcher: document.querySelectorAll(".site-editor-center-blocks button").length,
   }))
   assert(unified.visibleProjects === 5 &&
     unified.title === "Projetos e realizações" &&
-    unified.summary?.includes("4 slides") &&
+    unified.summary?.includes("no centro") &&
+    unified.summary?.includes("nos slides") &&
+    unified.switchFields.some((text) => text?.includes("Exibir na área central")) &&
+    unified.switchFields.some((text) => text?.includes("Exibir nos slides da direita")) &&
+    unified.legacyHeadings === 0 &&
     unified.legacySwitcher === 0,
     "Editor unificado da Invest RS indisponível: " + JSON.stringify(unified))
   await chooseArea("Empresa")
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, experienceAreas,
-    desktopPortraitOnly: true, unifiedProjects: 5, gallerySlides: 4 })
+    desktopPortraitOnly: true, unifiedProjects: 5, independentVisibility: true })
 
   const ordinarySections = ["Comunicação e estratégia", "Formação",
     "Ferramentas", "Depoimentos", "Contato"]

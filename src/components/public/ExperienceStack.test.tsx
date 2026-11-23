@@ -59,3 +59,70 @@ describe("Logotipos das experiências profissionais", () => {
     expect(html.match(/class="experience-monogram"/g)).toHaveLength(2)
   })
 })
+
+
+describe("Exibição independente e sincronização editorial do projeto", () => {
+  const first = {
+    id: "projeto-1",
+    item: { title: "Título central", text: "Descrição exclusiva do centro" },
+    slide: {
+      title: "Título do slide diferente",
+      caption: "Descrição exclusiva do slide",
+      image: "/media/foto-aprovada.png",
+    },
+    slideOrder: 0,
+    showInCenter: true,
+    includeInGallery: true,
+  }
+  const second = {
+    id: "projeto-2",
+    item: { title: "Somente centro", text: "Sem slide publicado" },
+    showInCenter: true,
+    includeInGallery: false,
+  }
+  const third = {
+    id: "projeto-3",
+    item: { title: "Somente no arquivo", text: "Texto não publicado" },
+    slide: {
+      title: "Somente slide",
+      caption: "Descrição da galeria",
+      image: "/media/outra-foto.png",
+    },
+    showInCenter: false,
+    includeInGallery: true,
+    slideOrder: 1,
+  }
+  const fourth = {
+    id: "projeto-4",
+    item: { title: "Totalmente oculto", text: "Não publicar" },
+    showInCenter: false,
+    includeInGallery: false,
+  }
+
+  it("renderiza títulos independentes e não publica fichas com ambos os campos desligados", () => {
+    const html = renderToStaticMarkup(
+      <ExperienceStack
+        sections={[{ ...section, experienceProjects: [first, second, third, fourth] }]}
+        isMobile={false}
+      />,
+    )
+    expect(html).toContain("Título central")
+    expect(html).toContain("Descrição exclusiva do centro")
+    expect(html).toContain("Título do slide diferente")
+    expect(html).toContain("Descrição exclusiva do slide")
+    expect(html).toContain("Somente centro")
+    expect(html).not.toContain("Somente no arquivo")
+    expect(html).not.toContain("Totalmente oculto")
+  })
+
+  it("não produz galeria genérica quando todos os slides estão desligados", () => {
+    const html = renderToStaticMarkup(
+      <ExperienceStack
+        sections={[{ ...section, experienceProjects: [second, fourth] }]}
+        isMobile={false}
+      />,
+    )
+    expect(html).not.toContain('class="experience-gallery"')
+    expect(html).toContain("Somente centro")
+  })
+})

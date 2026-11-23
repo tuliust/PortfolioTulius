@@ -1,5 +1,11 @@
 # Supabase — configuração de produção
 
+## Limpeza JSONB restrita das seis Experiências — 23/11/2026
+
+Solicitação autoriza remover os **23 itens legados com isHidden=true** em A/B e os **dois slides sem correspondência inequívoca** da Invest RS. Preservar os 30 textos visíveis, competências, logo, legendas/imagens dos slides vinculados, Trajetória, e não apagar arquivos de Storage/media_assets. Criar coleção canônica no bloco A por empresa, uma ficha por projeto visível, com vinculação apenas dos slides correspondentes. Não há tabela, migration, RLS ou Auth novos.
+
+A remoção não é disparada automaticamente pelo deploy: conferir dados, versões dos 12 blocos, exportação privada dos itens removidos, pré-condições em transação, contagens e releitura após COMMIT. SQL administrativo sem sessão autenticada não gera content_revisions automaticamente; não presumir rollback por trigger. Registrar resultado real por SHA em nota documental posterior.
+
 ## Inventário read-only verificado — 18/11/2026
 
 Projeto `portfolio` (ref `zfnrhzplwpjpdljraypt`, `us-east-1`) em **ACTIVE_HEALTHY**, PostgreSQL 17. **22/22 tabelas `public` com RLS**, **41 policies**, **12 migrations**; 14 seções, 13 publicadas/visíveis, 42 painéis, 28 blocos, 56 placements, **87 `media_assets` publicados** e **4 `portfolio_projects` normalizados com `status=published` e `project_status=realizado`**. `resultados` tem dois registros `content_blocks` publicados, com arrays de **20 e 5 itens** repetidos nos placements por breakpoint. A alteração da contagem de mídia/projetos em relação aos snapshots de 11/16–11 é **fato novo de leitura**, sem atribuição de causa.

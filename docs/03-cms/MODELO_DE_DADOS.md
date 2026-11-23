@@ -1,5 +1,11 @@
 # Contrato CMS → Supabase → renderer
 
+## Campos do projeto único por experiência (23/11/2026)
+
+O bloco A armazena content_json.experienceProjects: objetos { id, item, slide?, showInCenter?, includeInGallery?, slideOrder? }. item.title e item.text abastecem só o centro; slide.title, slide.caption, slide.image, slide.alt e slide.framing só a direita. showInCenter=false oculta apenas o cartão central; includeInGallery=false oculta apenas a imagem; ambas falsas preservam uma ficha oculta no CMS. O slide exige título, descrição e imagem quando publicado. O ID vincula slide.projectId a item.experienceProjectId, sem casar pelo título.
+
+A coleção canônica alimenta página pública e PDF. Sem coleção, o fallback legado continua disponível até a migração: itens antigos isHidden=true e slides sem título correspondente único não entram no novo editor. A limpeza de JSONB remove só os registros históricos especificados, preservando Competências aplicadas, logotipo e metadados; sem alteração de schema, RLS, Auth ou Storage.
+
 ## Fonte canônica das Experiências — 22/11/2026
 
 O bloco A de cada experiência pode conter `content_json.experienceProjects`: array JSONB com `{ id, item?, slide?, slideOrder?, includeInGallery? }`. `item` preserva o `ContentItem` com `isHidden` e estilos; `slide` preserva imagem, alt, legenda e enquadramento; `id` é estável; `includeInGallery=false` oculta imagem sem apagá-la. Slides sem projeto ficam como entradas sem `item` até revisão editorial.

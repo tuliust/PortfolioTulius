@@ -1,5 +1,11 @@
 # Arquitetura do PortfolioTulius
 
+## Experiências com duas áreas e sincronização por ID (23/11/2026)
+
+ExperienceProjectsEditor.tsx salva uma ficha com textos de centro e slide separados e flags independentes showInCenter/includeInGallery, no JSONB do bloco A por RPC/CAS, com releitura. experience-projects.ts deriva duas listas da mesma coleção; ExperienceStack.tsx vincula o slide ativo ao item central por ID, mesmo com títulos diferentes. Sem vínculo central visível, nenhum item deve receber destaque arbitrário.
+
+O carrossel avança em 3000 ms para a empresa ativa; interação manual reinicia a contagem em 8000 ms e o ciclo volta a 3000 ms. A aba oculta, preferência por movimento reduzido e galerias menores que dois slides suspendem o temporizador. Mantêm-se os componentes, responsividade, Trajetória, PDF, SEO e identidade visual existentes.
+
 ## Unificação editorial das Experiências — 22/11/2026
 
 `ExperienceProjectsEditor.tsx` lê A/B e os slides aprovados, oferece fichas integradas e salva `content_json.experienceProjects` apenas em A por RPC P2/CAS. O conversor `legacyExperienceProjects` preserva itens históricos ocultos e slides ambíguos, sem SQL de migração. `usePortfolio.ts` detecta o novo campo, e `ExperienceStack.tsx`/PDF derivam os projetos e os slides da mesma lista, com fallback legada quando o campo não existe. Não alterar design público, Trajetória, bibliotecas de mídia ou a infraestrutura por causa dessa interface.

@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## Regressão do editor de Experiências — alteração de 23/11/2026
+
+experience-projects.test.ts verifica títulos/descrições distintos, combinações de visibilidade, omissão de históricos ocultos e órfãos, validação de imagem, ID e galeria vazia. experience-slide-timing.test.ts cobre intervalos 3000/8000 ms e o avanço circular; ExperienceStack.test.tsx verifica a saída pública SSR. P5 admin read-only verifica os dois controles da ficha em vez de números antigos de slides.
+
+Após commit, conferir por SHA Validate, P5 Supabase/Docker sintético, browser desktop/mobile, performance P3 (LCP mobile ≤3,5 s), PDF QA e Vercel. Os testes unitários de timer não comprovam sozinho a temporização real; o fluxo autenticado editar/salvar/reler do CMS precisa de validação de navegador.
+
 ## Regressão planejada do editor unificado — 22/11/2026
 
 Testes em `src/lib/experience-projects.test.ts` cobrem composição A/B, itens ocultos, vínculos ambíguos, imagens preservadas e título único por identificador. `src/lib/experience-text.test.ts` cobre ID estável mesmo com títulos repetidos. A leitura SQL anterior confirmou 5 projetos textuais visíveis por empresa e 19 slides (Invest RS: 4; demais: 3). Nenhuma escrita produtiva foi realizada nessa inspeção.
