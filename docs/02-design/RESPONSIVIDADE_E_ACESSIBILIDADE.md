@@ -1,5 +1,11 @@
 # Responsividade, UX e acessibilidade
 
+## Verificação do formulário administrativo de Experiências — 23/11/2026
+
+No SHA `6c25100`, Validate e P5 Admin Read-Only E2E concluíram em **SUCCESS**. A inspeção autenticada e sem gravações confirmou o título secundário em caixa alta com escala maior que o texto de apoio, as três legendas compactas, títulos e estados de exibição em duas linhas e placeholders dos campos. O CSS está escopado no painel administrativo e a grade dos controles passa a uma coluna em viewport estreito; não houve alteração no layout público.
+
+Na auditoria P3 do mesmo conjunto de CSS (SHA `a11a55e`), o browser público obteve **zero falhas** e 38 capturas aprovadas, mas P3 global **FAILURE** exclusivamente pelo LCP mobile de **3.634,864 ms**, superior à meta de **3.500 ms**. Não se considera o LCP corrigido e não foi feita nova auditoria visual autenticada por screenshot do formulário.
+
 ## Editor de Experiências — hierarquia e adaptação do formulário administrativo (23/11/2026)
 
 Ajuste **restrito ao painel admin**, na aba **Experiências Profissionais → Projetos**. O título secundário da ficha, os textos de orientação, os marcadores Centro/Slide/Oculto, as legendas dos três grupos, labels, placeholders e nota de rodapé utilizam a escala tipográfica do CMS existente, sem afetar o renderer público. O `fieldset` permanece semântico e contém uma grade própria para alinhar os controles; abaixo de 768 px, a grade passa a **uma coluna**, com foco visível e os alvos de toque preexistentes preservados. Classes são escopadas em `experience-projects-editor`, sem alteração de identidade visual global, movimento, SEO ou dados.

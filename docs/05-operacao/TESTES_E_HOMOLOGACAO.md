@@ -1,5 +1,13 @@
 # Testes, CI e homologação
 
+## Verificação da hierarquia administrativa — 23/11/2026
+
+**Implementação `a11a55e`; ajuste do formatador `6c25100`.** A padronização está restrita ao editor de **Projetos** de Experiências: título interno em fonte display, resumo compacto, título/estado de cada ficha em duas linhas, três legendas de campo pequenas em caixa alta, labels, textos de apoio e placeholders, com adaptação do grid a uma coluna em viewport estreito. Nenhuma escrita de dados foi executada.
+
+**CI no SHA final `6c251002af23317f4d25dc317c47ddfcd3b2e156`:** Validate [#45206183847](https://github.com/tuliust/PortfolioTulius/actions/runs/45206183847) **SUCCESS** (formatação, TypeScript, testes e build); P5 Admin Read-Only E2E [#45206183670](https://github.com/tuliust/PortfolioTulius/actions/runs/45206183670) **SUCCESS**, incluindo as novas assertivas de hierarquia, legendas, status do item e placeholders; Vercel Production **READY** para o mesmo SHA. Uma tentativa anterior em `a11a55e` teve Validate **FAILURE somente de formatação**, corrigida em `6c25100`.
+
+**Auditoria pública P3 [#45205907340](https://github.com/tuliust/PortfolioTulius/actions/runs/45205907340), SHA `a11a55e` (mesmo CSS, apenas a quebra de linha JSX corrigida posteriormente):** Browser `failures=0`, testes de sincronização e autoplay `PASS`, 38 capturas `PASS`, RLS/SEO `PASS`; porém **P3 global = FAILURE somente no orçamento mobile**: LCP mediano **3.634,864 ms**, contra a meta fixa **≤ 3.500 ms**; desktop **872,957 ms** `PASS`. A revisão tipográfica administrativa não foi objeto de screenshots autenticadas novas; P5 inspecionou suas propriedades CSS no navegador. Não presumir causalidade de desempenho, nem classificar o risco LCP como corrigido.
+
 ## Regressão de hierarquia visual do editor de projetos — 23/11/2026
 
 O teste **P5 Admin Read-Only E2E**, no fluxo Experiências Profissionais → Projetos, valida sem gravações o título secundário em caixa alta e maior que o texto de apoio, as **três legendas compactas em caixa alta**, a apresentação dos cartões em duas linhas (título e estado de exibição) e a presença dos placeholders. A mudança é somente de apresentação em `ExperienceProjectsEditor.tsx` e estilos escopados em `src/index.css`; o salvamento transacional, flags, catálogo, componentes públicos e banco não mudam. Confirmar CI (Validate, P5), estado Vercel e SHA após commit; testes anteriores são históricos e não homologam automaticamente esta revisão.
