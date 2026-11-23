@@ -2,6 +2,8 @@
 
 ## Regressão do editor de Experiências — alteração de 23/11/2026
 
+O P5 local inclui, em scripts/p4-local-admin-browser.mjs, uma sequência autenticada sobre dados **inteiramente sintéticos**: editar título central, título/descrição do slide, salvar pelo CMS, reler conteúdo canônico do bloco A, conferir o renderer público; em seguida desmarcar os dois destinos, salvar/reler e conferir que o projeto fica ausente do público sem perder a referência da imagem. A execução/resultado deverão ser verificados pelo SHA da mudança do script, não inferidos da adição do código.
+
 experience-projects.test.ts verifica títulos/descrições distintos, combinações de visibilidade, omissão de históricos ocultos e órfãos, validação de imagem, ID e galeria vazia. experience-slide-timing.test.ts cobre intervalos 3000/8000 ms e o avanço circular; ExperienceStack.test.tsx verifica a saída pública SSR. P5 admin read-only verifica os dois controles da ficha em vez de números antigos de slides.
 
 Após commit, conferir por SHA Validate, P5 Supabase/Docker sintético, browser desktop/mobile, performance P3 (LCP mobile ≤3,5 s), PDF QA e Vercel. Os testes unitários de timer não comprovam sozinho a temporização real; o fluxo autenticado editar/salvar/reler do CMS precisa de validação de navegador.

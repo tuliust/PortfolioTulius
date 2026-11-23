@@ -1468,6 +1468,115 @@ try {
   }, { timeout: 18000 }, galleryPath)
   pass("MEDIA_GALLERY_LOGO_OVERRIDE_DESKTOP", { publicRenderer: true })
 
+  // Real authenticated CMS flow, strictly against synthetic local fixtures:
+  // independent copy, atomic save, public rendering and double visibility.
+  const openUnifiedExperience = async () => {
+    await page.setViewport({ width: 1440, height: 900 })
+    await page.goto(base + "/admin", { waitUntil: "domcontentloaded", timeout: 30000 })
+    await page.waitForSelector(".admin-shell", { timeout: 20000 })
+    await page.evaluate(() => {
+      [...document.querySelectorAll(".admin-sidebar nav button")]
+        .find((node) => node.textContent?.trim() === "Editor do site")?.click()
+    })
+    await page.waitForSelector(".site-editor-experience-nav", { timeout: 15000 })
+    await page.click(".site-editor-experience-nav")
+    await page.waitForSelector(".site-editor-experience-current", { timeout: 15000 })
+    const openTab = await page.evaluate(() => {
+      const tab = [...document.querySelectorAll('.site-editor-area-tabs button[role="tab"]')]
+        .find((node) => node.textContent?.includes("Projetos"))
+      tab?.click()
+      return Boolean(tab)
+    })
+    ensure(openTab, "EXPERIENCE_PROJECTS_TAB")
+    await page.waitForSelector(".admin-card.editor-form .block-item-editor", { timeout: 16000 })
+  }
+  const editUnifiedField = async (title, value) => {
+    const changed = await page.evaluate(({ title, value }) => {
+      const form = document.querySelector(".admin-card.editor-form")
+      const label = [...(form?.querySelectorAll("label") ?? [])]
+        .find((node) => node.textContent?.trim().startsWith(title))
+      const field = label?.querySelector("input,textarea")
+      if (!field) return false
+      const proto = field instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
+      Object.getOwnPropertyDescriptor(proto, "value").set.call(field, value)
+      field.dispatchEvent(new Event("input", { bubbles: true }))
+      return true
+    }, { title, value })
+    ensure(changed, "EXPERIENCE_FIELD_" + title)
+  }
+  await openUnifiedExperience()
+  const newCentralTitle = "Entrega central sintética " + suffix
+  const newSlideTitle = "Slide independente sintético " + suffix
+  const newSlideCaption = "Descrição do slide validada no banco sintético"
+  await editUnifiedField("Título central", newCentralTitle)
+  await editUnifiedField("Título do slide", newSlideTitle)
+  await editUnifiedField("Descrição do slide", newSlideCaption)
+  await page.waitForSelector(".admin-floating-save button", { timeout: 12000 })
+  await page.click(".admin-floating-save button")
+  await page.waitForFunction(() =>
+    document.querySelector(".admin-card.editor-form")?.textContent?.includes(
+      "Projetos e slides gravados e conferidos no Supabase."), { timeout: 25000 })
+  const afterProjectSave = await get(service.from("content_blocks")
+    .select("content_json").eq("id", galleryBlock.data.id).single(), "EXPERIENCE_SAVE_RELOAD")
+  const canonical = afterProjectSave.content_json.experienceProjects
+  ensure(canonical?.length === 1 &&
+    canonical[0].item.title === newCentralTitle &&
+    canonical[0].item.text === "Projeto de homologação local" &&
+    canonical[0].slide.title === newSlideTitle &&
+    canonical[0].slide.caption === newSlideCaption &&
+    canonical[0].slide.image === galleryUrl,
+    "EXPERIENCE_INDEPENDENT_FIELDS_PERSISTED")
+  await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForFunction(({ center, slide, caption }) => {
+    const section = document.querySelector('section[data-section="invest-rs"]')
+    return Boolean(section?.querySelector(".experience-projects")?.textContent?.includes(center) &&
+      section?.querySelector(".experience-gallery-footer h3")?.textContent?.includes(slide) &&
+      section?.querySelector(".experience-gallery-footer")?.textContent?.includes(caption))
+  }, { timeout: 18000 }, { center: newCentralTitle, slide: newSlideTitle, caption: newSlideCaption })
+  pass("EXPERIENCE_INDEPENDENT_FIELDS_SAVE_RELOAD", {
+    source: "synthetic", centerTitle: true, slideTitle: true, slideDescription: true, mediaRetained: true,
+  })
+
+  await openUnifiedExperience()
+  const visibilityToggled = await page.evaluate(() => {
+    const form = document.querySelector(".admin-card.editor-form")
+    const fields = [...(form?.querySelectorAll(".toggle-field") ?? [])]
+    const center = fields.find((node) => node.textContent?.includes("Exibir na área central"))
+    const gallery = fields.find((node) => node.textContent?.includes("Exibir nos slides da direita"))
+    const a = center?.querySelector("input[type=checkbox]")
+    const b = gallery?.querySelector("input[type=checkbox]")
+    if (!a?.checked || !b?.checked) return false
+    a.click()
+    b.click()
+    return true
+  })
+  ensure(visibilityToggled, "EXPERIENCE_DOUBLE_VISIBILITY_CONTROLS")
+  await page.waitForSelector(".admin-floating-save button", { timeout: 12000 })
+  await page.click(".admin-floating-save button")
+  await page.waitForFunction(() =>
+    document.querySelector(".admin-card.editor-form")?.textContent?.includes(
+      "Projetos e slides gravados e conferidos no Supabase."), { timeout: 25000 })
+  const afterHide = await get(service.from("content_blocks")
+    .select("content_json").eq("id", galleryBlock.data.id).single(), "EXPERIENCE_HIDE_RELOAD")
+  ensure(afterHide.content_json.experienceProjects?.[0]?.showInCenter === false &&
+    afterHide.content_json.experienceProjects?.[0]?.includeInGallery === false &&
+    afterHide.content_json.experienceProjects?.[0]?.slide?.image === galleryUrl,
+    "EXPERIENCE_DOUBLE_VISIBILITY_PERSISTED")
+  await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
+  await page.waitForFunction(() => Boolean(
+    document.querySelector('section[data-section="invest-rs"] .experience-projects')),
+    { timeout: 18000 })
+  const publicHidden = await page.evaluate(({ center, slide }) => {
+    const root = document.querySelector('section[data-section="invest-rs"]')
+    return Boolean(root && !root.querySelector(".experience-projects")?.textContent?.includes(center) &&
+      !root.querySelector(".experience-gallery-footer")?.textContent?.includes(slide))
+  }, { center: newCentralTitle, slide: newSlideTitle })
+  ensure(publicHidden, "EXPERIENCE_BOTH_HIDDEN_PUBLIC")
+  pass("EXPERIENCE_BOTH_HIDDEN_SAVE_RELOAD", {
+    source: "synthetic", hiddenInPublic: true, mediaReferencePreserved: true,
+  })
+
   // The full Acervo is available inside the authenticated CMS. Verify the
   // seven non-testimonial/non-career collections through their actual inputs,
   // published writes and a fresh PostgREST read, not just payload helpers.
