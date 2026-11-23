@@ -6,7 +6,7 @@ O P5 local inclui, em scripts/p4-local-admin-browser.mjs, uma sequência autenti
 
 experience-projects.test.ts verifica títulos/descrições distintos, combinações de visibilidade, omissão de históricos ocultos e órfãos, validação de imagem, ID e galeria vazia. experience-slide-timing.test.ts cobre intervalos 3000/8000 ms e o avanço circular; ExperienceStack.test.tsx verifica a saída pública SSR. P5 admin read-only verifica os dois controles da ficha em vez de números antigos de slides.
 
-Após commit, conferir por SHA Validate, P5 Supabase/Docker sintético, browser desktop/mobile, performance P3 (LCP mobile ≤3,5 s), PDF QA e Vercel. Os testes unitários de timer não comprovam sozinho a temporização real; o fluxo autenticado editar/salvar/reler do CMS precisa de validação de navegador.
+Após commit, conferir por SHA Validate, P5 Supabase/Docker sintético, browser desktop/mobile, performance P3 (LCP mobile ≤3,5 s), PDF QA e Vercel. O ensaio sintético inicial registrou 89/89 verificações PASS, mas a execução encerrou FAILURE porque o total esperado permaneceu 87. O script foi corrigido para exigir 89 verificações; conferir a nova execução por SHA antes de declarar SUCCESS. Os testes unitários de timer não comprovam sozinhos a temporização real; o fluxo autenticado editar/salvar/reler do CMS precisa de validação de navegador.
 
 ## Regressão planejada do editor unificado — 22/11/2026
 
