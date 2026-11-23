@@ -497,6 +497,26 @@ try {
       .map((node) => node.textContent?.trim()),
     legacyHeadings: document.querySelectorAll(".admin-card.editor-form details").length,
     legacySwitcher: document.querySelectorAll(".site-editor-center-blocks button").length,
+    hierarchy: (() => {
+      const root = document.querySelector(".experience-projects-editor")
+      const heading = root?.querySelector(".experience-projects-intro h3")
+      const help = root?.querySelector(".experience-projects-intro p")
+      const legends = [...(root?.querySelectorAll(".experience-projects-group legend") ?? [])]
+      const sizes = heading && help
+        ? [parseFloat(getComputedStyle(heading).fontSize),
+          parseFloat(getComputedStyle(help).fontSize)]
+        : []
+      return {
+        titleHierarchy: sizes.length === 2 && sizes[0] > sizes[1] &&
+          getComputedStyle(heading).textTransform === "uppercase",
+        compactLegends: legends.length === 3 &&
+          legends.every((node) => getComputedStyle(node).textTransform === "uppercase" &&
+            parseFloat(getComputedStyle(node).fontSize) < sizes[0]),
+        twoLineItemTitle: Boolean(root?.querySelector(".block-item-toggle-label strong") &&
+          root?.querySelector(".block-item-toggle-label small")),
+        placeholders: root?.querySelectorAll("input[placeholder],textarea[placeholder]").length ?? 0,
+      }
+    })(),
   }))
   assert(unified.visibleProjects === 5 &&
     unified.title === "Projetos e realizações" &&
@@ -505,7 +525,11 @@ try {
     unified.switchFields.some((text) => text?.includes("Exibir na área central")) &&
     unified.switchFields.some((text) => text?.includes("Exibir nos slides da direita")) &&
     unified.legacyHeadings === 0 &&
-    unified.legacySwitcher === 0,
+    unified.legacySwitcher === 0 &&
+    unified.hierarchy.titleHierarchy &&
+    unified.hierarchy.compactLegends &&
+    unified.hierarchy.twoLineItemTitle &&
+    unified.hierarchy.placeholders >= 4,
     "Editor unificado da Invest RS indisponível: " + JSON.stringify(unified))
   await chooseArea("Empresa")
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })

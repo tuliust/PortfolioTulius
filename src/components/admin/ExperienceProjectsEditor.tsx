@@ -239,12 +239,14 @@ export function ExperienceProjectsEditor({
             aria-expanded={open}
             onClick={() => setExpanded(open ? null : project.id)}
           >
-            <strong>{item.title || project.slide?.title || "Projeto sem título"}</strong>
             <span className="block-item-toggle-label">
-              {centerVisible ? "Centro" : ""}
-              {centerVisible && galleryVisible ? " + " : ""}
-              {galleryVisible ? "Slide" : ""}
-              {!centerVisible && !galleryVisible ? "Oculto" : ""}
+              <strong>{item.title || project.slide?.title || "Projeto sem título"}</strong>
+              <small>
+                {centerVisible ? "Centro" : ""}
+                {centerVisible && galleryVisible ? " + " : ""}
+                {galleryVisible ? "Slide" : ""}
+                {!centerVisible && !galleryVisible ? "Oculto" : ""}
+              </small>
             </span>
           </button>
           <div className="order-buttons">
@@ -275,149 +277,160 @@ export function ExperienceProjectsEditor({
         </div>
         {open && (
           <div className="block-item-body">
-            <fieldset className="field-grid">
+            <fieldset className="experience-projects-group">
               <legend>Onde exibir este projeto?</legend>
-              <label className="toggle-field">
-                <input
-                  type="checkbox"
-                  checked={centerVisible}
-                  onChange={(event) => edit(project.id, { showInCenter: event.target.checked })}
-                />
-                Exibir na área central
-              </label>
-              <label className="toggle-field">
-                <input
-                  type="checkbox"
-                  checked={galleryVisible}
-                  onChange={(event) =>
-                    edit(project.id, {
-                      includeInGallery: event.target.checked,
-                      slide:
-                        event.target.checked && !project.slide
-                          ? { title: item.title, caption: "", image: "" }
-                          : project.slide,
-                      slideOrder: project.slideOrder ?? galleryCount,
-                    })
-                  }
-                />
-                Exibir nos slides da direita
-              </label>
-              {!centerVisible && !galleryVisible && (
-                <p className="field-wide">
-                  Oculto no site. Os campos permanecem disponíveis para futura reativação.
-                </p>
-              )}
+              <div className="field-grid">
+                <label className="toggle-field">
+                  <input
+                    type="checkbox"
+                    checked={centerVisible}
+                    onChange={(event) => edit(project.id, { showInCenter: event.target.checked })}
+                  />
+                  Exibir na área central
+                </label>
+                <label className="toggle-field">
+                  <input
+                    type="checkbox"
+                    checked={galleryVisible}
+                    onChange={(event) =>
+                      edit(project.id, {
+                        includeInGallery: event.target.checked,
+                        slide:
+                          event.target.checked && !project.slide
+                            ? { title: item.title, caption: "", image: "" }
+                            : project.slide,
+                        slideOrder: project.slideOrder ?? galleryCount,
+                      })
+                    }
+                  />
+                  Exibir nos slides da direita
+                </label>
+                {!centerVisible && !galleryVisible && (
+                  <p className="field-wide experience-projects-hint">
+                    Oculto no site. Os campos permanecem disponíveis para futura reativação.
+                  </p>
+                )}
+              </div>
             </fieldset>
-            <fieldset className="field-grid">
+            <fieldset className="experience-projects-group">
               <legend>Área central · Projetos e realizações</legend>
-              <label className="field-wide">
-                Título central
-                <input
-                  value={item.title}
-                  onChange={(event) =>
-                    edit(project.id, { item: { ...item, title: event.target.value } })
-                  }
-                />
-              </label>
-              <label className="field-wide">
-                Descrição central
-                <textarea
-                  rows={3}
-                  value={item.text ?? ""}
-                  onChange={(event) =>
-                    edit(project.id, { item: { ...item, text: event.target.value } })
-                  }
-                />
-              </label>
+              <div className="field-grid">
+                <label className="field-wide">
+                  Título central
+                  <input
+                    value={item.title}
+                    placeholder="Título exibido na área central"
+                    onChange={(event) =>
+                      edit(project.id, { item: { ...item, title: event.target.value } })
+                    }
+                  />
+                </label>
+                <label className="field-wide">
+                  Descrição central
+                  <textarea
+                    rows={3}
+                    value={item.text ?? ""}
+                    placeholder="Descreva o projeto ou a realização"
+                    onChange={(event) =>
+                      edit(project.id, { item: { ...item, text: event.target.value } })
+                    }
+                  />
+                </label>
+              </div>
             </fieldset>
-            <fieldset className="field-grid">
+            <fieldset className="experience-projects-group">
               <legend>Área direita · Slide do projeto</legend>
-              <label className="field-wide">
-                Título do slide
-                <input
-                  value={project.slide?.title ?? ""}
-                  onChange={(event) =>
-                    edit(project.id, {
-                      slide: {
-                        ...project.slide,
-                        title: event.target.value,
-                      },
-                    })
-                  }
-                />
-              </label>
-              <label className="field-wide">
-                Descrição do slide
-                <textarea
-                  rows={3}
-                  value={project.slide?.caption ?? ""}
-                  onChange={(event) =>
-                    edit(project.id, {
-                      slide: {
-                        ...project.slide,
-                        title: project.slide?.title ?? "",
-                        caption: event.target.value,
-                      },
-                    })
-                  }
-                />
-              </label>
-              <label>
-                Ordem do slide (1 = primeiro)
-                <input
-                  type="number"
-                  min="1"
-                  value={(project.slideOrder ?? galleryCount) + 1}
-                  onChange={(event) =>
-                    edit(project.id, {
-                      slideOrder: Math.max(0, Number(event.target.value) - 1),
-                    })
-                  }
-                />
-              </label>
-              <label className="field-wide">
-                Texto alternativo da imagem
-                <input
-                  value={project.slide?.alt ?? ""}
-                  onChange={(event) =>
-                    edit(project.id, {
-                      slide: {
-                        ...project.slide,
-                        title: project.slide?.title ?? "",
-                        alt: event.target.value,
-                      },
-                    })
-                  }
-                />
-              </label>
-              <div className="field-wide">
-                <PublishedMediaPicker
-                  label="Imagem do slide"
-                  recommendedSize="1600 × 1600 px (desktop e mobile)"
-                  guidance="Use imagem própria ou aprovada. O enquadramento e o texto alternativo são preservados."
-                  ratio="1 / 1"
-                  value={project.slide?.image ?? ""}
-                  framing={project.slide?.framing}
-                  onFramingChange={(framing) =>
-                    edit(project.id, {
-                      slide: {
-                        ...project.slide,
-                        title: project.slide?.title ?? "",
-                        framing,
-                      },
-                    })
-                  }
-                  onChange={(image, alt) =>
-                    edit(project.id, {
-                      slide: {
-                        ...project.slide,
-                        title: project.slide?.title ?? "",
-                        image,
-                        alt,
-                      },
-                    })
-                  }
-                />
+              <div className="field-grid">
+                <label className="field-wide">
+                  Título do slide
+                  <input
+                    value={project.slide?.title ?? ""}
+                    placeholder="Título exibido no slide"
+                    onChange={(event) =>
+                      edit(project.id, {
+                        slide: {
+                          ...project.slide,
+                          title: event.target.value,
+                        },
+                      })
+                    }
+                  />
+                </label>
+                <label className="field-wide">
+                  Descrição do slide
+                  <textarea
+                    rows={3}
+                    value={project.slide?.caption ?? ""}
+                    placeholder="Descrição que acompanha o slide"
+                    onChange={(event) =>
+                      edit(project.id, {
+                        slide: {
+                          ...project.slide,
+                          title: project.slide?.title ?? "",
+                          caption: event.target.value,
+                        },
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  Ordem do slide (1 = primeiro)
+                  <input
+                    type="number"
+                    min="1"
+                    value={(project.slideOrder ?? galleryCount) + 1}
+                    onChange={(event) =>
+                      edit(project.id, {
+                        slideOrder: Math.max(0, Number(event.target.value) - 1),
+                      })
+                    }
+                  />
+                </label>
+                <label className="field-wide">
+                  Texto alternativo da imagem
+                  <input
+                    value={project.slide?.alt ?? ""}
+                    placeholder="Descreva a imagem para acessibilidade"
+                    onChange={(event) =>
+                      edit(project.id, {
+                        slide: {
+                          ...project.slide,
+                          title: project.slide?.title ?? "",
+                          alt: event.target.value,
+                        },
+                      })
+                    }
+                  />
+                </label>
+                <div className="field-wide">
+                  <PublishedMediaPicker
+                    label="Imagem do slide"
+                    recommendedSize="1600 × 1600 px (desktop e mobile)"
+                    guidance="Use imagem própria ou aprovada. O enquadramento e o texto alternativo são preservados."
+                    ratio="1 / 1"
+                    value={project.slide?.image ?? ""}
+                    framing={project.slide?.framing}
+                    onFramingChange={(framing) =>
+                      edit(project.id, {
+                        slide: {
+                          ...project.slide,
+                          title: project.slide?.title ?? "",
+                          framing,
+                        },
+                      })
+                    }
+                    onChange={(image, alt) =>
+                      edit(project.id, {
+                        slide: {
+                          ...project.slide,
+                          title: project.slide?.title ?? "",
+                          image,
+                          alt,
+                        },
+                      })
+                    }
+                  />
+                </div>
               </div>
             </fieldset>
           </div>
@@ -427,19 +440,24 @@ export function ExperienceProjectsEditor({
   }
 
   return (
-    <div className="admin-card editor-form" aria-label="Projetos e slides unificados">
-      <h3>Projetos e realizações</h3>
-      <p>
-        Edite os textos do centro e os textos e imagens da galeria na mesma ficha. Marque onde cada
-        projeto aparece; com as duas opções desmarcadas, ele fica oculto.
-      </p>
+    <div
+      className="admin-card editor-form experience-projects-editor"
+      aria-label="Projetos e slides unificados"
+    >
+      <div className="experience-projects-intro">
+        <h3>Projetos e realizações</h3>
+        <p>
+          Edite os textos do centro e os textos e imagens da galeria na mesma ficha. Marque onde cada
+          projeto aparece; com as duas opções desmarcadas, ele fica oculto.
+        </p>
+      </div>
       {loading && <p role="status">Carregando projetos…</p>}
       {!loading && !projects && (
         <p role="alert">Conteúdo indisponível. Nenhuma gravação permitida.</p>
       )}
       {projects && (
         <>
-          <p>
+          <p className="experience-projects-summary">
             <strong>
               {centralCount} no centro · {galleryCount} nos slides · {hiddenCount} ocultos
             </strong>
@@ -466,7 +484,7 @@ export function ExperienceProjectsEditor({
           </button>
           <AdminNotice message={message} />
           {saving && <p role="status">Salvando e verificando dados…</p>}
-          <p className="site-editor-note">
+          <p className="site-editor-note experience-projects-footnote">
             Cada projeto possui um único registro editorial no bloco A. A exclusão remove a ficha
             após salvar; não exclui arquivos da biblioteca de mídia.
           </p>

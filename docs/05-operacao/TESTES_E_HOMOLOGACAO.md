@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Regressão de hierarquia visual do editor de projetos — 23/11/2026
+
+O teste **P5 Admin Read-Only E2E**, no fluxo Experiências Profissionais → Projetos, valida sem gravações o título secundário em caixa alta e maior que o texto de apoio, as **três legendas compactas em caixa alta**, a apresentação dos cartões em duas linhas (título e estado de exibição) e a presença dos placeholders. A mudança é somente de apresentação em `ExperienceProjectsEditor.tsx` e estilos escopados em `src/index.css`; o salvamento transacional, flags, catálogo, componentes públicos e banco não mudam. Confirmar CI (Validate, P5), estado Vercel e SHA após commit; testes anteriores são históricos e não homologam automaticamente esta revisão.
+
 ## Resultado verificado de navegação/galeria e P3 — 23/11/2026
 
 **SHA de teste e documentação `1a352d45047d43d4a68966f86d4f99525f353b61`:** Validate [#45202552041](https://github.com/tuliust/PortfolioTulius/actions/runs/45202552041) **SUCCESS**, Export Docs [#45202551880](https://github.com/tuliust/PortfolioTulius/actions/runs/45202551880) **SUCCESS** e Vercel Production **READY** no mesmo SHA. Auditoria P3 [#45202551715](https://github.com/tuliust/PortfolioTulius/actions/runs/45202551715) **FAILURE exclusivamente na etapa "Enforce conservative P6 Lighthouse regression budgets"**: mobile performance 88, LCP mediano **3.575,809 ms** (limite **3.500 ms**), CLS 0,000217; desktop performance 98, LCP 945,505 ms, `PASS`. Não alterar o limite nem atribuir o insucesso a falha da galeria.

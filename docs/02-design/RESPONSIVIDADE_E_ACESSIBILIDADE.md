@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Editor de Experiências — hierarquia e adaptação do formulário administrativo (23/11/2026)
+
+Ajuste **restrito ao painel admin**, na aba **Experiências Profissionais → Projetos**. O título secundário da ficha, os textos de orientação, os marcadores Centro/Slide/Oculto, as legendas dos três grupos, labels, placeholders e nota de rodapé utilizam a escala tipográfica do CMS existente, sem afetar o renderer público. O `fieldset` permanece semântico e contém uma grade própria para alinhar os controles; abaixo de 768 px, a grade passa a **uma coluna**, com foco visível e os alvos de toque preexistentes preservados. Classes são escopadas em `experience-projects-editor`, sem alteração de identidade visual global, movimento, SEO ou dados.
+
 ## Evidência do carrossel publicado — P3 23/11/2026
 
 No SHA `1a352d4`, a auditoria browser [#45202551715](https://github.com/tuliust/PortfolioTulius/actions/runs/45202551715) confirmou `P3_PROJECT_GALLERY_LINK PASS` e `P3_EXPERIENCE_AUTOPLAY PASS`: os dois slides da Invest RS alternam com os projetos centrais corretos; após clique o quadro permaneceu estável aos 3,3 s, avançou após 8 s e retomou 3 s no ciclo seguinte. A avaliação de rotas/responsividade registrou **zero falhas**, e as 38 capturas visuais foram aprovadas. A preferência por movimento reduzido continua desativando o timer.

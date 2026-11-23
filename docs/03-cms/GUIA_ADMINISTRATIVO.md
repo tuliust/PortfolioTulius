@@ -1,5 +1,11 @@
 # Guia operacional do CMS
 
+## Hierarquia visual do editor de projetos das Experiências — 23/11/2026
+
+No caminho **Editor do site → Experiências Profissionais → Projetos**, o cabeçalho interno **Projetos e realizações** usa o título display secundário (caixa alta), menor que o cabeçalho de área **PROJETOS**. O texto de apoio e a contagem de publicações ficam em tipografia auxiliar compacta; as fichas de projetos exibem o título forte com a indicação **Centro / Slide / Oculto** em uma segunda linha menor. Os três grupos são identificados por legendas pequenas, semibold/uppercase na cor de realce, com separadores discretos: **Onde exibir este projeto?**, **Área central · Projetos e realizações** e **Área direita · Slide do projeto**.
+
+Labels, inputs, textareas, placeholders e nota inferior usam a mesma escala editorial do restante do painel. Os campos vazios exibem orientação por placeholder, sem substituir valores existentes; campos de seleção, ordem, foco de teclado e alvos móveis são preservados. Todo o estilo é restrito à classe `experience-projects-editor` em `src/index.css`; a área pública, os dados, o Supabase e os demais editores não são alterados.
+
 ## Limpeza produtiva e estado das seis Experiências — 23/11/2026
 
 **EXECUTADO E RELIDO NO SUPABASE:** foram excluídos apenas os **23 itens históricos com `isHidden=true`** dos arrays legados dos blocos A/B e os **2 slides sem vínculo inequívoco da Invest RS**. As seis empresas têm agora **5 fichas canônicas cada (30 projetos)** e **17 slides vinculados**: Invest RS 2, as demais 3. O conteúdo de `content_json.experienceProjects` do bloco A é agora a fonte pública dos campos e flags; as cópias legadas dos projetos *visíveis* foram mantidas para compatibilidade. Não há mais seções de itens históricos ocultos ou de slides órfãos no painel. Nenhum objeto de Storage nem registro da biblioteca de mídia foi excluído. Competências e Trajetória permanecem nas fontes anteriores.
