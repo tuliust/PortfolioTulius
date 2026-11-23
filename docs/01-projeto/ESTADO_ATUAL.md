@@ -1,5 +1,13 @@
 # Estado atual — PortfolioTulius
 
+## Intervenção vigente: Experiências Profissionais — 23/11/2026
+
+O CMS de Experiências edita por ficha os conteúdos independentes de **centro (título/descrição)** e de **slide (título/descrição/imagem)**, com flags separadas para publicação em cada área. O renderer público sincroniza o projeto central com a imagem vinculada; o carrossel avança a cada **3 s**, reiniciando após **8 s** quando o visitante interage.
+
+O Supabase foi higienizado em transação com pré-condições dos 12 blocos: **30 projetos canônicos (5 por empresa), 17 slides vinculados (Invest RS 2; demais 3), 23 itens históricos ocultos e 2 slides sem vínculo removidos**. Os registros removidos têm cópia privada conferida fora do GitHub; não houve teste de restauração. Competências, seis Trajetórias, 90 mídias publicadas, Auth/RLS/Storage, schema e design permaneceram fora do escopo de gravação.
+
+**Comprovação:** implementação `b3672e1` com Validate e P5 sintético (89 cenários) `SUCCESS` e Vercel `READY`; doc/teste/browser `1a352d4` com Validate e Export Docs `SUCCESS`, deploy `READY`. A auditoria P3 [#45202551715](https://github.com/tuliust/PortfolioTulius/actions/runs/45202551715) registrou `P3_BROWSER_AUDIT failures=0`, 38 capturas sem falha, RLS/SEO `PASS`, sincronização projeto–galeria e temporização 8/3 s `PASS`; porém **P3 global `FAILURE`**, exclusivamente pelo LCP mobile mediano de **3.575,809 ms** contra orçamento **≤ 3.500 ms** (desktop 945,505 ms `PASS`). Não tratar esse risco como resolvido/aceito tecnicamente. Nenhum deploy manual ou migração de schema.
+
 ## Estado vigente — encerramento da auditoria de continuidade em 20/11/2026
 
 **Auditoria de backup, recuperação e credenciais formalmente encerrada por decisão do proprietário**, com **aceite expresso do risco residual** de não comprovação da restaurabilidade integral dos dumps PostgreSQL. O encerramento é administrativo e documental, **não homologação de restore**: o PostgreSQL 17 isolado com dados reais permanece **NÃO EXECUTADO**, e RPO/RTO não foram definidos.

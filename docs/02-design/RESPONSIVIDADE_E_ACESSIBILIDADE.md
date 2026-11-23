@@ -1,5 +1,11 @@
 # Responsividade, UX e acessibilidade
 
+## Evidência do carrossel publicado — P3 23/11/2026
+
+No SHA `1a352d4`, a auditoria browser [#45202551715](https://github.com/tuliust/PortfolioTulius/actions/runs/45202551715) confirmou `P3_PROJECT_GALLERY_LINK PASS` e `P3_EXPERIENCE_AUTOPLAY PASS`: os dois slides da Invest RS alternam com os projetos centrais corretos; após clique o quadro permaneceu estável aos 3,3 s, avançou após 8 s e retomou 3 s no ciclo seguinte. A avaliação de rotas/responsividade registrou **zero falhas**, e as 38 capturas visuais foram aprovadas. A preferência por movimento reduzido continua desativando o timer.
+
+A mesma execução P3 global terminou **FAILURE somente por LCP mobile mediano 3.575,809 ms > 3.500 ms**, com desktop LCP 945,505 ms **PASS**. Esse indicador de desempenho é uma pendência residual, não uma falha observada de seleção, sincronização ou autoplay; manter o orçamento e não classificá-lo como corrigido.
+
 ## Estado real do carrossel das Experiências — 23/11/2026
 
 Com a coleção canônica publicada, cada empresa tem cinco realizações centrais; a Invest RS exibe **dois slides vinculados** (Guia de Boas-Vindas, Organização de eventos), enquanto as outras empresas exibem três. O destaque do item central segue a troca de slide, por ID; títulos diferentes entre centro e slide não impedem a associação. A troca automática é de 3 s, com retomada após 8 s quando há interação. A implementação respeita `prefers-reduced-motion`, visibilidade da aba, empresa ativa e galerias com menos de dois slides. P3 valida o ciclo real no navegador; o estado da execução deve ser consultado pelo SHA.
