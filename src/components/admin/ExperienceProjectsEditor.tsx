@@ -447,8 +447,8 @@ export function ExperienceProjectsEditor({
       <div className="experience-projects-intro">
         <h3>Projetos e realizações</h3>
         <p>
-          Edite os textos do centro e os textos e imagens da galeria na mesma ficha. Marque onde cada
-          projeto aparece; com as duas opções desmarcadas, ele fica oculto.
+          Edite os textos do centro e os textos e imagens da galeria na mesma ficha. Marque onde
+          cada projeto aparece; com as duas opções desmarcadas, ele fica oculto.
         </p>
       </div>
       {loading && <p role="status">Carregando projetos…</p>}
