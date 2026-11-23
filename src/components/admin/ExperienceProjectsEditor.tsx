@@ -109,11 +109,14 @@ export function ExperienceProjectsEditor({
   }
 
   async function remove(id: string) {
-    if (!(await adminConfirm("Excluir este projeto e seu slide da coleção editorial?", {
-      title: "Excluir projeto",
-      confirmLabel: "Excluir",
-      tone: "danger",
-    }))) return
+    if (
+      !(await adminConfirm("Excluir este projeto e seu slide da coleção editorial?", {
+        title: "Excluir projeto",
+        confirmLabel: "Excluir",
+        tone: "danger",
+      }))
+    )
+      return
     setProjects((current) => current?.filter((project) => project.id !== id) ?? null)
     if (expanded === id) setExpanded(null)
   }
@@ -124,8 +127,11 @@ export function ExperienceProjectsEditor({
     if (!a) return false
     const errors = validateExperienceProjects(projects)
     for (const project of projects) {
-      if (project.includeInGallery !== false && project.slide?.image &&
-          !isSafeEditorialImage(project.slide.image)) {
+      if (
+        project.includeInGallery !== false &&
+        project.slide?.image &&
+        !isSafeEditorialImage(project.slide.image)
+      ) {
         errors.push("A imagem do slide exige uma URL segura.")
       }
       if (project.item?.image && !isSafeEditorialImage(project.item.image)) {
@@ -213,7 +219,9 @@ export function ExperienceProjectsEditor({
   const centralCount = projects ? experienceProjectItems(projects).length : 0
   const galleryCount = projects ? experienceProjectSlides(projects).length : 0
   const hiddenCount = projects
-    ? projects.filter((project) => project.showInCenter === false && project.includeInGallery === false).length
+    ? projects.filter(
+        (project) => project.showInCenter === false && project.includeInGallery === false,
+      ).length
     : 0
 
   function renderProject(project: ExperienceProject, index: number) {
@@ -233,7 +241,8 @@ export function ExperienceProjectsEditor({
           >
             <strong>{item.title || project.slide?.title || "Projeto sem título"}</strong>
             <span className="block-item-toggle-label">
-              {centerVisible ? "Centro" : ""}{centerVisible && galleryVisible ? " + " : ""}
+              {centerVisible ? "Centro" : ""}
+              {centerVisible && galleryVisible ? " + " : ""}
               {galleryVisible ? "Slide" : ""}
               {!centerVisible && !galleryVisible ? "Oculto" : ""}
             </span>
@@ -244,18 +253,24 @@ export function ExperienceProjectsEditor({
               disabled={index === 0}
               aria-label={"Mover " + item.title + " para cima"}
               onClick={() => move(project.id, -1)}
-            >↑</button>
+            >
+              ↑
+            </button>
             <button
               type="button"
               disabled={index === (projects?.length ?? 0) - 1}
               aria-label={"Mover " + item.title + " para baixo"}
               onClick={() => move(project.id, 1)}
-            >↓</button>
+            >
+              ↓
+            </button>
             <button
               type="button"
               aria-label={"Excluir projeto " + item.title}
               onClick={() => void remove(project.id)}
-            >×</button>
+            >
+              ×
+            </button>
           </div>
         </div>
         {open && (
@@ -266,9 +281,7 @@ export function ExperienceProjectsEditor({
                 <input
                   type="checkbox"
                   checked={centerVisible}
-                  onChange={(event) =>
-                    edit(project.id, { showInCenter: event.target.checked })
-                  }
+                  onChange={(event) => edit(project.id, { showInCenter: event.target.checked })}
                 />
                 Exibir na área central
               </label>
@@ -279,9 +292,10 @@ export function ExperienceProjectsEditor({
                   onChange={(event) =>
                     edit(project.id, {
                       includeInGallery: event.target.checked,
-                      slide: event.target.checked && !project.slide
-                        ? { title: item.title, caption: "", image: "" }
-                        : project.slide,
+                      slide:
+                        event.target.checked && !project.slide
+                          ? { title: item.title, caption: "", image: "" }
+                          : project.slide,
                       slideOrder: project.slideOrder ?? galleryCount,
                     })
                   }
@@ -416,11 +430,13 @@ export function ExperienceProjectsEditor({
     <div className="admin-card editor-form" aria-label="Projetos e slides unificados">
       <h3>Projetos e realizações</h3>
       <p>
-        Edite os textos do centro e os textos e imagens da galeria na mesma ficha.
-        Marque onde cada projeto aparece; com as duas opções desmarcadas, ele fica oculto.
+        Edite os textos do centro e os textos e imagens da galeria na mesma ficha. Marque onde cada
+        projeto aparece; com as duas opções desmarcadas, ele fica oculto.
       </p>
       {loading && <p role="status">Carregando projetos…</p>}
-      {!loading && !projects && <p role="alert">Conteúdo indisponível. Nenhuma gravação permitida.</p>}
+      {!loading && !projects && (
+        <p role="alert">Conteúdo indisponível. Nenhuma gravação permitida.</p>
+      )}
       {projects && (
         <>
           <p>
@@ -445,12 +461,14 @@ export function ExperienceProjectsEditor({
               ])
               setExpanded(id)
             }}
-          >Adicionar projeto</button>
+          >
+            Adicionar projeto
+          </button>
           <AdminNotice message={message} />
           {saving && <p role="status">Salvando e verificando dados…</p>}
           <p className="site-editor-note">
-            Cada projeto possui um único registro editorial no bloco A.
-            A exclusão remove a ficha após salvar; não exclui arquivos da biblioteca de mídia.
+            Cada projeto possui um único registro editorial no bloco A. A exclusão remove a ficha
+            após salvar; não exclui arquivos da biblioteca de mídia.
           </p>
         </>
       )}

@@ -60,7 +60,6 @@ describe("Logotipos das experiências profissionais", () => {
   })
 })
 
-
 describe("Exibição independente e sincronização editorial do projeto", () => {
   const first = {
     id: "projeto-1",

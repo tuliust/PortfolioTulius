@@ -39,8 +39,7 @@ export function legacyExperienceProjects(blocks: LegacyExperienceBlock[]): Exper
   for (const [index, slide] of (a?.content_json.experienceMedia?.slides ?? []).entries()) {
     const matches = projects.filter(
       (project) =>
-        project.item &&
-        experienceTitleKey(project.item.title) === experienceTitleKey(slide.title),
+        project.item && experienceTitleKey(project.item.title) === experienceTitleKey(slide.title),
     )
     if (matches.length === 1 && !matches[0].slide) {
       matches[0].slide = structuredClone(slide)

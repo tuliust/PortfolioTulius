@@ -24,7 +24,11 @@ describe("Projetos de Experiências: duas áreas independentes", () => {
               caption: "Legenda publicada",
               image: "https://example.com/guia.webp",
             },
-            { title: "Sem vínculo", caption: "Histórico", image: "https://example.com/antigo.webp" },
+            {
+              title: "Sem vínculo",
+              caption: "Histórico",
+              image: "https://example.com/antigo.webp",
+            },
             {
               title: "Conteúdo",
               caption: "Conteúdo da galeria",

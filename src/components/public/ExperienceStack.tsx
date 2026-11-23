@@ -669,7 +669,11 @@ function ExperienceCard({
   }
 
   useEffect(() => {
-    if (!isActive || slideCount < 2 || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      !isActive ||
+      slideCount < 2 ||
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
       return
     }
     let timer: number | undefined
