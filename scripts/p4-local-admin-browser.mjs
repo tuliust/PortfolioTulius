@@ -1468,6 +1468,15 @@ try {
   }, { timeout: 18000 }, galleryPath)
   pass("MEDIA_GALLERY_LOGO_OVERRIDE_DESKTOP", { publicRenderer: true })
 
+  // For this save test use an HTTPS placeholder: the CMS must reject
+  // localhost HTTP media even when synthetic Storage was used for rendering.
+  const safeProjectImage = "https://example.com/p5-synthetic-project.png"
+  const safeGalleryDraft = structuredClone(galleryOverride)
+  safeGalleryDraft.experienceMedia.slides[0].image = safeProjectImage
+  const safeMediaSeed = await service.from("content_blocks")
+    .update({ content_json: safeGalleryDraft }).eq("id", galleryBlock.data.id)
+  ensure(!safeMediaSeed.error, "EXPERIENCE_SAFE_MEDIA_SEED")
+
   // Real authenticated CMS flow, strictly against synthetic local fixtures:
   // independent copy, atomic save, public rendering and double visibility.
   const openUnifiedExperience = async () => {
@@ -1525,7 +1534,7 @@ try {
     canonical[0].item.text === "Projeto de homologação local" &&
     canonical[0].slide.title === newSlideTitle &&
     canonical[0].slide.caption === newSlideCaption &&
-    canonical[0].slide.image === galleryUrl,
+    canonical[0].slide.image === safeProjectImage,
     "EXPERIENCE_INDEPENDENT_FIELDS_PERSISTED")
   await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
   await page.waitForFunction(({ center, slide, caption }) => {
@@ -1561,7 +1570,7 @@ try {
     .select("content_json").eq("id", galleryBlock.data.id).single(), "EXPERIENCE_HIDE_RELOAD")
   ensure(afterHide.content_json.experienceProjects?.[0]?.showInCenter === false &&
     afterHide.content_json.experienceProjects?.[0]?.includeInGallery === false &&
-    afterHide.content_json.experienceProjects?.[0]?.slide?.image === galleryUrl,
+    afterHide.content_json.experienceProjects?.[0]?.slide?.image === safeProjectImage,
     "EXPERIENCE_DOUBLE_VISIBILITY_PERSISTED")
   await page.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 30000 })
   await page.waitForFunction(() => Boolean(
