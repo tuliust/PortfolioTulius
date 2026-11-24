@@ -1,5 +1,9 @@
 # Contrato CMS → Supabase → renderer
 
+## Reprodução automática e preenchimento do vídeo — 24/11/2026
+
+A reprodução pública do `mediaType=video` passa pelo `ExperienceVideoPlayer`, que tenta reprodução automática inicialmente muda quando pelo menos 25% do vídeo selecionado está visível e a aba está ativa; pausa fora da tela/aba e ao desmontar. Mantém controles e suspende a rotação enquanto o vídeo está selecionado; não repete ao terminar. Sem mudança de campos, schema, RPC, Storage ou objetos.
+
 ## Upload administrativo de vídeos — 24/11/2026
 
 `experienceProjects[].slide.mediaType` omitido significa imagem; `video` usa `videoPath` (nome UUID.mp4 no bucket `portfolio-videos`) e `image` como capa opcional. A URL é derivada da configuração Supabase, sem aceitar URL externa. O renderer pausa o carrossel enquanto o vídeo está selecionado; PDF continua sem galeria. Sem migração dos JSONB existentes. O catálogo usa `mime_type=video/mp4`; seletores de imagens excluem vídeo.

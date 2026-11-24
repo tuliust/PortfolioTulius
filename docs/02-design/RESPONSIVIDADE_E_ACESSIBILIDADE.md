@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Reprodução automática e preenchimento do vídeo — 24/11/2026
+
+O player público de Experiências preenche o quadro existente no desktop/mobile com `object-fit: cover; object-position: center`; sem distorção, podendo recortar bordas quando a proporção do arquivo divergir da do quadro. Em tela cheia usa `contain`. As imagens permanecem em `contain`. Autoplay inicialmente mudo somente para a empresa/slide ativo com pelo menos 25% de interseção visível e aba ativa; pausa fora da tela, na troca ou aba oculta. A preferência por movimento reduzido impede autoplay. Controles nativos continuam disponíveis. O teste Chromium sintético confirmou dimensões de vídeo iguais às do quadro, fit cover, autoplay mudo e pausa fora da tela em desktop/mobile, e ausência de autoplay com redução de movimento.
+
 ## Verificação do formulário administrativo de Experiências — 23/11/2026
 
 No SHA `6c25100`, Validate e P5 Admin Read-Only E2E concluíram em **SUCCESS**. A inspeção autenticada e sem gravações confirmou o título secundário em caixa alta com escala maior que o texto de apoio, as três legendas compactas, títulos e estados de exibição em duas linhas e placeholders dos campos. O CSS está escopado no painel administrativo e a grade dos controles passa a uma coluna em viewport estreito; não houve alteração no layout público.

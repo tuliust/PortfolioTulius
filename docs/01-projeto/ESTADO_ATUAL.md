@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Reprodução automática e preenchimento do vídeo — 24/11/2026
+
+Ajuste público solicitado após o primeiro upload real (leitura: um objeto de vídeo e um slide de vídeo em produção): reprodução automática inicialmente muda quando visível, respeitando movimento reduzido, e preenchimento do quadro por recorte central proporcional. Imagens, dimensões dos quadros e CMS permanecem inalterados. Código `b3ba5d1` validado em sandbox isolado (307 testes, build, smoke, ledger e três cenários Chromium sintéticos). Acompanhar CI e deployment do SHA integrado.
+
 ## Upload administrativo de vídeos — 24/11/2026
 
 Evolução pontual de Experiências: seletor Imagem/Vídeo, upload administrativo MP4 de até 50 MB, capa opcional e reprodução nativa nos slides. Nenhuma URL externa. Migration `20261124051349_portfolio_experience_videos` aplicada e verificada; bucket de vídeo vazio e 144 objetos antigos/91 registros de mídia preservados. Sandbox: 307/307 unitários, build, smoke offline e oito cenários reais sintéticos de vídeo SUCCESS. P3/P5 browser completos e aceite visual de produção ainda pendentes; acompanhar CI/deploy por SHA. [CMS](../03-cms/GUIA_ADMINISTRATIVO.md) · [Storage](../03-cms/MIDIAS_E_STORAGE.md) · [Homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md).

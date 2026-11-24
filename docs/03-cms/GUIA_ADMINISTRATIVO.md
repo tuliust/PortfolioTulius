@@ -1,5 +1,9 @@
 # Guia operacional do CMS
 
+## Reprodução automática e preenchimento do vídeo — 24/11/2026
+
+Os vídeos já enviados passam a iniciar automaticamente no site público quando o slide selecionado estiver visível, com áudio inicialmente silenciado e controles nativos. Não é necessário reenviar arquivos nem alterar fichas. O quadro é preenchido por `object-fit: cover`, com recorte central quando a proporção divergir; a prévia administrativa não muda. A reprodução automática não inicia quando a preferência de movimento reduzido está ativa.
+
 ## Upload administrativo de vídeos — 24/11/2026
 
 No caminho **Editor do site → Experiências Profissionais → Projetos**, a ficha de cada empresa oferece o seletor Imagem/Vídeo na galeria: envio exclusivo de MP4 (até 50 MB), capa opcional, prévia nativa e remoção apenas do vínculo. Não há campo de URL externa. O objeto enviado é público imediatamente; salvar a ficha confirma a associação via RPC/CAS. Substituir ou remover o vínculo preserva o arquivo anterior. A biblioteca exibe vídeos com player, mas bloqueia exclusão física de vídeo até existir contrato de remoção seguro. Validação sintética de upload e persistência concluída; aceite visual autenticado de produção ainda não executado.
