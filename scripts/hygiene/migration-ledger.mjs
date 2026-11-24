@@ -17,6 +17,7 @@ const remoteExpected = new Map([
   ["20261107042248", "identity_catalog_stage2"],
   ["20261109024100", "p2_composite_section_block_save"],
   ["20261110153000", "remove_media_credit"],
+  ["20261124051349", "portfolio_experience_videos"],
 ])
 const localOnlyPolicy = new Map()
 

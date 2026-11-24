@@ -127,7 +127,7 @@ describe("Exibição independente e sincronização editorial do projeto", () =>
 })
 
 describe("Slides de vídeo enviados pelo CMS", () => {
-  it("renderiza um player nativo com controles no desktop e no mobile", () => {
+  it("renderiza player nativo inicialmente mudo e com controles no desktop e no mobile", () => {
     vi.stubEnv("VITE_SUPABASE_URL", "https://example.supabase.co")
     try {
       for (const isMobile of [false, true]) {
@@ -158,6 +158,9 @@ describe("Slides de vídeo enviados pelo CMS", () => {
         expect(html).toContain("controls")
         expect(html).toContain('preload="none"')
         expect(html).toContain("/portfolio-videos/00000000-0000-4000-8000-000000000001.mp4")
+        expect(html).toContain('muted=""')
+        expect(html).toContain('playsInline=""')
+        // Playback is started by the visibility effect, not an offscreen autoplay attribute.
         expect(html).not.toContain("autoPlay")
       }
     } finally {

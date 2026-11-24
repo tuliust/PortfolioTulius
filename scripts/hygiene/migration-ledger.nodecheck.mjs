@@ -8,16 +8,16 @@ import { reconcileMigrationLedger } from "./migration-ledger.mjs"
 const here = dirname(fileURLToPath(import.meta.url))
 const root = join(here, "..", "..")
 const snapshot = () => JSON.parse(readFileSync(
-  join(here, "fixtures", "portfolio-remote-migrations-2026-11-11.json"), "utf8",
+  join(here, "fixtures", "portfolio-remote-migrations-2026-11-24.json"), "utf8",
 ))
 const localFiles = () => readdirSync(join(root, "supabase", "migrations"))
   .filter((file) => file.endsWith(".sql")).sort()
 
-test("reconciles all twelve local migrations without replaying the baseline", () => {
+test("reconciles all thirteen local migrations without replaying the baseline", () => {
   const result = reconcileMigrationLedger(snapshot(), localFiles())
-  assert.equal(result.remoteCount, 12)
-  assert.equal(result.sharedCount, 12)
-  assert.equal(result.localCount, 12)
+  assert.equal(result.remoteCount, 13)
+  assert.equal(result.sharedCount, 13)
+  assert.equal(result.localCount, 13)
   assert.deepEqual(result.remoteOnly, [])
   assert.deepEqual(result.localOnly, [])
   assert.equal(result.mediaMigrationAligned, true)

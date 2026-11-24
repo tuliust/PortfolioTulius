@@ -3,6 +3,7 @@ import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { experienceProjectItems, experienceProjectSlides } from "../../lib/experience-projects"
 import { experienceVideoUrl, isExperienceVideoPath } from "../../lib/experience-video"
+import { ExperienceVideoPlayer } from "./ExperienceVideoPlayer"
 import {
   EXPERIENCE_AUTOPLAY_INTERVAL_MS,
   EXPERIENCE_AUTOPLAY_AFTER_CLICK_MS,
@@ -92,14 +93,12 @@ function PhotoGallery({
         }
       >
         {videoUrl ? (
-          <video
-            key={videoUrl + String(isActive)}
-            src={isActive ? videoUrl : undefined}
+          <ExperienceVideoPlayer
+            key={index + ":" + videoUrl + ":" + String(isActive)}
+            src={videoUrl}
             poster={slide?.image || undefined}
-            controls
-            playsInline
-            preload="none"
-            aria-label={slide?.title}
+            title={slide?.title}
+            isActive={isActive}
           />
         ) : hasImage ? (
           <img
