@@ -321,7 +321,14 @@ export function EnhancedMediaLibrary({
                 />
               </label>
               {asset.mime_type === "video/mp4" && previews[asset.id]?.url && (
-                <video className="experience-video-library-preview" src={previews[asset.id].url} controls playsInline preload="none" aria-label={mediaDisplayTitle(asset)} />
+                <video
+                  className="experience-video-library-preview"
+                  src={previews[asset.id].url}
+                  controls
+                  playsInline
+                  preload="none"
+                  aria-label={mediaDisplayTitle(asset)}
+                />
               )}
               <div className="media-library-frame-control">
                 <button

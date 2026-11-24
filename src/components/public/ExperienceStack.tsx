@@ -87,7 +87,9 @@ function PhotoGallery({
   return (
     <div className="experience-gallery" aria-label={`Galeria de projetos: ${section.title}`}>
       <div
-        className={hasImage || videoUrl ? "experience-media-frame" : "experience-media-frame media-awaiting"}
+        className={
+          hasImage || videoUrl ? "experience-media-frame" : "experience-media-frame media-awaiting"
+        }
       >
         {videoUrl ? (
           <video
@@ -514,7 +516,8 @@ function ExperienceMobileBody({
               const currentSlide = projectSlides[galleryIndex]
               const hasMedia = Boolean(
                 currentSlide?.image?.trim() ||
-                  (currentSlide?.mediaType === "video" && isExperienceVideoPath(currentSlide.videoPath)),
+                (currentSlide?.mediaType === "video" &&
+                  isExperienceVideoPath(currentSlide.videoPath)),
               )
               const contentId = `${section.slug}-mobile-project-${index}`
               return (
@@ -682,7 +685,8 @@ function ExperienceCard({
   const [autoplayReset, setAutoplayReset] = useState(0)
   const slideCount = displaySection.experienceMedia?.slides?.length ?? 0
   const currentSlide = displaySection.experienceMedia?.slides?.[activeSlide]
-  const videoSelected = currentSlide?.mediaType === "video" && isExperienceVideoPath(currentSlide.videoPath)
+  const videoSelected =
+    currentSlide?.mediaType === "video" && isExperienceVideoPath(currentSlide.videoPath)
 
   const selectSlide = (index: number) => {
     setActiveSlide(index)

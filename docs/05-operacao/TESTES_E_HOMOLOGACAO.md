@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Validação isolada do candidato de vídeos — 24/11/2026
+
+Vercel Sandbox efêmero, checkout `f8d791f`, Node 24.22.3 e pnpm 10.34.8, sem credenciais produtivas: instalação congelada SUCCESS. Primeiro `pnpm check` FAILURE por formatação em seis arquivos; corrigidos somente esses arquivos com oxfmt. Na árvore corrigida, `pnpm check` SUCCESS (formatação, TypeScript, 68 arquivos/307 testes, build offline) e `pnpm smoke:build` SUCCESS. Build sem variáveis Supabase, SEO estático de fallback; não comprova publicação, upload real, reprodução em navegador ou RLS. O SQL de provisionamento permanece candidato não aplicado. A homologação P5 sintética e os testes de vídeo reais continuam necessários antes de liberar a funcionalidade.
+
 ## Candidato a upload de vídeos — 24/11/2026
 
 **Proposta de vídeo, não homologada:** testes unitários candidatos para validação de caminho, tipo, tamanho, visibilidade e compatibilidade. Antes da publicação executar pnpm check, P5 local sintético (admin/anon/não admin, upload real, catálogo, salvamento/releitura, falhas e compensação), P3 desktop/mobile (player, troca de empresa, navegação/tempo, LCP), e PDF QA. Nenhum resultado positivo é afirmado para a proposta; sem alterações produtivas.

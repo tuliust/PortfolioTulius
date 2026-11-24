@@ -20,10 +20,7 @@ export function experienceVideoUrl(
       !(base.protocol === "http:" && ["localhost", "127.0.0.1"].includes(base.hostname))
     )
       return undefined
-    return new URL(
-      `/storage/v1/object/public/${EXPERIENCE_VIDEO_BUCKET}/${path}`,
-      base,
-    ).href
+    return new URL(`/storage/v1/object/public/${EXPERIENCE_VIDEO_BUCKET}/${path}`, base).href
   } catch {
     return undefined
   }

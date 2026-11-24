@@ -126,7 +126,6 @@ describe("Exibição independente e sincronização editorial do projeto", () =>
   })
 })
 
-
 describe("Slides de vídeo enviados pelo CMS", () => {
   it("renderiza um player nativo com controles no desktop e no mobile", () => {
     vi.stubEnv("VITE_SUPABASE_URL", "https://example.supabase.co")

@@ -506,7 +506,11 @@ export function ExperienceProjectsEditor({
                 </label>
                 <div className="field-wide">
                   <PublishedMediaPicker
-                    label={project.slide?.mediaType === "video" ? "Capa opcional do vídeo" : "Imagem do slide"}
+                    label={
+                      project.slide?.mediaType === "video"
+                        ? "Capa opcional do vídeo"
+                        : "Imagem do slide"
+                    }
                     recommendedSize="1600 × 1600 px (desktop e mobile)"
                     guidance="Use imagem própria ou aprovada. O enquadramento e o texto alternativo são preservados."
                     ratio="1 / 1"
@@ -549,8 +553,8 @@ export function ExperienceProjectsEditor({
       <div className="experience-projects-intro">
         <h3>Projetos e realizações</h3>
         <p>
-          Edite os textos do centro e os textos, imagens e vídeos da galeria na mesma ficha. Marque onde
-          cada projeto aparece; com as duas opções desmarcadas, ele fica oculto.
+          Edite os textos do centro e os textos, imagens e vídeos da galeria na mesma ficha. Marque
+          onde cada projeto aparece; com as duas opções desmarcadas, ele fica oculto.
         </p>
       </div>
       {loading && <p role="status">Carregando projetos…</p>}
