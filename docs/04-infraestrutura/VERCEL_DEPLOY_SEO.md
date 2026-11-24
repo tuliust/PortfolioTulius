@@ -1,5 +1,9 @@
 # Vercel, publicação e SEO
 
+## Publicação do ajuste de vídeo — 24/11/2026
+
+Vercel Production [dpl_4o45ibjLqP8JsR2NGsLQDcXatQBH](https://vercel.com/tuliust/portfolio-tulius/4o45ibjLqP8JsR2NGsLQDcXatQBH) **READY**, SHA `3589209ec199c491be31ae87ebaf72b7117fbb4a`, branch `main`, aliases `tulius.work` e `www.tulius.work` confirmados. Implementação `b3ba5d1`: autoplay inicialmente mudo quando visível e preenchimento proporcional do quadro de vídeo. Validate, PDF QA e Export Docs SUCCESS; Hygiene e P3 FAILURE, não confundir READY com homologação integral. [Evidências de CI](../05-operacao/TESTES_E_HOMOLOGACAO.md). Nenhum deploy manual ou alteração de DNS/configuração. Um commit exclusivamente documental posterior pode gerar outro deployment automático; conferir por SHA.
+
 ## Reconfirmação de produção — 18/11/2026
 
 A Vercel confirmou o deployment Production
