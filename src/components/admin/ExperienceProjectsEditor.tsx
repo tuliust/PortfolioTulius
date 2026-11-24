@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { supabase } from "../../lib/supabase"
 import { isSafeEditorialImage } from "../../lib/validation"
+import { experienceVideoUrl } from "../../lib/experience-video"
+import { uploadExperienceVideo } from "../../lib/experience-video-upload"
 import { sameJson, tryCompositeSave } from "../../lib/p2-composite-save"
 import {
   experienceProjectItems,
@@ -44,6 +46,9 @@ export function ExperienceProjectsEditor({
   const [message, setMessage] = useState("")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const currentSection = useRef(sectionId)
+  currentSection.current = sectionId
   const dirty = projects !== null && saved !== null && !sameJson(projects, saved)
 
   useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
@@ -96,6 +101,37 @@ export function ExperienceProjectsEditor({
     )
   }
 
+  async function sendVideo(id: string, file: File) {
+    if (uploading || saving || loading) return
+    const targetSection = sectionId
+    setUploading(true)
+    setMessage("Enviando vídeo público ao Storage…")
+    try {
+      const result = await uploadExperienceVideo(file)
+      if (currentSection.current !== targetSection) return
+      setMessage(result.message)
+      if (!result.ok) return
+      setProjects(
+        (current) =>
+          current?.map((project) =>
+            project.id === id
+              ? {
+                  ...project,
+                  slide: {
+                    ...project.slide,
+                    title: project.slide?.title ?? "",
+                    mediaType: "video",
+                    videoPath: result.path,
+                  },
+                }
+              : project,
+          ) ?? null,
+      )
+    } finally {
+      setUploading(false)
+    }
+  }
+
   function move(id: string, offset: number) {
     setProjects((current) => {
       if (!current) return current
@@ -122,7 +158,7 @@ export function ExperienceProjectsEditor({
   }
 
   async function save(): Promise<boolean> {
-    if (!supabase || !projects || saving || loading) return false
+    if (!supabase || !projects || saving || loading || uploading) return false
     const a = blocks.find((block) => block.mobile_panel === "a")
     if (!a) return false
     const errors = validateExperienceProjects(projects)
@@ -387,6 +423,72 @@ export function ExperienceProjectsEditor({
                   />
                 </label>
                 <label className="field-wide">
+                  Tipo de mídia do slide
+                  <select
+                    value={project.slide?.mediaType ?? "image"}
+                    disabled={uploading || saving}
+                    onChange={(event) =>
+                      edit(project.id, {
+                        slide: {
+                          ...project.slide,
+                          title: project.slide?.title ?? "",
+                          mediaType: event.target.value === "video" ? "video" : "image",
+                        },
+                      })
+                    }
+                  >
+                    <option value="image">Imagem</option>
+                    <option value="video">Vídeo</option>
+                  </select>
+                </label>
+                {project.slide?.mediaType === "video" && (
+                  <div className="field-wide experience-video-editor">
+                    <label>
+                      Arquivo de vídeo (MP4, até 50 MB)
+                      <input
+                        type="file"
+                        accept="video/mp4,.mp4"
+                        disabled={uploading || saving}
+                        onChange={(event) => {
+                          const file = event.currentTarget.files?.[0]
+                          event.currentTarget.value = ""
+                          if (file) void sendVideo(project.id, file)
+                        }}
+                      />
+                    </label>
+                    <p>Envie somente vídeos autorizados para publicação. Recomendado H.264/AAC.</p>
+                    {uploading && <progress aria-label="Enviando vídeo" />}
+                    {experienceVideoUrl(project.slide.videoPath) && (
+                      <>
+                        <video
+                          key={project.slide.videoPath}
+                          src={experienceVideoUrl(project.slide.videoPath)}
+                          controls
+                          playsInline
+                          preload="none"
+                          aria-label={project.slide.title || "Prévia do vídeo"}
+                        />
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          disabled={uploading || saving}
+                          onClick={() =>
+                            edit(project.id, {
+                              slide: {
+                                ...project.slide!,
+                                videoPath: undefined,
+                              },
+                            })
+                          }
+                        >
+                          Remover vídeo do slide
+                        </button>
+                      </>
+                    )}
+                    <p>Substituir ou remover não exclui arquivos físicos da biblioteca.</p>
+                  </div>
+                )}
+                <label className="field-wide">
                   Texto alternativo da imagem
                   <input
                     value={project.slide?.alt ?? ""}
@@ -404,7 +506,7 @@ export function ExperienceProjectsEditor({
                 </label>
                 <div className="field-wide">
                   <PublishedMediaPicker
-                    label="Imagem do slide"
+                    label={project.slide?.mediaType === "video" ? "Capa opcional do vídeo" : "Imagem do slide"}
                     recommendedSize="1600 × 1600 px (desktop e mobile)"
                     guidance="Use imagem própria ou aprovada. O enquadramento e o texto alternativo são preservados."
                     ratio="1 / 1"
@@ -447,7 +549,7 @@ export function ExperienceProjectsEditor({
       <div className="experience-projects-intro">
         <h3>Projetos e realizações</h3>
         <p>
-          Edite os textos do centro e os textos e imagens da galeria na mesma ficha. Marque onde
+          Edite os textos do centro e os textos, imagens e vídeos da galeria na mesma ficha. Marque onde
           cada projeto aparece; com as duas opções desmarcadas, ele fica oculto.
         </p>
       </div>

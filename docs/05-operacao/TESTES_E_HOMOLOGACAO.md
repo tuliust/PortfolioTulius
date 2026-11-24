@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Candidato a upload de vídeos — 24/11/2026
+
+**Proposta de vídeo, não homologada:** testes unitários candidatos para validação de caminho, tipo, tamanho, visibilidade e compatibilidade. Antes da publicação executar pnpm check, P5 local sintético (admin/anon/não admin, upload real, catálogo, salvamento/releitura, falhas e compensação), P3 desktop/mobile (player, troca de empresa, navegação/tempo, LCP), e PDF QA. Nenhum resultado positivo é afirmado para a proposta; sem alterações produtivas.
+
 ## Verificação da hierarquia administrativa — 23/11/2026
 
 **Implementação `a11a55e`; ajuste do formatador `6c25100`.** A padronização está restrita ao editor de **Projetos** de Experiências: título interno em fonte display, resumo compacto, título/estado de cada ficha em duas linhas, três legendas de campo pequenas em caixa alta, labels, textos de apoio e placeholders, com adaptação do grid a uma coluna em viewport estreito. Nenhuma escrita de dados foi executada.

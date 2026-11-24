@@ -320,11 +320,14 @@ export function EnhancedMediaLibrary({
                   }
                 />
               </label>
+              {asset.mime_type === "video/mp4" && previews[asset.id]?.url && (
+                <video className="experience-video-library-preview" src={previews[asset.id].url} controls playsInline preload="none" aria-label={mediaDisplayTitle(asset)} />
+              )}
               <div className="media-library-frame-control">
                 <button
                   type="button"
                   className="secondary-button"
-                  disabled={!previews[asset.id]?.url}
+                  disabled={asset.mime_type === "video/mp4" || !previews[asset.id]?.url}
                   onClick={() => setFramingOpen(true)}
                 >
                   <Icon name="sliders" size={18} /> Ajustar posição e zoom
@@ -405,7 +408,11 @@ export function EnhancedMediaLibrary({
                 }}
               >
                 <div className="media-placeholder media-preview">
-                  {previews[asset.id]?.url && !failedImages[asset.id] ? (
+                  {asset.mime_type === "video/mp4" ? (
+                    <div className="media-preview-fallback">
+                      <small>Vídeo MP4 · abrir para reproduzir</small>
+                    </div>
+                  ) : previews[asset.id]?.url && !failedImages[asset.id] ? (
                     <img
                       src={previews[asset.id].url}
                       alt={asset.alt_text?.trim() || mediaDisplayTitle(asset)}
@@ -433,7 +440,7 @@ export function EnhancedMediaLibrary({
                 className="media-library-remove"
                 aria-label={`Remover imagem ${mediaDisplayTitle(asset)}`}
                 title="Remover imagem"
-                disabled={mediaBusy}
+                disabled={mediaBusy || asset.storage_bucket === "portfolio-videos"}
                 onClick={() => void removeAsset(asset)}
               >
                 <Icon name="close" size={18} />

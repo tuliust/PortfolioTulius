@@ -180,6 +180,9 @@ export type ExperienceSlide = {
   title: string
   /** Optional stable reference; legacy slides are matched by title only. */
   projectId?: string
+  mediaType?: "image" | "video"
+  /** Object name in portfolio-videos; never an external URL. */
+  videoPath?: string
   image?: string
   alt?: string
   caption?: string
@@ -190,7 +193,7 @@ export type ExperienceProject = {
   id: string
   /** Central column: independent title and description. */
   item?: ContentItem
-  /** Right-hand gallery: independent title, caption and approved image. */
+  /** Right-hand gallery: independent title, caption and approved image or video. */
   slide?: ExperienceSlide
   /** False hides only the central card, without deleting the project. */
   showInCenter?: boolean

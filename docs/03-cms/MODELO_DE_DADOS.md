@@ -1,5 +1,9 @@
 # Contrato CMS → Supabase → renderer
 
+## Candidato a upload de vídeos — 24/11/2026
+
+**Contrato candidato, não vigente:** `experienceProjects[].slide.mediaType` omitido significa imagem; `video` usa `videoPath` (nome UUID.mp4 no bucket dedicado) e `image` como capa opcional. A URL é derivada da configuração Supabase, sem aceitar URL externa. O renderer pausa o carrossel enquanto o vídeo está selecionado; PDF continua sem galeria. Sem migração de JSONB existente.
+
 ## Contrato efetivo de Experiências no Supabase — 23/11/2026
 
 Após limpeza transacional das seis seções, cada bloco A **publicado** contém `content_json.experienceProjects` com **5 fichas** (`id` estável, `item`, `slide?`, `showInCenter`, `includeInGallery`, `slideOrder?`). A área central usa `item.title/text` e a direita usa `slide.title/caption/image`; a associação pública não depende da igualdade dos títulos. São **30 projetos e 17 slides canônicos**, sem projetos históricos marcados `isHidden=true`; a Invest RS tem 2 slides, os outros trabalhos têm 3. Nas arrays antigas `items` (A/B) restam os cinco projetos visíveis e, no A, `Competências aplicadas`; a galeria legada conserva somente os slides vinculados.

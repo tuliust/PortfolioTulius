@@ -109,6 +109,19 @@ describe("Projetos de Experiências: duas áreas independentes", () => {
     ])
   })
 
+  it("valida vídeo enviado sem exigir imagem e mantém a referência quando oculto", () => {
+    const projects = legacyExperienceProjects(blocks)
+    const videoPath = "00000000-0000-4000-8000-000000000001.mp4"
+    projects[0].slide = { title: "Vídeo", caption: "Descrição", mediaType: "video", videoPath }
+    projects[0].includeInGallery = true
+    expect(validateExperienceProjects(projects)).toEqual([])
+    expect(experienceProjectSlides(projects)[0].videoPath).toBe(videoPath)
+    projects[0].slide.videoPath = "https://example.com/video.mp4"
+    expect(validateExperienceProjects(projects)).toContain("Projeto 1: envie um vídeo MP4 válido.")
+    projects[0].includeInGallery = false
+    expect(validateExperienceProjects(projects)).toEqual([])
+  })
+
   it("rejeita IDs duplicados", () => {
     const projects = legacyExperienceProjects(blocks)
     projects[1].id = projects[0].id

@@ -7,8 +7,8 @@ export async function resolveMediaPreview(
   asset: { storage_bucket: string; storage_path: string },
 ): Promise<MediaPreview> {
   if (!asset.storage_path) return { error: "Arquivo sem caminho de armazenamento." }
-  if (asset.storage_bucket === "portfolio-public") {
-    const { data } = storage.from("portfolio-public").getPublicUrl(asset.storage_path)
+  if (asset.storage_bucket === "portfolio-public" || asset.storage_bucket === "portfolio-videos") {
+    const { data } = storage.from(asset.storage_bucket).getPublicUrl(asset.storage_path)
     return data.publicUrl ? { url: data.publicUrl } : { error: "URL pública indisponível." }
   }
   if (asset.storage_bucket === "portfolio-private") {

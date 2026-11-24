@@ -1,5 +1,9 @@
 # Guia operacional do CMS
 
+## Candidato a upload de vídeos — 24/11/2026
+
+**Proposta de upload de vídeo — não publicada nem homologada:** seletor Imagem/Vídeo na ficha de Projetos, MP4 por upload administrativo, capa opcional, prévia nativa e remoção apenas do vínculo. Arquivo público no envio; salvar a ficha mantém RPC/CAS e confirma o vínculo. Não há URL externa. O limite candidato é 50 MB; o upload padrão apresenta progresso indeterminado e requer validação de transferências grandes.
+
 ## Hierarquia visual do editor de projetos das Experiências — 23/11/2026
 
 No caminho **Editor do site → Experiências Profissionais → Projetos**, o cabeçalho interno **Projetos e realizações** usa o título display secundário (caixa alta), menor que o cabeçalho de área **PROJETOS**. O texto de apoio e a contagem de publicações ficam em tipografia auxiliar compacta; as fichas de projetos exibem o título forte com a indicação **Centro / Slide / Oculto** em uma segunda linha menor. Os três grupos são identificados por legendas pequenas, semibold/uppercase na cor de realce, com separadores discretos: **Onde exibir este projeto?**, **Área central · Projetos e realizações** e **Área direita · Slide do projeto**.

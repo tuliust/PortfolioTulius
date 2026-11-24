@@ -1,5 +1,6 @@
 import type { ContentItem, ExperienceProject, ExperienceSlide } from "../types/content"
 import { experienceTitleKey } from "./experience-text"
+import { isExperienceVideoPath } from "./experience-video"
 
 export type LegacyExperienceBlock = {
   id: string
@@ -87,7 +88,12 @@ export function validateExperienceProjects(projects: ExperienceProject[]): strin
     if (project.includeInGallery !== false && project.slide) {
       if (!project.slide.title.trim()) errors.push(label + ": título do slide obrigatório.")
       if (!project.slide.caption?.trim()) errors.push(label + ": descrição do slide obrigatória.")
-      if (!project.slide.image?.trim()) errors.push(label + ": imagem do slide obrigatória.")
+      if (project.slide.mediaType === "video") {
+        if (!isExperienceVideoPath(project.slide.videoPath))
+          errors.push(label + ": envie um vídeo MP4 válido.")
+      } else if (!project.slide.image?.trim()) {
+        errors.push(label + ": imagem do slide obrigatória.")
+      }
     }
   }
   return errors

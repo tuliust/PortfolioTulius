@@ -1,5 +1,9 @@
 # Biblioteca de mídias e Storage
 
+## Candidato a upload de vídeos — 24/11/2026
+
+**Proposta não aplicada:** `portfolio-videos`, público para reprodução e administrável somente pela guarda existente. MP4 até 50 MB, sem alteração dos buckets de imagem. `supabase/portfolio-videos.pending.sql` é rascunho de provisionamento, não migration executada; converter e testar localmente antes de produção. Catálogo usa `mime_type=video/mp4`; seletores de imagens excluem vídeo. Remover o vínculo preserva arquivo; exclusão física de vídeos está bloqueada no catálogo até contrato seguro. Arquivos enviados tornam-se públicos mesmo antes de salvar a ficha; informar no editor. Inventário/backup deve incluir o novo bucket após ativação.
+
 **Inventário de produção atualizado após uploads em 18/11/2026 (somente leitura):**
 `media_assets` possui **90 registros publicados**. O Storage
 contém **87 objetos** no bucket `portfolio-public` (13.105.754 bytes em metadados) e **56 objetos**

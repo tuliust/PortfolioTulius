@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { renderToStaticMarkup } from "react-dom/server"
 import type { PortfolioSection } from "../../types/content"
 import { ExperienceStack } from "./ExperienceStack"
@@ -123,5 +123,46 @@ describe("Exibição independente e sincronização editorial do projeto", () =>
     )
     expect(html).not.toContain('class="experience-gallery"')
     expect(html).toContain("Somente centro")
+  })
+})
+
+
+describe("Slides de vídeo enviados pelo CMS", () => {
+  it("renderiza um player nativo com controles no desktop e no mobile", () => {
+    vi.stubEnv("VITE_SUPABASE_URL", "https://example.supabase.co")
+    try {
+      for (const isMobile of [false, true]) {
+        const html = renderToStaticMarkup(
+          <ExperienceStack
+            sections={[
+              {
+                ...section,
+                experienceProjects: [
+                  {
+                    id: "video-project",
+                    item: { title: "Projeto", text: "Descrição" },
+                    slide: {
+                      title: "Vídeo do projeto",
+                      caption: "Legenda",
+                      mediaType: "video",
+                      videoPath: "00000000-0000-4000-8000-000000000001.mp4",
+                    },
+                    includeInGallery: true,
+                  },
+                ],
+              },
+            ]}
+            isMobile={isMobile}
+          />,
+        )
+        expect(html).toContain("<video")
+        expect(html).toContain("controls")
+        expect(html).toContain('preload="none"')
+        expect(html).toContain("/portfolio-videos/00000000-0000-4000-8000-000000000001.mp4")
+        expect(html).not.toContain("autoPlay")
+      }
+    } finally {
+      vi.unstubAllEnvs()
+    }
   })
 })

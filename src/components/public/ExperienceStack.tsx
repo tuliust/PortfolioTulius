@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { experienceProjectItems, experienceProjectSlides } from "../../lib/experience-projects"
+import { experienceVideoUrl, isExperienceVideoPath } from "../../lib/experience-video"
 import {
   EXPERIENCE_AUTOPLAY_INTERVAL_MS,
   EXPERIENCE_AUTOPLAY_AFTER_CLICK_MS,
@@ -68,24 +69,37 @@ function PhotoGallery({
   active,
   onSlideChange,
   gallerySlides,
+  isActive,
 }: {
   section: PortfolioSection
   active: number
   onSlideChange: (index: number) => void
   gallerySlides?: ExperienceSlide[]
+  isActive: boolean
 }) {
   const slides = gallerySlides ?? section.experienceMedia?.slides ?? []
   const count = slides.length
   const index = count ? Math.min(active, count - 1) : 0
   const slide: ExperienceSlide | undefined = slides[index]
+  const videoUrl = slide?.mediaType === "video" ? experienceVideoUrl(slide.videoPath) : undefined
   const hasImage = Boolean(slide?.image?.trim())
 
   return (
     <div className="experience-gallery" aria-label={`Galeria de projetos: ${section.title}`}>
       <div
-        className={hasImage ? "experience-media-frame" : "experience-media-frame media-awaiting"}
+        className={hasImage || videoUrl ? "experience-media-frame" : "experience-media-frame media-awaiting"}
       >
-        {hasImage ? (
+        {videoUrl ? (
+          <video
+            key={videoUrl + String(isActive)}
+            src={isActive ? videoUrl : undefined}
+            poster={slide?.image || undefined}
+            controls
+            playsInline
+            preload="none"
+            aria-label={slide?.title}
+          />
+        ) : hasImage ? (
           <img
             src={slide!.image}
             alt={slide!.alt?.trim() || slide!.title}
@@ -405,11 +419,13 @@ function ExperienceMobileBody({
   view,
   activeSlide,
   onSlideChange,
+  isActive,
 }: {
   section: PortfolioSection
   items: ContentItem[]
   detail?: string
   view: "projects" | "trajectory"
+  isActive: boolean
   activeSlide: number
   onSlideChange: (index: number) => void
 }) {
@@ -496,7 +512,10 @@ function ExperienceMobileBody({
               const projectSlides = project.slideIndices.map((slideIndex) => slides[slideIndex])
               const galleryIndex = Math.max(0, project.slideIndices.indexOf(activeSlide))
               const currentSlide = projectSlides[galleryIndex]
-              const hasMedia = Boolean(currentSlide?.image?.trim())
+              const hasMedia = Boolean(
+                currentSlide?.image?.trim() ||
+                  (currentSlide?.mediaType === "video" && isExperienceVideoPath(currentSlide.videoPath)),
+              )
               const contentId = `${section.slug}-mobile-project-${index}`
               return (
                 <article
@@ -569,6 +588,7 @@ function ExperienceMobileBody({
                         <PhotoGallery
                           section={section}
                           gallerySlides={projectSlides}
+                          isActive={isActive}
                           active={galleryIndex}
                           onSlideChange={(slideIndex) =>
                             onSlideChange(project.slideIndices[slideIndex])
@@ -661,6 +681,8 @@ function ExperienceCard({
   const [autoplayDelay, setAutoplayDelay] = useState(EXPERIENCE_AUTOPLAY_INTERVAL_MS)
   const [autoplayReset, setAutoplayReset] = useState(0)
   const slideCount = displaySection.experienceMedia?.slides?.length ?? 0
+  const currentSlide = displaySection.experienceMedia?.slides?.[activeSlide]
+  const videoSelected = currentSlide?.mediaType === "video" && isExperienceVideoPath(currentSlide.videoPath)
 
   const selectSlide = (index: number) => {
     setActiveSlide(index)
@@ -672,6 +694,7 @@ function ExperienceCard({
     if (
       !isActive ||
       slideCount < 2 ||
+      videoSelected ||
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     ) {
       return
@@ -692,7 +715,7 @@ function ExperienceCard({
       window.clearTimeout(timer)
       document.removeEventListener("visibilitychange", onVisibility)
     }
-  }, [isActive, slideCount, activeSlide, autoplayDelay, autoplayReset])
+  }, [isActive, slideCount, activeSlide, autoplayDelay, autoplayReset, videoSelected])
 
   const [mobileView, setMobileView] = useState<"projects" | "trajectory">("projects")
   const changeMobileView = (next: "projects" | "trajectory") => {
@@ -736,6 +759,7 @@ function ExperienceCard({
           {slideCount > 0 && (
             <PhotoGallery
               section={displaySection}
+              isActive={isActive}
               active={activeSlide}
               onSlideChange={selectSlide}
             />
@@ -800,6 +824,7 @@ function ExperienceCard({
               items={projectItems}
               detail={detail}
               view={mobileView}
+              isActive={isActive}
               activeSlide={activeSlide}
               onSlideChange={selectSlide}
             />
