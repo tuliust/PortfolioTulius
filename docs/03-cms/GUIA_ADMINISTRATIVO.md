@@ -1,8 +1,8 @@
 # Guia operacional do CMS
 
-## Candidato a upload de vídeos — 24/11/2026
+## Upload administrativo de vídeos — 24/11/2026
 
-**Proposta de upload de vídeo — não publicada nem homologada:** seletor Imagem/Vídeo na ficha de Projetos, MP4 por upload administrativo, capa opcional, prévia nativa e remoção apenas do vínculo. Arquivo público no envio; salvar a ficha mantém RPC/CAS e confirma o vínculo. Não há URL externa. O limite candidato é 50 MB; o upload padrão apresenta progresso indeterminado e requer validação de transferências grandes.
+No caminho **Editor do site → Experiências Profissionais → Projetos**, a ficha de cada empresa oferece o seletor Imagem/Vídeo na galeria: envio exclusivo de MP4 (até 50 MB), capa opcional, prévia nativa e remoção apenas do vínculo. Não há campo de URL externa. O objeto enviado é público imediatamente; salvar a ficha confirma a associação via RPC/CAS. Substituir ou remover o vínculo preserva o arquivo anterior. A biblioteca exibe vídeos com player, mas bloqueia exclusão física de vídeo até existir contrato de remoção seguro. Validação sintética de upload e persistência concluída; aceite visual autenticado de produção ainda não executado.
 
 ## Hierarquia visual do editor de projetos das Experiências — 23/11/2026
 

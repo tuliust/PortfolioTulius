@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Upload administrativo de vídeos — 24/11/2026
+
+Evolução pontual de Experiências: seletor Imagem/Vídeo, upload administrativo MP4 de até 50 MB, capa opcional e reprodução nativa nos slides. Nenhuma URL externa. Migration `20261124051349_portfolio_experience_videos` aplicada e verificada; bucket de vídeo vazio e 144 objetos antigos/91 registros de mídia preservados. Sandbox: 307/307 unitários, build, smoke offline e oito cenários reais sintéticos de vídeo SUCCESS. P3/P5 browser completos e aceite visual de produção ainda pendentes; acompanhar CI/deploy por SHA. [CMS](../03-cms/GUIA_ADMINISTRATIVO.md) · [Storage](../03-cms/MIDIAS_E_STORAGE.md) · [Homologação](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Intervenção vigente: Experiências Profissionais — 23/11/2026
 
 O CMS de Experiências edita por ficha os conteúdos independentes de **centro (título/descrição)** e de **slide (título/descrição/imagem)**, com flags separadas para publicação em cada área. O renderer público sincroniza o projeto central com a imagem vinculada; o carrossel avança a cada **3 s**, reiniciando após **8 s** quando o visitante interage.

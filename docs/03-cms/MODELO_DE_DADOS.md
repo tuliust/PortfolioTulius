@@ -1,8 +1,8 @@
 # Contrato CMS → Supabase → renderer
 
-## Candidato a upload de vídeos — 24/11/2026
+## Upload administrativo de vídeos — 24/11/2026
 
-**Contrato candidato, não vigente:** `experienceProjects[].slide.mediaType` omitido significa imagem; `video` usa `videoPath` (nome UUID.mp4 no bucket dedicado) e `image` como capa opcional. A URL é derivada da configuração Supabase, sem aceitar URL externa. O renderer pausa o carrossel enquanto o vídeo está selecionado; PDF continua sem galeria. Sem migração de JSONB existente.
+`experienceProjects[].slide.mediaType` omitido significa imagem; `video` usa `videoPath` (nome UUID.mp4 no bucket `portfolio-videos`) e `image` como capa opcional. A URL é derivada da configuração Supabase, sem aceitar URL externa. O renderer pausa o carrossel enquanto o vídeo está selecionado; PDF continua sem galeria. Sem migração dos JSONB existentes. O catálogo usa `mime_type=video/mp4`; seletores de imagens excluem vídeo.
 
 ## Contrato efetivo de Experiências no Supabase — 23/11/2026
 

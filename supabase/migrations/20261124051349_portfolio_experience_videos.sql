@@ -1,5 +1,4 @@
--- PROPOSTA NÃO APLICADA. Converter em migration com supabase migration new
--- e homologar com Supabase CLI/Docker e seed exclusivamente sintética.
+-- Upload administrativo de vídeos MP4; validar em ambiente sintético antes de aplicar.
 -- Public bucket: download público de arquivos expressamente enviados,
 -- sem listagem pública e sem escrita para anon/não administrador.
 begin;

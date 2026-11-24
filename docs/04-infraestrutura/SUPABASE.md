@@ -1,5 +1,9 @@
 # Supabase — configuração de produção
 
+## Upload administrativo de vídeos — 24/11/2026
+
+Provisionamento de vídeo em 24/11/2026: migration `20261124051349_portfolio_experience_videos`, 13ª no ledger, aplicada após homologação isolada Supabase CLI/Docker com seed sintética. Novo bucket `portfolio-videos` público para reprodução, 50.000.000 bytes e `video/mp4`; guarda de escrita exige administrador autenticado, constraint do catálogo ampliada exclusivamente para vídeo. Releitura: novo bucket vazio; 144 objetos antigos e 91 registros de catálogo preservados; buckets existentes inalterados. Nenhum upload/CRUD sintético em produção, nenhuma mudança nas políticas antigas. [Contrato de mídias](../03-cms/MIDIAS_E_STORAGE.md).
+
 ## Limpeza concluída e verificada — Experiências, 23/11/2026
 
 **Execução material:** em transação única com lock e comparação dos hashes dos 12 blocos de destino, foram removidos **23 itens legados ocultos** e **2 slides órfãos** (ambos em Invest RS). Foram geradas **30 fichas editoriais canônicas** e preservados **17 slides com vínculo único**: Invest RS 2; Prefeitura-SP, Vale, Globo/SporTV, InPress e CDI 3 cada. Todos os seis blocos A passaram a conter `experienceProjects`; os blocos B tiveram apenas os itens históricos `isHidden=true` retirados. Leitura após commit confirmou em cada empresa: 5 projetos, 0 itens ocultos legados, 2 ou 3 slides legados, e o mesmo número de slides canônicos.

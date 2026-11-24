@@ -1,12 +1,8 @@
 # Testes, CI e homologação
 
-## Validação isolada do candidato de vídeos — 24/11/2026
+## Upload administrativo de vídeos — 24/11/2026
 
-Vercel Sandbox efêmero, checkout `f8d791f`, Node 24.22.3 e pnpm 10.34.8, sem credenciais produtivas: instalação congelada SUCCESS. Primeiro `pnpm check` FAILURE por formatação em seis arquivos; corrigidos somente esses arquivos com oxfmt. Na árvore corrigida, `pnpm check` SUCCESS (formatação, TypeScript, 68 arquivos/307 testes, build offline) e `pnpm smoke:build` SUCCESS. Build sem variáveis Supabase, SEO estático de fallback; não comprova publicação, upload real, reprodução em navegador ou RLS. O SQL de provisionamento permanece candidato não aplicado. A homologação P5 sintética e os testes de vídeo reais continuam necessários antes de liberar a funcionalidade.
-
-## Candidato a upload de vídeos — 24/11/2026
-
-**Proposta de vídeo, não homologada:** testes unitários candidatos para validação de caminho, tipo, tamanho, visibilidade e compatibilidade. Antes da publicação executar pnpm check, P5 local sintético (admin/anon/não admin, upload real, catálogo, salvamento/releitura, falhas e compensação), P3 desktop/mobile (player, troca de empresa, navegação/tempo, LCP), e PDF QA. Nenhum resultado positivo é afirmado para a proposta; sem alterações produtivas.
+**Validação de vídeo em sandbox efêmero — 24/11/2026:** Node 24.22.3, pnpm 10.34.8, Supabase CLI 3.0.0 + Docker, seed `seed.local.synthetic.sql`, sem credenciais produtivas. Primeiro `pnpm check` FAILURE por formatação em seis arquivos; correção somente desses arquivos, hashes dos blobs conferidos contra sandbox. `pnpm check` SUCCESS (formatação, TypeScript, 68 arquivos/307 testes, build offline) e `pnpm smoke:build` SUCCESS. Código formatado `d79601f`. Primeira inicialização Docker FAILURE por conflito de porta do mailpit/inbucket; repetição com serviços auxiliares excluídos aplicou migrations e iniciou DB, Auth, REST, Kong e Storage. `scripts/p5-local-video.mjs` SUCCESS 8/8: limites/MIME, negação anon/não-admin, MIME inválido, upload MP4 real sintético, catálogo e negação não-admin, leitura pública e HTTP Range 206, RPC e releitura, negação de exclusão não-admin. Suites existentes `p5-local-transactional`, `p5-local-rpc-authorization`, `p2-local-composite` e `p4-local-media` terminaram código 0. Migration local `20261124050914` e produção `20261124051349` têm SQL idêntico (blob `c61953c183cf75f75902d8b6a45db6ce251bbb3c`); nome final acompanha ledger produtivo. Produção recebeu apenas provisionamento, sem upload sintético. P5 browser completo, QA PDF, P3/Lighthouse e ensaio manual autenticado da reprodução ainda não executados neste ciclo. CI e deploy devem ser lidos no SHA integrado.
 
 ## Verificação da hierarquia administrativa — 23/11/2026
 

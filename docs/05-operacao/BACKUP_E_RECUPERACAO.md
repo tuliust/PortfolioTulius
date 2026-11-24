@@ -1,5 +1,9 @@
 # Backups, restore e rollback
 
+## Upload administrativo de vídeos — 24/11/2026
+
+O novo bucket `portfolio-videos` foi provisionado em 24/11/2026 e estava vazio na releitura produtiva. Próximos inventários/exports e ensaios de restauração devem contemplar também esse bucket; o procedimento e scripts históricos de dois buckets não comprovam a cobertura futura de vídeos. Não considerar as cópias antigas atualizadas por esta mudança; nenhuma sincronização, cópia ou exclusão executada neste ciclo.
+
 ## Revalidação das cópias Storage após a reorganização — 21/11/2026
 
 **Evidência fornecida pelo proprietário (PowerShell/rclone 1.75.2, Windows): SUCCESS.** Na cópia local preservada em `_backups_privados/`, após excluir da contagem o manifesto `manifest-sha256.csv`, havia **143 arquivos de mídia e 15.946.053 bytes**. A listagem recursiva no Google Drive, na pasta do conjunto Storage de 18/11, retornou **143 arquivos e 15.946.053 bytes**, com as estruturas `portfolio-public/` e `portfolio-private/`. Em seguida, o proprietário executou `rclone check --download` com exclusão do manifesto e `--checkers 4`: o log retornou **`0 differences found`**, **`143 matching files`** e o processo encerrou com **código 0**. **Interpretação:** igualdade comparativa do conteúdo dos 143 objetos naquela execução, sem upload ou exclusão; não se trata de uma nova emissão individual de SHA-256 nem de prova de que o Supabase Storage produtivo não mudou após o snapshot. A validação é baseada na saída apresentada pelo proprietário, não em nova leitura direta dos bytes pelo agente.

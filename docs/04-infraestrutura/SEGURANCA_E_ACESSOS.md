@@ -1,5 +1,9 @@
 # Segurança, RLS, acessos e riscos
 
+## Upload administrativo de vídeos — 24/11/2026
+
+A migration de vídeos cria uma policy nova exclusivamente para `portfolio-videos`, usando a função existente `private.is_portfolio_admin(auth.uid())` com role `authenticated`, sem alterar as policies anteriores. Objetos são públicos imediatamente após upload (não confundir ocultar o slide com tornar o objeto privado). Teste sintético negou upload anon/não-admin, escrita de catálogo e exclusão não-admin. Releitura produtiva confirmou a policy. Nenhum segredo ou token alterado.
+
 ## Encerramento da investigação de credenciais — aceite em 20/11/2026
 
 **A auditoria documental de credenciais foi encerrada por decisão expressa do proprietário, preservando limites de prova.** Capturas apresentadas para **duas contas GitHub distintas** mostraram **zero PATs fine-grained e zero classic listados**; o Security log de uma delas mostrou **três eventos de exclusão**. **A identidade, titularidade original e revogação individual do PAT historicamente exposto continuam NÃO CONFIRMADAS**. Nenhum token foi recuperado, reproduzido, testado ou criado.
