@@ -631,13 +631,17 @@ function ExperienceMobileBody({
 
 function ExperienceIntro({ section }: { section: PortfolioSection }) {
   if (!section.intro) return null
-  if (section.slug !== "invest-rs") return <p>{section.intro}</p>
   const [role, ...period] = section.intro.split(" · ")
-  if (!period.length) return <p>{section.intro}</p>
+  const roleText = role
+    .trim()
+    .replace(/\s*\|\s*$/, "")
+    .replace(/\s*\|\s*/g, " |\u00a0")
+  const periodText = period.join(" · ").trim()
+  if (!periodText) return <p>{roleText}</p>
   return (
     <p className="experience-intro">
-      {role}
-      <span className="experience-period">{period.join(" · ")}</span>
+      {roleText}
+      <span className="experience-period">{periodText}</span>
     </p>
   )
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest"
 import { renderToStaticMarkup } from "react-dom/server"
 import type { PortfolioSection } from "../../types/content"
-import { ExperienceStack } from "./ExperienceStack"
+import { ExperienceStack, PdfExperienceSection } from "./ExperienceStack"
 
 const section: PortfolioSection = {
   id: "invest-test",
@@ -166,5 +166,55 @@ describe("Slides de vídeo enviados pelo CMS", () => {
     } finally {
       vi.unstubAllEnvs()
     }
+  })
+})
+
+describe("Identificação profissional das experiências", () => {
+  const slugs = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"]
+
+  it("aplica a mesma hierarquia de cargo e período nas seis experiências, inclusive PDF", () => {
+    for (const slug of slugs) {
+      const experience = {
+        ...section,
+        slug,
+        intro: "Cargo profissional | Unidade de atuação · Jan/2020 – Dez/2024 · Cidade, RS",
+      }
+      for (const isMobile of [false, true]) {
+        const publicHtml = renderToStaticMarkup(
+          <ExperienceStack sections={[experience]} isMobile={isMobile} />,
+        )
+        const pdfHtml = renderToStaticMarkup(
+          <PdfExperienceSection section={experience} isMobile={isMobile} />,
+        )
+        for (const html of [publicHtml, pdfHtml]) {
+          expect(html).toContain('class="experience-intro"')
+          expect(html).toContain("Cargo profissional |\u00a0Unidade de atuação")
+          expect(html).toContain(
+            '<span class="experience-period">Jan/2020 – Dez/2024 · Cidade, RS</span>',
+          )
+        }
+      }
+    }
+  })
+
+  it("remove separador órfão e mantém período sem inventar localização", () => {
+    const html = renderToStaticMarkup(
+      <ExperienceStack
+        sections={[{ ...section, intro: "Cargo profissional | · Jan/2020 – Dez/2024" }]}
+        isMobile={false}
+      />,
+    )
+    expect(html).toContain(
+      'Cargo profissional<span class="experience-period">Jan/2020 – Dez/2024</span>',
+    )
+    expect(html).not.toContain("Cargo profissional |")
+  })
+
+  it("preserva texto sem período e não cria linha vazia", () => {
+    const html = renderToStaticMarkup(
+      <ExperienceStack sections={[{ ...section, intro: "Cargo profissional" }]} isMobile={true} />,
+    )
+    expect(html).toContain("Cargo profissional")
+    expect(html).not.toContain('class="experience-period"')
   })
 })

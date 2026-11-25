@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Cobertura da identificação profissional das seis experiências — 25/11/2026
+
+No código, `ExperienceStack.test.tsx` acrescenta casos de renderização das seis empresas no desktop, mobile e PDF, incluindo cargo/unidade, período/localização, separador órfão e ausência de período. Diff revisado estaticamente; execução unitária, CI e aceite visual no novo SHA ainda pendentes neste registro. Base `f729cbdb2a17d84dc234de283e0a2d5c6bb721e1`: Validate e Export Docs SUCCESS, Vercel Production READY; [P3 #45677759329](https://github.com/tuliust/PortfolioTulius/actions/runs/45677759329) FAILURE (browser com seis falhas, inclusive timeout de controle, seletor de projeto desatualizado e quadro ausente em 900×600; LCP mobile mediano 3.514,466 ms, acima de 3.500 ms). A geometria 1:1 foi observada nos demais nove viewports desktop da matriz e no projeto mobile testado; não equivale a aprovação global. Os problemas anteriores não são reclassificados nem abrangidos por esta padronização textual. Supabase consultado somente leitura; seis intros preservadas.
+
 ## Cobertura da moldura 1:1 das Experiências — 25/11/2026
 
 Base consultada: `5e67cc877c141573960394742314b2546f3f2708` (Validate e Export Docs SUCCESS, Vercel Production READY). `scripts/p3-browser-smoke.mjs` passa a verificar as seis molduras desktop em cada viewport desktop da matriz existente: dimensões positivas, largura e altura iguais (tolerância 1 px), centralização e limite de 57% da altura do viewport. A verificação do projeto aberto no mobile inclui a proporção quadrada, preservando a asserção `contain`. O renderer PDF não usa a galeria. Alteração limitada a CSS, asserções e documentação, sem operações de escrita no Supabase ou deploy manual. O diff foi conferido estaticamente; execução de browser/CI no SHA funcional e aceite visual ainda não confirmados neste registro.

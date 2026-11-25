@@ -1,5 +1,9 @@
 # Contrato CMS → Supabase → renderer
 
+## Apresentação uniforme de `sections.intro` nas Experiências — 25/11/2026
+
+Leitura das seis seções publicadas confirmou o formato `cargo | unidade · período · localização` (unidade e localização opcionais). O renderer `ExperienceIntro` separa a primeira ocorrência de ` · ` e mantém o restante unido pelo mesmo separador na linha de período/localização; sem período não cria linha vazia. Remove `|` terminal sem complemento apenas na renderização e impede que uma barra válida fique isolada no final da linha por espaço inseparável após ela. Usa a classe e a escala existentes da Invest RS para todas as empresas, desktop/mobile/PDF. Nenhum UPDATE, mudança de schema, edição CMS ou nova localização foi realizado.
+
 ## Compactação das seis Trajetórias — 25/11/2026
 
 Alteração exclusivamente editorial, autorizada e confirmada em produção. Foram substituídas somente as seis descrições publicadas em `career_experiences.description` (mais metadado temporal automático, quando aplicável). O formato permanece parágrafo introdutório + 4/5 linhas `• Rótulo: corpo`; `splitExperienceBullet` aplica negrito até os dois-pontos, e o renderer completo usa o mesmo texto no desktop, mobile e PDF. `TRAJECTORY_RECOMMENDED_CHARS = 650` continua recomendação, não restrição de schema. Os conteúdos aprovados somam 3.346 caracteres brutos, antes 11.409. A releitura confirmou igualdade exata dos seis textos, hashes dos demais campos de carreira (excluindo descrição e updated_at) e hashes integrais das seis seções e 12 blocos publicados. Projetos, slides, competências, IDs, status, mídia, layout, schema, Auth/RLS e Storage não foram alterados. As versões compactas estão no [Guia CMS](GUIA_ADMINISTRATIVO.md); o inventário anterior é histórico, não autorização para restaurar descrições. Encaixe sem scroll e exportação PDF ainda não validados.
