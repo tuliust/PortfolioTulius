@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Navegação bidirecional entre as seis empresas — 25/11/2026
+
+Base `f480982b2bb5bbd76b70c4a6e17735b6745992ef`: Validate, Export Docs e PDF Visual QA SUCCESS, Vercel Production READY e P3 global FAILURE. Supabase somente leitura confirmou ordem 6–11 das seis seções publicadas/visíveis. Ensaio Chromium isolado com seis painéis sticky, snap e marcadores de altura zero verificou **30/30 pares ordenados por cliques reais**, com posição do marcador, painel frontal e sentido de deslocamento corretos; não representa execução do site completo. P3 verifica os 30 pares ordenados no desktop, hash, `aria-current`, painel efetivamente visível e sentido do deslocamento; os testes posteriores do cabeçalho usam os links reais em vez de `scrollIntoView` no painel sticky. Revisão estática do diff; execução no SHA funcional e aceite visual ainda pendentes. Sem alteração nos limites de performance nem reclassificação de falhas anteriores.
+
 ## Cobertura do cabeçalho desktop durante a rolagem das Experiências — 25/11/2026
 
 P3 passa a verificar que o menu de empresas está sticky e que o cabeçalho tem o mesmo fundo opaco do índice na Prefeitura e na CDI, registrando `P3_EXPERIENCE_HEADER_MASK` e captura da CDI. Base `3928ccb15be6d5e80924ecae60a20fce5d106538`: Validate, Export Docs e PDF Visual QA SUCCESS, Vercel Production READY, P3 global FAILURE. Os seis temas publicados foram relidos no Supabase como `paper`, sem escrita. Diff revisado estaticamente; CI e homologação visual do novo SHA pendentes neste registro. Não altera nem reclassifica resultados de outros testes.

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import type { PostgrestClient } from "@supabase/postgrest-js"
 import type { ContentItem, ExperienceSlide, PortfolioSection } from "../../types/content"
 import { experienceProjectItems, experienceProjectSlides } from "../../lib/experience-projects"
@@ -21,7 +21,11 @@ import {
 } from "../../lib/experience-text"
 import { publicReadClient } from "../../lib/public-read"
 import { resolveCareerSectionSlug } from "../../lib/career-record-link"
-import { experienceSlugFromHash } from "../../lib/experience-hash"
+import {
+  experienceScrollAnchor,
+  experienceSlugFromHash,
+  scrollToExperienceAnchor,
+} from "../../lib/experience-hash"
 
 export const EXPERIENCE_SLUGS = [
   "invest-rs",
@@ -1015,7 +1019,7 @@ export function ExperienceStack({
     const onScroll = () => {
       let selected = sections[0]?.slug ?? ""
       for (const section of sections) {
-        const node = document.getElementById(section.slug)
+        const node = experienceScrollAnchor(section.slug)
         if (node && node.getBoundingClientRect().top <= window.innerHeight * 0.4) {
           selected = section.slug
         }
@@ -1095,7 +1099,14 @@ export function ExperienceStack({
 
   function chooseCompany(event: React.MouseEvent<HTMLAnchorElement>, slug: string) {
     if (!isMobile) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return
+      }
+      if (!experienceScrollAnchor(slug)) return
+      event.preventDefault()
+      if (window.location.hash !== `#${slug}`) history.pushState(null, "", `#${slug}`)
       setActive(slug)
+      scrollToExperienceAnchor(slug)
       return
     }
     event.preventDefault()
@@ -1135,14 +1146,16 @@ export function ExperienceStack({
         )}
       </nav>
       {displayedSections.map((section, index) => (
-        <ExperienceCard
-          key={section.id}
-          section={section}
-          order={index}
-          isMobile={isMobile}
-          isActive={active === section.slug}
-          detail={careerDetails[section.slug]}
-        />
+        <Fragment key={section.id}>
+          {!isMobile && <div id={`experience-anchor-${section.slug}`} aria-hidden="true" />}
+          <ExperienceCard
+            section={section}
+            order={index}
+            isMobile={isMobile}
+            isActive={active === section.slug}
+            detail={careerDetails[section.slug]}
+          />
+        </Fragment>
       ))}
     </div>
   )

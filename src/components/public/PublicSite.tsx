@@ -11,6 +11,7 @@ import type {
 import { Icon } from "../ui/Icons"
 import { Navigation } from "./Navigation"
 import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"
+import { scrollToExperienceAnchor } from "../../lib/experience-hash"
 import { ToolIcons } from "./ToolIcons"
 import { placementMotionVariables } from "../../lib/placement-motion"
 import { imageFramingStyle } from "../../lib/media-framing"
@@ -1613,9 +1614,11 @@ export function PublicSite({
       const target =
         document.getElementById(location.hash.slice(1)) ?? document.getElementById(slug)
       if (!target) return
-      target.scrollIntoView({
-        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-      })
+      if (!scrollToExperienceAnchor(slug)) {
+        target.scrollIntoView({
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        })
+      }
       target.tabIndex = -1
       target.focus({ preventScroll: true })
     }

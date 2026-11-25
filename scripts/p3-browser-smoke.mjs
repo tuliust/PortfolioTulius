@@ -857,8 +857,43 @@ try {
       }))
       if (!initial.stack || initial.cards !== 6 || initial.tabs !== 6 || initial.gallery < 6)
         throw new Error("Estrutura das seis empresas incompleta: " + JSON.stringify(initial))
+      stage = "bidirectional company navigation"
+      const companies = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"]
+      const selectCompany = async (slug) => {
+        await page.click(`.experience-index a[href="#${slug}"]`)
+        await page.waitForFunction((destination) => {
+          const anchor = document.getElementById("experience-anchor-" + destination)
+          const index = document.querySelector(".experience-index")
+          const rect = index?.getBoundingClientRect()
+          if (!anchor || !rect) return false
+          const visibleCard = document.elementFromPoint(window.innerWidth / 2, rect.bottom + 20)
+            ?.closest(".experience-card")
+          const active = index.querySelector('a[aria-current="location"]')
+          return Math.abs(anchor.getBoundingClientRect().top) <= 3 &&
+            visibleCard?.id === destination && active?.getAttribute("href") === "#" + destination &&
+            location.hash === "#" + destination
+        }, { timeout: 10000 }, slug)
+      }
+      // Start at Globo, reproduce the reported backward jump, then exercise all ordered pairs.
+      await selectCompany("globo-sportv")
+      await selectCompany("invest-rs")
+      let transitions = 0
+      for (const from of companies) {
+        for (const to of companies) {
+          if (from === to) continue
+          await selectCompany(from)
+          const beforeY = await page.evaluate(() => window.scrollY)
+          await selectCompany(to)
+          const afterY = await page.evaluate(() => window.scrollY)
+          if ((afterY - beforeY) * (companies.indexOf(to) - companies.indexOf(from)) <= 0) {
+            throw new Error("Incorrect company scroll direction: " + from + " -> " + to)
+          }
+          transitions++
+        }
+      }
+      console.log("P3_EXPERIENCE_BIDIRECTIONAL " + JSON.stringify({ result: "PASS", transitions }))
       stage = "sticky navigation"
-      await page.$eval("#prefeitura-sp", (node) => node.scrollIntoView({ behavior: "instant", block: "start" }))
+      await selectCompany("prefeitura-sp")
       await page.waitForFunction(() => {
         const bar = document.querySelector(".experience-index")?.getBoundingClientRect()
         const panel = document.querySelector("#prefeitura-sp")?.getBoundingClientRect()
@@ -873,7 +908,7 @@ try {
           getComputedStyle(header).backgroundColor !== "rgba(0, 0, 0, 0)"
       }, { timeout: 10000 })
       console.log("P3_EXPERIENCE_HEADER_MASK " + JSON.stringify({ result: "PASS", company: "prefeitura-sp" }))
-      await page.$eval("#cdi", (node) => node.scrollIntoView({ behavior: "instant", block: "start" }))
+      await selectCompany("cdi")
       await page.waitForFunction(() => {
         const index = document.querySelector(".experience-index.is-stuck")
         const header = document.querySelector(".site-header")
@@ -884,11 +919,7 @@ try {
       }, { timeout: 10000 })
       console.log("P3_EXPERIENCE_HEADER_MASK " + JSON.stringify({ result: "PASS", company: "cdi" }))
       await page.screenshot({ path: path.join(shots, "p3-experience-header-mask-cdi.png") })
-      await page.$eval("#prefeitura-sp", (node) => node.scrollIntoView({ behavior: "instant", block: "start" }))
-      await page.waitForFunction(() => {
-        const panel = document.querySelector("#prefeitura-sp")?.getBoundingClientRect()
-        return !!panel && panel.top <= 3 && Math.abs(panel.top) <= 3
-      }, { timeout: 10000 })
+      await selectCompany("prefeitura-sp")
       stage = "slide controls"
       const desktopImageFit = await page.$eval("#prefeitura-sp .desktop-panel .experience-media-frame img",
         (image) => getComputedStyle(image).objectFit)

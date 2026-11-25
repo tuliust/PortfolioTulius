@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { PortfolioSection } from "../../types/content"
 import { splitProfileTitle } from "../../lib/profile-title"
+import { scrollToExperienceAnchor } from "../../lib/experience-hash"
 import type { PublicNavigationItem } from "../../lib/navigation"
 import { Icon } from "../ui/Icons"
 
@@ -97,9 +98,11 @@ export function Navigation({
     history.pushState(null, "", `#${slug}`)
     // pushState does not emit hashchange; notify mobile experience selectors.
     window.dispatchEvent(new HashChangeEvent("hashchange"))
-    element?.scrollIntoView({
-      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-    })
+    if (!scrollToExperienceAnchor(slug)) {
+      element?.scrollIntoView({
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      })
+    }
     if (element) {
       element.tabIndex = -1
       setTimeout(() => element.focus({ preventScroll: true }), 350)
