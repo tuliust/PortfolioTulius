@@ -865,6 +865,30 @@ try {
         const header = document.querySelector(".site-header")?.getBoundingClientRect()
         return !!bar && !!panel && !!header && Math.abs(bar.top - header.bottom) <= 3 && panel.top <= 3
       }, { timeout: 10000 })
+      stage = "opaque experience header"
+      await page.waitForFunction(() => {
+        const index = document.querySelector(".experience-index.is-stuck")
+        const header = document.querySelector(".site-header")
+        return !!index && !!header && getComputedStyle(header).backgroundColor === getComputedStyle(index).backgroundColor &&
+          getComputedStyle(header).backgroundColor !== "rgba(0, 0, 0, 0)"
+      }, { timeout: 10000 })
+      console.log("P3_EXPERIENCE_HEADER_MASK " + JSON.stringify({ result: "PASS", company: "prefeitura-sp" }))
+      await page.$eval("#cdi", (node) => node.scrollIntoView({ behavior: "instant", block: "start" }))
+      await page.waitForFunction(() => {
+        const index = document.querySelector(".experience-index.is-stuck")
+        const header = document.querySelector(".site-header")
+        const panel = document.querySelector("#cdi")?.getBoundingClientRect()
+        return !!index && !!header && !!panel && panel.top <= 3 &&
+          getComputedStyle(header).backgroundColor === getComputedStyle(index).backgroundColor &&
+          getComputedStyle(header).backgroundColor !== "rgba(0, 0, 0, 0)"
+      }, { timeout: 10000 })
+      console.log("P3_EXPERIENCE_HEADER_MASK " + JSON.stringify({ result: "PASS", company: "cdi" }))
+      await page.screenshot({ path: path.join(shots, "p3-experience-header-mask-cdi.png") })
+      await page.$eval("#prefeitura-sp", (node) => node.scrollIntoView({ behavior: "instant", block: "start" }))
+      await page.waitForFunction(() => {
+        const panel = document.querySelector("#prefeitura-sp")?.getBoundingClientRect()
+        return !!panel && panel.top <= 3 && Math.abs(panel.top) <= 3
+      }, { timeout: 10000 })
       stage = "slide controls"
       const desktopImageFit = await page.$eval("#prefeitura-sp .desktop-panel .experience-media-frame img",
         (image) => getComputedStyle(image).objectFit)

@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Cobertura do cabeçalho desktop durante a rolagem das Experiências — 25/11/2026
+
+P3 passa a verificar que o menu de empresas está sticky e que o cabeçalho tem o mesmo fundo opaco do índice na Prefeitura e na CDI, registrando `P3_EXPERIENCE_HEADER_MASK` e captura da CDI. Base `3928ccb15be6d5e80924ecae60a20fce5d106538`: Validate, Export Docs e PDF Visual QA SUCCESS, Vercel Production READY, P3 global FAILURE. Os seis temas publicados foram relidos no Supabase como `paper`, sem escrita. Diff revisado estaticamente; CI e homologação visual do novo SHA pendentes neste registro. Não altera nem reclassifica resultados de outros testes.
+
 ## Cobertura da identificação profissional das seis experiências — 25/11/2026
 
 No código, `ExperienceStack.test.tsx` acrescenta casos de renderização das seis empresas no desktop, mobile e PDF, incluindo cargo/unidade, período/localização, separador órfão e ausência de período. Diff revisado estaticamente; execução unitária, CI e aceite visual no novo SHA ainda pendentes neste registro. Base `f729cbdb2a17d84dc234de283e0a2d5c6bb721e1`: Validate e Export Docs SUCCESS, Vercel Production READY; [P3 #45677759329](https://github.com/tuliust/PortfolioTulius/actions/runs/45677759329) FAILURE (browser com seis falhas, inclusive timeout de controle, seletor de projeto desatualizado e quadro ausente em 900×600; LCP mobile mediano 3.514,466 ms, acima de 3.500 ms). A geometria 1:1 foi observada nos demais nove viewports desktop da matriz e no projeto mobile testado; não equivale a aprovação global. Os problemas anteriores não são reclassificados nem abrangidos por esta padronização textual. Supabase consultado somente leitura; seis intros preservadas.

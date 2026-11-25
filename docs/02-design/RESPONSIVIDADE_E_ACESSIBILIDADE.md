@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Cabeçalho opaco durante o menu sticky das Experiências — 25/11/2026
+
+O cabeçalho fixo desktop era transparente: durante a rolagem das fichas sticky, textos, logos e imagens podiam aparecer atrás da marca e do botão MENU, acima do índice de empresas. `ExperienceStack` passa a identificar a posição sticky do índice também no desktop, reaproveitando a leitura geométrica existente. Em `src/index.css`, apenas a partir de 768 px e enquanto `.experience-index.is-stuck` estiver presente, o cabeçalho recebe fundo opaco `var(--paper)`, texto/foco `var(--ink)` e a marca normal laranja/grafite. Ao sair dessa condição, retorna ao estilo anterior. Não altera altura, z-index, posicionamento, rolagem, âncoras, galeria, conteúdos nem o comportamento mobile. P3 inclui verificação no navegador para Prefeitura e CDI; execução do novo SHA e aceite visual ainda não confirmados neste registro.
+
 ## Hierarquia de cargo, período e localização nas Experiências — 25/11/2026
 
 `ExperienceIntro` em `src/components/public/ExperienceStack.tsx` estende às seis experiências o tratamento antes exclusivo da Invest RS: cargo/unidade no primeiro bloco textual e período/localização em `span.experience-period`, com `display: block`, escala menor e peso 600 definidos no CSS existente (inclusive regra mobile). Quebras naturais continuam permitidas; um `|` terminal sem complemento é removido na apresentação, e o separador válido usa espaço inseparável após a barra para não ficar órfão no final da linha. Mantêm-se textos, cargos, períodos, locais, competências, mídias e dados originais. O componente compartilhado também aplica a hierarquia ao PDF Desktop/Mobile, sem alterar CSS de impressão. Testes unitários adicionados; homologação visual e CI do novo SHA ainda não confirmados neste registro.

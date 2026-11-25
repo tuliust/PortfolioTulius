@@ -1063,10 +1063,9 @@ export function ExperienceStack({
     return () => cancelAnimationFrame(frame)
   }, [active, isMobile, sections])
 
-  // The company navigation changes color only when it has actually reached
-  // its sticky position below the fixed site header.
+  // Detect the sticky company index on both layouts: mobile changes the index
+  // color; desktop masks scrolling content behind the fixed site header.
   useEffect(() => {
-    if (!isMobile) return
     const index = indexRef.current
     const stack = index?.parentElement
     if (!index || !stack) return
@@ -1113,7 +1112,7 @@ export function ExperienceStack({
     <div className="experience-stack" aria-label="Experiências profissionais">
       <nav
         ref={indexRef}
-        className={isMobile && isIndexStuck ? "experience-index is-stuck" : "experience-index"}
+        className={isIndexStuck ? "experience-index is-stuck" : "experience-index"}
         aria-label="Selecionar empresa"
       >
         {sections.map((section) => (

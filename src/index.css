@@ -573,6 +573,23 @@
   gap: .25rem; padding: .35rem var(--gutter);
   background: var(--paper); border-bottom: 1px solid #17161725;
 }
+/* The desktop header must mask scrolling content while the company index is pinned. */
+@media (min-width: 768px) {
+  .public-site:has(.experience-stack > .experience-index.is-stuck) .site-header {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .public-site:has(.experience-stack > .experience-index.is-stuck) .site-header .brand-button span:first-child {
+    background: var(--orange);
+    color: var(--ink);
+  }
+  .public-site:has(.experience-stack > .experience-index.is-stuck) .site-header .brand-button span:last-child {
+    color: var(--ink);
+  }
+  .public-site:has(.experience-stack > .experience-index.is-stuck) .site-header button:focus-visible {
+    outline-color: var(--ink);
+  }
+}
 .experience-index a {
   display: flex; align-items: center; justify-content: center; gap: .4rem;
   min-width: 0; padding: .4rem .25rem; text-decoration: none;
