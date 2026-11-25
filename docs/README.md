@@ -1,10 +1,6 @@
 # PortfolioTulius — documentação temática
 
-## Nova conferência dos backups Storage e PostgreSQL — 21/11/2026
-
-**Storage local ↔ Google Drive: SUCCESS no conteúdo, 143/143 arquivos e 0 diferenças.** O proprietário executou `rclone check --download` no conjunto de 18/11 depois da reorganização local; o comando concluiu com código de saída 0. Os inventários independentes também registraram 143 arquivos e 15.946.053 bytes em cada lado. O pacote PostgreSQL de 19/11 foi encontrado como arquivo `.7z` único de 68.436 bytes (**presença e tamanho confirmados; restauração NÃO testada**). O Drive permanece um snapshot, sem sincronização automática comprovada. [Evidência e limites no guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
-
-**Use primeiro o mapa por assunto.** Os registros cronológicos posteriores são evidências datadas, não tarefas automaticamente autorizadas.
+**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A consulta de 25/11/2026 confirmou as últimas correções em produção e registrou P3 global FAILURE, sem reabrir o standby.
 
 ## Por assunto
 
@@ -37,127 +33,22 @@ Primeiro [`AGENTS.md`](../AGENTS.md), o guia temático e o código atual. Em con
 
 **Informações superadas em relatórios antigos:** a RPC P2 está em produção; a coluna de crédito de mídia foi removida; o staging escolhido é Supabase CLI/Docker local. Os itens do [standby](06-governanca/BACKLOG_STANDBY.md) não são ordens automáticas.
 
-## Encerramento da organização local — confirmação do proprietário em 21/11/2026
+## Organização das pastas
 
-O proprietário confirmou por PowerShell: o diretório auxiliar histórico de restore **não existe mais no local original**, as **três configurações** copiadas estão preservadas no diretório local privado ignorado pelo Git e a pasta de trabalho renomeada existe. O Git local foi atualizado por `git pull --ff-only` até `main@99052f41` (evidência do terminal). Também informou ter substituído os **cinco anexos privados** do Projeto ChatGPT pelas revisões consolidadas. O destino da pasta auxiliar (Lixeira versus exclusão definitiva) **não foi demonstrado**; não houve nova validação SHA-256 local↔Drive nem restore PostgreSQL. [Limites e contexto](05-operacao/BACKUP_E_RECUPERACAO.md).
+| Pasta | Função |
+|---|---|
+| `01-projeto/` a `06-governanca/` | Guias canônicos por assunto; consultar antes de alterar código. |
+| [`historico/`](historico/README.md) | Registros anteriores, decisões e evidências datadas; não constituem novas autorizações. |
+| [`historico/consolidacao-2026-11-25/`](historico/consolidacao-2026-11-25/README.md) | Versões integrais anteriores dos pontos de entrada, preservadas por blob e SHA. |
+| `baselines/`, `evidence/`, `sql/` | Referências técnicas e evidências versionadas; não executar SQL histórico automaticamente. |
+| `docs/*.md` (exceto este índice) | 84 encaminhadores legados preservados por compatibilidade; não são contratos vigentes. |
 
-## Convenção local para backups privados — 21/11/2026
+Não remover os encaminhadores, evidências ou arquivos de runtime por conveniência. Os sete workflows ativos permanecem em `.github/workflows/`; os retirados estão em [histórico de workflows](historico/workflows-retirados-2026-11-11/README.md).
 
-**Execução local confirmada pelo proprietário em 21/11/2026 (log PowerShell):** renomeação para `PortfolioTulius`, `main@5a408035` limpo, `_backups_privados/` ignorado, 144 arquivos da cópia Storage, 170 do histórico e três configurações legadas preservadas. A tentativa de executar o script novamente usou o nome antigo e falhou, sem desfazer a primeira execução. A exclusão do diretório auxiliar remanescente e o estado final da Lixeira não foram confirmados. [Detalhamento e limites](05-operacao/BACKUP_E_RECUPERACAO.md).
+## Histórico e continuidade
 
-A cópia de trabalho pode manter um diretório `_backups_privados/` **ignorado no Git e no Vercel CLI**; ele nunca deve ser versionado ou publicado. O isolamento foi previsto no repositório; a renomeação e movimentação de pastas no Windows **não são confirmadas pelos serviços**. A cópia externa e a limitação de recuperabilidade PostgreSQL continuam vigentes. Procedimento e ressalvas: [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md).
+- [Estado anterior e índice acumulado até 25/11/2026](historico/consolidacao-2026-11-25/README.md), inclusive registros de backup, Resultados, Experiências e PDF de 12–25/11.
+- [Backups e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md): aceite administrativo de 20/11 e verificação posterior de 21/11; restore real integral não executado.
+- [Termo de encerramento da consolidação original](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md) e [histórico anterior](historico/README.md).
 
-## Encerramento da auditoria de backup e credenciais — aceite em 20/11/2026
-
-**Decisão vigente:** o proprietário encerrou formalmente a auditoria de 18–20/11/2026, **aceitando o risco residual de restaurabilidade integral do PostgreSQL não comprovada**. Não foi realizado nem autorizado restore real em PostgreSQL 17 isolado; RPO e RTO permanecem **não definidos**. Encerramento **não** equivale a teste de recuperação bem-sucedido ou correção do risco.
-
-| Assunto | Estado final | Referência canônica |
-|---|---|---|
-| Dumps PostgreSQL `roles.sql`, `schema.sql`, `data.sql` | Auditoria estática concluída, **cobertura parcial** | [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) |
-| Restauração real PostgreSQL 17 | **NÃO EXECUTADA**, risco residual aceito | [Decisões vigentes](06-governanca/DECISOES_VIGENTES.md) |
-| Storage local↔Drive | **SUCCESS: SHA-256 143/143**, par local selecionado | [Backup e recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) |
-| PAT GitHub histórico | Metadados auditados; identificação e revogação individual **NÃO CONFIRMADAS** | [Segurança e acessos](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
-| OAuth Google antigo | Remoção do app confirmada pelo proprietário; novo acesso **SUCCESS**; token histórico exato não identificado | [Segurança e acessos](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
-
-**Fonte de verdade e leitura:** este quadro e os guias acima consolidam o encerramento. As seções datadas abaixo permanecem **históricas**, inclusive quando registram tentativas preliminares, estados pendentes ou testes com falha posteriormente superados; não tratá-las como o estado atual. As cinco fontes privadas do Projeto **não** sincronizam automaticamente com GitHub: eventual consolidação deve ocorrer em lote e ser substituída manualmente, sem publicar conteúdo privado.
-
-## Conferência local do conteúdo dos blocos SQL — 20/11/2026
-
-Dos **57 `COPY`** informados pelo proprietário, **29 blocos contêm pelo menos uma linha** e **28 são vazios**: `public` 22/22 com dados; `auth` 5/26; `storage` 2/9. **Cobertura e recuperação integral continuam não comprovadas.** Por solicitação expressa, as cinco fontes privadas anexadas ao Projeto serão **consolidadas somente ao encerramento desta sequência**, sem gerar atualizações intermediárias; o GitHub mantém apenas os guias canônicos sem material privado. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
-
-
-## Confirmação da cobertura de `data.sql` — 20/11/2026
-
-A nova busca local apresentada pelo proprietário identificou **57 blocos `COPY`** no backup: **22 `public`, 26 `auth` e 9 `storage`**, além de 57 cabeçalhos de dados e nenhum `INSERT INTO`. Assim, os zeros da primeira busca eram **falsos negativos**. O arquivo contém instruções referentes a `auth` e `storage`, ao contrário da generalização anterior sobre a exclusão de schemas gerenciados, válida apenas com as distinções entre **estrutura** e **dados**. **Presença de comandos não prova todas as linhas, objetos gerenciados, restauração funcional nem preservação das chaves/arquivos do Storage**. [Detalhes e correção documental](05-operacao/BACKUP_E_RECUPERACAO.md).
-
-
-## Conferência dos arquivos SQL — 20/11/2026
-
-O proprietário relatou substituição manual das três fontes privadas revisadas. Em inspeção estrutural local dos dumps, encontrou **22 comandos de tabela `public`**, **41 comandos de policy** e **3 declarações de roles**; a busca anterior por linhas `COPY public.` retornou zero, **falso negativo corrigido** pela verificação posterior de **57 `COPY` (22 `public`, 26 `auth`, 9 `storage`)**. Continuam pendentes a contagem de linhas de dados por schema, a avaliação de cobertura efetiva e o ensaio isolado autorizado; **nenhuma escrita produtiva foi realizada**. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md).
-
-## Diagnóstico de cobertura de recuperação — 19/11/2026
-
-Nova avaliação **somente leitura** dos catálogos do PostgreSQL 17: `public` 22 tabelas/41 policies, `auth` 27 tabelas, `storage` 10 tabelas/2 policies, histórico de 12 migrations. Os dumps SQL e a cópia externa verificados pelo proprietário **contêm instruções de dados para `auth` e `storage` conforme verificação posterior**, mas ainda **não comprovam completude dos schemas gerenciados nem restauração integral**. Foi acrescentado um procedimento condicional de conferência de cobertura e recuperação isolada, **sem executar novas exportações, restauros, alterações produtivas ou itens do standby**. [Guia de recuperação](05-operacao/BACKUP_E_RECUPERACAO.md) · [Estado atual](01-projeto/ESTADO_ATUAL.md).
-
-## Ciclo de segurança e continuidade — 19/11/2026
-
-Conferidos os serviços no SHA base `5b037b8`: Supabase `ACTIVE_HEALTHY` com 7 avisos `SECURITY DEFINER` e 1 aviso Auth; Vercel Production `READY` nesse SHA. A nova cobertura sintética das sete RPCs foi incorporada ao P5 e **passou 14/14 no [P5 #88](https://github.com/tuliust/PortfolioTulius/actions/runs/44511446471), SHA funcional `226b234`**. Validate e Export Docs também terminaram em SUCCESS e Vercel Production READY nesse SHA. Os 7 WARN do advisor permanecem ativos, sem alteração de grants/Auth/RLS. PATs antigos excluídos conforme informação do proprietário, identidade do segredo histórico não comprovada. Em 19/11, o proprietário apresentou logs da **geração local de três dumps SQL** de produção (roles 297 B, schema 89.193 B, dados 555.489 B). Exportação evidenciada; **três hashes SHA-256 calculados e exibidos posteriormente pelo proprietário**, com comando de geração de manifesto CSV sem erro aparente. Posterior conferência PowerShell dos três arquivos contra o CSV local retornou **3/3 `NoManifesto=True` e `HashConfere=True`**, conforme saída apresentada pelo proprietário; não houve inspeção independente dos bytes. **Segunda cópia SQL no Drive confirmada por metadados** (um `.7z` de 68.436 bytes em pasta privada, sem compartilhamento); **teste do `.7z` protegido e igualdade SHA-256 local↔Drive reportados SUCCESS pelo proprietário em 19/11**; verificação independente dos bytes e do algoritmo de criptografia não executada. **Completude (Auth/Storage) e restauração integral não confirmadas**. Os arquivos e os valores dos hashes permanecem fora do Git. [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) · [Backup](05-operacao/BACKUP_E_RECUPERACAO.md).
-
-
-## Atualização de segurança e recuperação — 19/11/2026
-
-O proprietário apresentou evidência de **P5 Local Transactional Homologation #87 SUCCESS** e de **`rclone check`/ensaio isolado do Storage 143/143**; ver os guias de [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) e [Backup](05-operacao/BACKUP_E_RECUPERACAO.md), que delimitam o que foi reportado e o que não foi verificado independentemente. As capturas GitHub mostram três PATs fine-grained expirados e nenhum clássico; a identidade do PAT histórico segue não confirmada. Eventos OAuth de aplicativos no Security log são distintos de PATs. Um refresh token do Google compartilhado anteriormente requer revogação e reconexão do rclone; veja [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md). A verificação criptográfica objeto a objeto da cópia no Drive continua não confirmada.
-
-**Auditoria de continuidade e segurança — 19/11/2026:** inventário read-only de produção confirmou 143 arquivos no Storage (87 + 56, 15.946.053 bytes) e 90 mídias publicadas; no Drive a cópia de 143 objetos está confirmada por tamanho e quantidade, **não por hash**. Sete RPCs `SECURITY DEFINER` possuem guarda administrativa interna e não são executáveis por `anon`, mas os sete avisos do advisor permanecem ativos; análise estática concluída, **teste sintético de não administrador não executado**. Correspondência e revogação do PAT histórico **não confirmadas**. [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) · [Backup](05-operacao/BACKUP_E_RECUPERACAO.md).
-
-## Situação vigente — aceite PDF e conferência de serviços, 18/11/2026
-
-**Atualização posterior de 18/11:** corrigida a regra de apresentação dos logotipos das Experiências: `logoAlt` é opcional e não bloqueia a imagem quando há URL. O componente público tem teste de regressão para desktop/mobile. Releitura read-only após novos uploads confirmou **90 mídias publicadas e 143 objetos Storage** (87 públicos e 56 privados). **Backup físico primário de 143/143 arquivos confirmado pelo log local do proprietário** (87 públicos, 56 privados, 0 diferenças com `rclone check --download`, 15.946.053 bytes; manifesto SHA-256 gerado segundo a saída do script). **Cópia externa no Google Drive confirmada em 19/11/2026 por inventário e tamanho** (87 públicos + 56 privados = 143 arquivos, 15.946.053 bytes, pastas privadas com permissão somente do proprietário). **Ensaio isolado de restauração/verificação 143/143 posteriormente reportado com sucesso em 19/11; comparação criptográfica por arquivo da cópia no Drive e conferência independente do manifesto permanecem não confirmadas**. [Guia de backup](05-operacao/BACKUP_E_RECUPERACAO.md). A fotografia anterior do mesmo dia era 87 mídias/140 objetos, sem equivaler ao inventário atual. [Contrato de mídia](03-cms/MIDIAS_E_STORAGE.md) · [Contrato CMS](03-cms/GUIA_ADMINISTRATIVO.md).
-
-
-**PDF Desktop e Mobile concluídos por aceite visual do proprietário** após inspeção das exportações reais. Código funcional [`609218b`](https://github.com/tuliust/PortfolioTulius/commit/609218bd2bfede558f22c44002e62e9e21b2aada); [Validate SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702060), [QA PDF SUCCESS (6/6 visual, 9/9 físico, 2/2 CSS)](https://github.com/tuliust/PortfolioTulius/actions/runs/44250701938), [P5 read-only SUCCESS no segundo attempt](https://github.com/tuliust/PortfolioTulius/actions/runs/44250702020); Vercel funcional READY no mesmo SHA. [**Contrato vigente de exportação e aceite**](05-operacao/EXPORTACAO_PDF.md).
-
-**Supabase relido em produção (somente leitura):** `portfolio` ACTIVE_HEALTHY, 22 tabelas públicas com RLS/41 políticas, 14 seções (13 publicadas e visíveis), 42 painéis, 28 blocos, 56 placements, **90 mídias publicadas**, **4 projetos normalizados publicados/realizados**, 12 migrations. O Storage contém **87 objetos públicos e 56 privados**,
-totalizando **143 objetos**. A revisão de PDF não alterou o banco. O risco de LCP Mobile permanece em [standby](06-governanca/BACKLOG_STANDBY.md), aceito e não corrigido.
-
-**Inventário vigente de CI — 18/11/2026:** a pasta
-`.github/workflows/` contém **sete workflows executáveis**:
-`audit-p3-lighthouse.yml`, `export-docs-snapshot.yml`,
-`hygiene-audit.yml`, `p5-admin-readonly.yml`,
-`p5-local-transactional.yml`, `pdf-export-visual.yml`
-e `validate.yml`. Os cinco workflows legados
-continuam arquivados. A referência histórica de seis
-workflows descreve o estado de 11/11/2026 e não
-representa o inventário atual.
-
-**Organização:** o novo guia de PDF está na pasta operacional `docs/05-operacao/`. O índice canônico abaixo continua por assunto. Os relatórios antigos preservam seu contexto histórico em `docs/historico/`; nenhum deles deve ser excluído ou tratado como contrato vigente. As cinco fontes privadas do Projeto ChatGPT devem ser substituídas manualmente por snapshots atualizados, sem copiá-las para o GitHub.
-
----
-
-## Resultado mais recente do ciclo editorial — 16/11/2026
-
-No SHA [`8ed19b0`](https://github.com/tuliust/PortfolioTulius/commit/8ed19b098349e882f7c7dbb9b926114b6451e17e), [P3 #43846278955](https://github.com/tuliust/PortfolioTulius/actions/runs/43846278955) confirmou **navegador/responsividade PASS (0 falhas)** após corrigir as duas assertivas obsoletas de quatro para **cinco projetos**, e **38 capturas PASS**, projeto ↔ galeria, troca Trajetória/Projetos, rotas admin anônimas, SEO, RLS e tolerância parcial de leitura pública. O marcador `P3_DEPLOYMENT_GATE` confirmou o SHA servido em produção. Entretanto, **P3 global = FAILURE exclusivamente no orçamento mobile**: LCP mediano **3.649,202 ms** (meta **≤3.500 ms**); desktop **895,144 ms** (PASS). [Validate #43846279093](https://github.com/tuliust/PortfolioTulius/actions/runs/43846279093) e [Export Docs #43846279061](https://github.com/tuliust/PortfolioTulius/actions/runs/43846279061) foram **SUCCESS**; Vercel production `dpl_9Ti9ghY6ZC6tJ2DbCmT6Wg9L8XUm` estava **READY**. O proprietário **encerrou a revisão editorial** e aceitou o risco residual, sem considerar o LCP corrigido nem reclassificar o workflow como SUCCESS. Não houve mudança de Hero, Olá, conteúdo público ou banco nesta correção de teste.
-
-Os parágrafos de 16/11 que citam `9915964`, `aeffc5f` ou `ad5863c` são marcos datados e não devem ser lidos como o SHA funcional ou de produção mais recente. O teste autenticado completo do CMS não foi executado nesta rodada.
-
-**ÍNDICE CANÔNICO | Revisão 16/11/2026 | revisão editorial encerrada por aceite do proprietário.** Código funcional [`aeffc5f`](https://github.com/tuliust/PortfolioTulius/commit/aeffc5feabc7dfeab426046eb9748e5b8ef81c45), Validate **SUCCESS**; [P3 #43842659962](https://github.com/tuliust/PortfolioTulius/actions/runs/43842659962) **FAILURE** por duas assertivas obsoletas de quatro projetos (agora cinco) e LCP mobile de 3.609,314 ms. Commit documental pré-encerramento [`ad5863c`](https://github.com/tuliust/PortfolioTulius/commit/ad5863c0dbb1386d41482a6d9bbe9dc9a9ba60fc). Baseline `0627947` (11/11) permanece histórica; conferir sempre a `main` atual.
-
-## Registro consolidado do ciclo de ajustes — 12/11/2026
-
-Este índice reúne **ajustes já registrados** nos contratos canônicos, sem criar uma fonte paralela de especificação. As descrições detalhadas, campos e CSS continuam nos guias de [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md), [Identidade](02-design/IDENTIDADE_VISUAL.md), [CMS](03-cms/GUIA_ADMINISTRATIVO.md), [Modelo de dados](03-cms/MODELO_DE_DADOS.md) e [Testes e homologação](05-operacao/TESTES_E_HOMOLOGACAO.md). A baseline `0627947` e o termo de encerramento de 11/11 permanecem históricos.
-
-| Escopo | Ajuste registrado | Registro canônico |
-|---|---|---|
-| Desktop e mobile | Retirada do toast “Sincronizando conteúdo…”; favicon TT e ícone Apple; seleção/upload no editor SEO com fonte única `site_settings.seo_json.faviconUrl` | [CMS](03-cms/GUIA_ADMINISTRATIVO.md), [Mídias](03-cms/MIDIAS_E_STORAGE.md), [SEO](04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
-| Mobile · Perfil/A | Hierarquia do título “Conexões / Autênticas. / Inovação.”, proporção de “TULIUS / TSANGAROPULOS”, retrato alinhado às margens esquerda/inferior; textos elevados; seta visível na primeira dobra e livre para sobrepor a foto | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md), [CMS](03-cms/GUIA_ADMINISTRATIVO.md) |
-| Mobile · Perfil/B | Selo de visão 360° acima de “Áreas de Atuação”; faixa de fundo cinza até a régua laranja; token **`color.lightGray` = `#ECECEC`** administrável em Identidade e referenciado em `hero.mobileEditorial.middle.background` | [Identidade](02-design/IDENTIDADE_VISUAL.md), [Modelo de dados](03-cms/MODELO_DE_DADOS.md) |
-| Mobile · Resultados | Filetes acima dos indicadores “~8 mil” e “+30” elevados sem alterar valores | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
-| Mobile · Formação | Remoção dos filetes superiores iniciais, redistribuição vertical do título “Idiomas e Formação Complementar”, fonte/peso ampliados para o título e referências de instituição/período menores | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
-| Mobile · Experiências | Afastamento da numeração dos projetos em relação à régua laranja e rolagem do item aberto para seu início ao selecionar outro projeto | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
-| Mobile · Contato | Encaixe da foto na base da área laranja com continuação grafite, remoção do filete acima de “Canais de Contato” e ampliação do subtítulo | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) |
-| Desktop · Perfil, Resultados, Formação e Sobre | Escalas e controles desktop de texto, seta centralizada no viewport, espaçamentos iguais, foto de Sobre até a base, afastamento entre indicador e selo em alturas compactas | [Responsividade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md), [CMS](03-cms/GUIA_ADMINISTRATIVO.md), [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
-
-**Rastreabilidade por ciclo:** mobile/favicons [`45c9f78`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/45c9f7868e5dd31ae0e231e48cbc3828d250d45a); primeira dobra [`ade1552`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/ade1552280d2ea2a9362535da23d054329c60a24); token, integração e refinamentos mobile [`e24e91f`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/e24e91f05eae47ae34f12803a8d90777e96895b2); desktop [`ebda0aa`](https://github.com/tuliustsangaropulos/PortfolioTulius/commit/ebda0aabda776a8513cad963df184199ed0a6e53). Os commits intermediários e resultados de testes estão individualizados em [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md).
-
-**Aceite e limitações por SHA:** o ciclo mobile de `e24e91f` passou em [P3 #43168149664](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43168149664) (LCP mobile mediano **3.466,042 ms**). Já o ciclo desktop de `ebda0aa` teve [Validate #43197029438](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43197029438) e [P5 Admin read-only #43197029455](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43197029455) **SUCCESS**, mas [P3 #43197029431](https://github.com/tuliustsangaropulos/PortfolioTulius/actions/runs/43197029431) **FAILURE global** exclusivamente pelo LCP mobile mediano de **3.670,965 ms**, acima da meta de 3.500 ms. Os testes responsivos e 38 capturas desse SHA passaram. Não converter um resultado histórico PASS em aprovação do SHA mais recente; não reabrir pendências em standby automaticamente.
-
-
-## Ciclo de manutenção — seção 03, 16/11/2026
-
-**Implementado:** 20 indicadores em `resultados`/bloco A, quatro para cada uma das cinco categorias em `resultados`/bloco B; quatro indicadores também selecionados para a visão geral. A categoria Comunicação Corporativa usa “Estratégia e Reputação” e “Comunicação que conecta”. A exibição temática é compacta e os textos editoriais anteriores foram preservados no CMS. [Contrato dos campos](03-cms/MODELO_DE_DADOS.md) · [Operação no editor](03-cms/GUIA_ADMINISTRATIVO.md) · [Acessibilidade](02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).
-
-**Homologação por SHA:** [`2b573ca` / P3 #43815314121](https://github.com/tuliust/PortfolioTulius/actions/runs/43815314121) **SUCCESS**, LCP mobile **3.261,879 ms**; [`652dea0` / P3 #43816204987](https://github.com/tuliust/PortfolioTulius/actions/runs/43816204987) **FAILURE**, LCP mobile **3.746,315 ms**; [`9915964` / P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) **SUCCESS**, LCP mobile **3.458,135 ms**. O teste responsivo validou cinco categorias com quatro cards, sem transbordamento, e o SHA final foi confirmado em produção. A variabilidade do LCP permanece sob risco conhecido, sem converter falhas históricas em PASS. [Evidências detalhadas](05-operacao/TESTES_E_HOMOLOGACAO.md).
-
-**Limite editorial:** os indicadores são dados publicados no CMS, não prova documental independente de cada número. A revisão autorizada das seis Experiências foi aplicada ao Supabase e ao renderer no ciclo posterior de 16/11 (cinco projetos visíveis por empresa, abertura + bullets de Trajetória e histórico preservado). As cinco fontes privadas do Projeto ChatGPT são snapshots externos e **não são atualizadas automaticamente** por este Git. Não reabrir o [standby](06-governanca/BACKLOG_STANDBY.md).
-
-## Encerramento da revisão de Experiências — 16/11/2026
-
-O proprietário confirmou o **aceite editorial e o encerramento de escopo**, sem reclassificar falhas históricas de CI. O Supabase foi relido: 20 indicadores, 5 categorias, 30 projetos visíveis nas seis empresas e três projetos normalizados com `project_status=realizado`; o conteúdo histórico foi preservado. As métricas de imprensa agora incluem mailing pessoal `400+` e `32 influenciadores`.
-
-A auditoria P3 do código funcional identificou duas expectativas obsoletas de **quatro** projetos na Invest RS, que foram alinhadas ao padrão aprovado de **cinco** em `scripts/p3-browser-smoke.mjs`. O LCP mobile mediano **3.609,314 ms** no P3 da revisão excedeu o orçamento **3.500 ms**. O resultado daquele run continua **FAILURE**; o risco foi aceito sem alteração de Hero/Olá nem relaxamento do orçamento. [Estado atual](01-projeto/ESTADO_ATUAL.md) · [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) · [Decisões](06-governanca/DECISOES_VIGENTES.md).
-
-## Histórico organizado e fases
-
-[Baseline pré-consolidação](historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md) e [CSV de 384 hashes Git](historico/preconsolidacao-2026-11-11/ARQUIVOS_GIT_PRE_CONSOLIDACAO.csv). [Arquivo histórico organizado](historico/README.md), [origem Figma Make arquivada](historico/figma-make-2026-11-11/README.md), [estilos/visual](baselines/2026-11-07/REFERENCIAS_VISUAIS.md), [evidência sanitizada](evidence/p2-backup-counts-2026-11-10.json).
-
-**Etapa 02:** contratos e índice concluídos. **Etapa 03 (11/11/2026):** [84 documentos legados arquivados](historico/legado-ate-2026-11-11/INDEX.md), mantendo stubs em seus caminhos anteriores e preservando blobs originais. [Cinco workflows obsoletos retirados e preservados](historico/workflows-retirados-2026-11-11/README.md); seis workflows operacionais permanecem. **Branches antigas excluídas pelo proprietário**, com ausência conferida no GitHub. **Etapa 04:** cinco Fontes privadas já anexadas ao projeto ChatGPT, com as oito originais retiradas das Fontes ativas. **Etapa 05:** auditoria de encerramento e registro dos resultados em [termo final](06-governanca/ENCERRAMENTO_CONSOLIDACAO_2026-11-11.md). Os riscos técnicos continuam em standby.
+Os cinco snapshots privados do Projeto ChatGPT não sincronizam com GitHub. Não publicar conteúdo privado; seguir o [protocolo de atualização](06-governanca/PROTOCOLO_ATUALIZACAO_DOCUMENTAL.md).

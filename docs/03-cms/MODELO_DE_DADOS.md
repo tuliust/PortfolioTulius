@@ -1,5 +1,9 @@
 # Contrato CMS → Supabase → renderer
 
+## Conferência de dados após os ajustes de interface — 25/11/2026
+
+Releitura somente leitura das seis seções e dos arrays canônicos A: 28 fichas (4/4/5/5/5/5), 24 projetos centrais (4/4/5/5/3/3), 22 slides ativos (4/4/5/3/3/3) e zero fichas `slide.mediaType=video`. Seis intros preservam os dados originais; separadores e hierarquia são exclusivamente de apresentação. A configuração SEO publicada usa `faviconUrl=/favicon.png` e `ogImage` para `tulius-site-600.webp`. A leitura anterior à correção do Perfil identificou o mesmo PNG nos campos desktop/mobile, com fundo inferior #FAFAFA. Não houve UPDATE, migration ou mudança de contrato CMS nesta consolidação. As contagens de 23/11 abaixo são históricas. [Estado](../01-projeto/ESTADO_ATUAL.md).
+
 ## Apresentação uniforme de `sections.intro` nas Experiências — 25/11/2026
 
 Leitura das seis seções publicadas confirmou o formato `cargo | unidade · período · localização` (unidade e localização opcionais). O renderer `ExperienceIntro` separa a primeira ocorrência de ` · ` e mantém o restante unido pelo mesmo separador na linha de período/localização; sem período não cria linha vazia. Remove `|` terminal sem complemento apenas na renderização e impede que uma barra válida fique isolada no final da linha por espaço inseparável após ela. Usa a classe e a escala existentes da Invest RS para todas as empresas, desktop/mobile/PDF. Nenhum UPDATE, mudança de schema, edição CMS ou nova localização foi realizado.

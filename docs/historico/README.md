@@ -1,5 +1,9 @@
 # Arquivo histórico — versões anteriores, evidências e blobs
 
+## Consolidação dos pontos de entrada — 25/11/2026
+
+[Arquivo integral dos três pontos de entrada anteriores](consolidacao-2026-11-25/README.md): README raiz, índice temático e estado atual, preservados por blob no SHA `444fee647f96adf61ce72f9a2c07f3ec4af1cc4b`. Os caminhos canônicos continuam ativos, agora com foco no estado vigente. Os 84 encaminhadores legados permanecem compatíveis; nenhum arquivo de aplicação, evidência, workflow ativo ou SQL foi removido.
+
 Este índice armazena evidências e especificações anteriores. **Não usar como contrato operacional vigente.** O projeto atual é descrito no [índice temático](../README.md).
 
 ## Arquivamento do Figma Make — 11/11/2026

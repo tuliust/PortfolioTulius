@@ -1,5 +1,9 @@
 # Biblioteca de mídias e Storage
 
+## Retrato mobile e imagem de compartilhamento — 25/11/2026
+
+O fundo grafite da moldura do Perfil público mobile foi removido por CSS; não se alterou o PNG, seu recorte nem o Storage. O canal alfa remoto não foi validado independentemente. O P3 posterior confirmou transparência computada da moldura em seis larguras mobile. SEO usa mídia pública `tulius-site-600.webp` para Open Graph e o favicon padrão `/favicon.png`; preservar a distinção entre esses campos. A recomendação OG continua 1200 × 630 px, não uma afirmação da dimensão do arquivo selecionado. [SEO](../04-infraestrutura/VERCEL_DEPLOY_SEO.md).
+
 ## Geometria da galeria pública — 25/11/2026
 
 Mantém-se a referência administrativa de **1600 × 1600 px** para slides de imagem das seis experiências. O quadro público passa a ser 1:1 em desktop e mobile (desktop limitado simultaneamente pela largura da coluna e por `57svh`; mobile ocupa a largura disponível). `contain` preserva a imagem inteira; margens internas ainda podem existir para arquivos não quadrados ou enquadramento personalizado. Vídeos mantêm `cover` e podem sofrer recorte no quadro quadrado; fullscreen mantém `contain`. Nenhum upload, conversão, alteração de Storage, metadados ou campo administrativo decorre deste ajuste. Ver [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).

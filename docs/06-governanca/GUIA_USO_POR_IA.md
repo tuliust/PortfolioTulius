@@ -1,5 +1,9 @@
 # Guia para ChatGPT, Codex e outras IAs
 
+## Pontos de entrada após a consolidação de 25/11/2026
+
+Começar pelo [índice temático](../README.md) e [estado atual](../01-projeto/ESTADO_ATUAL.md), com a matriz de commits recentes e limites de homologação. Os textos anteriores foram preservados integralmente no [arquivo histórico](../historico/consolidacao-2026-11-25/README.md); os encaminhadores antigos continuam no mesmo caminho. Não interpretar o arquivamento como exclusão de dependências, nova autorização ou alteração dos cinco snapshots privados.
+
 ## Leitura prioritária para PDF — após o aceite de 18/11/2026
 
 Para demandas envolvendo o PDF, iniciar por [Exportação PDF](../05-operacao/EXPORTACAO_PDF.md), `src/lib/pdf-print-layout.ts`, `src/lib/pdf-print-launch.ts` e o smoke físico. **Desktop** imprime no iframe de referência 1440 px; **Mobile** em aba independente com documento de 390 px. Ambos já foram **aceitos pelo proprietário**. Não reabrir a homologação por causa de menções históricas a “pendente”, nem interpretar o aceite como correção do LCP Mobile, autorização de escrita no CMS ou atualização automática das cinco fontes privadas.

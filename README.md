@@ -1,6 +1,6 @@
 # PortfolioTulius — portfólio editorial e CMS
 
-Site profissional de comunicação, jornalismo, estratégia e projetos em [tulius.work](https://tulius.work/). O produto foi **finalizado e validado pelo proprietário**. Em 16/11/2026 recebeu manutenção autorizada na seção de Resultados (frontend, CMS, conteúdo e testes), sem reconstruir o produto nem reabrir automaticamente pendências antigas.
+Site profissional de comunicação, jornalismo, estratégia e projetos em [tulius.work](https://tulius.work/). O produto foi finalizado e recebeu manutenção pontual autorizada. Consulte o estado técnico vigente para distinguir mudanças publicadas, testes aprovados e riscos ainda abertos.
 
 **Stack:** React 19, TypeScript, Vite, Tailwind CSS v4, Supabase (PostgreSQL/Auth/Storage) e Vercel. Repositório público na branch `main`.
 
@@ -30,6 +30,6 @@ Requer Node 24 compatível e pnpm. Configurar somente variáveis publicáveis de
 
 ## Estado e publicação
 
-A Vercel publica a partir da `main`; **push documental também pode gerar deploy**. A baseline de 11/11/2026 é histórica e incluiu uma falha de LCP mobile acima de 3,5 s. Na revisão de Resultados em 16/11, o SHA [`9915964`](https://github.com/tuliust/PortfolioTulius/commit/9915964f54a37d209b25c778c6d2c50faddf4f77) teve [P3 #43817188772](https://github.com/tuliust/PortfolioTulius/actions/runs/43817188772) **SUCCESS**, com LCP mobile mediano de **3.458,135 ms** e cinco categorias com quatro indicadores cada. A auditoria posterior do SHA [`8ed19b0`](https://github.com/tuliust/PortfolioTulius/commit/8ed19b098349e882f7c7dbb9b926114b6451e17e) foi **FAILURE** por LCP mobile mediano de **3.649,202 ms**, apesar dos testes de navegador aprovados. Em 18/11, o SHA funcional [`2bbbae59`](https://github.com/tuliust/PortfolioTulius/commit/2bbbae59b427c909cf7407790c4c6b0f2bbab31c) teve [P3 #44292509279](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509279), [Validate #44292509459](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509459) e [PDF Visual QA #44292509358](https://github.com/tuliust/PortfolioTulius/actions/runs/44292509358) em **SUCCESS**. Estes são resultados vinculados aos respectivos SHAs e não homologação P3 de commits documentais posteriores. A oscilação do LCP mobile continua registrada; a meta de **3.500 ms** não foi alterada. Consultar o [guia de testes](docs/05-operacao/TESTES_E_HOMOLOGACAO.md) e verificar sempre o SHA atual.
+A Vercel publica a partir da `main`; pushes documentais também podem gerar deployment. O [estado técnico consolidado](docs/01-projeto/ESTADO_ATUAL.md) reúne os ajustes recentes e as evidências por SHA. O [guia de testes](docs/05-operacao/TESTES_E_HOMOLOGACAO.md) mantém o limite LCP mobile de 3,5 s e os resultados completos; publicação READY não equivale a P3 SUCCESS.
 
-[Fotografia anterior ao projeto documental](docs/historico/preconsolidacao-2026-11-11/ESTADO_PRE_CONSOLIDACAO.md). Fontes privadas do Projeto ChatGPT e dumps/binaries não pertencem ao Git público.
+[Histórico organizado](docs/historico/README.md) · [Versões anteriores do índice e estado](docs/historico/consolidacao-2026-11-25/README.md). Fontes privadas do Projeto ChatGPT, dumps e backups não pertencem ao Git público.

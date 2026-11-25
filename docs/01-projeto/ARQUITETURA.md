@@ -1,5 +1,9 @@
 # Arquitetura do PortfolioTulius
 
+## Contrato de apresentação e navegação de Experiências — 25/11/2026
+
+O renderer mantém as seis fichas sticky e os dados CMS existentes. `ExperienceStack.tsx` usa `ExperienceIntro` compartilhado com PDF para separar cargo e período, calcula destaque com marcadores desktop não-sticky `experience-anchor-<slug>` e usa `src/lib/experience-hash.ts` também em `PublicSite.tsx` e `Navigation.tsx`. A posição de rolagem não depende do painel sobreposto. CSS mantém quadro 1:1, cabeçalho opaco quando índice fixado e transparência da foto editorial pública mobile (exclui PDF). A leitura de 25/11 confirma 28 fichas, 24 projetos centrais, 22 slides ativos, quatro ocultos e zero fichas de vídeo. [Estado consolidado](ESTADO_ATUAL.md) · [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).
+
 ## Consolidação dos seis conjuntos de projetos em produção — 23/11/2026
 
 O Supabase já contém **5 registros canônicos por experiência** (30 projetos e 17 slides), associados por ID estável. O editor e o renderer consultam a mesma coleção JSONB em A. Os arrays legados permanecem somente com o conteúdo que era publicado; itens `isHidden=true` e slides órfãos foram removidos daqueles arrays. A função de importação por título é agora apenas fallback de compatibilidade, não a fonte efetiva das seis seções.

@@ -1,5 +1,11 @@
 # Vercel, publicação e SEO
 
+## Publicação confirmada e paridade SEO — 25/11/2026
+
+Vercel Production [dpl_9dpicxsm3zgWuBiE4zwAZfL8EqJB](https://vercel.com/tuliust/portfolio-tulius/9dpicxsm3zgWuBiE4zwAZfL8EqJB) **READY**, aliases `tulius.work` e `www.tulius.work`, SHA funcional `444fee647f96adf61ce72f9a2c07f3ec4af1cc4b`. A consulta administrativa e o gate P3 comprovaram o mesmo SHA servido. O próximo commit exclusivamente documental pode gerar novo deployment; conferir separadamente.
+
+A leitura atual de `site_settings.seo_json` confirma `ogImage` HTTPS para a mídia `tulius-site-600.webp` e `faviconUrl=/favicon.png`. [P3 #45691463355](https://github.com/tuliust/PortfolioTulius/actions/runs/45691463355) registrou `P4_SEO_PARITY PASS` incluindo `ogImage`, título, descrição, locale, canonical e robots, sem mutações; não equivale à validação da prévia do WhatsApp. Validate e Export Docs SUCCESS no SHA funcional; P3 global FAILURE. O rebuild intermediário `5cf8e3c` é histórico e foi superado por `ad8d183`. Nenhum deploy manual, alteração de DNS ou configuração nesta consolidação. [Matriz](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Correção do Open Graph e restauração do favicon — 25/11/2026
 
 Consulta somente leitura confirmou a edição realizada pelo proprietário às 19:56:35 UTC no CMS publicado: `seo_json.faviconUrl=/favicon.png` (ícone TT original, com `/apple-touch-icon.png` específico) e `seo_json.ogImage` aponta para a mídia pública `tulius-site-600.webp`, anteriormente selecionada como favicon. O registro anterior abaixo descreve o estado superado. O script `scripts/generate-seo.mjs` já gera `og:image`, `twitter:image` e `twitter:card=summary_large_image` a partir desse campo HTTPS durante o build. O commit exclusivamente documental na `main` dispara novo build pela integração Git/Vercel, autorizado pelo proprietário; não modifica código, dados, Storage ou configurações. Base `5cf8e3c4b44c79b95ea6162a5a7a8d5963b3eda0`: Production READY (`dpl_HSpHgS17xj8C9wF46bFsypysCayD`), Validate e Export Docs SUCCESS. Novo deployment e HTML servido requerem conferência própria; a prévia do WhatsApp pode permanecer em cache e não é comprovada apenas por READY. P3 anterior permanece FAILURE, sem reclassificação.
