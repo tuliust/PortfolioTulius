@@ -1,5 +1,137 @@
 # Guia operacional do CMS
 
+## Inventário editorial aprovado e relido — 25/11/2026
+
+Registro textual do conteúdo publicado após a revisão documentada em [`19c0c28`](https://github.com/tuliust/PortfolioTulius/commit/19c0c28d8ec0a4127fc638565f0a4ce7026e839a). É uma fotografia editorial datada, não fonte de sincronização, backup do banco ou autorização para sobrescrever futuras edições. Supabase permanece canônico. As legendas de dois slides de Globo estão preparadas, mas ainda não publicadas na galeria. Somente texto editorial do portfólio e complementações de Trajetória são registrados aqui; sem anexos privados, URLs de mídia, identificadores internos de registros, credenciais ou dumps.
+
+### Invest RS
+
+- Posicionamento: Comunicação institucional, relacionamento estratégico e transformação digital
+- Função e período: Assessor Executivo | Núcleo de Comunicação · Jul/2026 – atual · Porto Alegre, RS
+- Competências: Comunicação institucional; Comunicação interna; Gestão de eventos; Relações públicas; Produtos digitais; CRM e dados.
+
+1. **Comunicação interna e cultura** — Desenvolvimento de conteúdos e ferramentas para integração de equipes, disseminação da cultura e organização do conhecimento institucional.
+   - Slide: **Guia digital de boas-vindas** — Criação de guia interativo de onboarding, com conteúdo institucional, orientações aos colaboradores e sistema próprio de edição.
+2. **Eventos e relações institucionais** — Gestão de eventos nacionais e internacionais, articulando fornecedores, orçamento, logística, comunicação e públicos estratégicos.
+   - Slide: **Feiras e eventos estratégicos** — Atuação na Expointer, Mercopar e SIAL, integrando convites, materiais institucionais, programação, recepção e cobertura.
+3. **Branding e identidade digital** — Desenvolvimento de soluções e materiais de comunicação que fortalecem a identidade institucional e qualificam os pontos de contato da marca.
+   - Slide: **Cartões de visita digitais** — Desenvolvimento de plataforma multilíngue com cartões personalizáveis, QR Code, vCard, assinatura de e-mail e gestão centralizada.
+4. **CRM e inteligência de dados** — Estruturação de estratégias de relacionamento, governança de dados e segmentação de mais de 3 mil contatos institucionais.
+   - Slide: **Plataforma de eventos e relacionamento** — Desenvolvimento de sistema integrado para gestão de contatos, convites, inscrições, credenciamento, check-in e indicadores de eventos.
+
+**Trajetória — complementações verificadas:**
+
+- Identidade digital: Desenvolvimento de materiais, apresentações e cartões digitais multilíngues com QR Code e vCard.
+
+
+### Prefeitura de São Paulo
+
+- Posicionamento: Gestão estratégica da comunicação pública, reputação e transformação digital
+- Função e período: Coordenador de Comunicação (Diretor I) | Subprefeitura de Pinheiros · Nov/2024 – Jan/2026 · São Paulo, SP
+- Competências: Comunicação pública; Planejamento estratégico; Relações com a imprensa; Gestão de crise; Comunicação interna; Transformação digital.
+
+1. **Gestão estratégica da comunicação** — Coordenação da comunicação pública, relacionamento com a imprensa, gestão de reputação e estratégias de crescimento digital.
+   - Slide: **Plano de Comunicação 2025** — Elaboração de planejamento anual com objetivos, públicos, canais, diretrizes editoriais, cronogramas e indicadores de desempenho. Montagem ilustrativa; não é material original.
+2. **Transparência e governança pública** — Comunicação alinhada às políticas de integridade, transparência ativa, ética institucional e boas práticas na administração pública.
+   - Slide: **Plano de Integridade e Boas Práticas** — Desenvolvimento de estratégias e materiais de comunicação para disseminar princípios éticos, orientar servidores e fortalecer a transparência. Montagem ilustrativa; não é material original.
+3. **Transformação digital e inteligência de dados** — Desenvolvimento de soluções para integrar equipes, automatizar processos de comunicação e orientar decisões a partir de indicadores.
+   - Slide: **Plataforma SUBPI** — Criação de plataforma interna para integração de mais de mil colaboradores, com gestão de demandas, conteúdos, dashboards e relatórios.
+4. **Comunicação interna e engajamento** — Desenvolvimento de canais e conteúdos para valorizar equipes, divulgar resultados, compartilhar informações e fortalecer o pertencimento institucional.
+   - Slide: **Newsletter Por Dentro da SubPinheiros** — Criação de publicação editorial interna reunindo notícias, indicadores, avanços da gestão pública e iniciativas das equipes.
+
+**Trajetória — complementações verificadas:**
+
+- Organização editorial interna: Organização de comunicados, documentos, indicadores e rotinas para equipes.
+
+
+### Vale
+
+- Posicionamento: Comunicação corporativa global, reputação e inovação digital
+- Função e período: Analista Sênior de Comunicação · Jun/2020 – Out/2024 · São Paulo, SP
+- Competências: Comunicação corporativa; Gestão de projetos; Reputação e ESG; Inovação digital; Mídia e performance; Inteligência de dados; Employer branding; Gestão multicultural.
+
+1. **Gestão estratégica de projetos digitais** — Interface entre Sustentabilidade, RH, Inovação, Relações com Investidores e agências, conduzindo projetos de ponta a ponta.
+   - Slide: **Novo site institucional da Vale** — Participação no desenvolvimento do novo portal corporativo, articulando áreas internas, conteúdo, estratégia digital e fornecedores.
+2. **Comunicação global e reputação** — Liderança de times internacionais de comunicação, alinhamento de estratégias, posicionamento institucional e comunicação executiva.
+   - Slide: **Coordenação de equipes em 14 países** — Alinhamento estratégico semanal com equipes internacionais, integrando campanhas, mensagens, boas práticas e prioridades corporativas. Montagem ilustrativa; não é material original.
+3. **Inovação e experiências digitais** — Liderança de projetos especiais de comunicação com inteligência artificial, realidade virtual, gaming e novos formatos de interação.
+   - Slide: **Alexa, quero ser trainee!** — Desenvolvimento de experiência interativa por voz para simular entrevistas, apresentar a seleção às cegas e incentivar a diversidade. Montagem ilustrativa; não é material original.
+4. **Employer branding e performance** — Gestão de campanhas de atração de talentos, estratégias de mídia paga, segmentação de públicos e análise de desempenho.
+   - Slide: **Global Trainee Program** — Desenvolvimento de campanhas internacionais de recrutamento, com adaptação de conteúdos, formatos e estratégias a diferentes mercados.
+5. **Diversidade, equidade e inclusão** — Desenvolvimento, acompanhamento e mensuração de campanhas afirmativas, com análise de indicadores e apresentação de resultados à liderança.
+   - Slide: **Campanhas de diversidade e pertencimento** — Estratégias de comunicação sobre equidade de gênero, orgulho LGBT+, consciência negra e inclusão, conectadas à transformação cultural.
+
+**Trajetória — complementações verificadas:**
+
+- Captação audiovisual: Coordenação de captações, equipes internas e fornecedores em operações brasileiras.
+- Recrutamento internacional: Planejamento e adaptação de mensagens para diferentes mercados e públicos.
+
+
+### TV Globo
+
+- Posicionamento: Jornalismo audiovisual, correspondência internacional e produção de conteúdo
+- Função e período: Repórter, Correspondente Internacional, Produtor e Editor | SporTV · Out/2015 – Out/2019
+- Competências: Jornalismo audiovisual; Correspondência internacional; Reportagem; Produção e edição; Coberturas ao vivo; Storytelling.
+
+1. **Correspondência internacional na Ásia** — Atuação com sede em Pequim e coberturas na China, Japão, Coreia do Sul, Hong Kong, Macau e Tailândia.
+   - Slide: **Correspondente em Pequim** — Um ano de atuação na Ásia, com reportagens sobre esporte, cultura, sociedade e preparação de atletas para os Jogos Olímpicos Rio 2016. Montagem ilustrativa; não é material original.
+2. **Formação em jornalismo audiovisual** — Selecionado entre 8 mil candidatos para integrar um programa de seis meses de treinamento e imersão no jornalismo do Grupo Globo.
+   - Slide: **Passaporte SporTV** — Um dos oito jornalistas selecionados nacionalmente para formação audiovisual e atuação internacional durante o ciclo olímpico Rio 2016. Montagem ilustrativa; não é material original.
+3. **Produção audiovisual multiplataforma** — Atuação como repórter, produtor e editor, com domínio de apuração, roteiro, entrevistas, captação, edição e apresentação.
+   - Slide: **Jornalismo e novos formatos digitais** — Produção de conteúdo audiovisual para televisão e desenvolvimento de propostas de inovação editorial voltadas às plataformas digitais. Montagem ilustrativa; não é material original.
+4. **Reportagem e coberturas esportivas** — Repórter esportivo em São Paulo e no Rio de Janeiro, com mais de 200 jogos cobertos em mais de 20 cidades brasileiras.
+   - Slide: **Grandes eventos e transmissões ao vivo** — Cobertura dos Jogos Olímpicos Rio 2016 e mais de 100 participações ao vivo na programação da TV Globo e do SporTV. *(texto preparado; mídia desabilitada, vídeo pendente).*
+5. **Séries e coberturas especiais** — Produção de reportagens sobre questões sociais, coberturas de grande repercussão e edição de programas especiais e retrospectivas.
+   - Slide: **Reportagens de impacto social** — Série pioneira sobre homofobia no futebol em rede nacional, cobertura do acidente da Chapecoense e produção de especiais jornalísticos. *(texto preparado; mídia desabilitada, vídeo pendente).*
+
+**Trajetória — complementações verificadas:**
+
+- Entradas ao vivo: Mais de 100 participações ao vivo na programação da TV Globo e do SporTV.
+
+
+### Grupo InPress
+
+- Posicionamento: Relações públicas, reputação corporativa e comunicação integrada
+- Função e período: Analista de Comunicação e Atendimento Sênior | FleishmanHillard · Nov/2019 – Jun/2020 · São Paulo, SP
+- Competências: Assessoria de imprensa; Relações públicas; Gestão de contas; Campanhas integradas; Gestão de crise; Marketing de influência.
+
+1. **Gestão de contas e planejamento estratégico** — Atendimento consultivo, desenvolvimento de planos de comunicação, articulação de equipes, definição de KPIs e apresentação de resultados.
+   - Slide: **FleishmanHillard Brasil** — Atuação em projetos de relações públicas, posicionamento de marcas e desenvolvimento de estratégias integradas para clientes globais. Montagem ilustrativa; não é material original.
+2. **Assessoria de imprensa e gestão de reputação** — Relacionamento com jornalistas, desenvolvimento de pautas, preparação de porta-vozes, posicionamentos institucionais e gestão de crise.
+   - Slide: **Johnson & Johnson** — Atendimento em comunicação corporativa, reputação institucional, campanhas de marca e suporte a demandas de imprensa em contextos sensíveis. Montagem ilustrativa; não é material original.
+3. **Campanhas integradas e marketing de influência** — Planejamento e execução de campanhas on e offline, conectando imprensa, influenciadores, ativações, eventos e produção de conteúdo.
+   - Slide: **GoPro** — Desenvolvimento de ações de comunicação voltadas à visibilidade da marca, divulgação de produtos, engajamento de comunidades e relacionamento com criadores de conteúdo. Montagem ilustrativa; não é material original.
+
+**Trajetória — complementações verificadas:**
+
+- Gestão de contas: Atendimento a GoPro e Johnson & Johnson, articulando clientes, criação e relações públicas, com atenção a prazos, alinhamento e qualidade.
+- Mensuração: Monitoramento de mídia e KPIs, relatórios de campanhas, análises executivas e recomendações para aprimorar resultados.
+
+Fichas preservadas ocultas: Gestão de contas; Posicionamento e resultados.
+
+
+### CDI Comunicação
+
+- Posicionamento: Planejamento estratégico, reputação corporativa e relações institucionais
+- Função e período: Analista de Comunicação e Atendimento Pleno · Nov/2014 – Set/2015 · São Paulo, SP
+- Competências: Planejamento estratégico; Comunicação institucional; Assessoria de imprensa; Gestão de reputação; Comunicação executiva; Gestão de stakeholders.
+
+1. **Planejamento estratégico e reputação** — Desenvolvimento de planos anuais de comunicação, desdobramentos táticos, posicionamento institucional e análise de indicadores.
+   - Slide: **Sicredi** — Estratégias de comunicação para fortalecer a reputação do cooperativismo financeiro, com foco em negócios, resultados, inovação e crédito rural. Montagem ilustrativa; não é material original.
+2. **Relações públicas e comunicação institucional** — Desenvolvimento de narrativas, relacionamento com a imprensa, mobilização de públicos estratégicos e apoio a eventos institucionais.
+   - Slide: **Instituto Vladimir Herzog** — Comunicação institucional e assessoria de imprensa em iniciativas voltadas aos direitos humanos, à memória, à democracia e à liberdade de expressão. Montagem ilustrativa; não é material original.
+3. **Comunicação executiva e gestão de stakeholders** — Consultoria estratégica, preparação de porta-vozes, gestão de temas sensíveis, monitoramento de mídia e relatórios executivos.
+   - Slide: **CTEEP** — Atendimento em comunicação corporativa no setor elétrico, com foco em reputação, posicionamento institucional e relacionamento com a imprensa econômica. Montagem ilustrativa; não é material original.
+
+**Trajetória — complementações verificadas:**
+
+- Eventos e representação: Apoio a entrevistas, encontros e eventos, com preparação de mensagens e materiais e alinhamento de porta-vozes.
+- Relatórios executivos: Consolidação de entregas, resultados, KPIs, recomendações de comunicação institucional e próximos passos.
+- Setor elétrico: Atendimento à CTEEP em comunicação corporativa, reputação institucional e relacionamento com a imprensa econômica.
+
+Fichas preservadas ocultas: Eventos e porta-vozes; Indicadores e consultoria.
+
+
 ## Revisão editorial aprovada — 25/11/2026
 
 As seis experiências foram revisadas em produção, com títulos e descrições distintos entre centro e slide, competências atualizadas e marca principal TV Globo (SporTV identificado na função). Centro/galeria ativa: Invest RS 4/4; Prefeitura 4/4; Vale 5/5; TV Globo 5/3; Grupo InPress 3/3; CDI 3/3. Total: 24 itens centrais e 22 slides ativos. Quatro fichas sem mídia de InPress/CDI foram ocultadas, não excluídas; seus conteúdos foram incorporados à Trajetória. As seis descrições de Trajetória foram complementadas pontualmente sem reescrever seu escopo anterior. Para Globo, os dois slides desabilitados já têm textos preparados, mas a ativação depende do upload e da conferência dos vídeos pelo proprietário.

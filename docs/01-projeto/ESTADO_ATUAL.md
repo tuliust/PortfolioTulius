@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Fechamento documental da revisão editorial — 25/11/2026
+
+A conferência posterior do commit [`19c0c28`](https://github.com/tuliust/PortfolioTulius/commit/19c0c28d8ec0a4127fc638565f0a4ce7026e839a) confirmou Validate e Export Docs **SUCCESS** e Vercel Production **READY**. Releitura do Supabase manteve 24 itens centrais, 22 slides ativos, quatro fichas ocultas e seis Trajetórias complementadas; nenhum vídeo vinculado. Inventário textual datado no [Guia CMS](../03-cms/GUIA_ADMINISTRATIVO.md), evidências no [Guia de testes](../05-operacao/TESTES_E_HOMOLOGACAO.md) e [Guia Vercel](../04-infraestrutura/VERCEL_DEPLOY_SEO.md). Pendentes: dois vídeos de Globo, aceite visual desktop/mobile e validação PDF após a revisão. Snapshots privados de produto/design e arquitetura/CMS precisam ser substituídos pelo proprietário se desejar alinhá-los; não são sincronizados pelo GitHub. Nenhuma escrita no Supabase nesta conferência.
+
 ## Revisão editorial de Experiências — 25/11/2026
 
 **Supabase: SUCCESS (gravação atômica e releitura).** Revisão aprovada das três colunas das seis empresas e complementação das seis Trajetórias, sobre a versão de referência `85f939c` (Vercel READY; Validate e Export Docs SUCCESS no SHA de referência). Estado produtivo confirmado: 28 fichas armazenadas, 24 itens centrais visíveis, 22 slides ativos; quatro fichas excedentes preservadas ocultas em InPress/CDI. Dois slides de Globo permanecem desabilitados até o upload/conferência dos vídeos. Hashes de mídia das 24 fichas com slide preservados; nenhum arquivo substituído, sem mudança de schema, RLS, Auth, Storage, código, infraestrutura ou deploy manual. Releitura SQL confirma o conteúdo, não o aceite visual ou a renderização PDF; esses testes não foram executados nesta intervenção. [CMS](../03-cms/GUIA_ADMINISTRATIVO.md) · [Modelo](../03-cms/MODELO_DE_DADOS.md).

@@ -1,5 +1,9 @@
 # Vercel, publicação e SEO
 
+## Publicação documental da revisão editorial — 25/11/2026
+
+Vercel Production [dpl_EZbrmWMEhj7DFaSdw8Gg49nHC7H6](https://vercel.com/tuliust/portfolio-tulius/EZbrmWMEhj7DFaSdw8Gg49nHC7H6) **READY** para `main@19c0c28d8ec0a4127fc638565f0a4ce7026e839a`. Validate e Export Docs **SUCCESS** no mesmo SHA. Conteúdo editorial gravado diretamente no CMS e confirmado por releitura, não dependente do rebuild documental. Nenhum deploy manual, alteração de DNS ou configuração; associação dos aliases não foi reconsultada nesta rodada. READY não constitui aceite visual de produção nem validação PDF. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Publicação do ajuste de vídeo — 24/11/2026
 
 Vercel Production [dpl_4o45ibjLqP8JsR2NGsLQDcXatQBH](https://vercel.com/tuliust/portfolio-tulius/4o45ibjLqP8JsR2NGsLQDcXatQBH) **READY**, SHA `3589209ec199c491be31ae87ebaf72b7117fbb4a`, branch `main`, aliases `tulius.work` e `www.tulius.work` confirmados. Implementação `b3ba5d1`: autoplay inicialmente mudo quando visível e preenchimento proporcional do quadro de vídeo. Validate, PDF QA e Export Docs SUCCESS; Hygiene e P3 FAILURE, não confundir READY com homologação integral. [Evidências de CI](../05-operacao/TESTES_E_HOMOLOGACAO.md). Nenhum deploy manual ou alteração de DNS/configuração. Um commit exclusivamente documental posterior pode gerar outro deployment automático; conferir por SHA.
