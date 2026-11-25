@@ -1,5 +1,14 @@
 # Testes, CI e homologação
 
+## Prioridade de pintura da primeira dobra — 25/11/2026
+
+Base funcional `4b858d460c25f9d68c6555b5586813a2b390cf53`: Validate #45702250935, Export Docs #45702251151 e PDF QA #45702250968 SUCCESS; Production `dpl_FZG4pUR7jf32AsoeENoWNVWxCSyP` READY. P3 #45702250985 confirmou **browser com zero falhas**, 30/30 transições, vínculo ficha↔slide, autoplay, responsividade, SEO e leitura RLS. **P3 global FAILURE exclusivamente no orçamento mobile**: mediana 3.634,576 ms (3.727,430 / 3.514,536 / 3.634,576 ms), desktop 991,276 ms. Todas as três amostras têm acessibilidade, boas práticas e SEO 100. Esse resultado substitui expectativas obsoletas sem reclassificar os runs anteriores.
+
+O Lighthouse não indica mais economia na imagem mobile. `src/lib/profile-paint.ts` oferece uma oportunidade de pintura para o retrato publicado antes da composição/commit do grafo completo em `usePortfolio.ts`. As consultas de dados continuam começando imediatamente após o Perfil; somente a etapa de composição aguarda decode + dois frames, com limite de **1.000 ms**. Deep links e abas ocultas não esperam; erro de decode ou imagem lenta nunca impede o restante do conteúdo. Preview autenticado mantém seu fluxo anterior. Não altera conteúdo, estilo, animação, fontes ou limites de auditoria.
+
+`pnpm check` local SUCCESS, **315 testes em 69 arquivos**: casos adicionais verificam ordenação decode/pintura, limite com imagem pendente/RAF ausente, recuperação de decode rejeitado e ausência de atraso em deep links/aba oculta. Build offline e sintaxe/diff verificados. CI/P3/deployment do novo código ainda **a confirmar por SHA**. O objetivo de ≤3.500 ms permanece inalterado.
+
+
 ## Segunda rodada: imagem mobile e pré-condições do browser — 25/11/2026
 
 Implementação anterior `582e65d9e8ad764ede2e98e1bac79b69d7837268`: Validate #45700749460, Export Docs #45700749493 e PDF QA #45700749433 **SUCCESS**; Production `dpl_FBHFq7F45qTnCjBsrb5Uq6obFkEy` READY e marcador do domínio no mesmo SHA. P3 #45700749447 **FAILURE**: mobile mediano **4.531,679 ms** (5.458,659 / 4.531,679 / 4.305,597 ms), desktop **958,587 ms**; browser com duas falhas. Os cinco registros anteriores não devem ser reclassificados. O vínculo desktop ficha↔galeria e o autoplay 8 s/3 s passaram na nova execução.

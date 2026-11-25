@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Browser aprovado e ajuste final de performance em validação — 25/11/2026
+
+`4b858d4`: Validate, Export Docs, PDF QA SUCCESS e Production READY; P3 com **zero falhas de navegador e 30/30 transições**, mas global FAILURE exclusivamente por LCP mobile **3,635 s**, desktop **0,991 s** PASS. A implementação seguinte prioriza a pintura do retrato antes da composição do restante da página, com limite de 1 s e sem esperar em deep links/preview/aba oculta. Validação local SUCCESS (315 testes); CI e Lighthouse do novo código ainda a confirmar. [Matriz e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Correção técnica em validação — 25/11/2026
 
 A primeira rodada `582e65d` obteve Validate, Export Docs e PDF QA SUCCESS, Production READY; P3 FAILURE com duas falhas de browser e LCP mobile 4,532 s (antes 5,313 s). A rodada atual acrescenta compressão exclusiva da foto para tela mobile, mantendo desktop/impressão sem perda; corrige o contrato do acordeão mobile e aguarda fontes antes da matriz desktop. Validação local SUCCESS, publicação/P3 deste novo código ainda **não confirmados**. Não interpretar a redução parcial como cumprimento de ≤3,5 s. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).

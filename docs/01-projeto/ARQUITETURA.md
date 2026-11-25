@@ -1,5 +1,10 @@
 # Arquitetura do PortfolioTulius
 
+## Pintura prioritária do Perfil público — 25/11/2026
+
+`usePortfolio.ts` inicia as consultas não críticas após o Perfil como antes, mas a composição do grafo completo aguarda `waitForProfilePaint()` (`src/lib/profile-paint.ts`): decode do retrato e dois frames, limitados a 1 s. Navegação por fragmento, aba oculta e preview autenticado não recebem espera. Falha de decode e limite de tempo sempre liberam a renderização; o conteúdo continua vindo exclusivamente do CMS publicado. Fontes, animações, layout, SEO e tratamentos de falha preservados. [Testes e evidências por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Seleção da fotografia por mídia — 25/11/2026
 
 A URL exata do PNG atual tem duas derivações de transporte: WebP qualidade 90 para tela mobile até 767 px; WebP sem perda para desktop e impressão. A condição `screen` impede aplicar a compressão RGB ao PDF impresso. Os preloads de build selecionam a mesma variante por viewport. Fonte CMS, alfa, dimensões, layout e enquadramento preservados. O smoke mobile verifica título do slide e descrição da ficha vinculada por ID; a matriz desktop aguarda fontes e mantém diagnóstico de posição em caso de timeout. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).

@@ -26,6 +26,7 @@ import { publicEditorAnchor } from "../lib/editor-anchor"
 import type { FormationPilotEducationRow } from "../lib/formation-pilot-preview"
 import { synchronizePublishedMediaAlts, type PublishedMediaAlt } from "../lib/media-alt-sync"
 import { applySiteIcons } from "../lib/site-icons"
+import { waitForProfilePaint } from "../lib/profile-paint"
 
 type SectionResult = {
   id: string
@@ -261,6 +262,11 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
             : testimonialsQuery.eq("status", "published"),
         ),
       )
+      // Fetch the full graph immediately; only its expensive composition/commit
+      // yields to the live portrait's decode and first paint opportunity.
+      const profilePaint = includeDrafts
+        ? Promise.resolve()
+        : profileReady.then(() => waitForProfilePaint())
       const primaryContent = profileReady
         .then(() =>
           Promise.all([
@@ -293,6 +299,8 @@ export function usePortfolio(includeDrafts = false, formationPilot = false) {
           ]) => {
             if (cancelled) return
             if (!includeDrafts) performance.mark("p3:portfolio-primary-ready")
+            await profilePaint
+            if (cancelled) return
             const contentError =
               sectionsResult.error ?? panelsResult.error ?? placementsResult.error
             if (contentError) {
