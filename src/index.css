@@ -2541,6 +2541,10 @@
     overflow: hidden;
     background: var(--ink);
   }
+  /* Let transparent portrait pixels reveal the configured lower panel color. */
+  .public-site:not(.pdf-portfolio) #perfil-a .mobile360-photo {
+    background: transparent;
+  }
   .mobile360-photo > picture,
   .mobile360-photo > img,
   .mobile360-photo > picture > img {

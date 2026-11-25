@@ -1,5 +1,9 @@
 # Testes, CI e homologação
 
+## Regressão de fundo da fotografia editorial mobile — 25/11/2026
+
+Base `ad8d18376721d9aa2a57b5d3750164f80044b1f0`: Validate e Export Docs SUCCESS, Vercel Production READY. A captura do proprietário mostra fundo grafite na moldura inferior do Perfil. Supabase somente leitura confirmou fundo inferior `#FAFAFA` e URL do PNG iguais nos campos desktop e mobile; o download do objeto falhou por resolução DNS no ambiente de execução, portanto seu alfa não foi confirmado. Revisão estática identificou `background: var(--ink)` na moldura; override limitado ao site mobile, excluindo PDF. `scripts/p3-browser-smoke.mjs` passa a exigir `portraitBackgroundTransparent` nos viewports existentes de Perfil mobile. CI e homologação visual do novo SHA ainda não executados neste registro. Sem alteração de dados, mídia ou infraestrutura; P3 anterior permanece FAILURE.
+
 ## Navegação bidirecional entre as seis empresas — 25/11/2026
 
 Base `f480982b2bb5bbd76b70c4a6e17735b6745992ef`: Validate, Export Docs e PDF Visual QA SUCCESS, Vercel Production READY e P3 global FAILURE. Supabase somente leitura confirmou ordem 6–11 das seis seções publicadas/visíveis. Ensaio Chromium isolado com seis painéis sticky, snap e marcadores de altura zero verificou **30/30 pares ordenados por cliques reais**, com posição do marcador, painel frontal e sentido de deslocamento corretos; não representa execução do site completo. P3 verifica os 30 pares ordenados no desktop, hash, `aria-current`, painel efetivamente visível e sentido do deslocamento; os testes posteriores do cabeçalho usam os links reais em vez de `scrollIntoView` no painel sticky. Revisão estática do diff; execução no SHA funcional e aceite visual ainda pendentes. Sem alteração nos limites de performance nem reclassificação de falhas anteriores.

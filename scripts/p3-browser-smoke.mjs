@@ -248,6 +248,8 @@ try {
             firstNameRect.width <= surnameRect.width * .85)
           const copy = panelA?.querySelector(".mobile360-bottom-copy")
           const photoBox = panelA?.querySelector(".mobile360-photo")
+          const portraitBackgroundTransparent = Boolean(photoBox &&
+            getComputedStyle(photoBox).backgroundColor === "rgba(0, 0, 0, 0)")
           const sealZone = panelB?.querySelector(".mobile360-middle")
           const copyAboveArrow = Boolean(copy && arrowRect &&
             copy.getBoundingClientRect().bottom <= arrowRect.top - 3)
@@ -270,6 +272,7 @@ try {
             firstNameProportional,
             copyAboveArrow,
             portraitFlushLeft,
+            portraitBackgroundTransparent,
             grayEndsAtOrangeRule,
             arrowAccessible: Boolean(arrow?.getAttribute("aria-label")),
             nameFits: fitsWidth(name) && [...(name?.children ?? [])].every(fitsWidth),
@@ -288,7 +291,8 @@ try {
             !result.panelsFit || !result.badgeBeforeAreas ||
             !result.arrowVisibleOnLoad || !result.portraitFlushWithPanel ||
             !result.firstNameProportional || !result.copyAboveArrow ||
-            !result.portraitFlushLeft || !result.grayEndsAtOrangeRule ||
+            !result.portraitFlushLeft || !result.portraitBackgroundTransparent ||
+            !result.grayEndsAtOrangeRule ||
             !result.careerVisible ||
             !result.noOldActions || result.nextSection !== "sobre") {
           throw new Error("Responsive profile failed at " + viewport.width + "px")
