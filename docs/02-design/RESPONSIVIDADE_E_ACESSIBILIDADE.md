@@ -1,5 +1,10 @@
 # Responsividade, UX e acessibilidade
 
+## Destinos de snap estáveis nas Experiências desktop — 25/11/2026
+
+A navegação continua apontando para marcadores em fluxo `experience-anchor-<slug>`. Esses marcadores passam também a receber `scroll-snap-align: start` em ≥768 px; `.experience-card` usa `scroll-snap-align: none` somente nesse intervalo. Isso impede que o snap escolha uma posição transitória da animação translate/scale da ficha. As fichas conservam sticky, entrada animada, quadro 1:1, cores, conteúdo e posição final. Mobile não foi alterado. O P3 anterior observou destino deslocado −14,234375 px com hash/seleção corretos; a matriz de 30 transições e tolerância de 3 px é mantida para validar o novo SHA. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Conferência posterior das cinco correções de interface — 25/11/2026
 
 [P3 #45691463355](https://github.com/tuliust/PortfolioTulius/actions/runs/45691463355) confirmou `P3_DEPLOYMENT_GATE` para `444fee647f96adf61ce72f9a2c07f3ec4af1cc4b` em produção. Evidências parciais **PASS**: 30/30 transições bidirecionais, máscara do cabeçalho na Prefeitura e CDI, molduras quadradas e centralizadas nos dez viewports desktop (incluindo 900 × 600), transparência computada da foto nos seis viewports mobile (320, 360, 375, 390, 414 e 430 px), paridade SEO (incluindo `ogImage`) e leitura pública RLS. **P3 global FAILURE**: cinco falhas no browser; entre elas, timeout de controles de slide e seletor de projeto Invest RS não encontrado. LCP mobile mediano **5.313,371 ms** (meta ≤3.500 ms; amostras 5.445,061 / 5.313,371 / 5.285,598 ms), desktop **1.181,706 ms** PASS. Não atribuir a piora à foto ou a um commit sem investigação específica. Em `a21c55f`, o P3 falhou no teste de navegação por timeout e registrou cinco falhas de browser, apesar do LCP mobile de 3.390,356 ms PASS; a verificação posterior de 30/30 em produção é evidência nova, não reclassificação do run anterior. Canal alfa do PNG, WhatsApp em dispositivo real, aceite visual final e PDF real após as alterações de 25/11 permanecem não confirmados.

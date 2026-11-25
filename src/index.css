@@ -615,6 +615,12 @@
   background: var(--paper); color: var(--ink); border-top: 1px solid #17161713;
   scroll-snap-align: start;
 }
+/* Snap to flow anchors rather than a company's animated/sticky visual box.
+   Entrance translate/scale must not leave navigation at a transient offset. */
+@media (min-width: 768px) {
+  .experience-stack > [id^="experience-anchor-"] { scroll-snap-align: start; }
+  .experience-card { scroll-snap-align: none; }
+}
 .experience-desktop {
   max-width: var(--container); min-height: 100svh; margin: 0 auto;
   padding: calc(var(--header) + 4.5rem) var(--gutter) clamp(2rem, 4vh, 4rem);

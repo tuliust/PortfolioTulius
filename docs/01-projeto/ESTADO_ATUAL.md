@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Fontes e snap estável em validação — 25/11/2026
+
+O experimento `ae90862` não atingiu a meta: LCP mobile 3,589 s, P3 FAILURE com uma falha de posição de destino. A espera de pintura foi removida. A rodada atual antecipa os arquivos das mesmas fontes e move o snap desktop para marcadores estáticos, preservando as animações das fichas; o diagnóstico capturou deslocamento −14,234375 px com empresa/hash corretos. Validação local SUCCESS (311 testes); CI/P3/publicação do novo código ainda a confirmar. O último browser integralmente aprovado continua sendo `4b858d4`. [Evidências e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Browser aprovado e ajuste final de performance em validação — 25/11/2026
 
 `4b858d4`: Validate, Export Docs, PDF QA SUCCESS e Production READY; P3 com **zero falhas de navegador e 30/30 transições**, mas global FAILURE exclusivamente por LCP mobile **3,635 s**, desktop **0,991 s** PASS. A implementação seguinte prioriza a pintura do retrato antes da composição do restante da página, com limite de 1 s e sem esperar em deep links/preview/aba oculta. Validação local SUCCESS (315 testes); CI e Lighthouse do novo código ainda a confirmar. [Matriz e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).

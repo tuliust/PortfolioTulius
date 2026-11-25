@@ -1,5 +1,10 @@
 # Arquitetura do PortfolioTulius
 
+## Fluxo final de carregamento e snap — 25/11/2026
+
+O experimento `profile-paint` de `ae90862` foi removido por ganho insuficiente; `usePortfolio.ts` retorna ao fluxo de `4b858d4`, sem espera adicional antes da composição. `index.html` pré-carrega os dois arquivos WOFF2 já utilizados (Inter v20 e Big Shoulders Display v24); famílias/pesos e a folha Google Fonts permanecem. Atualizar os preloads quando as URLs efetivas das fontes mudarem. No desktop, o snap pertence aos marcadores `experience-anchor-*`, não às caixas sticky animadas. Mobile e temporização de galerias preservados. [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Pintura prioritária do Perfil público — 25/11/2026
 
 `usePortfolio.ts` inicia as consultas não críticas após o Perfil como antes, mas a composição do grafo completo aguarda `waitForProfilePaint()` (`src/lib/profile-paint.ts`): decode do retrato e dois frames, limitados a 1 s. Navegação por fragmento, aba oculta e preview autenticado não recebem espera. Falha de decode e limite de tempo sempre liberam a renderização; o conteúdo continua vindo exclusivamente do CMS publicado. Fontes, animações, layout, SEO e tratamentos de falha preservados. [Testes e evidências por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).

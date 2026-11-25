@@ -930,6 +930,14 @@ try {
           throw error
         }
       }
+      const snapTargets = await page.evaluate(() => ({
+        anchors: [...document.querySelectorAll('.experience-stack > [id^="experience-anchor-"]')]
+          .every((node) => getComputedStyle(node).scrollSnapAlign === "start"),
+        animatedCards: [...document.querySelectorAll(".experience-card")]
+          .every((node) => getComputedStyle(node).scrollSnapAlign === "none"),
+      }))
+      if (!snapTargets.anchors || !snapTargets.animatedCards)
+        throw new Error("Experience scroll snap must use stationary flow anchors")
       // Start at Globo, reproduce the reported backward jump, then exercise all ordered pairs.
       await selectCompany("globo-sportv")
       await selectCompany("invest-rs")

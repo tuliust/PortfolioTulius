@@ -1,5 +1,16 @@
 # Testes, CI e homologação
 
+## Fontes antecipadas e snap fora das caixas animadas — 25/11/2026
+
+Experimento `ae90862f62b1797ef2883be9ca53b6af59f55137`: Validate #45703065631 e Export Docs #45703065173 SUCCESS; Production `dpl_6qUq2kgdw31M1gv1rC1t7jcwUqfy` READY. P3 #45703065400 FAILURE: LCP mobile mediano **3.588,826 ms** (3.588,826 / 3.647,503 / 3.485,915 ms), desktop **1.027,790 ms** PASS; uma falha de navegação. O ganho da espera de pintura foi insuficiente e não demonstrou benefício além da variância; **o helper `profile-paint`, seus testes e a espera no hook foram removidos**, restaurando o fluxo de `4b858d4`. Não apresentar esse experimento como otimização final.
+
+A instrumentação capturou Invest RS selecionada, hash/painel frontal corretos e fontes carregadas, mas marcador a **−14,234375 px**. O snap estava na caixa `experience-card`, que recebe translate/scale na animação de entrada; a [especificação CSS Scroll Snap](https://www.w3.org/TR/css-scroll-snap-1/#scroll-margin) define a área de snap a partir da caixa transformada. A implementação agora alinha **os marcadores estáticos em fluxo** no desktop e retira o snap das fichas animadas, preservando animação, sticky, design e comportamento mobile. P3 exige essa separação e continua verificando os 30 pares com tolerância de 3 px; nenhum limite foi ampliado. A atribuição ao snap animado é sustentada por código, especificação e deslocamento observado; a nova matriz por SHA deve confirmar a correção.
+
+`index.html` antecipa exatamente os dois WOFF2 observados no artefato Lighthouse: Big Shoulders Display v24 e Inter v20, com `crossorigin`, sem trocar famílias, pesos ou CSS tipográfico. Os arquivos continuam hospedados no Google Fonts; se a folha de fontes passar a referenciar outra versão, atualizar os preloads para evitar download redundante. Compressão mobile de 35.322 bytes e cópia sem perda desktop/impressão permanecem.
+
+Validação local desta rodada: `pnpm check` SUCCESS (**311 testes**, após remover os quatro testes do experimento), build offline, sintaxe P3 e diff sem erros. Publicação e nova P3 ainda **a confirmar por SHA**. PDF não foi reexecutado em `ae90862` por ausência de gatilho; última QA PDF confirmada em `4b858d4`.
+
+
 ## Prioridade de pintura da primeira dobra — 25/11/2026
 
 Base funcional `4b858d460c25f9d68c6555b5586813a2b390cf53`: Validate #45702250935, Export Docs #45702251151 e PDF QA #45702250968 SUCCESS; Production `dpl_FZG4pUR7jf32AsoeENoWNVWxCSyP` READY. P3 #45702250985 confirmou **browser com zero falhas**, 30/30 transições, vínculo ficha↔slide, autoplay, responsividade, SEO e leitura RLS. **P3 global FAILURE exclusivamente no orçamento mobile**: mediana 3.634,576 ms (3.727,430 / 3.514,536 / 3.634,576 ms), desktop 991,276 ms. Todas as três amostras têm acessibilidade, boas práticas e SEO 100. Esse resultado substitui expectativas obsoletas sem reclassificar os runs anteriores.
