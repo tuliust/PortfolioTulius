@@ -1,5 +1,10 @@
 # Arquitetura do PortfolioTulius
 
+## Transporte do retrato e contrato do smoke — 25/11/2026
+
+`ApprovedProfileImage` oferece WebP sem perda para a URL exata do PNG atual; mantém o original como fallback de `<picture>`. O build sincroniza o preload com essa mesma regra; outras URLs preservam o fluxo CMS existente. Sem mudanças de renderização, dados ou configuração de infraestrutura. P3 deriva contratos de projetos, competências e slides da resposta pública de `sections`, independentemente do DOM, mantendo a relação por ID e temporização 8 s/3 s. [Mídias](../03-cms/MIDIAS_E_STORAGE.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Contrato de apresentação e navegação de Experiências — 25/11/2026
 
 O renderer mantém as seis fichas sticky e os dados CMS existentes. `ExperienceStack.tsx` usa `ExperienceIntro` compartilhado com PDF para separar cargo e período, calcula destaque com marcadores desktop não-sticky `experience-anchor-<slug>` e usa `src/lib/experience-hash.ts` também em `PublicSite.tsx` e `Navigation.tsx`. A posição de rolagem não depende do painel sobreposto. CSS mantém quadro 1:1, cabeçalho opaco quando índice fixado e transparência da foto editorial pública mobile (exclui PDF). A leitura de 25/11 confirma 28 fichas, 24 projetos centrais, 22 slides ativos, quatro ocultos e zero fichas de vídeo. [Estado consolidado](ESTADO_ATUAL.md) · [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).

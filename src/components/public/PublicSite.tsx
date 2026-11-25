@@ -261,6 +261,8 @@ function ItemCard({
 /** WebP derivatives of the SHA-256 verified CMS portrait (source remains untouched). */
 const APPROVED_PROFILE_PORTRAIT =
   "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/b171afda-2708-44eb-b3e5-ab2b7ff13236-tulius_site.png"
+const CURRENT_PROFILE_PORTRAIT =
+  "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/51f7d981-6f63-453c-8575-a5dcbe409104-Tulius---Foto-Inicial.png"
 const RESPONSIVE_PROFILE_SOURCE =
   "/media/tulius-site-600.webp 600w, /media/tulius-site-900.webp 900w"
 
@@ -287,6 +289,14 @@ function ApprovedProfileImage({
       decoding={syncDecode ? "sync" : "async"}
     />
   )
+  if (src === CURRENT_PROFILE_PORTRAIT) {
+    return (
+      <picture className="approved-profile-picture">
+        <source type="image/webp" srcSet="/media/tulius-inicial-lossless.webp" />
+        {image}
+      </picture>
+    )
+  }
   if (src !== APPROVED_PROFILE_PORTRAIT) return image
   return (
     <picture className="approved-profile-picture">

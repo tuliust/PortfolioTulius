@@ -12,6 +12,42 @@ const browser = await puppeteer.launch({
 })
 let failures = 0
 
+// Capture the anonymous CMS response independently of the rendered DOM. Editorial
+// titles, visibility flags and slide ordering are mutable; missing data fails closed.
+const publishedSections = new Map()
+async function newAuditPage() {
+  const page = await browser.newPage()
+  page.on("response", async (response) => {
+    if (!response.url().includes("/rest/v1/sections?") || !response.ok()) return
+    try {
+      const rows = await response.json()
+      if (!Array.isArray(rows)) return
+      for (const row of rows) {
+        if (row.status === "published" && row.is_visible && row.content_blocks) {
+          publishedSections.set(row.slug, row)
+        }
+      }
+    } catch { /* A missing contract is a hard failure at the assertion below. */ }
+  })
+  return page
+}
+function experienceContract(slug) {
+  const row = publishedSections.get(slug)
+  const blocks = row?.content_blocks.filter((block) => block.status === "published") ?? []
+  const projects = blocks.find((block) => block.mobile_panel === "a" &&
+    Array.isArray(block.content_json?.experienceProjects))?.content_json.experienceProjects
+  if (!projects?.length) throw new Error("Missing published project contract: " + slug)
+  const center = projects.filter((entry) => entry.item && entry.showInCenter !== false && !entry.item.isHidden)
+  const slides = projects.filter((entry) => entry.item && entry.slide && entry.includeInGallery !== false)
+    .sort((a, b) => (a.slideOrder ?? 9999) - (b.slideOrder ?? 9999))
+  const competencies = blocks.flatMap((block) => block.content_json?.items ?? [])
+    .find((item) => item.title?.toLocaleLowerCase("pt-BR") === "competências aplicadas")?.tags ?? []
+  if (!center.length || slides.length < 2 || !competencies.length)
+    throw new Error("Incomplete published experience contract: " + slug)
+  return { center, slides, competencies }
+}
+const sameText = (left, right) => left?.trim().toLocaleLowerCase("pt-BR") === right?.trim().toLocaleLowerCase("pt-BR")
+
 // A viewport capture made during the CMS entrance animation looks artificially
 // washed out. Capture the settled visual state without disabling the approved
 // motion, and fail loudly if that state is never reached.
@@ -41,7 +77,7 @@ async function screenshotSettledResults(page, selector, filename) {
 }
 try {
   for (const route of ["/admin", "/admin/preview", "/admin/pdf-preview"]) {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     try {
       const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 30000 })
       const robotsHeader = response?.headers()["x-robots-tag"] ?? ""
@@ -58,7 +94,7 @@ try {
   }
 
   {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     let stage = "init"
     try {
       stage = "page loaded"
@@ -520,7 +556,8 @@ try {
           noPlaceholder: !list?.textContent?.includes("Fotografia do projeto pendente") }
       })
       console.log("P3_EXPERIENCE_MOBILE_PROJECT " + JSON.stringify(project))
-      if (project.openCount !== 1 || !project.gallery || project.galleryTitle !== project.title ||
+      if (project.openCount !== 1 || !project.gallery || !sameText(project.title, experienceContract("invest-rs").center[1].item.title) ||
+          !sameText(project.galleryTitle, experienceContract("invest-rs").center[1].slide?.title) ||
           !project.noPlaceholder || project.imageFit !== "contain" || !project.frameSquare)
         throw new Error("Project/gallery linkage or image framing failure")
       await page.waitForFunction(() =>
@@ -733,7 +770,7 @@ try {
 
   // Menu height and content at the compact desktop screenshot viewport.
   {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     try {
       await page.setViewport({ width: 1512, height: 691 })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
@@ -777,7 +814,7 @@ try {
 
   // Cross-section selection: a card in section 01 opens its corresponding theme in section 03.
   {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     let stage = "load"
     try {
       await page.setViewport({ width: 1440, height: 900 })
@@ -846,7 +883,7 @@ try {
 
   // Company experience stack: navigation stays pinned while the next employer covers the previous.
   {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     let stage = "load"
     try {
       await page.setViewport({ width: 1440, height: 900 })
@@ -938,9 +975,12 @@ try {
       await page.click("#prefeitura-sp .desktop-panel .experience-gallery-controls button:last-child")
       const after = await page.$eval("#prefeitura-sp .desktop-panel .experience-gallery-controls > span", (node) => node.textContent)
       console.log("P3_EXPERIENCE_SLIDE_CLICK " + JSON.stringify({ before, after }))
-      await page.waitForFunction(() =>
-        document.querySelector("#prefeitura-sp .desktop-panel .experience-gallery-controls > span")?.textContent?.includes("2 / 3"),
-        { timeout: 10000 },
+      const slideTotal = experienceContract("prefeitura-sp").slides.length
+      const beforeIndex = Number(before.counter?.split("/")[0])
+      const expectedCounter = `${beforeIndex % slideTotal + 1} / ${slideTotal}`
+      await page.waitForFunction((expected) =>
+        document.querySelector("#prefeitura-sp .desktop-panel .experience-gallery-controls > span")?.textContent?.trim() === expected,
+        { timeout: 10000 }, expectedCounter,
       )
       console.log("P3_EXPERIENCE_STACK " + JSON.stringify({ companies: 6, fixedSelector: true, galleryNavigation: true, result: "PASS" }))
       await page.screenshot({ path: path.join(shots, "p3-experience-stack-1440.png") })
@@ -954,7 +994,7 @@ try {
 
   // Approved employer and introduction first folds at native 100% zoom.
   {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     try {
       await page.setViewport({ width: 1512, height: 691 })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
@@ -985,8 +1025,8 @@ try {
         // Its visible bottom must touch the section even if its element extends below.
         composition.portraitBottom >= composition.aboutBottom - 2 &&
         composition.aboutClip === "hidden" &&
-        // Five projects are the owner-approved editorial contract.
-        composition.count === 5 &&
+        // Compare against independently captured CMS visibility flags.
+        composition.count === experienceContract("invest-rs").center.length &&
         composition.competenceBadges === 6 &&
         composition.trajectoryButton &&
         // The five published projects may scroll inside their existing bounded column.
@@ -1011,7 +1051,7 @@ try {
         const t = trajectory ? getComputedStyle(trajectory) : null
         return {
           badges,
-          cdiTextFree: src.includes("/2026-10-31-cdi-no-text/"),
+          cdiImage: src,
           sameFont: Boolean(p && t && p.fontFamily === t.fontFamily),
           uppercase: p?.textTransform === "uppercase" && t?.textTransform === "uppercase",
           projectsLargerInitially: Boolean(p && t && parseFloat(p.fontSize) > parseFloat(t.fontSize)),
@@ -1019,9 +1059,9 @@ try {
       })
       if (
         Object.entries(competenciesAndCdi.badges).some(
-          ([slug, count]) => count !== (slug === "invest-rs" ? 6 : 5),
+          ([slug, count]) => count !== experienceContract(slug).competencies.length,
         ) ||
-        !competenciesAndCdi.cdiTextFree ||
+        !experienceContract("cdi").slides.some((entry) => entry.slide.image === competenciesAndCdi.cdiImage) ||
         !competenciesAndCdi.sameFont ||
         !competenciesAndCdi.uppercase ||
         !competenciesAndCdi.projectsLargerInitially
@@ -1057,7 +1097,7 @@ try {
         !trajectoryState.hasText ||
         trajectoryState.selected !== "true" ||
         parseFloat(trajectoryState.trajectoryFont) <= parseFloat(trajectoryState.projectsFont) ||
-        projectsRestored.projects !== 5 ||
+        projectsRestored.projects !== experienceContract("invest-rs").center.length ||
         projectsRestored.selected !== "true"
       ) {
         failures++
@@ -1065,91 +1105,74 @@ try {
       } else {
         console.log("P3_EXPERIENCE_SWITCH " + JSON.stringify({ result: "PASS", trajectoryState, projectsRestored }))
       }
-      const secondProject = "#invest-rs .desktop-panel .experience-project-choice[aria-label='Exibir imagem de Organização de eventos']"
-      // Bring the selected company into the foreground before interacting with its
-      // project controls; later sticky company cards can otherwise cover the click target.
-      await page.evaluate(() =>
-        document.getElementById("invest-rs")?.scrollIntoView({ behavior: "instant", block: "start" }),
-      )
-      await page.focus(secondProject)
-      await page.keyboard.press("Enter")
+      const contract = experienceContract("invest-rs")
+      const linked = contract.slides.findIndex((entry) => contract.center.some((item) => item.id === entry.id))
+      const chosenIndex = (linked + 1) % contract.slides.length
+      const chosen = contract.slides[chosenIndex]
+      const nextIndex = (chosenIndex + 1) % contract.slides.length
+      const next = contract.slides[nextIndex]
+      const followingIndex = (nextIndex + 1) % contract.slides.length
+      const following = contract.slides[followingIndex]
+      const lastIndex = (followingIndex + 1) % contract.slides.length
+      const last = contract.slides[lastIndex]
+      const counter = (index) => `${index + 1} / ${contract.slides.length}`
+      const selectedTitle = (entry) => contract.center.find((item) => item.id === entry.id)?.item.title
+      const prefix = "#invest-rs .desktop-panel "
+      const centerIndex = contract.center.findIndex((entry) => entry.id === chosen.id)
+      if (centerIndex < 0) throw new Error("Selected gallery fixture has no visible central project")
+      const secondProject = prefix + `.experience-project:nth-child(${centerIndex + 1}) .experience-project-choice`
+      // Use the non-sticky company navigation anchor to keep controls in front.
+      await page.click('.experience-index a[href="#invest-rs"]')
       await page.waitForFunction(() =>
-        document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "organização de eventos",
+        document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href") === "#invest-rs",
         { timeout: 10000 },
       )
-      const projectToGallery = await page.evaluate(() => ({
+      const readSelection = () => page.evaluate(() => ({
         activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
         galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
         count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
       }))
-      await page.focus("#invest-rs .desktop-panel .experience-gallery-controls button[aria-label^='Próxima foto']")
-      await page.keyboard.press("Enter")
-      await page.waitForFunction(() =>
-        document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim()?.toLocaleLowerCase("pt-BR") === "guia de boas-vindas",
-        { timeout: 10000 },
+      const waitCounter = (value, timeout = 10000) => page.waitForFunction((expected) =>
+        document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim() === expected,
+        { timeout }, value,
       )
-      const galleryToProject = await page.evaluate(() => ({
-        activeProject: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
-        galleryTitle: document.querySelector("#invest-rs .desktop-panel .experience-gallery-footer h3")?.textContent?.trim(),
-      }))
-      if (
-        projectToGallery.activeProject !== "ORGANIZAÇÃO DE EVENTOS" &&
-        projectToGallery.activeProject !== "Organização de eventos"
-      ) {
-        failures++
-        console.log("P3_PROJECT_GALLERY_REGRESSION " + JSON.stringify({ projectToGallery, galleryToProject }))
-      } else if (
-        projectToGallery.galleryTitle?.toLocaleLowerCase("pt-BR") !== "organização de eventos" ||
-        projectToGallery.count !== "2 / 2" ||
-        galleryToProject.activeProject?.toLocaleLowerCase("pt-BR") !== "guia de boas-vindas" ||
-        galleryToProject.galleryTitle?.toLocaleLowerCase("pt-BR") !== "guia de boas-vindas"
-      ) {
-        failures++
-        console.log("P3_PROJECT_GALLERY_REGRESSION " + JSON.stringify({ projectToGallery, galleryToProject }))
-      } else {
-        console.log("P3_PROJECT_GALLERY_LINK " + JSON.stringify({ result: "PASS", projectToGallery, galleryToProject }))
-      }
-      // A visitor action must restart the slide timer at eight seconds;
-      // subsequent unattended transitions return to the three-second cadence.
+      await page.focus(secondProject)
+      await page.keyboard.press("Enter")
+      await waitCounter(counter(chosenIndex))
+      const projectToGallery = await readSelection()
+      await page.focus(prefix + '.experience-gallery-controls button[aria-label^="Próxima foto"]')
+      await page.keyboard.press("Enter")
+      await waitCounter(counter(nextIndex))
+      const galleryToProject = await readSelection()
+      const linkage = sameText(projectToGallery.activeProject, selectedTitle(chosen)) &&
+        sameText(projectToGallery.galleryTitle, chosen.slide.title) &&
+        projectToGallery.count === counter(chosenIndex) &&
+        sameText(galleryToProject.activeProject, selectedTitle(next)) &&
+        sameText(galleryToProject.galleryTitle, next.slide.title)
+      if (!linkage) failures++
+      console.log("P3_PROJECT_GALLERY_LINK " + JSON.stringify({ result: linkage ? "PASS" : "FAIL", projectToGallery, galleryToProject }))
       const autoplayConditions = await page.evaluate(() => ({
         hidden: document.hidden,
         reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         currentCompany: document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href"),
       }))
-      if (autoplayConditions.hidden || autoplayConditions.reduced ||
-          autoplayConditions.currentCompany !== "#invest-rs") {
+      if (autoplayConditions.hidden || autoplayConditions.reduced || autoplayConditions.currentCompany !== "#invest-rs") {
         failures++
         console.log("P3_EXPERIENCE_AUTOPLAY_PRECONDITION " + JSON.stringify(autoplayConditions))
       } else {
         await new Promise((resolve) => setTimeout(resolve, 3300))
-        const held = await page.$eval(
-          "#invest-rs .desktop-panel .experience-gallery-controls [aria-live]",
-          (node) => node.textContent?.trim(),
-        )
-        await page.waitForFunction(() =>
-          document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim() === "2 / 2",
-          { timeout: 7000 },
-        )
-        const afterEight = await page.evaluate(() => ({
-          count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
-          selected: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
-        }))
-        await page.waitForFunction(() =>
-          document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim() === "1 / 2",
-          { timeout: 5000 },
-        )
-        const afterThree = await page.evaluate(() => ({
-          count: document.querySelector("#invest-rs .desktop-panel .experience-gallery-controls [aria-live]")?.textContent?.trim(),
-          selected: document.querySelector("#invest-rs .desktop-panel .experience-project.is-active .experience-project-heading")?.textContent?.trim(),
-        }))
-        const works = held === "1 / 2" &&
-          afterEight.count === "2 / 2" &&
-          afterEight.selected?.toLocaleLowerCase("pt-BR") === "organização de eventos" &&
-          afterThree.count === "1 / 2" &&
-          afterThree.selected?.toLocaleLowerCase("pt-BR") === "guia de boas-vindas"
+        const held = await readSelection()
+        await waitCounter(counter(followingIndex), 7000)
+        const afterEight = await readSelection()
+        await waitCounter(counter(lastIndex), 5000)
+        const afterThree = await readSelection()
+        const works = held.count === counter(nextIndex) &&
+          sameText(afterEight.activeProject, selectedTitle(following)) &&
+          sameText(afterEight.galleryTitle, following.slide.title) &&
+          sameText(afterThree.activeProject, selectedTitle(last)) &&
+          sameText(afterThree.galleryTitle, last.slide.title)
         if (!works) failures++
-        console.log("P3_EXPERIENCE_AUTOPLAY " +
-          JSON.stringify({ result: works ? "PASS" : "FAIL", held, afterEight, afterThree }))
+        console.log("P3_EXPERIENCE_AUTOPLAY " + JSON.stringify({ result: works ? "PASS" : "FAIL", held, afterEight, afterThree }))
       }
       const refinements = await page.evaluate(() => {
         const section = document.querySelector("#contato")
@@ -1212,7 +1235,7 @@ try {
     [320, 700],
   ]
   for (const [width, height] of viewports) {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     try {
       await page.setViewport({ width, height, deviceScaleFactor: 1, isMobile: width < 768, hasTouch: width < 768 })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
@@ -1430,7 +1453,7 @@ try {
 
   // Mobile owner screenshots: verify parity, no repeated titles or oversized boxes.
   for (const width of [360, 390, 430]) {
-    const page = await browser.newPage()
+    const page = await newAuditPage()
     try {
       await page.setViewport({ width, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 45000 })

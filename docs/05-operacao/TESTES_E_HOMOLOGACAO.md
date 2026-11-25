@@ -1,5 +1,16 @@
 # Testes, CI e homologação
 
+## Correção autônoma dos gates públicos — 25/11/2026
+
+Base `1e217aef077a0d623c85dc9ad61252d4c9bf1dca`, Production `dpl_2SBC6T3mTa92GZySg83sup76MefQ` READY. Pedido explícito do proprietário autoriza corrigir as falhas de navegador e investigar/otimizar o LCP desta rodada, preservando design e orçamento ≤3.500 ms; não autoriza os demais itens standby.
+
+Diagnóstico do P3 #45691463355: cinco falhas com expectativas editoriais antigas (contador Prefeitura `2 / 3`, cinco projetos Invest RS, competências fixas, caminho antigo CDI e títulos anteriores). Leitura SQL somente leitura confirmou quatro fichas/galeria Invest RS, cinco Vale, três CDI visíveis e títulos centrais distintos dos títulos de slide. O smoke captura a resposta pública de `sections` e deriva expectativas independentes do DOM, por IDs, flags e ordem de slides. Mantém controles reais, troca Trajetória/Projetos, contador, vínculo ficha↔slide, geometria e autoplay 8 s/3 s; contrato CMS ausente/incompleto falha. Competências são comparadas à quantidade publicada, e a imagem CDI deve pertencer à galeria publicada; o caminho histórico não representa contrato atual.
+
+LCP anterior mediano 5.313,371 ms, com PNG LCP de 375.258 bytes. Cópia WebP **sem perda**, 198.360 bytes, mesmos 600×800, alfa idêntico e RGB idêntico em todos os pixels de alfa positivo. Renderer e preload de build usam a cópia somente para a URL exata validada; qualquer outra foto continua usando o CMS e invalida o preload antigo. Sem alteração do original, Storage, dados, CSS, enquadramento ou critérios de Lighthouse.
+
+Validação local: `pnpm check` SUCCESS (310 testes antes do novo caso de preload), `pnpm smoke:build`, sintaxe P3 e `git diff --check` SUCCESS. O teste adicional cobre o preload da foto atual. Execução local do browser bloqueada: binário Chromium ausente e download Chrome indisponível por timeout; resultados de CI, mediana Lighthouse e publicação deste novo código devem ser confirmados por SHA. A redução de bytes não comprova aprovação de LCP; o P3 anterior permanece FAILURE.
+
+
 ## Resultado consolidado do ciclo de 25/11/2026 (consulta por SHA)
 
 | Commit | Alteração | Validate | Export Docs | P3 | PDF Visual QA |

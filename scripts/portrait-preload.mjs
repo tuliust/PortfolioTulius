@@ -3,6 +3,9 @@
 export const APPROVED_PROFILE_PORTRAIT =
   "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/b171afda-2708-44eb-b3e5-ab2b7ff13236-tulius_site.png"
 
+export const CURRENT_PROFILE_PORTRAIT =
+  "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/51f7d981-6f63-453c-8575-a5dcbe409104-Tulius---Foto-Inicial.png"
+
 const imagePreload = /<link\b(?=[^>]*\brel=["']preload["'])(?=[^>]*\bas=["']image["'])[^>]*\/?\s*>/i
 
 // Preserve responsive WebP preloading for the approved portrait. If the editor
@@ -18,6 +21,12 @@ export function syncProfilePreload(html, publishedPortrait) {
     existing.includes("imagesizes=")
   ) {
     return { html, strategy: "responsive-webp" }
+  }
+  if (publishedPortrait === CURRENT_PROFILE_PORTRAIT) {
+    return {
+      html: html.replace(imagePreload, '<link rel="preload" as="image" type="image/webp" href="/media/tulius-inicial-lossless.webp" fetchpriority="high" />'),
+      strategy: "lossless-webp",
+    }
   }
   const replacement = publishedPortrait
     ? '<link rel="preload" as="image" href="' +

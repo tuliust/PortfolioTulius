@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Rodada de correção técnica autorizada — 25/11/2026
+
+Após a consolidação `1e217ae`, o proprietário solicitou correção autônoma das falhas de navegador e performance descritas. A implementação atualiza as expectativas do smoke para o CMS publicado e serve uma derivada WebP sem perda da fotografia atual (redução de 47,1% nos bytes). A meta de LCP e o design permanecem. CI/P3/deployment do novo SHA ainda precisam de conferência; não considerar o LCP corrigido apenas pela otimização. [Detalhes e limitações](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 **Consolidação de 25/11/2026.** Referência funcional `444fee647f96adf61ce72f9a2c07f3ec4af1cc4b`, consultada antes deste commit documental. O produto permanece em manutenção pontual; o histórico de aceites não equivale a homologação automática de alterações posteriores.
 
 ## Publicação e qualidade
