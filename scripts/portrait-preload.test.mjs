@@ -18,11 +18,13 @@ describe("preload de imagem LCP aprovado", () => {
     expect(result.html).not.toContain(`href="${APPROVED_PROFILE_PORTRAIT}"`)
   })
 
-  it("precarrega a cópia sem perda da fotografia atual sem reutilizar o retrato anterior", () => {
+  it("precarrega por viewport e preserva a cópia sem perda fora da tela mobile", () => {
     const result = syncProfilePreload(html, CURRENT_PROFILE_PORTRAIT)
     expect(site).toContain(`"${CURRENT_PROFILE_PORTRAIT}"`)
-    expect(result.strategy).toBe("lossless-webp")
-    expect(result.html).toContain('href="/media/tulius-inicial-lossless.webp"')
+    expect(result.strategy).toBe("viewport-webp")
+    expect(result.html).toContain('media="screen and (max-width: 767px)" href="/media/tulius-inicial-600.webp"')
+    expect(result.html).toContain('media="(min-width: 768px)" href="/media/tulius-inicial-lossless.webp"')
+    expect(site).toContain('media="screen and (max-width: 767px)"')
     expect(result.html).not.toContain('imagesrcset="/media/tulius-site-600.webp')
     expect(result.html).not.toContain(`href="${CURRENT_PROFILE_PORTRAIT}"`)
   })

@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Correção técnica em validação — 25/11/2026
+
+A primeira rodada `582e65d` obteve Validate, Export Docs e PDF QA SUCCESS, Production READY; P3 FAILURE com duas falhas de browser e LCP mobile 4,532 s (antes 5,313 s). A rodada atual acrescenta compressão exclusiva da foto para tela mobile, mantendo desktop/impressão sem perda; corrige o contrato do acordeão mobile e aguarda fontes antes da matriz desktop. Validação local SUCCESS, publicação/P3 deste novo código ainda **não confirmados**. Não interpretar a redução parcial como cumprimento de ≤3,5 s. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Rodada de correção técnica autorizada — 25/11/2026
 
 Após a consolidação `1e217ae`, o proprietário solicitou correção autônoma das falhas de navegador e performance descritas. A implementação atualiza as expectativas do smoke para o CMS publicado e serve uma derivada WebP sem perda da fotografia atual (redução de 47,1% nos bytes). A meta de LCP e o design permanecem. CI/P3/deployment do novo SHA ainda precisam de conferência; não considerar o LCP corrigido apenas pela otimização. [Detalhes e limitações](../05-operacao/TESTES_E_HOMOLOGACAO.md).

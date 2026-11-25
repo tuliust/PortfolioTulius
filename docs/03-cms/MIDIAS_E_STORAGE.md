@@ -1,5 +1,10 @@
 # Biblioteca de mídias e Storage
 
+## Compressão de transporte exclusiva da tela mobile — 25/11/2026
+
+Para a mesma URL exata do retrato atual, `ApprovedProfileImage` oferece `public/media/tulius-inicial-600.webp` somente em `screen and (max-width: 767px)`: 35.322 bytes, 600×800, WebP qualidade 90. Alfa idêntico ao PNG; RGB comprimido (RMS pré-multiplicado 0,986/255). Desktop e impressão usam a derivada sem perda descrita abaixo. Nenhuma substituição do original no CMS, upload ou alteração do enquadramento. O preload de build acompanha a mesma separação de viewport. Futuras URLs não reconhecidas usam o original CMS. [Evidências e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Derivada sem perda do retrato publicado — 25/11/2026
 
 `public/media/tulius-inicial-lossless.webp` é uma cópia de transporte da fotografia pública `51f7d981-6f63-453c-8575-a5dcbe409104-Tulius---Foto-Inicial.png`, sem upload nem alteração do catálogo/Storage. PNG SHA-256 `446ec5944c3249daf51de7938e653836aa5fa953329efa9beba6286030f1d9e6`, 375.258 bytes; WebP 198.360 bytes, 600×800. Verificação local confirmou canal alfa idêntico e RGB idêntico em todos os pixels com alfa positivo. O alfa original varia de 0 a 254. `ApprovedProfileImage` e `scripts/portrait-preload.mjs` reconhecem apenas essa URL exata; troca editorial futura usa o original publicado, sem reaproveitar esta cópia. Layout, cores e enquadramento preservados. O canal alfa foi agora inspecionado; as limitações históricas abaixo descrevem consultas anteriores. [Validação](../05-operacao/TESTES_E_HOMOLOGACAO.md).

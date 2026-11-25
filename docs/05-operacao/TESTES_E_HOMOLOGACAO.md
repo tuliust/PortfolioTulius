@@ -1,5 +1,16 @@
 # Testes, CI e homologação
 
+## Segunda rodada: imagem mobile e pré-condições do browser — 25/11/2026
+
+Implementação anterior `582e65d9e8ad764ede2e98e1bac79b69d7837268`: Validate #45700749460, Export Docs #45700749493 e PDF QA #45700749433 **SUCCESS**; Production `dpl_FBHFq7F45qTnCjBsrb5Uq6obFkEy` READY e marcador do domínio no mesmo SHA. P3 #45700749447 **FAILURE**: mobile mediano **4.531,679 ms** (5.458,659 / 4.531,679 / 4.305,597 ms), desktop **958,587 ms**; browser com duas falhas. Os cinco registros anteriores não devem ser reclassificados. O vínculo desktop ficha↔galeria e o autoplay 8 s/3 s passaram na nova execução.
+
+A cópia sem perda ainda apresentou oportunidade de compressão no Lighthouse. A tela mobile passa a usar `tulius-inicial-600.webp`, WebP qualidade 90, **35.322 bytes**, mesmos 600×800 e alfa exatamente preservado; erro RMS RGB pré-multiplicado pelo alfa de 0,986 em escala 0–255, portanto há compressão com perda de RGB, sem alteração editorial, recorte ou dimensões. Desktop e impressão continuam selecionando a cópia **sem perda**. `<source media="screen and (max-width: 767px)">` e preloads com consultas de viewport concordantes evitam baixar a versão desktop no mobile. O original CMS permanece intacto.
+
+A primeira falha mobile restante era uma expectativa incorreta: o acordeão usa o **título do slide** e a **descrição da ficha associada por ID**. O smoke agora verifica ambos contra o CMS. O timeout de navegação desktop não foi reproduzido em navegador Chrome conectado: **30/30 pares ordenados PASS** com cliques, marcador ≤3 px, painel frontal, hash e seleção; isso não reclassifica o CI. A suíte passa a aguardar `document.fonts.ready` antes dos deslocamentos exatos e registra destino, posição, hash, seleção e painel frontal em eventual falha. A contribuição das fontes ao timeout é hipótese, não causa comprovada. Mantidos timeout e todas as 30 transições.
+
+Validação local desta rodada: `pnpm check` SUCCESS (311 testes), `pnpm smoke:build`, sintaxe P3 e `git diff --check` SUCCESS. Novo CI/P3, mediana mobile e deployment **a confirmar por SHA**. Não houve escrita no Supabase, mudança de CSS, limites, permissões ou configuração Vercel.
+
+
 ## Correção autônoma dos gates públicos — 25/11/2026
 
 Base `1e217aef077a0d623c85dc9ad61252d4c9bf1dca`, Production `dpl_2SBC6T3mTa92GZySg83sup76MefQ` READY. Pedido explícito do proprietário autoriza corrigir as falhas de navegador e investigar/otimizar o LCP desta rodada, preservando design e orçamento ≤3.500 ms; não autoriza os demais itens standby.

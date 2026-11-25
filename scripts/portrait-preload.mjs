@@ -24,8 +24,10 @@ export function syncProfilePreload(html, publishedPortrait) {
   }
   if (publishedPortrait === CURRENT_PROFILE_PORTRAIT) {
     return {
-      html: html.replace(imagePreload, '<link rel="preload" as="image" type="image/webp" href="/media/tulius-inicial-lossless.webp" fetchpriority="high" />'),
-      strategy: "lossless-webp",
+      html: html.replace(imagePreload,
+        '<link rel="preload" as="image" type="image/webp" media="screen and (max-width: 767px)" href="/media/tulius-inicial-600.webp" fetchpriority="high" />' +
+        '<link rel="preload" as="image" type="image/webp" media="(min-width: 768px)" href="/media/tulius-inicial-lossless.webp" fetchpriority="high" />'),
+      strategy: "viewport-webp",
     }
   }
   const replacement = publishedPortrait

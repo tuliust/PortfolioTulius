@@ -292,6 +292,11 @@ function ApprovedProfileImage({
   if (src === CURRENT_PROFILE_PORTRAIT) {
     return (
       <picture className="approved-profile-picture">
+        <source
+          media="screen and (max-width: 767px)"
+          type="image/webp"
+          srcSet="/media/tulius-inicial-600.webp"
+        />
         <source type="image/webp" srcSet="/media/tulius-inicial-lossless.webp" />
         {image}
       </picture>

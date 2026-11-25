@@ -1,5 +1,10 @@
 # Arquitetura do PortfolioTulius
 
+## Seleção da fotografia por mídia — 25/11/2026
+
+A URL exata do PNG atual tem duas derivações de transporte: WebP qualidade 90 para tela mobile até 767 px; WebP sem perda para desktop e impressão. A condição `screen` impede aplicar a compressão RGB ao PDF impresso. Os preloads de build selecionam a mesma variante por viewport. Fonte CMS, alfa, dimensões, layout e enquadramento preservados. O smoke mobile verifica título do slide e descrição da ficha vinculada por ID; a matriz desktop aguarda fontes e mantém diagnóstico de posição em caso de timeout. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Transporte do retrato e contrato do smoke — 25/11/2026
 
 `ApprovedProfileImage` oferece WebP sem perda para a URL exata do PNG atual; mantém o original como fallback de `<picture>`. O build sincroniza o preload com essa mesma regra; outras URLs preservam o fluxo CMS existente. Sem mudanças de renderização, dados ou configuração de infraestrutura. P3 deriva contratos de projetos, competências e slides da resposta pública de `sections`, independentemente do DOM, mantendo a relação por ID e temporização 8 s/3 s. [Mídias](../03-cms/MIDIAS_E_STORAGE.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).

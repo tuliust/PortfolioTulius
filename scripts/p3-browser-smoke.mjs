@@ -552,12 +552,13 @@ try {
         const imageFit = galleryImage ? getComputedStyle(galleryImage).objectFit : null
         const title = selected?.querySelector(".experience-project-heading")?.textContent?.trim()
         const galleryTitle = gallery?.querySelector(".experience-gallery-footer h3")?.textContent?.trim()
-        return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery), imageFit, frameSquare,
+        return { title, galleryTitle, description: selected?.querySelector(".experience-mobile-project-detail > p")?.textContent?.trim(), openCount: open.length, gallery: Boolean(gallery), imageFit, frameSquare,
           noPlaceholder: !list?.textContent?.includes("Fotografia do projeto pendente") }
       })
       console.log("P3_EXPERIENCE_MOBILE_PROJECT " + JSON.stringify(project))
-      if (project.openCount !== 1 || !project.gallery || !sameText(project.title, experienceContract("invest-rs").center[1].item.title) ||
-          !sameText(project.galleryTitle, experienceContract("invest-rs").center[1].slide?.title) ||
+      if (project.openCount !== 1 || !project.gallery || !sameText(project.title, experienceContract("invest-rs").slides[1].slide.title) ||
+          !sameText(project.galleryTitle, experienceContract("invest-rs").slides[1].slide.title) ||
+          project.description !== experienceContract("invest-rs").center.find((entry) => entry.id === experienceContract("invest-rs").slides[1].id)?.item.text?.trim() ||
           !project.noPlaceholder || project.imageFit !== "contain" || !project.frameSquare)
         throw new Error("Project/gallery linkage or image framing failure")
       await page.waitForFunction(() =>
@@ -899,10 +900,14 @@ try {
       if (!initial.stack || initial.cards !== 6 || initial.tabs !== 6 || initial.gallery < 6)
         throw new Error("Estrutura das seis empresas incompleta: " + JSON.stringify(initial))
       stage = "bidirectional company navigation"
+      // Font swapping changes preceding section heights. Finish typography layout
+      // before measuring exact scroll destinations; keep every actual click/assertion.
+      await page.evaluate(async () => { await document.fonts.ready })
       const companies = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"]
       const selectCompany = async (slug) => {
         await page.click(`.experience-index a[href="#${slug}"]`)
-        await page.waitForFunction((destination) => {
+        try {
+          await page.waitForFunction((destination) => {
           const anchor = document.getElementById("experience-anchor-" + destination)
           const index = document.querySelector(".experience-index")
           const rect = index?.getBoundingClientRect()
@@ -913,7 +918,17 @@ try {
           return Math.abs(anchor.getBoundingClientRect().top) <= 3 &&
             visibleCard?.id === destination && active?.getAttribute("href") === "#" + destination &&
             location.hash === "#" + destination
-        }, { timeout: 10000 }, slug)
+          }, { timeout: 10000 }, slug)
+        } catch (error) {
+          console.log("P3_COMPANY_DESTINATION_FAILURE " + JSON.stringify(await page.evaluate((destination) => {
+            const index = document.querySelector(".experience-index")?.getBoundingClientRect()
+            return { destination, hash: location.hash, scrollY, fonts: document.fonts.status,
+              top: document.getElementById("experience-anchor-" + destination)?.getBoundingClientRect().top,
+              active: document.querySelector('.experience-index a[aria-current="location"]')?.getAttribute("href"),
+              front: index ? document.elementFromPoint(innerWidth / 2, index.bottom + 20)?.closest(".experience-card")?.id : null }
+          }, slug)))
+          throw error
+        }
       }
       // Start at Globo, reproduce the reported backward jump, then exercise all ordered pairs.
       await selectCompany("globo-sportv")
