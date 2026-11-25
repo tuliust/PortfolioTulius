@@ -1,5 +1,21 @@
 # Testes, CI e homologação
 
+## Validação de compactação editorial das Trajetórias — 25/11/2026
+
+Base `ff056a4e3ebf51e8ebab44660a88d3382118e171`: [Validate #45552606830](https://github.com/tuliust/PortfolioTulius/actions/runs/45552606830) SUCCESS, [Export Docs #45552606814](https://github.com/tuliust/PortfolioTulius/actions/runs/45552606814) SUCCESS e [Vercel Production READY](https://vercel.com/tuliust/portfolio-tulius/3TgdbWZBRmbjCuZ8wxELj1NWNoQ4). Evidências referem-se à base, não ao novo commit documental. Gravação SQL atômica das seis descrições com pré-condição por hash e verificação exata dentro da transação; releitura posterior SUCCESS. Formato e referência de comprimento conferidos; hashes de campos não editoriais de carreira (exceto updated_at) e de seis seções/12 blocos completos idênticos. Contagem de caracteres brutos (inclui marcadores de bullet e quebras):
+
+| Empresa | Antes | Depois | Bullets |
+|---|---:|---:|---:|
+| Invest RS | 1723 | 546 | 4 |
+| Prefeitura de São Paulo | 2314 | 591 | 5 |
+| Vale | 2372 | 581 | 5 |
+| Grupo InPress | 1499 | 569 | 5 |
+| TV Globo/SporTV | 1699 | 557 | 4 |
+| CDI Comunicação | 1802 | 502 | 4 |
+| Total | 11409 | 3346 | 27 |
+
+Inspeção visual desktop/mobile, confirmação de ausência de scroll e QA PDF **não executadas** nesta intervenção. Comprimento não garante encaixe em todas as resoluções; não remover scroll por CSS. Não executar suites em produção com dados sintéticos nem reclassificar pendências históricas. Nenhum teste de código modificado; CI do commit documental a conferir por SHA.
+
 ## Conferência final da revisão editorial — 25/11/2026
 
 Commit exclusivamente documental [`19c0c28`](https://github.com/tuliust/PortfolioTulius/commit/19c0c28d8ec0a4127fc638565f0a4ce7026e839a): [Validate #45552394108](https://github.com/tuliust/PortfolioTulius/actions/runs/45552394108) **SUCCESS**, [Export Docs #45552393937](https://github.com/tuliust/PortfolioTulius/actions/runs/45552393937) **SUCCESS**. Deployment Production [dpl_EZbrmWMEhj7DFaSdw8Gg49nHC7H6](https://vercel.com/tuliust/portfolio-tulius/EZbrmWMEhj7DFaSdw8Gg49nHC7H6) **READY**, SHA correspondente. Nova consulta somente leitura ao Supabase confirmou 6 empresas, 24 projetos centrais visíveis, 22 slides ativos, 4 fichas ocultas preservadas e 0 fichas de vídeo; as seis Trajetórias mantêm os complementos. A intervenção anterior confirmou integridade de mídia por hash (excluindo título e legenda). Testes visuais desktop/mobile e exportação PDF com o novo conteúdo, P3, P5 e Hygiene não foram executados/identificados neste SHA; resultados históricos não são reclassificados. Atenção às assertivas históricas que presumem cinco projetos por empresa: a cardinalidade agora varia por decisão editorial. Nenhum teste ou código alterado nesta conferência.

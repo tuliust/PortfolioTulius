@@ -1,5 +1,9 @@
 # Contrato CMS → Supabase → renderer
 
+## Compactação das seis Trajetórias — 25/11/2026
+
+Alteração exclusivamente editorial, autorizada e confirmada em produção. Foram substituídas somente as seis descrições publicadas em `career_experiences.description` (mais metadado temporal automático, quando aplicável). O formato permanece parágrafo introdutório + 4/5 linhas `• Rótulo: corpo`; `splitExperienceBullet` aplica negrito até os dois-pontos, e o renderer completo usa o mesmo texto no desktop, mobile e PDF. `TRAJECTORY_RECOMMENDED_CHARS = 650` continua recomendação, não restrição de schema. Os conteúdos aprovados somam 3.346 caracteres brutos, antes 11.409. A releitura confirmou igualdade exata dos seis textos, hashes dos demais campos de carreira (excluindo descrição e updated_at) e hashes integrais das seis seções e 12 blocos publicados. Projetos, slides, competências, IDs, status, mídia, layout, schema, Auth/RLS e Storage não foram alterados. As versões compactas estão no [Guia CMS](GUIA_ADMINISTRATIVO.md); o inventário anterior é histórico, não autorização para restaurar descrições. Encaixe sem scroll e exportação PDF ainda não validados.
+
 ## Revisão editorial das seis Experiências — 25/11/2026
 
 **Executado e relido no Supabase**, a pedido do proprietário, sobre a publicação de referência `85f939c369d4b52c54216b3041db23a20432e39d`. Este inventário substitui as contagens datadas de 23/11: **28 fichas canônicas armazenadas, 24 itens centrais visíveis, 24 fichas com mídia configurada e 22 slides ativos**.

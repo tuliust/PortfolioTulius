@@ -1,5 +1,66 @@
 # Guia operacional do CMS
 
+## Trajetórias compactadas — revisão aprovada em 25/11/2026
+
+**EXECUTADO E RELIDO NO SUPABASE.** A versão abaixo substitui as Trajetórias anteriores, não os projetos e legendas do inventário editorial subsequente. Padrão aprovado: introdução de até cinco linhas conforme a largura disponível; quatro ou cinco bullets curtos, com título em negrito e dois-pontos; evitar repetição de informações de Projetos e Realizações. A referência existente de 650 caracteres é recomendação editorial, não limite rígido de banco. As seis descrições finais ficam abaixo dela. O formato persistido é um parágrafo seguido de linhas `• Tema: corpo`; o renderer aplica negrito ao cabeçalho, sem necessidade de marcadores Markdown no banco. Preservar scroll acessível quando necessário; não truncar nem modificar CSS para forçar encaixe. A ausência de scroll ainda exige inspeção visual. As duas legendas de vídeo da TV Globo continuam preparadas, mas inativas; até ativação, os detalhes específicos nelas contidos não estão todos visíveis na galeria.
+
+### Invest RS
+
+Atuação em agência de desenvolvimento econômico do Rio Grande do Sul, conectando comunicação, negócios e promoção de investimentos.
+
+- **Articulação institucional:** Interface com investidores, empresas, órgãos públicos, parceiros e diretorias.
+- **Inteligência de mercado:** Produção de materiais sobre setores estratégicos e oportunidades econômicas.
+- **Comunicação internacional:** Conteúdos bilíngues para promoção comercial e atração de investimentos.
+- **Inovação operacional:** Aplicação de inteligência artificial e automação a processos de comunicação.
+
+### Prefeitura de São Paulo
+
+Atuação na Subprefeitura de Pinheiros, responsável por um território com aproximadamente dois milhões de cidadãos atendidos.
+
+- **Articulação governamental:** Interface com o gabinete do prefeito, secretarias e órgãos municipais.
+- **Comunicação executiva:** Produção de discursos, notas oficiais e posicionamentos institucionais.
+- **Gestão de crise:** Media training, preparação de porta-vozes e resposta a demandas sensíveis.
+- **Cerimonial:** Apoio a eventos oficiais, parcerias e agendas institucionais.
+- **Desempenho institucional:** Evolução coletiva da 12ª para a 2ª posição entre as 32 subprefeituras.
+
+### Vale
+
+Atuação em ambiente multinacional, conectando prioridades corporativas, operação de comunicação e demandas das diferentes áreas de negócio.
+
+- **Liderança operacional:** Coordenação de fluxos com seis profissionais, agências e fornecedores.
+- **Alta liderança:** Desenvolvimento de conteúdos e posicionamentos para CEO e vice-presidentes.
+- **Gestão de riscos:** Acompanhamento de temas sensíveis e mitigação de riscos reputacionais.
+- **Produção audiovisual:** Coordenação de captações em operações brasileiras.
+- **Influenciadores:** Pesquisa, seleção, briefing, cocriação e avaliação de resultados.
+
+### Grupo InPress
+
+Experiência em agência internacional de comunicação, conciliando demandas de clientes, qualidade editorial e objetivos de negócio.
+
+- **Operação de contas:** Organização de briefings, prioridades, prazos e fluxos de aprovação.
+- **Relacionamento editorial:** Produção de releases, follow-up e articulação de entrevistas.
+- **Posicionamento:** Desenvolvimento de Q&As, mensagens-chave e materiais de apoio.
+- **Mensuração:** Monitoramento de mídia e recomendações para otimização das campanhas.
+- **Visibilidade:** Mais de 30 veiculações em veículos como Globo, Veja, Folha, Exame e Forbes.
+
+### TV Globo/SporTV
+
+Formação profissional marcada pela autonomia jornalística, pelo repertório multicultural e pela produção de conteúdo em ambientes de alta exigência editorial.
+
+- **Multiplataforma:** Produção também para o Globoesporte.com, adaptando linguagens e formatos.
+- **Jornalismo em tempo real:** Apuração e transmissão de informações sob pressão.
+- **Inovação editorial:** Elaboração de pré-projeto com jornalismo imersivo, realidade virtual e webséries documentais em 2017.
+- **Critério editorial:** Construção de narrativas com precisão, clareza e responsabilidade jornalística.
+
+### CDI Comunicação
+
+Experiência consultiva em comunicação, desenvolvendo soluções para organizações dos setores financeiro, energético e social.
+
+- **Análise de cenários:** Identificação de oportunidades e recomendação de abordagens por público.
+- **Calendário institucional:** Planejamento de datas estratégicas, premiações e marcos corporativos.
+- **Conteúdo executivo:** Desenvolvimento de roteiros, discursos, mensagens-chave e apresentações.
+- **Relacionamento:** Pesquisa e briefing de influenciadores e interlocutores estratégicos.
+
 ## Inventário editorial aprovado e relido — 25/11/2026
 
 Registro textual do conteúdo publicado após a revisão documentada em [`19c0c28`](https://github.com/tuliust/PortfolioTulius/commit/19c0c28d8ec0a4127fc638565f0a4ce7026e839a). É uma fotografia editorial datada, não fonte de sincronização, backup do banco ou autorização para sobrescrever futuras edições. Supabase permanece canônico. As legendas de dois slides de Globo estão preparadas, mas ainda não publicadas na galeria. Somente texto editorial do portfólio e complementações de Trajetória são registrados aqui; sem anexos privados, URLs de mídia, identificadores internos de registros, credenciais ou dumps.
