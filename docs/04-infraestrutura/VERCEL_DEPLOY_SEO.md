@@ -1,5 +1,9 @@
 # Vercel, publicação e SEO
 
+## Publicação confirmada da compactação de Trajetória — 25/11/2026
+
+Vercel Production [dpl_B4zJAvaNherdho9XF45DVKCf22Kn](https://vercel.com/tuliust/portfolio-tulius/B4zJAvaNherdho9XF45DVKCf22Kn) **READY**, vinculado a `main@8f22d34212a1b965b82388001b3fa6036db8ce44`. [Validate #45553520326](https://github.com/tuliust/PortfolioTulius/actions/runs/45553520326) e [Export Docs #45553520273](https://github.com/tuliust/PortfolioTulius/actions/runs/45553520273) **SUCCESS** no SHA correspondente. O commit [`8f22d34`](https://github.com/tuliust/PortfolioTulius/commit/8f22d34212a1b965b82388001b3fa6036db8ce44) é exclusivamente documental; os seis textos compactados já foram persistidos no Supabase e conferidos com o inventário editorial. Nenhum deploy manual, alteração de DNS, alias, configuração, variáveis ou código nesta conferência; os aliases não foram reconsultados. READY não comprova ausência de scroll, aceite desktop/mobile ou QA PDF. [Validações](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Publicação documental da revisão editorial — 25/11/2026
 
 Vercel Production [dpl_EZbrmWMEhj7DFaSdw8Gg49nHC7H6](https://vercel.com/tuliust/portfolio-tulius/EZbrmWMEhj7DFaSdw8Gg49nHC7H6) **READY** para `main@19c0c28d8ec0a4127fc638565f0a4ce7026e839a`. Validate e Export Docs **SUCCESS** no mesmo SHA. Conteúdo editorial gravado diretamente no CMS e confirmado por releitura, não dependente do rebuild documental. Nenhum deploy manual, alteração de DNS ou configuração; associação dos aliases não foi reconsultada nesta rodada. READY não constitui aceite visual de produção nem validação PDF. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
