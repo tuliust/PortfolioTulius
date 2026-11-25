@@ -1,5 +1,28 @@
 # Testes, CI e homologação
 
+## Fechamento comprovado da correção técnica — 25/11/2026
+
+**Código funcional: [`65b9e69`](https://github.com/tuliust/PortfolioTulius/commit/65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53).** [P3 #45704116739](https://github.com/tuliust/PortfolioTulius/actions/runs/45704116739) **SUCCESS**, com `P3_DEPLOYMENT_GATE` no mesmo SHA servido em produção. [Validate #45704117268](https://github.com/tuliust/PortfolioTulius/actions/runs/45704117268) e [Export Docs #45704116700](https://github.com/tuliust/PortfolioTulius/actions/runs/45704116700) **SUCCESS**. [PDF Visual QA #45704659078](https://github.com/tuliust/PortfolioTulius/actions/runs/45704659078), disparado manualmente no mesmo SHA, **SUCCESS**. Production `dpl_8eKAE5yECdKaiHvbLvAV1paPUs7u` READY. O commit documental seguinte não equivale a nova P3; vincular os resultados ao código funcional.
+
+| Controle no SHA funcional | Resultado observado |
+|---|---|
+| LCP mobile, mediana de três | **3.134,380 ms — PASS** (3.134,380 / 3.135,375 / 3.119,863 ms; limite 3.500 ms) |
+| LCP desktop, mediana de três | **881,113 ms — PASS** (873,542 / 886,585 / 881,113 ms) |
+| Performance Lighthouse | Mobile 92; desktop 99 (medianas) |
+| Acessibilidade, SEO e boas práticas | **100 em todas as amostras**, nos dois dispositivos |
+| CLS máximo | Mobile 0; desktop 0,002421 — PASS |
+| Navegador e responsividade | **Zero falhas**; 30/30 transições de empresas |
+| Galerias e interação | Controles, ficha↔slide por ID, troca Trajetória/Projetos e autoplay 8 s/3 s PASS |
+| Cabeçalho e molduras | Máscara opaca, quadros 1:1 e matrizes desktop/mobile PASS |
+| SEO estático ↔ CMS | PASS, incluindo `ogImage`, sem mutações |
+| Leitura pública RLS | 3/3 PASS, 13 seções publicadas; dados administrativos não expostos, zero mutações |
+| Validação local | Formatação, TypeScript, **311 testes em 68 arquivos**, build, smoke offline, sintaxe P3 e diff SUCCESS |
+
+O LCP mobile caiu **41,0%** em relação aos 5.313,371 ms de `444fee6`, sem flexibilizar critérios. A implementação final contém compressão de transporte da foto, preload das fontes aprovadas, snap em marcadores estáticos e expectativas de browser derivadas do CMS. O experimento de espera de pintura foi removido; `usePortfolio.ts` mantém o fluxo anterior. Não se alteraram textos, layout, arquivos originais, dados, Auth/RLS/Storage, migrations, configuração Vercel ou workflows.
+
+**Limites:** auditoria de laboratório por SHA, não medição de campo; QA PDF sintética não substitui nova exportação autenticada real. Testes administrativos de escrita e restore não foram executados nesta tarefa. Os resultados históricos FAILURE e demais itens standby permanecem preservados. As rodadas abaixo são registros anteriores desta mesma investigação, não o estado final.
+
+
 ## Fontes antecipadas e snap fora das caixas animadas — 25/11/2026
 
 Experimento `ae90862f62b1797ef2883be9ca53b6af59f55137`: Validate #45703065631 e Export Docs #45703065173 SUCCESS; Production `dpl_6qUq2kgdw31M1gv1rC1t7jcwUqfy` READY. P3 #45703065400 FAILURE: LCP mobile mediano **3.588,826 ms** (3.588,826 / 3.647,503 / 3.485,915 ms), desktop **1.027,790 ms** PASS; uma falha de navegação. O ganho da espera de pintura foi insuficiente e não demonstrou benefício além da variância; **o helper `profile-paint`, seus testes e a espera no hook foram removidos**, restaurando o fluxo de `4b858d4`. Não apresentar esse experimento como otimização final.

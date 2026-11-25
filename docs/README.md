@@ -1,6 +1,6 @@
 # PortfolioTulius — documentação temática
 
-**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A consulta de 25/11/2026 confirmou as últimas correções em produção e registrou P3 global FAILURE, sem reabrir o standby.
+**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A correção técnica autorizada de 25/11/2026 confirmou P3 SUCCESS no código funcional `65b9e69` (LCP mobile 3,134 s; browser sem falhas), preservando os demais itens standby e os resultados históricos.
 
 ## Por assunto
 

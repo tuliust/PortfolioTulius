@@ -1,5 +1,10 @@
 # Vercel, publicação e SEO
 
+## Publicação da correção técnica e homologação P3 — 25/11/2026
+
+Production [dpl_8eKAE5yECdKaiHvbLvAV1paPUs7u](https://vercel.com/tuliust/portfolio-tulius/8eKAE5yECdKaiHvbLvAV1paPUs7u) **READY**, código funcional `main@65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53`. P3 #45704116739 confirmou o SHA servido pelo domínio antes da auditoria e concluiu **SUCCESS**: LCP mobile mediano 3,134 s, desktop 0,881 s, browser sem falhas, paridade SEO e leitura pública RLS PASS. Validate e Export Docs SUCCESS. Nenhum deploy manual, DNS, alias, variável ou configuração foi alterado nesta tarefa; publicação pela integração Git existente. Um commit documental posterior pode gerar novo deployment; ele não representa nova P3.
+
+
 ## Publicação confirmada e paridade SEO — 25/11/2026
 
 Vercel Production [dpl_9dpicxsm3zgWuBiE4zwAZfL8EqJB](https://vercel.com/tuliust/portfolio-tulius/9dpicxsm3zgWuBiE4zwAZfL8EqJB) **READY**, aliases `tulius.work` e `www.tulius.work`, SHA funcional `444fee647f96adf61ce72f9a2c07f3ec4af1cc4b`. A consulta administrativa e o gate P3 comprovaram o mesmo SHA servido. O próximo commit exclusivamente documental pode gerar novo deployment; conferir separadamente.

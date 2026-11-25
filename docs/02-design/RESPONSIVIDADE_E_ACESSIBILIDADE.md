@@ -2,7 +2,7 @@
 
 ## Destinos de snap estáveis nas Experiências desktop — 25/11/2026
 
-A navegação continua apontando para marcadores em fluxo `experience-anchor-<slug>`. Esses marcadores passam também a receber `scroll-snap-align: start` em ≥768 px; `.experience-card` usa `scroll-snap-align: none` somente nesse intervalo. Isso impede que o snap escolha uma posição transitória da animação translate/scale da ficha. As fichas conservam sticky, entrada animada, quadro 1:1, cores, conteúdo e posição final. Mobile não foi alterado. O P3 anterior observou destino deslocado −14,234375 px com hash/seleção corretos; a matriz de 30 transições e tolerância de 3 px é mantida para validar o novo SHA. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+A navegação continua apontando para marcadores em fluxo `experience-anchor-<slug>`. Esses marcadores passam também a receber `scroll-snap-align: start` em ≥768 px; `.experience-card` usa `scroll-snap-align: none` somente nesse intervalo. Isso impede que o snap escolha uma posição transitória da animação translate/scale da ficha. As fichas conservam sticky, entrada animada, quadro 1:1, cores, conteúdo e posição final. Mobile não foi alterado. O P3 anterior observou destino deslocado −14,234375 px com hash/seleção corretos; a matriz de 30 transições e tolerância de 3 px foi aprovada no P3 #45704116739, código funcional `65b9e69`, com zero falhas de navegador. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
 
 
 ## Conferência posterior das cinco correções de interface — 25/11/2026

@@ -1,5 +1,10 @@
 # Exportação PDF — contrato e aceite vigente
 
+## QA sintética após correção de performance pública — 25/11/2026
+
+[PDF Renderer Visual QA #45704659078](https://github.com/tuliust/PortfolioTulius/actions/runs/45704659078) **SUCCESS**, `main@65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53`, disparado no SHA funcional final após os ajustes de preload, transporte de imagem e snap público. A cópia sem perda da foto atual continua sendo usada na impressão; textos, geometria e fluxo do exportador não foram alterados. Essa execução usa fixtures sintéticas; não equivale a um novo PDF autenticado com todos os dados/fotografias reais nem substitui os limites de evidência e aceites datados abaixo. [Validação completa](TESTES_E_HOMOLOGACAO.md).
+
+
 **Situação em 18/11/2026:** **Desktop e Mobile homologados visualmente pelo proprietário**, após exportação real e correções da regressão. A declaração expressa “Está tudo ok. Considere concluído” encerra o **aceite produtivo do PDF**. Código funcional de referência: [`609218bd2bfede558f22c44002e62e9e21b2aada`](https://github.com/tuliust/PortfolioTulius/commit/609218bd2bfede558f22c44002e62e9e21b2aada).
 
 > Este é o contrato operacional atual. Históricos nos outros guias conservam suas datas e resultados de CI, mas avisos antigos de “PDF pendente” não anulam o aceite posterior. Os PDFs reais e as capturas recebidos pelo proprietário são arquivos privados da conversa, **não** devem ser versionados no GitHub.

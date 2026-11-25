@@ -1,23 +1,12 @@
 # Arquitetura do PortfolioTulius
 
-## Fluxo final de carregamento e snap — 25/11/2026
+## Carregamento e navegação após correção técnica — 25/11/2026
 
-O experimento `profile-paint` de `ae90862` foi removido por ganho insuficiente; `usePortfolio.ts` retorna ao fluxo de `4b858d4`, sem espera adicional antes da composição. `index.html` pré-carrega os dois arquivos WOFF2 já utilizados (Inter v20 e Big Shoulders Display v24); famílias/pesos e a folha Google Fonts permanecem. Atualizar os preloads quando as URLs efetivas das fontes mudarem. No desktop, o snap pertence aos marcadores `experience-anchor-*`, não às caixas sticky animadas. Mobile e temporização de galerias preservados. [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+`ApprovedProfileImage` reconhece a URL exata do PNG atual e oferece duas cópias de transporte: `tulius-inicial-600.webp` (35.322 bytes, qualidade 90, alfa idêntico) somente em tela até 767 px; `tulius-inicial-lossless.webp` (198.360 bytes, pixels visíveis e alfa idênticos) para desktop/impressão. O original permanece fallback de `<picture>`; outras URLs CMS não reutilizam essas cópias. `scripts/portrait-preload.mjs` sincroniza os preloads por viewport. [Mídias](../03-cms/MIDIAS_E_STORAGE.md).
 
+`index.html` antecipa os WOFF2 efetivamente observados para Inter v20 e Big Shoulders Display v24, sem trocar famílias/pesos; revisar os preloads se a folha Google Fonts mudar essas URLs. A experiência desktop usa os marcadores em fluxo também como destinos de snap; fichas sticky conservam animações e ficam fora da seleção de snap. Mobile preservado.
 
-## Pintura prioritária do Perfil público — 25/11/2026
-
-`usePortfolio.ts` inicia as consultas não críticas após o Perfil como antes, mas a composição do grafo completo aguarda `waitForProfilePaint()` (`src/lib/profile-paint.ts`): decode do retrato e dois frames, limitados a 1 s. Navegação por fragmento, aba oculta e preview autenticado não recebem espera. Falha de decode e limite de tempo sempre liberam a renderização; o conteúdo continua vindo exclusivamente do CMS publicado. Fontes, animações, layout, SEO e tratamentos de falha preservados. [Testes e evidências por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).
-
-
-## Seleção da fotografia por mídia — 25/11/2026
-
-A URL exata do PNG atual tem duas derivações de transporte: WebP qualidade 90 para tela mobile até 767 px; WebP sem perda para desktop e impressão. A condição `screen` impede aplicar a compressão RGB ao PDF impresso. Os preloads de build selecionam a mesma variante por viewport. Fonte CMS, alfa, dimensões, layout e enquadramento preservados. O smoke mobile verifica título do slide e descrição da ficha vinculada por ID; a matriz desktop aguarda fontes e mantém diagnóstico de posição em caso de timeout. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
-
-
-## Transporte do retrato e contrato do smoke — 25/11/2026
-
-`ApprovedProfileImage` oferece WebP sem perda para a URL exata do PNG atual; mantém o original como fallback de `<picture>`. O build sincroniza o preload com essa mesma regra; outras URLs preservam o fluxo CMS existente. Sem mudanças de renderização, dados ou configuração de infraestrutura. P3 deriva contratos de projetos, competências e slides da resposta pública de `sections`, independentemente do DOM, mantendo a relação por ID e temporização 8 s/3 s. [Mídias](../03-cms/MIDIAS_E_STORAGE.md) · [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+P3 captura a resposta pública de `sections`, independentemente do DOM, para validar visibilidade, contagens, títulos e vínculos por ID. No acordeão mobile, cabeçalho é o título do slide e descrição é a ficha vinculada. Mantém controles reais, troca de conteúdo e autoplay 8 s/3 s. O experimento `profile-paint` foi removido por ganho insuficiente; `usePortfolio.ts` conserva o fluxo original. **P3 SUCCESS em `65b9e69`**, browser zero falhas e LCP mobile 3,134 s. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md) · [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).
 
 
 ## Contrato de apresentação e navegação de Experiências — 25/11/2026

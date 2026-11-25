@@ -1,23 +1,12 @@
 # Estado atual — PortfolioTulius
 
-## Fontes e snap estável em validação — 25/11/2026
+## Estado técnico após correção autorizada — 25/11/2026
 
-O experimento `ae90862` não atingiu a meta: LCP mobile 3,589 s, P3 FAILURE com uma falha de posição de destino. A espera de pintura foi removida. A rodada atual antecipa os arquivos das mesmas fontes e move o snap desktop para marcadores estáticos, preservando as animações das fichas; o diagnóstico capturou deslocamento −14,234375 px com empresa/hash corretos. Validação local SUCCESS (311 testes); CI/P3/publicação do novo código ainda a confirmar. O último browser integralmente aprovado continua sendo `4b858d4`. [Evidências e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+Referência funcional **[`65b9e69`](https://github.com/tuliust/PortfolioTulius/commit/65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53)**, posterior à consolidação documental abaixo. **P3 SUCCESS** ([#45704116739](https://github.com/tuliust/PortfolioTulius/actions/runs/45704116739)): browser com **zero falhas**, 30/30 transições; LCP mobile **3,134 s** (meta ≤3,5 s), desktop **0,881 s**. Performance 92/99; acessibilidade, SEO e boas práticas 100 em todas as amostras. Validate e Export Docs SUCCESS; PDF QA sintética **SUCCESS** no mesmo SHA. Production `dpl_8eKAE5yECdKaiHvbLvAV1paPUs7u` **READY**, SHA confirmado pelo gate do domínio.
 
+Correções efetivas: imagem de transporte mobile de 35.322 bytes, transparência preservada e desktop/impressão sem perda; descoberta antecipada das mesmas fontes; snap desktop nos marcadores estáticos para evitar desvio da caixa animada; testes coerentes com IDs, flags e títulos do CMS atual. O experimento de espera no hook foi removido. Textos, design, animações e dados preservados. Nenhuma escrita em Supabase ou configuração de infraestrutura. Validação local SUCCESS (311 testes). [Evidências completas e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
 
-## Browser aprovado e ajuste final de performance em validação — 25/11/2026
-
-`4b858d4`: Validate, Export Docs, PDF QA SUCCESS e Production READY; P3 com **zero falhas de navegador e 30/30 transições**, mas global FAILURE exclusivamente por LCP mobile **3,635 s**, desktop **0,991 s** PASS. A implementação seguinte prioriza a pintura do retrato antes da composição do restante da página, com limite de 1 s e sem esperar em deep links/preview/aba oculta. Validação local SUCCESS (315 testes); CI e Lighthouse do novo código ainda a confirmar. [Matriz e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
-
-
-## Correção técnica em validação — 25/11/2026
-
-A primeira rodada `582e65d` obteve Validate, Export Docs e PDF QA SUCCESS, Production READY; P3 FAILURE com duas falhas de browser e LCP mobile 4,532 s (antes 5,313 s). A rodada atual acrescenta compressão exclusiva da foto para tela mobile, mantendo desktop/impressão sem perda; corrige o contrato do acordeão mobile e aguarda fontes antes da matriz desktop. Validação local SUCCESS, publicação/P3 deste novo código ainda **não confirmados**. Não interpretar a redução parcial como cumprimento de ≤3,5 s. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
-
-
-## Rodada de correção técnica autorizada — 25/11/2026
-
-Após a consolidação `1e217ae`, o proprietário solicitou correção autônoma das falhas de navegador e performance descritas. A implementação atualiza as expectativas do smoke para o CMS publicado e serve uma derivada WebP sem perda da fotografia atual (redução de 47,1% nos bytes). A meta de LCP e o design permanecem. CI/P3/deployment do novo SHA ainda precisam de conferência; não considerar o LCP corrigido apenas pela otimização. [Detalhes e limitações](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+A P3 está vinculada ao SHA funcional; eventual HEAD documental posterior precisa de conferência própria de CI/deployment e não constitui nova medição. A consolidação e os riscos históricos abaixo permanecem datados; não reclassificar falhas antigas nem considerar os demais itens standby encerrados.
 
 
 **Consolidação de 25/11/2026.** Referência funcional `444fee647f96adf61ce72f9a2c07f3ec4af1cc4b`, consultada antes deste commit documental. O produto permanece em manutenção pontual; o histórico de aceites não equivale a homologação automática de alterações posteriores.
