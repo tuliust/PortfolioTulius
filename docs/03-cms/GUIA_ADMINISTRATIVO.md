@@ -1,5 +1,11 @@
 # Guia operacional do CMS
 
+## Revisão editorial aprovada — 25/11/2026
+
+As seis experiências foram revisadas em produção, com títulos e descrições distintos entre centro e slide, competências atualizadas e marca principal TV Globo (SporTV identificado na função). Centro/galeria ativa: Invest RS 4/4; Prefeitura 4/4; Vale 5/5; TV Globo 5/3; Grupo InPress 3/3; CDI 3/3. Total: 24 itens centrais e 22 slides ativos. Quatro fichas sem mídia de InPress/CDI foram ocultadas, não excluídas; seus conteúdos foram incorporados à Trajetória. As seis descrições de Trajetória foram complementadas pontualmente sem reescrever seu escopo anterior. Para Globo, os dois slides desabilitados já têm textos preparados, mas a ativação depende do upload e da conferência dos vídeos pelo proprietário.
+
+Operação editorial autorizada, atômica, com conferência de hashes das seções, blocos e Trajetórias antes da escrita. Releitura confirmou os seis conjuntos, os textos, as contagens e a identidade dos hashes de mídia (excluindo título/legenda); nenhuma imagem, vídeo ou logotipo substituído. As legendas conceituais conservam indicação de montagem ilustrativa. Não alterar a galeria ou remover fichas adicionais por conveniência. A inspeção visual e a confirmação de encaixe das novas legendas/competências ficam pendentes; sem alteração de interface. [Contrato de dados](MODELO_DE_DADOS.md).
+
 ## Reprodução automática e preenchimento do vídeo — 24/11/2026
 
 Os vídeos já enviados passam a iniciar automaticamente no site público quando o slide selecionado estiver visível, com áudio inicialmente silenciado e controles nativos. Não é necessário reenviar arquivos nem alterar fichas. O quadro é preenchido por `object-fit: cover`, com recorte central quando a proporção divergir; a prévia administrativa não muda. A reprodução automática não inicia quando a preferência de movimento reduzido está ativa.

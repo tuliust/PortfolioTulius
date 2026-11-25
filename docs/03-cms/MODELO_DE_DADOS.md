@@ -1,5 +1,22 @@
 # Contrato CMS → Supabase → renderer
 
+## Revisão editorial das seis Experiências — 25/11/2026
+
+**Executado e relido no Supabase**, a pedido do proprietário, sobre a publicação de referência `85f939c369d4b52c54216b3041db23a20432e39d`. Este inventário substitui as contagens datadas de 23/11: **28 fichas canônicas armazenadas, 24 itens centrais visíveis, 24 fichas com mídia configurada e 22 slides ativos**.
+
+| Experiência (slug) | Centro visível | Galeria ativa | Fichas ocultas |
+|---|---:|---:|---:|
+| invest-rs | 4 | 4 | 0 |
+| prefeitura-sp | 4 | 4 | 0 |
+| vale | 5 | 5 | 0 |
+| globo-sportv | 5 | 3 | 0 |
+| inpress | 3 | 3 | 2 |
+| cdi | 3 | 3 | 2 |
+
+Identidade editorial: `sections.title/eyebrow/intro`; competências: `content_json.items` de A; projetos: `experienceProjects[].item.title/text`; legenda independente: `slide.title/caption`. Ordem do centro alinhada à ordem das mídias; IDs e flags de galeria existentes preservados. As duas fichas de Globo sem galeria ativa receberam títulos e legendas, mas não foram habilitadas sem os MP4 correspondentes. As quatro fichas excedentes de InPress/CDI permanecem com `showInCenter=false` e `includeInGallery=false`. Os arrays legados A/B foram ajustados para compatibilidade, sem mudar o contrato; a galeria legada não substitui a canônica.
+
+Trajetória: seis `career_experiences.description` publicadas complementadas preservando as atribuições anteriores; conteúdos condensados ou retirados do centro foram mantidos/integrados nessas descrições. Sem alteração dos demais campos de carreira. Nenhuma alteração em schema, migrations, Auth/RLS, Storage, mídia, placements, renderer ou configuração Vercel. Hashes dos 24 objetos de slide, excluindo somente título e legenda, idênticos antes/depois; verificação de dados SUCCESS. Validação visual desktop/mobile/PDF não executada. O fallback local de desenvolvimento permanece separado, com seu acervo ilustrativo; produção configurada não deve substituí-la por fallback obsoleto em falhas de leitura.
+
 ## Reprodução automática e preenchimento do vídeo — 24/11/2026
 
 A reprodução pública do `mediaType=video` passa pelo `ExperienceVideoPlayer`, que tenta reprodução automática inicialmente muda quando pelo menos 25% do vídeo selecionado está visível e a aba está ativa; pausa fora da tela/aba e ao desmontar. Mantém controles e suspende a rotação enquanto o vídeo está selecionado; não repete ao terminar. Sem mudança de campos, schema, RPC, Storage ou objetos.

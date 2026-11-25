@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Revisão editorial de Experiências — 25/11/2026
+
+**Supabase: SUCCESS (gravação atômica e releitura).** Revisão aprovada das três colunas das seis empresas e complementação das seis Trajetórias, sobre a versão de referência `85f939c` (Vercel READY; Validate e Export Docs SUCCESS no SHA de referência). Estado produtivo confirmado: 28 fichas armazenadas, 24 itens centrais visíveis, 22 slides ativos; quatro fichas excedentes preservadas ocultas em InPress/CDI. Dois slides de Globo permanecem desabilitados até o upload/conferência dos vídeos. Hashes de mídia das 24 fichas com slide preservados; nenhum arquivo substituído, sem mudança de schema, RLS, Auth, Storage, código, infraestrutura ou deploy manual. Releitura SQL confirma o conteúdo, não o aceite visual ou a renderização PDF; esses testes não foram executados nesta intervenção. [CMS](../03-cms/GUIA_ADMINISTRATIVO.md) · [Modelo](../03-cms/MODELO_DE_DADOS.md).
+
 ## Reprodução automática e preenchimento do vídeo — 24/11/2026
 
 Ajuste público solicitado após o primeiro upload real (leitura: um objeto de vídeo e um slide de vídeo em produção): reprodução automática inicialmente muda quando visível, respeitando movimento reduzido, e preenchimento do quadro por recorte central proporcional. Imagens, dimensões dos quadros e CMS permanecem inalterados. Código `b3ba5d1` validado em sandbox isolado (307 testes, build, smoke, ledger e três cenários Chromium sintéticos). Acompanhar CI e deployment do SHA integrado.
