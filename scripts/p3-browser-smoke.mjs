@@ -505,16 +505,19 @@ try {
         const open = [...(list?.querySelectorAll('.experience-project-choice[aria-expanded="true"]') ?? [])]
         const selected = open[0]?.closest(".experience-project")
         const gallery = selected?.querySelector(".experience-gallery")
+        const frame = gallery?.querySelector(".experience-media-frame")
+        const frameRect = frame?.getBoundingClientRect()
+        const frameSquare = !!frameRect && frameRect.width > 0 && Math.abs(frameRect.width - frameRect.height) <= 1
         const galleryImage = gallery?.querySelector(".experience-media-frame img")
         const imageFit = galleryImage ? getComputedStyle(galleryImage).objectFit : null
         const title = selected?.querySelector(".experience-project-heading")?.textContent?.trim()
         const galleryTitle = gallery?.querySelector(".experience-gallery-footer h3")?.textContent?.trim()
-        return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery), imageFit,
+        return { title, galleryTitle, openCount: open.length, gallery: Boolean(gallery), imageFit, frameSquare,
           noPlaceholder: !list?.textContent?.includes("Fotografia do projeto pendente") }
       })
       console.log("P3_EXPERIENCE_MOBILE_PROJECT " + JSON.stringify(project))
       if (project.openCount !== 1 || !project.gallery || project.galleryTitle !== project.title ||
-          !project.noPlaceholder || project.imageFit !== "contain")
+          !project.noPlaceholder || project.imageFit !== "contain" || !project.frameSquare)
         throw new Error("Project/gallery linkage or image framing failure")
       await page.waitForFunction(() =>
         !document.querySelector("#invest-rs-a .experience-view-trajectory")?.disabled,
@@ -1229,6 +1232,21 @@ try {
             })),
         }
       }, width)
+      if (width >= 768) {
+        const frames = await page.evaluate(() =>
+          Array.from(document.querySelectorAll(".experience-desktop .experience-media-frame")).map((node) => {
+            const rect = node.getBoundingClientRect()
+            const gallery = node.parentElement.getBoundingClientRect()
+            return { width: rect.width, height: rect.height, galleryWidth: gallery.width,
+              centered: Math.abs((rect.left + rect.right) - (gallery.left + gallery.right)) <= 2 }
+          }))
+        console.log("P3_EXPERIENCE_SQUARE_FRAMES " + JSON.stringify({ width, height, frames }))
+        if (frames.length !== 6 || frames.some((frame) => frame.width <= 0 ||
+            Math.abs(frame.width - frame.height) > 1 || frame.width > frame.galleryWidth + 1 ||
+            frame.height > height * 0.57 + 1 || !frame.centered)) {
+          throw new Error("Experience gallery must be square, centered and within desktop height budget")
+        }
+      }
       if (width === 1512 && height === 691) {
         const density = await page.evaluate(() => {
           const rect = (sel) => {

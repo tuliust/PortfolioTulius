@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Moldura quadrada das galerias de Experiências — 25/11/2026
+
+No código público, `.experience-media-frame` passa a usar `aspect-ratio: 1` nas seis experiências. Desktop: `width: min(100%, 57svh)` e `margin-inline: auto` limitam **os dois eixos** à largura disponível e ao orçamento de altura original; eventual espaço restante fica fora do quadro, na coluna. Mobile: largura de 100% do espaço disponível, sem teto de altura, inclusive no acordeão de projetos. Imagens permanecem em `object-fit: contain`, referência de **1600 × 1600 px**; quadros e imagens quadradas sem zoom adicional não têm faixas internas. Imagens não quadradas ainda podem ter margens. Vídeos mantêm `cover` (podem recortar mais ou menos conforme a proporção) e `contain` em fullscreen. Legendas, controles, autoplay, CMS e dados não foram alterados. O renderer PDF usa `PdfExperienceSection` estático, sem galeria. O P3 inclui verificações de geometria; homologação em navegador e CI do novo SHA ainda pendentes no momento deste registro. A seção histórica de 17/11 descreve a geometria anterior.
+
 ## Reprodução automática e preenchimento do vídeo — 24/11/2026
 
 O player público de Experiências preenche o quadro existente no desktop/mobile com `object-fit: cover; object-position: center`; sem distorção, podendo recortar bordas quando a proporção do arquivo divergir da do quadro. Em tela cheia usa `contain`. As imagens permanecem em `contain`. Autoplay inicialmente mudo somente para a empresa/slide ativo com pelo menos 25% de interseção visível e aba ativa; pausa fora da tela, na troca ou aba oculta. A preferência por movimento reduzido impede autoplay. Controles nativos continuam disponíveis. O teste Chromium sintético confirmou dimensões de vídeo iguais às do quadro, fit cover, autoplay mudo e pausa fora da tela em desktop/mobile, e ausência de autoplay com redução de movimento.

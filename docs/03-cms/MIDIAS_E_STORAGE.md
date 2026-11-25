@@ -1,5 +1,9 @@
 # Biblioteca de mídias e Storage
 
+## Geometria da galeria pública — 25/11/2026
+
+Mantém-se a referência administrativa de **1600 × 1600 px** para slides de imagem das seis experiências. O quadro público passa a ser 1:1 em desktop e mobile (desktop limitado simultaneamente pela largura da coluna e por `57svh`; mobile ocupa a largura disponível). `contain` preserva a imagem inteira; margens internas ainda podem existir para arquivos não quadrados ou enquadramento personalizado. Vídeos mantêm `cover` e podem sofrer recorte no quadro quadrado; fullscreen mantém `contain`. Nenhum upload, conversão, alteração de Storage, metadados ou campo administrativo decorre deste ajuste. Ver [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).
+
 ## Upload administrativo de vídeos — 24/11/2026
 
 Migration `20261124051349_portfolio_experience_videos.sql` aplicada e relida em produção: `portfolio-videos` público para reprodução, limite 50.000.000 bytes, somente `video/mp4`. A política `admins manage portfolio videos` restringe escrita a administradores autenticados pela guarda existente; catálogo admite o bucket apenas para MP4. Os dois buckets de imagens mantêm os limites e MIME anteriores. Antes/depois: 91 registros de mídia e 144 objetos dos buckets anteriores; novo bucket vazio. Objetos de vídeo tornam-se públicos no envio; salvar a ficha vincula ao slide. Remover o vínculo não exclui o arquivo; exclusão física de vídeo bloqueada na biblioteca. Incluir o novo bucket nos próximos backups; snapshots anteriores não cobrem vídeos. Upload real e autorização testados exclusivamente em ambiente sintético, sem objeto de teste em produção.
@@ -53,7 +57,7 @@ Estas são **dimensões recomendadas de arquivo**, não garantias de dimensões 
 
 | Uso | Desktop recomendado | Mobile recomendado | Formato / regra visual |
 | --- | --- | --- | --- |
-| Galerias de projetos, seis experiências | 1600 × 1600 px | Mesmo arquivo | WebP/PNG; `contain` mostra todo o conteúdo, podendo deixar margens |
+| Galerias de projetos, seis experiências | 1600 × 1600 px | Mesmo arquivo | WebP/PNG; quadro 1:1 e `contain`; arquivos não quadrados podem deixar margens |
 | Perfil — abertura “+15 anos” | 1200 × 1600 px | Mesmo conteúdo, versão otimizada 900 × 1200 px | WebP/PNG; composição desktop aprovada e `contain` mobile |
 | “Olá!” — foto com tablet | 1200 × 1600 px | 900 × 1200 px | PNG ou WebP com transparência; `contain`, máscara/deslocamento desktop existentes |
 | Contato — foto com tablet | 1200 × 1600 px | Mesmo arquivo | PNG ou WebP com transparência; alinhamento desktop aprovado e `contain` mobile |
