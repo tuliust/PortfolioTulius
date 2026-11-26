@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Ajustes de auditoria autorizados — 26/11/2026
+
+Atualização restrita aos scripts P3/P5: verificação real dos dois seletores de fotografia de Olá, sem gravações, e contrato de alinhamento de Contato à divisória computada. P3 aguarda composição CMS nas matrizes afetadas e reconfirma o SHA servido antes de cada nova página e ao finalizar, para impedir atribuição de resultados após publicação concorrente. Meta LCP, critérios anteriores não afetados, interface, dados e infraestrutura preservados. Nova CI/homologação por SHA ainda não confirmada. [Testes e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Manutenção pontual de 26/11/2026 — retratos mobile e CMS
 
 Referência funcional atual: [0314101](https://github.com/tuliust/PortfolioTulius/commit/03141016fcc0911f73388f9e785f87cc8ea3171a), na `main`, com Production READY e domínio `tulius.work` vinculado ao mesmo SHA, confirmado via consulta Vercel. As intervenções sucedem a correção técnica de 25/11 (preservada abaixo).

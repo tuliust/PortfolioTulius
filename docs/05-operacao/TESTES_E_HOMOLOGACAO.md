@@ -1,5 +1,14 @@
 # Testes, CI e homologação
 
+## Correção do contrato de auditoria P3/P5 — 26/11/2026
+
+Base `a51400b`, Production READY; Validate e Export Docs SUCCESS nesse SHA documental. O P5 Admin Read-Only passa a exigir exatamente dois seletores de Olá (rótulos, recomendações 1200×1600 e 900×1200, botões ativos, sem editores genéricos/avançados), abrir e fechar cada biblioteca identificada pelo destino e conferir que as prévias não mudam e nenhuma tentativa de escrita ocorre. Contagem explícita passa de 21 a 22 verificações; a interceptação de escrita REST/Storage permanece. Não há ensaio de gravação real.
+
+No P3, o contrato de Contato deixa de comparar a base da fotografia com a base do painel, pois a divisória laranja/grafite está acima do fim do painel após `d3e45c6`. Extrai a posição real do stop do gradiente computado e mantém tolerância anterior de 4 px; exige que o retrato não sobreponha o título, sem remover os demais requisitos. Fixture Chromium isolada em 320×568, 360×800, 390×844, 430×932 confirmou leitura do gradiente e desvio inferior a 0,02 CSS px; não constitui auditoria do site real. As matrizes viewport e editorial aguardam a composição completa do CMS e o seletor obrigatório, com limite de 20 s e diagnóstico de marcas/erro do app; timeout continua FAILURE.
+
+Os logs de `d3e45c6` e `0314101` mostram que o gate P5 do novo SHA ocorreu antes dos seis timeouts P3 do SHA anterior, evidência de troca da publicação durante auditoria; não é prova da causa exclusiva dos timeouts. P3 reconfirma o marcador de produção antes de cada nova página e no fim da auditoria browser, interrompendo se o SHA divergir. Registra erros de JS e falhas de recursos app de primeira parte. Nenhum retry de assert geométrico, relaxamento de orçamento, alteração de código público, configuração de workflows ou dados produtivos. A nova execução por SHA precisa ser confirmada; resultados históricos FAILURE permanecem.
+
+
 ## Evidências da manutenção de 26/11/2026 — por SHA
 
 Consulta aos runs de push, jobs e logs do GitHub Actions; todos os resultados abaixo pertencem ao SHA indicado. Vercel Production READY para os quatro commits; `1c54047` foi sucedido pela reversão parcial de Olá em `d3e45c6`.

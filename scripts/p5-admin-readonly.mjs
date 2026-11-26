@@ -470,14 +470,51 @@ try {
   await page.waitForSelector(".about-center-photo-only .published-media-picker-label", { timeout: 12000 })
   const photoTarget = await page.evaluate(() => ({
     title: document.querySelector(".about-center-photo-only h3")?.textContent?.trim(),
-    mediaLabel: document.querySelector(".about-center-photo-only .published-media-picker-label")?.textContent?.trim(),
+    pickers: [...document.querySelectorAll(".about-center-photo-only [role='group']")]
+      .map((group) => ({
+        label: group.getAttribute("aria-label"),
+        mediaLabel: group.querySelector(".published-media-picker-label")?.textContent?.trim(),
+        recommendation: group.querySelector(".published-media-guidance")?.textContent?.trim(),
+        library: [...group.querySelectorAll("button")].some((button) =>
+          button.textContent?.trim() === "Escolher da biblioteca" && !button.disabled),
+      })),
     itemEditors: document.querySelectorAll(".studio-inline-layout .block-item-editor").length,
     advancedSettings: document.querySelectorAll(".studio-inline-layout .site-editor-advanced").length,
   }))
-  assert(photoTarget.title?.includes("Fotografia desktop") &&
-    photoTarget.mediaLabel === "Fotografia desktop" &&
+  const photoLabels = ["Fotografia desktop", "Fotografia mobile"]
+  assert(photoTarget.title === "Fotografias da seção Olá" &&
+    photoTarget.pickers.length === 2 &&
+    photoTarget.pickers.every((picker, index) => picker.label === photoLabels[index] &&
+      picker.mediaLabel === photoLabels[index] && picker.library &&
+      picker.recommendation?.includes(index === 0 ? "1200 × 1600 px" : "900 × 1200 px")) &&
     photoTarget.itemEditors === 0 && photoTarget.advancedSettings === 0,
-    "Centro de Olá! deve ter somente fotografia: " + JSON.stringify(photoTarget))
+    "Centro de Olá! deve ter dois seletores independentes: " + JSON.stringify(photoTarget))
+  // Both controls must open their own real library dialog. Close without
+  // selecting/uploading/removing an asset; the write interception remains active.
+  const previewSources = () => page.$$eval(".about-center-photo-only .published-media-picker",
+    (pickers) => pickers.map((picker) => picker.querySelector(".published-media-current img")?.getAttribute("src") ?? null))
+  const originals = await previewSources()
+  for (const label of photoLabels) {
+    const clicked = await page.evaluate((name) => {
+      const group = [...document.querySelectorAll(".about-center-photo-only [role='group']")]
+        .find((node) => node.getAttribute("aria-label") === name)
+      const button = [...(group?.querySelectorAll("button") ?? [])]
+        .find((node) => node.textContent?.trim() === "Escolher da biblioteca")
+      button?.click()
+      return Boolean(button)
+    }, label)
+    assert(clicked, "Seletor indisponível: " + label)
+    await waitFor(page, (name) => {
+      const dialogs = document.querySelectorAll(".published-media-dialog[role='dialog']")
+      return dialogs.length === 1 && dialogs[0].getAttribute("aria-label") === "Biblioteca de imagens: " + name
+    }, label)
+    await page.click(".published-media-dialog button[aria-label='Fechar biblioteca']")
+    await waitFor(page, () => !document.querySelector(".published-media-dialog"))
+    assert(JSON.stringify(await previewSources()) === JSON.stringify(originals),
+      "Fechar a biblioteca alterou uma fotografia: " + label)
+  }
+  assert(blockedWrites.length === 0, "A abertura das bibliotecas tentou gravar conteúdo")
+  report("ABOUT_PHOTOS", { labels: photoLabels, separateDialogs: true, previewsPreserved: true, writes: 0 })
   await verifyZones("Resultados e projetos", triple)
   await chooseArea("Centro")
   await waitFor(page, () =>
@@ -534,7 +571,7 @@ try {
   await chooseArea("Empresa")
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, experienceAreas,
-    desktopPortraitOnly: true, unifiedProjects: 5, independentVisibility: true })
+    independentAboutPhotos: true, unifiedProjects: 5, independentVisibility: true })
 
   const ordinarySections = ["Comunicação e estratégia", "Formação",
     "Ferramentas", "Depoimentos", "Contato"]
@@ -604,5 +641,5 @@ try {
 } finally {
   await browser.close()
 }
-console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 21, writes: blockedWrites.length }))
-if (checks !== 21) process.exitCode = 1
+console.log("P5_STAGE5_RESULT " + JSON.stringify({ passed: checks, expected: 22, writes: blockedWrites.length }))
+if (checks !== 22) process.exitCode = 1

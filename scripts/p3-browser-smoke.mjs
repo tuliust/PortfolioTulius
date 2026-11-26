@@ -12,11 +12,65 @@ const browser = await puppeteer.launch({
 })
 let failures = 0
 
+// A production alias can change while a long audit is running. Never attribute
+// browser checks to the original SHA after a concurrent publication.
+async function assertAuditDeployment() {
+  const expected = process.env.GITHUB_SHA
+  if (!expected) return
+  if (!/^[0-9a-f]{40}$/.test(expected)) throw new Error("Invalid audit GITHUB_SHA")
+  const marker = await fetch(base + "/p3-deployment.json?audit=" + Date.now(), {
+    headers: { "Cache-Control": "no-cache", Accept: "application/json" },
+    signal: AbortSignal.timeout(10000),
+  })
+  if (!marker.ok) throw new Error("P3_DEPLOYMENT_RECHECK HTTP " + marker.status)
+  const actual = (await marker.json()).sha
+  if (actual !== expected) {
+    throw new Error("P3_DEPLOYMENT_CHANGED expected=" + expected +
+      " actual=" + String(actual).slice(0, 40))
+  }
+}
+
+// networkidle2 can precede React's full live CMS composition. Do not start
+// geometry checks on a partially painted Hero or accept a missing section.
+async function waitForPublicComposition(page, selector) {
+  try {
+    await page.waitForFunction((target) => {
+      const marks = new Set(performance.getEntriesByType("mark").map((entry) => entry.name))
+      return marks.has("p3:portfolio-compose-finished") &&
+        Boolean(document.querySelector(target))
+    }, { timeout: 20000 }, selector)
+  } catch (error) {
+    const diagnostic = await page.evaluate(() => ({
+      marks: performance.getEntriesByType("mark").map((entry) => entry.name)
+        .filter((name) => name.startsWith("p3:")),
+      sections: document.querySelectorAll("section.portfolio-section").length,
+      message: document.querySelector(".data-error")?.textContent?.slice(0, 160) ?? null,
+    })).catch(() => null)
+    console.log("P3_PUBLIC_COMPOSITION_ERROR " + JSON.stringify({
+      selector, diagnostic, error: String(error).slice(0, 180),
+    }))
+    await assertAuditDeployment()
+    throw error
+  }
+}
+
 // Capture the anonymous CMS response independently of the rendered DOM. Editorial
 // titles, visibility flags and slide ordering are mutable; missing data fails closed.
 const publishedSections = new Map()
 async function newAuditPage() {
+  await assertAuditDeployment()
   const page = await browser.newPage()
+  page.on("pageerror", (error) => {
+    console.log("P3_PAGE_ERROR " + JSON.stringify({ message: String(error).slice(0, 200) }))
+  })
+  page.on("requestfailed", (request) => {
+    const url = new URL(request.url())
+    if (url.origin === base && ["script", "document"].includes(request.resourceType())) {
+      console.log("P3_APP_REQUEST_FAILED " + JSON.stringify({
+        path: url.pathname, reason: request.failure()?.errorText,
+      }))
+    }
+  })
   page.on("response", async (response) => {
     if (!response.url().includes("/rest/v1/sections?") || !response.ok()) return
     try {
@@ -1262,7 +1316,7 @@ try {
     try {
       await page.setViewport({ width, height, deviceScaleFactor: 1, isMobile: width < 768, hasTouch: width < 768 })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 30000 })
-      await page.waitForSelector("section.portfolio-section", { timeout: 15000 })
+      await waitForPublicComposition(page, "section.portfolio-section")
       const findings = await page.evaluate((requestedWidth) => {
         const portrait = document.querySelector(".profile-portrait img, .mobile-profile-hero img, .mobile360-photo img")
         const desktop = document.querySelector(".desktop-panel")
@@ -1480,7 +1534,7 @@ try {
     try {
       await page.setViewport({ width, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
       await page.goto(base + "/", { waitUntil: "networkidle2", timeout: 45000 })
-      await page.waitForSelector("#contato-a .contact-mobile-photo img", { timeout: 15000 })
+      await waitForPublicComposition(page, "#contato-a .contact-mobile-photo img")
       const details = await page.evaluate(() => {
         const getRect = (selector) => {
           const r = document.querySelector(selector)?.getBoundingClientRect()
@@ -1494,6 +1548,15 @@ try {
         const firstCard = document.querySelector("#depoimentos .testimonial-card")
         const portrait = getRect("#contato-a .contact-mobile-photo img")
         const contact = getRect("#contato-a")
+        const contactHeading = getRect("#contato-a .panel-heading")
+        const contactPanel = document.querySelector("#contato-a")
+        const contactBackground = contactPanel ? getComputedStyle(contactPanel).backgroundImage : ""
+        // Chromium resolves viewport/rem units in the computed gradient to px.
+        // Measure the actual orange/graphite stop, not the old panel bottom.
+        const dividerMatch = contactBackground.match(/calc\(100%\s*-\s*([\d.]+)px\)/)
+        const contactDividerInset = dividerMatch ? Number(dividerMatch[1]) : null
+        const contactDivider = contact && contactDividerInset !== null
+          ? contact.bottom - contactDividerInset : null
         const headingFonts = ["#formacao-a .panel-heading h2", "#ferramentas-a .panel-heading h2", "#depoimentos-a .panel-heading h2"]
           .map((sel) => {
             const el = document.querySelector(sel)
@@ -1514,9 +1577,14 @@ try {
           headingFonts,
           portrait,
           contact,
+          contactHeading,
+          contactBackground,
+          contactDividerInset,
+          contactDivider,
         }
       })
-      const { name, nameWords, portrait, contact, headingFonts } = details
+      const { name, nameWords, portrait, contact, contactHeading, contactDivider,
+        contactDividerInset, headingFonts } = details
       const valid =
         details.scrollWidth <= width + 2 &&
         !!name && name.left >= -2 && name.right <= width + 2 &&
@@ -1527,7 +1595,9 @@ try {
         details.testimonialCount === 3 &&
         details.firstTestimonialHeight > 0 && details.firstTestimonialHeight < 290 &&
         !!portrait && portrait.height >= Math.min(280, details.viewportWidth * .65) &&
-        !!contact && Math.abs(portrait.bottom - contact.bottom) < 4 &&
+        !!contact && !!contactHeading && portrait.top >= contactHeading.bottom - 1 &&
+        contactDivider !== null && contactDividerInset > 0 &&
+        Math.abs(portrait.bottom - contactDivider) < 4 &&
         headingFonts.every((n) => n !== null && Math.abs(n - headingFonts[0]) < 1)
       if (!valid) {
         failures++
@@ -1561,5 +1631,6 @@ try {
 } finally {
   await browser.close()
 }
+await assertAuditDeployment()
 console.log("P3_BROWSER_AUDIT " + JSON.stringify({ failures }))
 if (failures > 0) process.exitCode = 1
