@@ -1910,6 +1910,14 @@
     color: var(--paper);
     scroll-margin-top: var(--header);
   }
+  /* Move the continuation's leading space above the portrait, keeping the
+     first divider and its text in place while the portrait ends at the line. */
+  .public-site:not(.pdf-portfolio) #sobre #sobre-a .about-mobile-photo {
+    margin-top: calc(clamp(.5rem, 2svh, 1.2rem) + clamp(.8rem, 2svh, 1.25rem));
+  }
+  .public-site:not(.pdf-portfolio) #sobre #sobre-a:has(.about-mobile-photo) + #sobre-b {
+    padding-top: 0;
+  }
   .public-site #sobre .about-mobile-differences {
     display: flex;
     flex-direction: column;

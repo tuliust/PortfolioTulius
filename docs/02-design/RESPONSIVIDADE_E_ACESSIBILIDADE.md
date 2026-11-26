@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Alinhamento do retrato de Olá à primeira divisória — 26/11/2026
+
+Na abertura pública mobile de Sobre, a imagem termina na transição laranja/grafite e a primeira linha dos Diferenciais fica abaixo devido ao padding superior de #sobre-b. O CSS transfere essa mesma distância para a margem superior do retrato e zera o padding superior da continuação somente quando há fotografia. Assim a base da moldura coincide com a primeira linha, sem mudar escala, enquadramento, posição da linha e dos textos seguintes; sem fotografia, o espaçamento anterior permanece. Desktop, PDF, CMS e mídia original não são modificados. Fixture geométrica isolada em Chromium confirmou alinhamento e preservação de dimensões e posição da linha em 320, 360, 375, 390, 414, 430 e 767 px, com isolamento PDF e desktop (900 px). Build completo, CI e inspeção do site real ainda não confirmados.
+
 ## Enquadramento horizontal do retrato da abertura mobile — 26/11/2026
 
 Somente na abertura editorial pública `#perfil-a` até 767 px (excluindo `.pdf-portfolio`), o enquadramento horizontal neutro (x=50) passa a ancorar a borda direita da fotografia (`object-position: 100%`), deslocando a imagem para a esquerda quando `cover` recorta horizontalmente. Valores horizontais não neutros definidos no CMS, posição vertical, zoom, escala, transparência, dimensões da moldura e textos permanecem preservados. O PDF mantém a posição original; desktop, dados Supabase e arquivos de mídia não mudam. Fixture Chromium isolada confirmou a cascata em 320, 360, 375, 390, 414, 430 e 900 px, incluindo isolamento PDF e posição personalizada; build completo, CI e conferência visual de produção ainda pendentes de verificação por SHA.
