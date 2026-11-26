@@ -1,5 +1,12 @@
 # Testes, CI e homologação
 
+## Revalidação P3 e sincronização P5 — 26/11/2026
+
+No SHA funcional [`2982583`](https://github.com/tuliust/PortfolioTulius/commit/2982583b5fe09f73b720328009772fd6b749bc56), Production READY e alias `tulius.work` confirmado. [Validate #45790581027](https://github.com/tuliust/PortfolioTulius/actions/runs/45790581027), [Export Docs #45790580779](https://github.com/tuliust/PortfolioTulius/actions/runs/45790580779) e [P3 #45790580866](https://github.com/tuliust/PortfolioTulius/actions/runs/45790580866) SUCCESS. P3: zero falhas de navegador; orçamento P6 PASS, LCP mediano mobile 3.237,045 ms e desktop 1.023,042 ms, performance 91/98, CLS 0/0,002421. Paridade editorial mobile PASS em 360, 390 e 430 px, diferença entre base da caixa do retrato de Contato e stop do gradiente de 0,011 CSS px nas três larguras. Gate verificou o mesmo SHA. Não comprova os pixels opacos da imagem no iPhone; causa exclusiva dos timeouts históricos não demonstrada.
+
+[P5 #45790580782](https://github.com/tuliust/PortfolioTulius/actions/runs/45790580782) FAILURE: login, módulos, identidade/descarte e listagem de depoimentos PASS, mas timeout de 18 s em `selectModule` (suite.mjs:190), ao tentar retornar ao Editor imediatamente após confirmar descarte e antes de verificar a ativação de Identidade. O contrato anterior de Olá não chegou a ser executado nessa tentativa. O novo ajuste no script introduz espera explícita pelo módulo de destino e ausência de diálogo nos três fluxos de descarte (Identidade, Depoimentos, transições/âncora), antes de navegar de volta; inclui diagnóstico de módulo ativo e diálogo, mantendo timeout, contagem de 22 verificações e bloqueio de escrita. Isso elimina a corrida identificável na sequência, sem afirmar que seja a única causa possível. Nova CI por SHA pendente; sem alteração funcional ou escrita produtiva.
+
+
 ## Correção do contrato de auditoria P3/P5 — 26/11/2026
 
 Base `a51400b`, Production READY; Validate e Export Docs SUCCESS nesse SHA documental. O P5 Admin Read-Only passa a exigir exatamente dois seletores de Olá (rótulos, recomendações 1200×1600 e 900×1200, botões ativos, sem editores genéricos/avançados), abrir e fechar cada biblioteca identificada pelo destino e conferir que as prévias não mudam e nenhuma tentativa de escrita ocorre. Contagem explícita passa de 21 a 22 verificações; a interceptação de escrita REST/Storage permanece. Não há ensaio de gravação real.

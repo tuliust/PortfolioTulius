@@ -38,12 +38,25 @@ const requestModule = async (page, label) => {
   }, label)
   assert(found, "Módulo indisponível: " + label)
 }
+const waitForModule = async (page, label) => {
+  try {
+    await waitFor(page, (name) => {
+      const active = document.querySelector(".admin-sidebar nav button.active")
+      return active?.textContent?.trim() === name &&
+        !document.querySelector(".admin-confirm-dialog")
+    }, label)
+  } catch (error) {
+    const state = await page.evaluate(() => ({
+      active: document.querySelector(".admin-sidebar nav button.active")?.textContent?.trim(),
+      confirmationOpen: Boolean(document.querySelector(".admin-confirm-dialog")),
+      dirty: Boolean(document.querySelector(".admin-floating-save button")),
+    })).catch(() => null)
+    throw Error("Módulo não ativado: " + label + " / " + JSON.stringify(state), { cause: error })
+  }
+}
 const selectModule = async (page, label) => {
   await requestModule(page, label)
-  await waitFor(page, (name) => {
-    const active = document.querySelector(".admin-sidebar nav button.active")
-    return active?.textContent?.trim() === name
-  }, label)
+  await waitForModule(page, label)
 }
 const chooseDialog = async (page, label) => {
   await page.waitForSelector('.admin-confirm-dialog[role="alertdialog"]', { timeout: 12000 })
@@ -138,6 +151,7 @@ try {
     originalColorName + " HOMOLOGAÇÃO", "Cancelar descartou rascunho de Identidade.")
   await requestModule(page, "Editor do site")
   await chooseDialog(page, "Sair sem salvar")
+  await waitForModule(page, "Editor do site")
   await selectModule(page, "Identidade")
   await page.waitForSelector(identityNameSelector, { timeout: 10000 })
   assert((await page.$eval(identityNameSelector, (input) => input.value)) === originalColorName,
@@ -187,6 +201,7 @@ try {
   await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
   await requestModule(page, "Identidade")
   await chooseDialog(page, "Sair sem salvar")
+  await waitForModule(page, "Identidade")
   await selectModule(page, "Editor do site")
   await chooseSection("Depoimentos")
   await page.evaluate(() =>
@@ -418,6 +433,7 @@ try {
   await page.waitForSelector(".admin-floating-save button", { timeout: 8000 })
   await requestModule(page, "Identidade")
   await chooseDialog(page, "Sair sem salvar")
+  await waitForModule(page, "Identidade")
   await selectModule(page, "Editor do site")
   await chooseSection("Hero")
   await waitFor(page, () =>

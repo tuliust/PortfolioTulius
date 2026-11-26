@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Revalidação técnica — 26/11/2026
+
+SHA funcional `2982583`: Production READY, Validate, Export Docs e P3 SUCCESS; zero falhas browser, LCP mobile 3,237 s e desktop 1,023 s (medianas). A caixa da fotografia de Contato coincide com a divisória nas três larguras auditadas em produção. P5 Read-Only FAILURE por timeout durante descarte em Depoimentos, antes do novo teste de Olá. Ajustada a sequência P5 para aguardar a ativação do módulo após descartar alterações, antes de voltar ao anterior; os três fluxos de descarte mantêm as verificações e proteção contra gravação. A nova CI ainda precisa confirmar o resultado. [Evidências por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Ajustes de auditoria autorizados — 26/11/2026
 
 Atualização restrita aos scripts P3/P5: verificação real dos dois seletores de fotografia de Olá, sem gravações, e contrato de alinhamento de Contato à divisória computada. P3 aguarda composição CMS nas matrizes afetadas e reconfirma o SHA servido antes de cada nova página e ao finalizar, para impedir atribuição de resultados após publicação concorrente. Meta LCP, critérios anteriores não afetados, interface, dados e infraestrutura preservados. Nova CI/homologação por SHA ainda não confirmada. [Testes e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
