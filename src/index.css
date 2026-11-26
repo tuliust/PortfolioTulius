@@ -1910,14 +1910,6 @@
     color: var(--paper);
     scroll-margin-top: var(--header);
   }
-  /* Move the continuation's leading space above the portrait, keeping the
-     first divider and its text in place while the portrait ends at the line. */
-  .public-site:not(.pdf-portfolio) #sobre #sobre-a .about-mobile-photo {
-    margin-top: calc(clamp(.5rem, 2svh, 1.2rem) + clamp(.8rem, 2svh, 1.25rem));
-  }
-  .public-site:not(.pdf-portfolio) #sobre #sobre-a:has(.about-mobile-photo) + #sobre-b {
-    padding-top: 0;
-  }
   .public-site #sobre .about-mobile-differences {
     display: flex;
     flex-direction: column;
@@ -2917,8 +2909,23 @@
       var(--ink) 0
     );
   }
+  .public-site:not(.pdf-portfolio) #contato-a {
+    --contact-mobile-divider-inset: clamp(1.4rem, 4.4svh, 3rem);
+    background: linear-gradient(
+      to bottom,
+      var(--orange) calc(100% - var(--contact-mobile-divider-inset)),
+      var(--ink) 0
+    );
+  }
   .public-site #contato-a .contact-mobile-photo {
     background: transparent;
+  }
+  /* Align the portrait with the color boundary, without shrinking the image
+     or overlapping the title on short screens. Keep the PDF layout intact. */
+  .public-site:not(.pdf-portfolio) #contato-a .contact-mobile-photo:has(img) {
+    box-sizing: border-box;
+    min-height: calc(min(68svh, 36rem) + var(--contact-mobile-divider-inset));
+    padding-bottom: var(--contact-mobile-divider-inset);
   }
 }
 
