@@ -1,5 +1,19 @@
 # Vercel, publicação e SEO
 
+## Publicação da manutenção pontual — 26/11/2026
+
+Consulta à Vercel confirmou quatro deployments Production **READY**, pela integração Git existente:
+
+| SHA funcional | Deployment |
+|---|---|
+| `535df8d` (Hero mobile) | [5mUQNSUNcJngVSb8P9FFRH9caQUH](https://vercel.com/tuliust/portfolio-tulius/5mUQNSUNcJngVSb8P9FFRH9caQUH) |
+| `1c54047` (Olá; ajuste depois revertido) | [7sTz5iwbtMdgedmT5UrFS5wJstz3](https://vercel.com/tuliust/portfolio-tulius/7sTz5iwbtMdgedmT5UrFS5wJstz3) |
+| `d3e45c6` (Contato e reversão de Olá) | [ETBBVMCwk3akxuW2fc6yGqwLtR4a](https://vercel.com/tuliust/portfolio-tulius/ETBBVMCwk3akxuW2fc6yGqwLtR4a) |
+| `0314101` (seletores CMS) | [42ZMdSyWsDzJP4SvQDj7xNphtFxV](https://vercel.com/tuliust/portfolio-tulius/42ZMdSyWsDzJP4SvQDj7xNphtFxV) |
+
+A consulta pelo hostname `tulius.work` retornou o último deployment, SHA completo `03141016fcc0911f73388f9e785f87cc8ea3171a`, com aliases `tulius.work` e `www.tulius.work`. Os resultados CI estão na [matriz](../05-operacao/TESTES_E_HOMOLOGACAO.md): P3 em Contato e P5 Admin Read-Only no CMS têm falhas registradas; READY não equivale a homologação integral. Nenhum deploy manual, DNS, alias ou configuração foi alterado. O commit de consolidação documental pode gerar novo deployment automático, a conferir separadamente.
+
+
 ## Publicação da correção técnica e homologação P3 — 25/11/2026
 
 Production [dpl_8eKAE5yECdKaiHvbLvAV1paPUs7u](https://vercel.com/tuliust/portfolio-tulius/8eKAE5yECdKaiHvbLvAV1paPUs7u) **READY**, código funcional `main@65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53`. P3 #45704116739 confirmou o SHA servido pelo domínio antes da auditoria e concluiu **SUCCESS**: LCP mobile mediano 3,134 s, desktop 0,881 s, browser sem falhas, paridade SEO e leitura pública RLS PASS. Validate e Export Docs SUCCESS. Nenhum deploy manual, DNS, alias, variável ou configuração foi alterado nesta tarefa; publicação pela integração Git existente. Um commit documental posterior pode gerar novo deployment; ele não representa nova P3.

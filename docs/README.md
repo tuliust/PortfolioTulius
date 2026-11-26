@@ -1,6 +1,6 @@
 # PortfolioTulius — documentação temática
 
-**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A correção técnica autorizada de 25/11/2026 confirmou P3 SUCCESS no código funcional `65b9e69` (LCP mobile 3,134 s; browser sem falhas), preservando os demais itens standby e os resultados históricos.
+**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A manutenção de 26/11/2026 consolidou Hero/Contato mobile e os seletores de fotografia de Olá no CMS (`0314101`, Production READY); Validate e P5 local SUCCESS, com falhas P3/P5 de navegador ainda registradas na [matriz de testes](05-operacao/TESTES_E_HOMOLOGACAO.md). A correção técnica de 25/11 (`65b9e69`, P3 SUCCESS, LCP mobile 3,134 s) permanece como evidência datada. Standby preservado.
 
 ## Por assunto
 

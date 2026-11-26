@@ -1,5 +1,33 @@
 # Testes, CI e homologação
 
+## Evidências da manutenção de 26/11/2026 — por SHA
+
+Consulta aos runs de push, jobs e logs do GitHub Actions; todos os resultados abaixo pertencem ao SHA indicado. Vercel Production READY para os quatro commits; `1c54047` foi sucedido pela reversão parcial de Olá em `d3e45c6`.
+
+| SHA | Validate | Export Docs | P3 | Outras verificações |
+|---|---|---|---|---|
+| `535df8d` | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45773253437) | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45773253126) | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45773253107) | [PDF QA SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45773253087) |
+| `1c54047` | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45777127984) | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45777127920) | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45777127872) | Sem execução PDF localizada |
+| `d3e45c6` | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45788646677) | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45788646611) | [FAILURE](https://github.com/tuliust/PortfolioTulius/actions/runs/45788646704) | Sem execução PDF localizada |
+| `0314101` | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45789072818) | [SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45789072822) | Sem execução localizada | [P5 local SUCCESS](https://github.com/tuliust/PortfolioTulius/actions/runs/45789072770); [P5 Admin Read-Only FAILURE](https://github.com/tuliust/PortfolioTulius/actions/runs/45789072726) |
+
+### P3 e performance de laboratório
+
+| SHA | LCP mobile mediano | LCP desktop mediano | Falhas browser | P3 global |
+|---|---:|---:|---:|---|
+| `535df8d` | 3.189,282 ms | 958,202 ms | 0 | SUCCESS |
+| `1c54047` | 3.306,133 ms | 1.064,684 ms | 0 | SUCCESS |
+| `d3e45c6` | 3.324,984 ms | 922,220 ms | 6 | FAILURE |
+
+Os três orçamentos P6 passaram, mantendo meta mobile ≤3.500 ms; medianas de performance mobile 92/90/91 e desktop 99/98/99, respectivamente. A P3 de `d3e45c6` teve três timeouts do seletor `section.portfolio-section` (390×844, 360×800, 320×700) e três do seletor `#contato-a .contact-mobile-photo img` (360, 390, 430 px). Gate de deployment, HTTP/SEO, RLS pública, 38 capturas editoriais e orçamento de performance passaram. Não atribuir causa aos estilos sem investigação; não confundir resultados parciais com P3 aprovada. Não transferir as medições para `0314101`, sem P3 própria localizada.
+
+### CMS — SHA funcional `0314101`
+
+Validate confirmou formatação, TypeScript, 68 arquivos de testes unitários, build produtivo, smoke offline e sintaxe dos testes browser. P5 Local Transactional Homologation passou com Supabase CLI/Docker e seed sintética, RPCs, CAS, rollback e E2E sintéticos; não é evidência de gravação das fotos reais. P5 Admin Read-Only confirmou gate do SHA, login, módulos, identidade, depoimentos, campos Hero e descartes anteriores; falhou na verificação do Centro de Olá porque espera o contrato antigo de fotografia única. Diagnóstico do teste: título novo `Fotografias da seção Olá`, primeiro rótulo `Fotografia desktop`, zero editores genéricos e zero configurações avançadas nessa tela. Necessário atualizar a expectativa para exigir os dois seletores distintos e revalidar. Não alterar os critérios de segurança nem efetuar escrita produtiva para ensaio. A falha permanece registrada, não corrigida nesta consolidação.
+
+A conferência visual no iPhone, uma nova P3 no SHA funcional final e a prova de salvamento dos dois seletores em ambiente isolado específico continuam pendentes. Não houve nova execução de testes nesta consolidação exclusivamente documental. O último PDF QA SUCCESS desta rodada é o de `535df8d`; não equivale a homologação posterior de PDF real.
+
+
 ## Fechamento comprovado da correção técnica — 25/11/2026
 
 **Código funcional: [`65b9e69`](https://github.com/tuliust/PortfolioTulius/commit/65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53).** [P3 #45704116739](https://github.com/tuliust/PortfolioTulius/actions/runs/45704116739) **SUCCESS**, com `P3_DEPLOYMENT_GATE` no mesmo SHA servido em produção. [Validate #45704117268](https://github.com/tuliust/PortfolioTulius/actions/runs/45704117268) e [Export Docs #45704116700](https://github.com/tuliust/PortfolioTulius/actions/runs/45704116700) **SUCCESS**. [PDF Visual QA #45704659078](https://github.com/tuliust/PortfolioTulius/actions/runs/45704659078), disparado manualmente no mesmo SHA, **SUCCESS**. Production `dpl_8eKAE5yECdKaiHvbLvAV1paPUs7u` READY. O commit documental seguinte não equivale a nova P3; vincular os resultados ao código funcional.

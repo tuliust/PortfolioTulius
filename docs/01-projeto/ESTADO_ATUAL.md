@@ -1,5 +1,18 @@
 # Estado atual — PortfolioTulius
 
+## Manutenção pontual de 26/11/2026 — retratos mobile e CMS
+
+Referência funcional atual: [0314101](https://github.com/tuliust/PortfolioTulius/commit/03141016fcc0911f73388f9e785f87cc8ea3171a), na `main`, com Production READY e domínio `tulius.work` vinculado ao mesmo SHA, confirmado via consulta Vercel. As intervenções sucedem a correção técnica de 25/11 (preservada abaixo).
+
+- [535df8d](https://github.com/tuliust/PortfolioTulius/commit/535df8d55f701c649c991844a9d0e3d5296b6cf5): retrato da abertura Hero mobile ancorado à direita da moldura no enquadramento horizontal neutro, deslocando a imagem para a esquerda quando há corte horizontal.
+- [d3e45c6](https://github.com/tuliust/PortfolioTulius/commit/d3e45c68a608fa21a25e1fa68565e39eefaefd7c): retrato de Contato mobile alinhado à transição laranja/grafite; reversão do ajuste equivocadamente aplicado a Olá em [1c54047](https://github.com/tuliust/PortfolioTulius/commit/1c54047c88d2af51477459b08252033952240fbf). Hero, desktop e PDF preservados.
+- [0314101](https://github.com/tuliust/PortfolioTulius/commit/03141016fcc0911f73388f9e785f87cc8ea3171a): **Editor do site → Olá! → Centro** com seletores independentes de fotografia desktop e mobile, sobre os campos já existentes. Nenhuma migration, escrita direta no banco, alteração de Auth/RLS/Storage, mídia original ou configuração Vercel nesta rodada.
+
+Consulta somente leitura posterior confirmou imagens presentes nos blocos A publicados de Perfil, Sobre e Contato; os dois campos de Sobre estão preenchidos e apontam à mesma referência no momento desta consulta. Isso não prova o mecanismo de uma edição autenticada; o editor permite escolher referências diferentes. Nenhuma gravação foi feita nesta consolidação.
+
+**Qualidade:** Validate e Export Docs SUCCESS nos quatro commits; P3 e PDF QA SUCCESS em `535df8d`; P3 SUCCESS em `1c54047` (ajuste depois revertido). P3 FAILURE em `d3e45c6` por seis timeouts de navegador, apesar de orçamento de performance PASS (LCP mobile mediano 3,325 s). No SHA funcional atual, Validate, Export Docs e P5 local sintético SUCCESS; P5 Admin Read-Only FAILURE por expectativa anterior do editor de Olá, que não reconhece o novo título/contrato. Não há nova P3 ou QA PDF nesse SHA. Inspeção visual no iPhone, reconfirmação de P3 e atualização/validação do contrato P5 continuam pendentes; não inferir aprovação do deployment READY. [Matriz por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md) · [Publicação](../04-infraestrutura/VERCEL_DEPLOY_SEO.md) · [Responsividade](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md) · [CMS](../03-cms/GUIA_ADMINISTRATIVO.md).
+
+
 ## Estado técnico após correção autorizada — 25/11/2026
 
 Referência funcional **[`65b9e69`](https://github.com/tuliust/PortfolioTulius/commit/65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53)**, posterior à consolidação documental abaixo. **P3 SUCCESS** ([#45704116739](https://github.com/tuliust/PortfolioTulius/actions/runs/45704116739)): browser com **zero falhas**, 30/30 transições; LCP mobile **3,134 s** (meta ≤3,5 s), desktop **0,881 s**. Performance 92/99; acessibilidade, SEO e boas práticas 100 em todas as amostras. Validate e Export Docs SUCCESS; PDF QA sintética **SUCCESS** no mesmo SHA. Production `dpl_8eKAE5yECdKaiHvbLvAV1paPUs7u` **READY**, SHA confirmado pelo gate do domínio.
