@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Encerramento técnico da manutenção de 26/11/2026
+
+Referência homologada [ca63496](https://github.com/tuliust/PortfolioTulius/commit/ca63496b2d945cf2f05e0ac564bc839048c0fd79): Production READY, Validate, Export Docs, P3 e P5 Admin Read-Only SUCCESS. P5 22/22, zero escritas, catálogo das 14 seções e seis experiências validado. P3 zero falhas browser, P6 PASS; LCP mediano mobile 3,172 s e desktop 0,957 s. As pendências P3/P5 desta rodada estão encerradas, sem alteração do design, conteúdo ou infraestrutura. Não inferir homologação de salvamento real, PDF ou iPhone físico a partir dos testes read-only/Chromium. [Evidências por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## Revalidação de Experiências — 26/11/2026
 
 No SHA `f24a1a6`, Production READY, Validate, Export Docs e P3 SUCCESS; zero falhas browser, LCP mobile 3,253 s. P5 aprovou 18 verificações, inclusive as fotografias de Olá e paridade dos quatro projetos Invest RS; falhou no título fixo da TV Globo. Catálogo de 14 seções confirmado em leitura do CMS. Corrigida a suíte para identificar as seis experiências por slug e validar os títulos e a ordem recebidos do catálogo, preservando as 22 verificações. Nova execução ainda pendente. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).

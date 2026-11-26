@@ -1,5 +1,10 @@
 # Vercel, publicação e SEO
 
+## Homologação final P3/P5 — 26/11/2026
+
+Production [G3StzXU32TFE1AG7MftCSxsqpYHJ](https://vercel.com/tuliust/portfolio-tulius/G3StzXU32TFE1AG7MftCSxsqpYHJ) READY, SHA [ca63496](https://github.com/tuliust/PortfolioTulius/commit/ca63496b2d945cf2f05e0ac564bc839048c0fd79), aliases `tulius.work` e `www.tulius.work` confirmados pela consulta do deployment. Gates de produção P3/P5 confirmaram o mesmo SHA e os quatro workflows da rodada concluíram SUCCESS. [Evidências de CI](../05-operacao/TESTES_E_HOMOLOGACAO.md). A consolidação exclusivamente documental não constitui nova homologação funcional; eventual publicação automática do commit documental deve ser conferida separadamente.
+
+
 ## Publicação da manutenção pontual — 26/11/2026
 
 Consulta à Vercel confirmou quatro deployments Production **READY**, pela integração Git existente:

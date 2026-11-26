@@ -1,5 +1,14 @@
 # Testes, CI e homologação
 
+## Encerramento das pendências P3/P5 — 26/11/2026
+
+No SHA [ca63496](https://github.com/tuliust/PortfolioTulius/commit/ca63496b2d945cf2f05e0ac564bc839048c0fd79), todos os quatro workflows disparados por push concluíram SUCCESS: [Validate #45796159783](https://github.com/tuliust/PortfolioTulius/actions/runs/45796159783), [Export Docs #45796160163](https://github.com/tuliust/PortfolioTulius/actions/runs/45796160163), [P3 #45796159815](https://github.com/tuliust/PortfolioTulius/actions/runs/45796159815) e [P5 Admin Read-Only #45796159838](https://github.com/tuliust/PortfolioTulius/actions/runs/45796159838). Production READY, domínio `tulius.work` confirmado no mesmo SHA; gates P3/P5 MATCH.
+
+P5: 22/22 verificações PASS e zero tentativas de escrita CMS/Storage; descarte, ABOUT_PHOTOS (dois diálogos independentes, prévias preservadas), VISUAL_AREAS (quatro projetos Invest RS em paridade com a leitura), ALL_SECTIONS (14 seções e seis experiências, catálogo correspondente) e logout/preview protegido aprovados. Validate: 68 arquivos de testes unitários aprovados, formatação, TypeScript, build, smoke offline e sintaxe browser SUCCESS.
+
+P3: zero falhas browser; RLS anônima, injeção de falha de leitura, paridade SEO e orçamento P6 SUCCESS. LCP mediano de três amostras mobile 3.171,996 ms e desktop 956,701 ms; performance 92/99, CLS 0/0,002421. Meta mobile ≤3.500 ms preservada. As falhas anteriores permanecem históricas; causa exclusiva dos timeouts iniciais não foi demonstrada. As pendências P3/P5 desta rodada estão encerradas por evidência do mesmo SHA. Não equivale a novo ensaio P5 transacional, QA PDF, inspeção no iPhone físico ou salvamento real dos seletores; estes não foram executados nesse SHA. Nenhuma gravação, alteração funcional ou infraestrutura nesta verificação. Standby preservado.
+
+
 ## P5 — títulos editáveis das experiências — 26/11/2026
 
 SHA `f24a1a6`: Production READY, [Validate](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272684), [Export Docs](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272718), [P3](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272699) SUCCESS; zero falhas browser, P6 PASS, medianas LCP mobile 3.252,554 ms e desktop 946,295 ms. [P5](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272788) confirmou 18 verificações incluindo ABOUT_PHOTOS e VISUAL_AREAS (quatro projetos Invest RS em paridade com o CMS). Falhou em ALL_SECTIONS por título fixo "TV Globo / SporTV"; leitura de sections confirmou título vigente "TV Globo", slug `globo-sportv`, entre 14 seções.
