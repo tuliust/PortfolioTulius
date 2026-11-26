@@ -537,13 +537,52 @@ try {
     document.querySelector(".studio-inline-layout .block-items") !== null)
   const experienceAreas = ["Seção", "Empresa", "Projetos"]
   await verifyZones("Experiências Profissionais", experienceAreas)
-  await chooseArea("Projetos")
+  const investSelected = await page.evaluate(() => {
+    const button = [...document.querySelectorAll(".site-editor-experience-options button")]
+      .find((item) => item.querySelector("strong")?.textContent?.trim() === "Invest RS")
+    button?.click()
+    return Boolean(button)
+  })
+  assert(investSelected, "Invest RS indisponível no seletor de experiências")
   await waitFor(page, () =>
-    document.querySelector(".admin-card.editor-form .block-items")?.querySelectorAll(
-      ".block-item-editor").length === 5)
+    document.querySelector(".site-editor-experience-options button[aria-pressed='true'] strong")
+      ?.textContent?.trim() === "Invest RS")
+  // The project count is editorial data, not a fixed layout constant. Capture
+  // the actual read-only response for this editor before entering the area.
+  const [projectResponse] = await Promise.all([
+    page.waitForResponse((response) => {
+      const target = new URL(response.url())
+      return target.pathname === "/rest/v1/content_blocks" &&
+        target.searchParams.get("section_id")?.startsWith("eq.") &&
+        target.searchParams.get("select") ===
+          "id,section_id,block_type,mobile_panel,sort_order,status,is_placeholder,editorial_note,content_json,updated_at" &&
+        response.request().method() === "GET"
+    }, { timeout: 18000 }),
+    chooseArea("Projetos"),
+  ])
+  assert(projectResponse.ok(), "Leitura dos projetos Invest RS falhou: HTTP " + projectResponse.status())
+  const projectBlocks = await projectResponse.json()
+  const expectedProjects = Array.isArray(projectBlocks)
+    ? projectBlocks.find((block) => block.mobile_panel === "a")?.content_json?.experienceProjects
+    : null
+  assert(Array.isArray(expectedProjects) && expectedProjects.length > 0 &&
+    expectedProjects.every((project) => project.id && project.item) &&
+    new Set(expectedProjects.map((project) => project.id)).size === expectedProjects.length,
+    "Contrato editorial unificado da Invest RS ausente ou inválido")
+  const expectedTitles = expectedProjects.map((project) =>
+    (project.item.title || project.slide?.title || "Projeto sem título").trim())
+  const expectedCenter = expectedProjects.filter((project) =>
+    project.showInCenter !== false && !project.item.isHidden).length
+  const expectedGallery = expectedProjects.filter((project) =>
+    project.slide && project.includeInGallery !== false).length
+  const expectedHidden = expectedProjects.filter((project) =>
+    project.showInCenter === false && project.includeInGallery === false).length
+  await page.waitForSelector(".experience-projects-editor .block-items", { timeout: 18000 })
   const unified = await page.evaluate(() => ({
-    visibleProjects: document.querySelector(".admin-card.editor-form .block-items")
+    visibleProjects: document.querySelector(".experience-projects-editor .block-items")
       ?.querySelectorAll(".block-item-editor").length,
+    projectTitles: [...document.querySelectorAll(".experience-projects-editor .block-item-toggle-label strong")]
+      .map((node) => node.textContent?.trim()),
     title: document.querySelector(".admin-card.editor-form h3")?.textContent?.trim(),
     summary: document.querySelector(".admin-card.editor-form strong")?.textContent,
     switchFields: [...document.querySelectorAll(".admin-card.editor-form .toggle-field")]
@@ -571,10 +610,11 @@ try {
       }
     })(),
   }))
-  assert(unified.visibleProjects === 5 &&
+  assert(unified.visibleProjects === expectedProjects.length &&
+    JSON.stringify(unified.projectTitles) === JSON.stringify(expectedTitles) &&
     unified.title === "Projetos e realizações" &&
-    unified.summary?.includes("no centro") &&
-    unified.summary?.includes("nos slides") &&
+    unified.summary?.trim().replace(/\s+/g, " ") ===
+      expectedCenter + " no centro · " + expectedGallery + " nos slides · " + expectedHidden + " ocultos" &&
     unified.switchFields.some((text) => text?.includes("Exibir na área central")) &&
     unified.switchFields.some((text) => text?.includes("Exibir nos slides da direita")) &&
     unified.legacyHeadings === 0 &&
@@ -587,7 +627,8 @@ try {
   await chooseArea("Empresa")
   await page.waitForSelector("#site-editor-experience-gallery", { timeout: 12000 })
   report("VISUAL_AREAS", { sections: 3, experienceAreas,
-    independentAboutPhotos: true, unifiedProjects: 5, independentVisibility: true })
+    independentAboutPhotos: true, unifiedProjects: expectedProjects.length,
+    matchedReadOnlyContract: true, independentVisibility: true })
 
   const ordinarySections = ["Comunicação e estratégia", "Formação",
     "Ferramentas", "Depoimentos", "Contato"]

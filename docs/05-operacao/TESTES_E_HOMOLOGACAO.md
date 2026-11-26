@@ -1,5 +1,12 @@
 # Testes, CI e homologação
 
+## P5 — contrato de Experiências baseado no CMS — 26/11/2026
+
+Base `29bade3`: Production READY, Validate e Export Docs SUCCESS. [P3 #45793634131](https://github.com/tuliust/PortfolioTulius/actions/runs/45793634131) SUCCESS no mesmo SHA, zero falhas browser; P6 PASS, medianas LCP mobile 3.335,672 ms e desktop 943,465 ms, performance 90/99. Paridade Contato em 360/390/430 px PASS. [P5 #45793634111](https://github.com/tuliust/PortfolioTulius/actions/runs/45793634111) confirmou descarte em Identidade, Depoimentos e Hero e `ABOUT_PHOTOS PASS` (dois diálogos independentes, prévias preservadas, zero escritas). Falhou posteriormente em suite.mjs:541, aguardando exatamente cinco fichas de Invest RS. A consulta somente leitura ao bloco A publicado confirmou **quatro** registros unificados de Invest RS (Prefeitura quatro; Vale, Globo, InPress e CDI cinco cada). Não repor conteúdo para satisfazer um teste desatualizado.
+
+O script passa a selecionar Invest RS explicitamente e capturar a resposta GET autenticada de content_blocks ao abrir Projetos. Exige registros unificados não vazios, IDs únicos e fichas válidas; compara contagem, títulos na ordem e contadores de visibilidade do editor com os dados recebidos. Preserva as asserções de hierarquia, switches, ausência de UI legada e as demais 22 verificações; continua estritamente read-only. Nenhuma alteração de dados, código de interface, RLS ou Storage. Nova execução por SHA necessária; as falhas históricas não são reclassificadas.
+
+
 ## Revalidação P3 e sincronização P5 — 26/11/2026
 
 No SHA funcional [`2982583`](https://github.com/tuliust/PortfolioTulius/commit/2982583b5fe09f73b720328009772fd6b749bc56), Production READY e alias `tulius.work` confirmado. [Validate #45790581027](https://github.com/tuliust/PortfolioTulius/actions/runs/45790581027), [Export Docs #45790580779](https://github.com/tuliust/PortfolioTulius/actions/runs/45790580779) e [P3 #45790580866](https://github.com/tuliust/PortfolioTulius/actions/runs/45790580866) SUCCESS. P3: zero falhas de navegador; orçamento P6 PASS, LCP mediano mobile 3.237,045 ms e desktop 1.023,042 ms, performance 91/98, CLS 0/0,002421. Paridade editorial mobile PASS em 360, 390 e 430 px, diferença entre base da caixa do retrato de Contato e stop do gradiente de 0,011 CSS px nas três larguras. Gate verificou o mesmo SHA. Não comprova os pixels opacos da imagem no iPhone; causa exclusiva dos timeouts históricos não demonstrada.
