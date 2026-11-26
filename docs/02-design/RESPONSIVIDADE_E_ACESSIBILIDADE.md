@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Enquadramento horizontal do retrato da abertura mobile — 26/11/2026
+
+Somente na abertura editorial pública `#perfil-a` até 767 px (excluindo `.pdf-portfolio`), o enquadramento horizontal neutro (x=50) passa a ancorar a borda direita da fotografia (`object-position: 100%`), deslocando a imagem para a esquerda quando `cover` recorta horizontalmente. Valores horizontais não neutros definidos no CMS, posição vertical, zoom, escala, transparência, dimensões da moldura e textos permanecem preservados. O PDF mantém a posição original; desktop, dados Supabase e arquivos de mídia não mudam. Fixture Chromium isolada confirmou a cascata em 320, 360, 375, 390, 414, 430 e 900 px, incluindo isolamento PDF e posição personalizada; build completo, CI e conferência visual de produção ainda pendentes de verificação por SHA.
+
 ## Destinos de snap estáveis nas Experiências desktop — 25/11/2026
 
 A navegação continua apontando para marcadores em fluxo `experience-anchor-<slug>`. Esses marcadores passam também a receber `scroll-snap-align: start` em ≥768 px; `.experience-card` usa `scroll-snap-align: none` somente nesse intervalo. Isso impede que o snap escolha uma posição transitória da animação translate/scale da ficha. As fichas conservam sticky, entrada animada, quadro 1:1, cores, conteúdo e posição final. Mobile não foi alterado. O P3 anterior observou destino deslocado −14,234375 px com hash/seleção corretos; a matriz de 30 transições e tolerância de 3 px foi aprovada no P3 #45704116739, código funcional `65b9e69`, com zero falhas de navegador. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).

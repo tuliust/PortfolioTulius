@@ -2550,6 +2550,7 @@
   /* Let transparent portrait pixels reveal the configured lower panel color. */
   .public-site:not(.pdf-portfolio) #perfil-a .mobile360-photo {
     background: transparent;
+    --mobile360-neutral-photo-x: 100%;
   }
   .mobile360-photo > picture,
   .mobile360-photo > img,

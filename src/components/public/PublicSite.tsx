@@ -14,7 +14,7 @@ import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"
 import { scrollToExperienceAnchor } from "../../lib/experience-hash"
 import { ToolIcons } from "./ToolIcons"
 import { placementMotionVariables } from "../../lib/placement-motion"
-import { imageFramingStyle } from "../../lib/media-framing"
+import { imageFramingStyle, normalizeMediaFraming } from "../../lib/media-framing"
 import { heroColor, heroFont, heroSizeClass, heroTextStyle } from "../../lib/hero-formatting"
 import { isSafeEditorialImage, resolveHeroCardDestination } from "../../lib/validation"
 import {
@@ -509,6 +509,9 @@ function ProfileMobileEditorial({
     config.mobileImage && isSafeEditorialImage(config.mobileImage)
       ? config.mobileImage
       : profile.image
+  const framing = config.mobileImage ? config.mobileFraming : profile.mediaFraming
+  const { x, y } = normalizeMediaFraming(framing)
+  const portraitX = x === 50 ? "var(--mobile360-neutral-photo-x, 50%)" : `${x}%`
 
   return (
     <div
@@ -587,9 +590,10 @@ function ProfileMobileEditorial({
                 alt={config.mobileImage ? config.mobileAlt : profile.alt}
                 mobile
                 syncDecode
-                style={imageFramingStyle(
-                  config.mobileImage ? config.mobileFraming : profile.mediaFraming,
-                )}
+                style={{
+                  ...imageFramingStyle(framing),
+                  objectPosition: `${portraitX} ${y}%`,
+                }}
               />
             </div>
           )}
