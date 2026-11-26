@@ -107,9 +107,32 @@ try {
   await page.waitForSelector(".login-card input[type=email]", { timeout: 15000 })
   await page.type(".login-card input[type=email]", email)
   await page.type(".login-card input[type=password]", password)
-  await page.click(".login-card button[type=submit], .login-card .primary-button")
+  // Read the authenticated section catalog independently of the rendered
+  // selector: slugs identify the six experiences, while titles are editorial.
+  const [sectionResponse] = await Promise.all([
+    page.waitForResponse((response) => {
+      const target = new URL(response.url())
+      return target.pathname === "/rest/v1/sections" &&
+        target.searchParams.get("select") === "*" &&
+        target.searchParams.get("order") === "sort_order.asc" &&
+        response.request().method() === "GET"
+    }, { timeout: 30000 }),
+    page.click(".login-card button[type=submit], .login-card .primary-button"),
+  ])
   await waitFor(page, () =>
     location.pathname === "/admin" && !!document.querySelector(".admin-shell"), null, 30000)
+  assert(sectionResponse.ok(), "Falha na leitura do catálogo administrativo")
+  const sectionCatalog = await sectionResponse.json()
+  const experienceSlugs = ["invest-rs", "prefeitura-sp", "vale", "globo-sportv", "inpress", "cdi"]
+  assert(Array.isArray(sectionCatalog) && sectionCatalog.length === 14 &&
+    new Set(sectionCatalog.map((row) => row.slug)).size === sectionCatalog.length,
+    "Catálogo administrativo de seções ausente ou incompleto")
+  const experienceCatalog = sectionCatalog.filter((row) => experienceSlugs.includes(row.slug))
+  assert(experienceCatalog.length === experienceSlugs.length &&
+    experienceCatalog.every((row) => typeof row.title === "string" && row.title.trim()) &&
+    new Set(experienceCatalog.map((row) => row.title.trim())).size === experienceSlugs.length,
+    "Contrato das seis experiências ausente ou ambíguo")
+  const investTitle = experienceCatalog.find((row) => row.slug === "invest-rs").title.trim()
   report("LOGIN", { authenticated: true, contentWrites: blockedWrites.length })
 
   const modules = [
@@ -537,23 +560,24 @@ try {
     document.querySelector(".studio-inline-layout .block-items") !== null)
   const experienceAreas = ["Seção", "Empresa", "Projetos"]
   await verifyZones("Experiências Profissionais", experienceAreas)
-  const investSelected = await page.evaluate(() => {
+  const investSelected = await page.evaluate((title) => {
     const button = [...document.querySelectorAll(".site-editor-experience-options button")]
-      .find((item) => item.querySelector("strong")?.textContent?.trim() === "Invest RS")
+      .find((item) => item.querySelector("strong")?.textContent?.trim() === title)
     button?.click()
     return Boolean(button)
-  })
+  }, investTitle)
   assert(investSelected, "Invest RS indisponível no seletor de experiências")
-  await waitFor(page, () =>
+  await waitFor(page, (title) =>
     document.querySelector(".site-editor-experience-options button[aria-pressed='true'] strong")
-      ?.textContent?.trim() === "Invest RS")
+      ?.textContent?.trim() === title, investTitle)
   // The project count is editorial data, not a fixed layout constant. Capture
   // the actual read-only response for this editor before entering the area.
   const [projectResponse] = await Promise.all([
     page.waitForResponse((response) => {
       const target = new URL(response.url())
       return target.pathname === "/rest/v1/content_blocks" &&
-        target.searchParams.get("section_id")?.startsWith("eq.") &&
+        target.searchParams.get("section_id") === "eq." +
+          experienceCatalog.find((row) => row.slug === "invest-rs").id &&
         target.searchParams.get("select") ===
           "id,section_id,block_type,mobile_panel,sort_order,status,is_placeholder,editorial_note,content_json,updated_at" &&
         response.request().method() === "GET"
@@ -641,25 +665,28 @@ try {
     await chooseArea("Direita")
     await waitFor(page, () => document.querySelector(".studio-inline-layout .block-items") !== null)
   }
-  const experienceNames = ["Invest RS", "Prefeitura de São Paulo",
-    "Vale", "TV Globo / SporTV", "Grupo InPress", "CDI Comunicação"]
   await chooseSection("Experiências Profissionais")
-  for (const name of experienceNames) {
+  const experienceNames = experienceCatalog.map((row) => row.title.trim())
+  const actualExperienceNames = await page.$$eval(".site-editor-experience-options button strong",
+    (nodes) => nodes.map((node) => node.textContent?.trim()))
+  assert(JSON.stringify(actualExperienceNames) === JSON.stringify(experienceNames),
+    "Seletor de experiências diverge do catálogo: " + JSON.stringify(actualExperienceNames))
+  for (const { slug, title } of experienceCatalog) {
+    const name = title.trim()
     const activated = await page.evaluate((label) => {
       const button = [...document.querySelectorAll(".site-editor-experience-options button")]
-        .find((item) => item.textContent?.includes(label))
+        .find((item) => item.querySelector("strong")?.textContent?.trim() === label)
       button?.click()
       return Boolean(button)
     }, name)
-    assert(activated, "Trabalho ausente: " + name)
+    assert(activated, "Trabalho ausente: " + slug)
     await waitFor(page, (label) =>
-      [...document.querySelectorAll(".site-editor-experience-options button")]
-        .some((button) => button.classList.contains("active") &&
-          button.textContent?.includes(label)), name)
+      document.querySelector(".site-editor-experience-options button[aria-pressed='true'] strong")
+        ?.textContent?.trim() === label, name)
     await waitFor(page, () => document.querySelectorAll(".site-editor-area-tabs button").length === 3)
   }
-  report("ALL_SECTIONS", { total: 14, ordinary: ordinarySections.length,
-    experiences: experienceNames.length, areaRouting: true })
+  report("ALL_SECTIONS", { total: sectionCatalog.length, ordinary: ordinarySections.length,
+    experiences: experienceCatalog.length, matchedSectionCatalog: true, areaRouting: true })
 
   await chooseSection("Formação")
   await chooseArea("Esquerda")

@@ -1,6 +1,6 @@
 # PortfolioTulius — documentação temática
 
-**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A manutenção de 26/11/2026 consolidou Hero/Contato mobile e os seletores de fotografia de Olá no CMS (`0314101`, Production READY); Validate e P5 local SUCCESS, com falhas P3/P5 de navegador ainda registradas na [matriz de testes](05-operacao/TESTES_E_HOMOLOGACAO.md). A correção técnica de 25/11 (`65b9e69`, P3 SUCCESS, LCP mobile 3,134 s) permanece como evidência datada. Standby preservado.
+**Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A manutenção de 26/11/2026 consolidou Hero/Contato mobile e os seletores de fotografia de Olá no CMS (`0314101`, Production READY); Validate e P5 local SUCCESS; P3 revalidada em `f24a1a6` com zero falhas browser e LCP mobile 3,253 s; P5 administrativo aprovou os seletores e projetos da Invest RS, com revalidação integral pendente após correção do contrato de títulos. Evidências na [matriz de testes](05-operacao/TESTES_E_HOMOLOGACAO.md). A correção técnica de 25/11 (`65b9e69`, P3 SUCCESS, LCP mobile 3,134 s) permanece como evidência datada. Standby preservado.
 
 ## Por assunto
 

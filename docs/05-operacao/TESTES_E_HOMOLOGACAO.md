@@ -1,5 +1,12 @@
 # Testes, CI e homologação
 
+## P5 — títulos editáveis das experiências — 26/11/2026
+
+SHA `f24a1a6`: Production READY, [Validate](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272684), [Export Docs](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272718), [P3](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272699) SUCCESS; zero falhas browser, P6 PASS, medianas LCP mobile 3.252,554 ms e desktop 946,295 ms. [P5](https://github.com/tuliust/PortfolioTulius/actions/runs/45794272788) confirmou 18 verificações incluindo ABOUT_PHOTOS e VISUAL_AREAS (quatro projetos Invest RS em paridade com o CMS). Falhou em ALL_SECTIONS por título fixo "TV Globo / SporTV"; leitura de sections confirmou título vigente "TV Globo", slug `globo-sportv`, entre 14 seções.
+
+O teste passa a capturar o GET autenticado de sections (catálogo administrativo ordenado), exige 14 seções com slugs únicos, identifica as seis experiências pelos slugs canônicos e compara títulos/ordem do seletor com o catálogo real, verificando ativação e três áreas de cada experiência. Invest RS também usa o título correspondente ao slug, e a resposta de projetos é vinculada ao ID da seção no catálogo. Não flexibiliza quantidade, identidade, navegação, proteção de escrita ou as 22 verificações. Sem alteração no site público, dados ou infraestrutura. Nova homologação por SHA ainda pendente.
+
+
 ## P5 — contrato de Experiências baseado no CMS — 26/11/2026
 
 Base `29bade3`: Production READY, Validate e Export Docs SUCCESS. [P3 #45793634131](https://github.com/tuliust/PortfolioTulius/actions/runs/45793634131) SUCCESS no mesmo SHA, zero falhas browser; P6 PASS, medianas LCP mobile 3.335,672 ms e desktop 943,465 ms, performance 90/99. Paridade Contato em 360/390/430 px PASS. [P5 #45793634111](https://github.com/tuliust/PortfolioTulius/actions/runs/45793634111) confirmou descarte em Identidade, Depoimentos e Hero e `ABOUT_PHOTOS PASS` (dois diálogos independentes, prévias preservadas, zero escritas). Falhou posteriormente em suite.mjs:541, aguardando exatamente cinco fichas de Invest RS. A consulta somente leitura ao bloco A publicado confirmou **quatro** registros unificados de Invest RS (Prefeitura quatro; Vale, Globo, InPress e CDI cinco cada). Não repor conteúdo para satisfazer um teste desatualizado.

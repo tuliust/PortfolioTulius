@@ -1,5 +1,10 @@
 # Estado atual — PortfolioTulius
 
+## Revalidação de Experiências — 26/11/2026
+
+No SHA `f24a1a6`, Production READY, Validate, Export Docs e P3 SUCCESS; zero falhas browser, LCP mobile 3,253 s. P5 aprovou 18 verificações, inclusive as fotografias de Olá e paridade dos quatro projetos Invest RS; falhou no título fixo da TV Globo. Catálogo de 14 seções confirmado em leitura do CMS. Corrigida a suíte para identificar as seis experiências por slug e validar os títulos e a ordem recebidos do catálogo, preservando as 22 verificações. Nova execução ainda pendente. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
+
 ## P5 — revalidação de Olá e ajuste de contrato editorial — 26/11/2026
 
 No SHA `29bade3`, Production READY, Validate, Export Docs e P3 SUCCESS (zero falhas browser, LCP mobile mediano 3,336 s); P5 confirmou os descartes e os dois seletores de Olá sem gravações, mas falhou ao aguardar cinco projetos Invest RS. Leitura do CMS confirmou quatro registros unificados. A suíte passa a comparar fichas, ordem e contadores com a resposta real do CMS, sem alterar conteúdo e sem reduzir as 22 verificações. Nova CI necessária; [evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
