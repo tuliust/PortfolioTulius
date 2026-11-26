@@ -21,7 +21,7 @@ export function adminVisualAreas(slug?: string): AdminVisualArea[] {
       {
         id: "center",
         label: "Centro",
-        description: "Fotografia desktop · bloco A",
+        description: "Fotografias desktop e mobile · bloco A",
         source: "a",
         focus: "about-photo",
       },

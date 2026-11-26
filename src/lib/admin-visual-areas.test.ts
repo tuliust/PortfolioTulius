@@ -4,6 +4,7 @@ describe("Regiões visuais do editor", () => {
   it("Sobre: texto, fotografia e destaques nos dados originais", () => {
     expect(adminVisualAreas("sobre").map((x) => x.source)).toEqual(["section", "a", "b"])
     expect(adminVisualAreas("sobre")[1].focus).toBe("about-photo")
+    expect(adminVisualAreas("sobre")[1].description).toBe("Fotografias desktop e mobile · bloco A")
   })
   it("Resultados: título, indicadores e temas", () => {
     expect(adminVisualAreas("resultados").map((x) => x.source)).toEqual(["section", "a", "b"])

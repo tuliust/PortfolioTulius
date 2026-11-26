@@ -1413,43 +1413,57 @@ export function ContentStudio({
               draft.mobile_panel === "a" ? (
               <div className="about-center-photo-only">
                 <div>
-                  <h3>Fotografia desktop · Centro</h3>
+                  <h3>Fotografias da seção Olá</h3>
                   <p>
-                    Esta área controla apenas a fotografia central da seção 02. Os textos e a imagem
-                    mobile permanecem em seus próprios campos.
+                    Escolha as fotografias desktop e mobile separadamente. Os textos da seção
+                    permanecem em seus próprios campos.
                   </p>
                 </div>
                 {draft.content_json.items?.[0] ? (
-                  <PublishedMediaPicker
-                    label="Fotografia desktop"
-                    recommendedSize="1200 × 1600 px (desktop)"
-                    guidanceAsInfo
-                    iconOnlyActions
-                    allowFraming={false}
-                    guidance="Retrato vertical 3:4 em PNG ou WebP; prefira transparência."
-                    ratio="3 / 4"
-                    framing={draft.content_json.items[0].aboutDesktopFraming}
-                    onFramingChange={(aboutDesktopFraming) =>
-                      updateItem(0, { aboutDesktopFraming })
-                    }
-                    value={draft.content_json.items[0].aboutDesktopImage ?? ""}
-                    onChange={(aboutDesktopImage, aboutDesktopAlt) =>
-                      updateItem(0, { aboutDesktopImage, aboutDesktopAlt })
-                    }
-                  />
+                  <>
+                    <div role="group" aria-label="Fotografia desktop">
+                      <PublishedMediaPicker
+                        label="Fotografia desktop"
+                        recommendedSize="1200 × 1600 px"
+                        guidanceAsInfo={false}
+                        iconOnlyActions={false}
+                        allowFraming={false}
+                        guidance="Retrato vertical 3:4 em PNG ou WebP; prefira transparência."
+                        ratio="3 / 4"
+                        value={draft.content_json.items[0].aboutDesktopImage ?? ""}
+                        onChange={(aboutDesktopImage, aboutDesktopAlt) =>
+                          updateItem(0, { aboutDesktopImage, aboutDesktopAlt })
+                        }
+                      />
+                    </div>
+                    <div role="group" aria-label="Fotografia mobile">
+                      <PublishedMediaPicker
+                        label="Fotografia mobile"
+                        recommendedSize="900 × 1200 px"
+                        guidanceAsInfo={false}
+                        iconOnlyActions={false}
+                        allowFraming={false}
+                        guidance="Retrato vertical 3:4 em PNG ou WebP; prefira transparência."
+                        ratio="3 / 4"
+                        value={draft.content_json.items[0].image ?? ""}
+                        onChange={(image, alt) => updateItem(0, { image, alt })}
+                      />
+                    </div>
+                  </>
                 ) : (
-                  <p role="status">Não foi encontrado o registro da fotografia desktop.</p>
+                  <p role="status">Não foi encontrado o registro das fotografias da seção.</p>
                 )}
                 <p>
-                  Se não houver fotografia desktop, o site conserva a imagem de reserva. A imagem
-                  mobile não será modificada.
+                  Se não houver fotografia desktop, o site utiliza a imagem de reserva. Se a
+                  fotografia mobile estiver vazia, o site utiliza a fotografia desktop, quando
+                  disponível.
                 </p>
                 <StatusMessage>{message}</StatusMessage>
                 {!embedded && (
                   <FloatingSaveButton
                     enabled={blockDirty && !placementsLoading && !placementsReadError}
                     onClick={saveBlock}
-                    label="Salvar fotografia desktop"
+                    label="Salvar fotografias"
                   />
                 )}
               </div>
