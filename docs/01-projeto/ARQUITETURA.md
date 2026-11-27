@@ -1,5 +1,9 @@
 # Arquitetura do PortfolioTulius
 
+## Reutilização da árvore pública durante a navegação — 26/11/2026
+
+O `PublicSite` calcula os destinos publicados uma vez por conjunto visível e reutiliza os elementos das seções quando a observação de rolagem atualiza a seção ativa no cabeçalho. A árvore é recalculada quando conteúdo, modo responsivo, prévia ou tema de Resultados muda. O carregamento inicial e as regras de links, foco e seleção continuam usando o CMS publicado. [Diagnóstico e medições](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Robustez de fragmentos de navegação pública — 26/11/2026
 
 `src/lib/experience-hash.ts` centraliza a decodificação segura de fragmentos com `decodePublicFragment`. Fragmentos vazios ou percent-encoding malformado são ignorados sem exceção; os válidos preservam o ID completo para restauração de foco, incluindo painel B. A seleção das experiências mantém a validação da lista de slugs publicados e os destinos em fluxo desktop. `PublicSite.tsx` utiliza a mesma função para restaurar hash/histórico. Nenhuma mudança de CSS, dados, rotas ou composição inicial; testes unitários e Chromium isolado passaram. A homologação produtiva do novo SHA é separada. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).

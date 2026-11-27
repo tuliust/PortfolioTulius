@@ -1682,6 +1682,47 @@ export function PublicSite({
     }
   }, [loading, visible])
 
+  // Updating the active menu item during scrolling does not change the
+  // public section tree. Keep its elements stable until section props change.
+  const renderedSections = useMemo(() => {
+    const publishedSlugs = visible
+      .filter((entry) => entry.status === "published" && entry.visible)
+      .map((entry) => entry.slug)
+    return visible.map((section, index) => {
+      if (EXPERIENCE_SLUGS.includes(section.slug as (typeof EXPERIENCE_SLUGS)[number])) {
+        if (
+          visible
+            .slice(0, index)
+            .some((entry) =>
+              EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
+            )
+        )
+          return null
+        return (
+          <ExperienceStack
+            key="experience-stack"
+            sections={visible.filter((entry) =>
+              EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
+            )}
+            isMobile={isMobile}
+            preview={preview}
+          />
+        )
+      }
+      return (
+        <Section
+          key={section.id}
+          section={section}
+          nextSectionSlug={visible[index + 1]?.slug}
+          publishedSlugs={publishedSlugs}
+          isMobile={isMobile}
+          selectedTheme={selectedTheme}
+          onSelectTheme={setSelectedTheme}
+        />
+      )
+    })
+  }, [visible, isMobile, preview, selectedTheme])
+
   const typographyVariables: Record<string, string> = {}
   for (const [key, config] of Object.entries(tokens.editorialStyles ?? {})) {
     if (!/^typography\.[a-z0-9-]+$/.test(key)) continue
@@ -1754,41 +1795,7 @@ export function PublicSite({
           {sections.find((section) => section.slug === "perfil")?.title || "Tulius Tsangaropulos"}
           {" — Comunicação e Estratégia"}
         </h1>
-        {visible.map((section, index) => {
-          if (EXPERIENCE_SLUGS.includes(section.slug as (typeof EXPERIENCE_SLUGS)[number])) {
-            if (
-              visible
-                .slice(0, index)
-                .some((entry) =>
-                  EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
-                )
-            )
-              return null
-            return (
-              <ExperienceStack
-                key="experience-stack"
-                sections={visible.filter((entry) =>
-                  EXPERIENCE_SLUGS.includes(entry.slug as (typeof EXPERIENCE_SLUGS)[number]),
-                )}
-                isMobile={isMobile}
-                preview={preview}
-              />
-            )
-          }
-          return (
-            <Section
-              key={section.id}
-              section={section}
-              nextSectionSlug={visible[index + 1]?.slug}
-              publishedSlugs={visible
-                .filter((entry) => entry.status === "published" && entry.visible)
-                .map((entry) => entry.slug)}
-              isMobile={isMobile}
-              selectedTheme={selectedTheme}
-              onSelectTheme={setSelectedTheme}
-            />
-          )
-        })}
+        {renderedSections}
       </main>
     </div>
   )
