@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Homologação final da correção de fragmentos e diagnóstico para Work — 26/11/2026
+
+SHA [5815875](https://github.com/tuliust/PortfolioTulius/commit/5815875a8f562d98ace37d8261799cb36bab607f), Production READY e P3/Validate/PDF Visual QA/Export Docs SUCCESS, 314/314 testes em 68 arquivos, zero falhas browser, 38 capturas sem falhas. LCP mobile mediano 3,273 s/90 (pior amostra 4,383 s), desktop 0,943 s/99; orçamento P6 PASS. A oscilação não comprova regressão causada pela correção de URL. O [roteiro Work W1–W10](../05-operacao/MISSAO_PERFORMANCE_E_HOMOLOGACAO_WORK.md) registra os gargalos, metas adicionais (2,5 s/95 mobile) e cobertura ainda não comprovada. É proposta de missão futura, não alteração funcional ou autorização automática. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Homologação da otimização mobile e robustez de navegação — 26/11/2026
 
 SHA funcional [197a41d](https://github.com/tuliust/PortfolioTulius/commit/197a41d2996ea06071b0f50cf080711bcde4c286): Production READY e quatro workflows SUCCESS (Validate, P3, PDF Visual QA, Export Docs). LCP mediano mobile 3,032 s (amostras 3,025–3,272 s; performance 93), desktop 0,946 s/99; P6 PASS e zero falhas browser. A meta operacional 3,5 s permanece, e 2,5 s ainda não foi alcançada na mediana de laboratório. Verificação adicional: 37/37 URLs de imagens HTTP 200, seis experiências × quatro viewports aprovadas, três rotas admin redirecionadas, LinkedIn HTTP 200 e WhatsApp HTTP 302 para domínio oficial. Foi reproduzida exceção URI malformed em fragmentos inválidos; correção compartilhada em `experience-hash.ts` passou 314/314 testes, build/smoke e Chromium isolado (fragmento inicial, hashchange, histórico, codificação válida e foco), sem modificar layout ou dados. Nova CI e publicação da correção ainda precisam ser verificadas pelo respectivo SHA. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).

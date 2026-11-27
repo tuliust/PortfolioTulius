@@ -29,6 +29,7 @@ Para demandas envolvendo o PDF, iniciar por [Exportação PDF](../05-operacao/EX
 | SQL, Auth, RPC, RLS | [Supabase](../04-infraestrutura/SUPABASE.md) + [segurança](../04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
 | Deploy, DNS, SEO | [Vercel](../04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
 | CI, QA, falha de regressão | [testes](../05-operacao/TESTES_E_HOMOLOGACAO.md) |
+| Missão explicitamente solicitada de performance/QA integral | [Roteiro Work W1–W10](../05-operacao/MISSAO_PERFORMANCE_E_HOMOLOGACAO_WORK.md); revalidar SHA, limites e autorização antes de agir |
 | Recuperação de dados | [backup](../05-operacao/BACKUP_E_RECUPERACAO.md) |
 | Retomar pendência antiga | [standby](BACKLOG_STANDBY.md) + [decisões](DECISOES_VIGENTES.md) |
 

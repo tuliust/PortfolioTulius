@@ -1,6 +1,6 @@
 # PortfolioTulius — documentação temática
 
-**Atualização de 26/11/2026:** a otimização do carregamento de Olá em `197a41d` foi homologada com quatro workflows SUCCESS, P3 zero falhas e LCP mobile mediano 3,032 s/93. A correção subsequente de fragmentos inválidos passou 314 testes e Chromium isolado; novo resultado CI por SHA ainda deve ser confirmado. Consultar [estado atual](01-projeto/ESTADO_ATUAL.md) e [matriz](05-operacao/TESTES_E_HOMOLOGACAO.md).
+**Atualização de 26/11/2026:** a otimização de Olá (`197a41d`) e a correção de fragmentos inválidos (`5815875`) estão homologadas nos respectivos SHAs: quatro workflows SUCCESS em cada rodada. No último, LCP mobile mediano 3,273 s/90, desktop 0,943 s/99, P3 zero falhas, 314 testes aprovados. A meta adicional de 2,5 s ainda não foi atingida. A [missão Work de performance e homologação](05-operacao/MISSAO_PERFORMANCE_E_HOMOLOGACAO_WORK.md) registra diagnóstico, metas e roteiro proposto, não execução automática. Consultar [estado atual](01-projeto/ESTADO_ATUAL.md) e [matriz](05-operacao/TESTES_E_HOMOLOGACAO.md).
 
 **Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A manutenção de 26/11/2026 consolidou Hero/Contato mobile e os seletores de fotografia de Olá no CMS (`0314101`, Production READY); Validate e P5 local SUCCESS; encerramento P3/P5 confirmado em `ca63496` (Production READY, P3/P5/Validate/Export Docs SUCCESS, P5 22/22 sem escritas, P3 zero falhas e LCP mobile mediano 3,172 s). Evidências na [matriz de testes](05-operacao/TESTES_E_HOMOLOGACAO.md). A correção técnica de 25/11 (`65b9e69`, P3 SUCCESS, LCP mobile 3,134 s) permanece como evidência datada. Standby preservado.
 
@@ -19,6 +19,7 @@
 | Permissões, políticas, chaves | [Segurança](04-infraestrutura/SEGURANCA_E_ACESSOS.md) |
 | Domínios, publicação e SEO | [Vercel](04-infraestrutura/VERCEL_DEPLOY_SEO.md) |
 | CI, Lighthouse, homologação | [Testes](05-operacao/TESTES_E_HOMOLOGACAO.md) |
+| Missão de otimização e homologação no Work | [Diagnóstico e roteiro de execução](05-operacao/MISSAO_PERFORMANCE_E_HOMOLOGACAO_WORK.md) |
 | Exportação PDF Desktop/Mobile, aceite e impressão | [Guia PDF](05-operacao/EXPORTACAO_PDF.md) |
 | Restauração e rollback | [Backup](05-operacao/BACKUP_E_RECUPERACAO.md) |
 | Identificadores e variáveis | [Configurações](06-governanca/CONFIGURACOES_E_INTEGRACOES.md) |
