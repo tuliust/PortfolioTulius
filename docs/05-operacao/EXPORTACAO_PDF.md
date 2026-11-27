@@ -1,5 +1,9 @@
 # Exportação PDF — contrato e aceite vigente
 
+## QA sintética após adiamento da fotografia de Olá — 26/11/2026
+
+[PDF Renderer Visual QA #45915235566](https://github.com/tuliust/PortfolioTulius/actions/runs/45915235566) SUCCESS no SHA [197a41d](https://github.com/tuliust/PortfolioTulius/commit/197a41d2996ea06071b0f50cf080711bcde4c286). Seis modos visuais sem falhas, geração nativa de PDFs pesquisáveis e com links (13 folhas desktop e 16 mobile na fixture integral), fixture CSS compilada PASS e fixture excluída do build público. O adiamento público de Olá não se aplica a PDF; sem mudança de renderer ou fluxo de impressão. Não é nova exportação autenticada com dados reais nem modifica o aceite de 18/11. [Testes](TESTES_E_HOMOLOGACAO.md).
+
 ## QA sintética após correção de performance pública — 25/11/2026
 
 [PDF Renderer Visual QA #45704659078](https://github.com/tuliust/PortfolioTulius/actions/runs/45704659078) **SUCCESS**, `main@65b9e69ba3cc875ca4960cd71ac1e7eed9d5dd53`, disparado no SHA funcional final após os ajustes de preload, transporte de imagem e snap público. A cópia sem perda da foto atual continua sendo usada na impressão; textos, geometria e fluxo do exportador não foram alterados. Essa execução usa fixtures sintéticas; não equivale a um novo PDF autenticado com todos os dados/fotografias reais nem substitui os limites de evidência e aceites datados abaixo. [Validação completa](TESTES_E_HOMOLOGACAO.md).

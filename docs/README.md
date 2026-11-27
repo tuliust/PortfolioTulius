@@ -1,5 +1,7 @@
 # PortfolioTulius — documentação temática
 
+**Atualização de 26/11/2026:** a otimização do carregamento de Olá em `197a41d` foi homologada com quatro workflows SUCCESS, P3 zero falhas e LCP mobile mediano 3,032 s/93. A correção subsequente de fragmentos inválidos passou 314 testes e Chromium isolado; novo resultado CI por SHA ainda deve ser confirmado. Consultar [estado atual](01-projeto/ESTADO_ATUAL.md) e [matriz](05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 **Entrada única para manutenção.** Leia primeiro as [regras obrigatórias](../AGENTS.md) e o [estado consolidado](01-projeto/ESTADO_ATUAL.md). A manutenção de 26/11/2026 consolidou Hero/Contato mobile e os seletores de fotografia de Olá no CMS (`0314101`, Production READY); Validate e P5 local SUCCESS; encerramento P3/P5 confirmado em `ca63496` (Production READY, P3/P5/Validate/Export Docs SUCCESS, P5 22/22 sem escritas, P3 zero falhas e LCP mobile mediano 3,172 s). Evidências na [matriz de testes](05-operacao/TESTES_E_HOMOLOGACAO.md). A correção técnica de 25/11 (`65b9e69`, P3 SUCCESS, LCP mobile 3,134 s) permanece como evidência datada. Standby preservado.
 
 ## Por assunto

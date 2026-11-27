@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Homologação da otimização mobile e robustez de navegação — 26/11/2026
+
+SHA funcional [197a41d](https://github.com/tuliust/PortfolioTulius/commit/197a41d2996ea06071b0f50cf080711bcde4c286): Production READY e quatro workflows SUCCESS (Validate, P3, PDF Visual QA, Export Docs). LCP mediano mobile 3,032 s (amostras 3,025–3,272 s; performance 93), desktop 0,946 s/99; P6 PASS e zero falhas browser. A meta operacional 3,5 s permanece, e 2,5 s ainda não foi alcançada na mediana de laboratório. Verificação adicional: 37/37 URLs de imagens HTTP 200, seis experiências × quatro viewports aprovadas, três rotas admin redirecionadas, LinkedIn HTTP 200 e WhatsApp HTTP 302 para domínio oficial. Foi reproduzida exceção URI malformed em fragmentos inválidos; correção compartilhada em `experience-hash.ts` passou 314/314 testes, build/smoke e Chromium isolado (fragmento inicial, hashchange, histórico, codificação válida e foco), sem modificar layout ou dados. Nova CI e publicação da correção ainda precisam ser verificadas pelo respectivo SHA. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Manutenção de performance mobile por conectores — 26/11/2026
 
 Base `0f694c9`, Production READY. A sessão isolada confirmou 311/311 testes antes da alteração e 312/312 depois, 68/68 arquivos, TypeScript, build e smoke offline. A mudança restringe o adiamento da fotografia de Olá à imagem pública atualmente publicada, além do caso anterior, preservando dimensões, alt, enquadramento e original CMS; PDF e desktop não são alterados. A fixture Chromium do componente confirmou ausência de requisição antes da aproximação e carregamento após rolagem (exit 0). A nova homologação P3/P5, métricas Lighthouse e deployment do SHA da alteração devem ser verificados antes de declarar melhoria do LCP em produção. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).

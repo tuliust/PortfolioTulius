@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Navegação por fragmentos e foco — 26/11/2026
+
+A correção ignora fragmentos malformados e resolve IDs válidos codificados antes de restaurar foco, incluindo painel B. Preserva preferência por movimento reduzido, âncoras em fluxo e navegação das experiências. Chromium em produção no SHA `197a41d` confirmou 24/24 seleções de experiências em 320/390/768/1440 px e ausência de overflow horizontal. No build isolado da correção, fragmentos inválidos na abertura, hashchange e histórico não produziram exceção; foco em destinos válidos e painel B codificado PASS. Não equivale a homologação em iPhone físico ou Safari. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Adiamento da fotografia de Olá mobile — 26/11/2026
 
 Sem alterações de CSS, composição editorial, conteúdo ou enquadramento. O componente público reserva as proporções intrínsecas da fotografia atual de Olá e inicia sua requisição ao aproximar-se da viewport, preservando alt, caminho para outras imagens, comportamento desktop e PDF. Fixture isolada Chromium validou carregamento antes/depois da rolagem; não substitui P3 produtiva ou verificação física no iPhone. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).

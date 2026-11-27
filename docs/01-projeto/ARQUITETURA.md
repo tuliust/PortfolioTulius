@@ -1,5 +1,9 @@
 # Arquitetura do PortfolioTulius
 
+## Robustez de fragmentos de navegação pública — 26/11/2026
+
+`src/lib/experience-hash.ts` centraliza a decodificação segura de fragmentos com `decodePublicFragment`. Fragmentos vazios ou percent-encoding malformado são ignorados sem exceção; os válidos preservam o ID completo para restauração de foco, incluindo painel B. A seleção das experiências mantém a validação da lista de slugs publicados e os destinos em fluxo desktop. `PublicSite.tsx` utiliza a mesma função para restaurar hash/histórico. Nenhuma mudança de CSS, dados, rotas ou composição inicial; testes unitários e Chromium isolado passaram. A homologação produtiva do novo SHA é separada. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Carregamento e navegação após correção técnica — 25/11/2026
 
 `ApprovedProfileImage` reconhece a URL exata do PNG atual e oferece duas cópias de transporte: `tulius-inicial-600.webp` (35.322 bytes, qualidade 90, alfa idêntico) somente em tela até 767 px; `tulius-inicial-lossless.webp` (198.360 bytes, pixels visíveis e alfa idênticos) para desktop/impressão. O original permanece fallback de `<picture>`; outras URLs CMS não reutilizam essas cópias. `scripts/portrait-preload.mjs` sincroniza os preloads por viewport. [Mídias](../03-cms/MIDIAS_E_STORAGE.md).

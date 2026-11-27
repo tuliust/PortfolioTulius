@@ -11,7 +11,7 @@ import type {
 import { Icon } from "../ui/Icons"
 import { Navigation } from "./Navigation"
 import { ExperienceStack, EXPERIENCE_SLUGS } from "./ExperienceStack"
-import { scrollToExperienceAnchor } from "../../lib/experience-hash"
+import { decodePublicFragment, scrollToExperienceAnchor } from "../../lib/experience-hash"
 import { ToolIcons } from "./ToolIcons"
 import { placementMotionVariables } from "../../lib/placement-motion"
 import { imageFramingStyle, normalizeMediaFraming } from "../../lib/media-framing"
@@ -1644,10 +1644,11 @@ export function PublicSite({
 
   useEffect(() => {
     const restoreHash = () => {
-      const slug = decodeURIComponent(location.hash.slice(1)).replace(/-b$/, "")
+      const fragment = decodePublicFragment(location.hash)
+      if (!fragment) return
+      const slug = fragment.replace(/-b$/, "")
       if (!slug) return
-      const target =
-        document.getElementById(location.hash.slice(1)) ?? document.getElementById(slug)
+      const target = document.getElementById(fragment) ?? document.getElementById(slug)
       if (!target) return
       if (!scrollToExperienceAnchor(slug)) {
         target.scrollIntoView({

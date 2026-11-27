@@ -1,5 +1,9 @@
 # Vercel, publicação e SEO
 
+## Publicação homologada da otimização de Olá — 26/11/2026
+
+Deployment [3piosneNQVnviprCDs96f6vChsK7](https://vercel.com/tuliust/portfolio-tulius/3piosneNQVnviprCDs96f6vChsK7), Production READY, SHA [197a41d](https://github.com/tuliust/PortfolioTulius/commit/197a41d2996ea06071b0f50cf080711bcde4c286), aliases principal e WWW, gate P3 confirmou SHA servido. Validate, P3, PDF Visual QA e Export Docs SUCCESS. HTTPS principal/WWW, robots e sitemap responderam 200; quatro rotas administrativas responderam com X-Robots-Tag noindex e Chromium confirmou redirecionamento anônimo nas três protegidas testadas. HTTP puro não foi confirmado (ECONNRESET no sandbox), WWW serviu 200 sem redirecionamento; não alterar domínio ou infraestrutura por inferência. Nenhum deploy manual. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Homologação final P3/P5 — 26/11/2026
 
 Production [G3StzXU32TFE1AG7MftCSxsqpYHJ](https://vercel.com/tuliust/portfolio-tulius/G3StzXU32TFE1AG7MftCSxsqpYHJ) READY, SHA [ca63496](https://github.com/tuliust/PortfolioTulius/commit/ca63496b2d945cf2f05e0ac564bc839048c0fd79), aliases `tulius.work` e `www.tulius.work` confirmados pela consulta do deployment. Gates de produção P3/P5 confirmaram o mesmo SHA e os quatro workflows da rodada concluíram SUCCESS. [Evidências de CI](../05-operacao/TESTES_E_HOMOLOGACAO.md). A consolidação exclusivamente documental não constitui nova homologação funcional; eventual publicação automática do commit documental deve ser conferida separadamente.
