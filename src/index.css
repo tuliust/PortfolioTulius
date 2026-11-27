@@ -2643,6 +2643,28 @@
 .public-site .hero-formatted-size { font-size: var(--hero-format-desktop) !important; }
 @media (max-width: 767px) { .public-site .hero-formatted-size { font-size: var(--hero-format-mobile, var(--hero-format-desktop)) !important; } }
 
+/* Keep the name and gallery controls in flow on narrow desktop screens. */
+@media (768px <= width < 1024px) {
+  .public-site #perfil .name-lockup {
+    flex-wrap: wrap;
+    overflow-wrap: anywhere;
+    font-size: min(3.4rem, 4.8vw);
+  }
+
+  .public-site #perfil .name-lockup > .hero-formatted-size {
+    font-size: min(var(--hero-format-desktop, 3.4rem), 4.8vw) !important;
+  }
+
+  .public-site .experience-desktop .experience-gallery-footer {
+    flex-wrap: wrap;
+  }
+
+  .public-site .experience-desktop .experience-gallery-footer > :first-child {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
 /* Hero icon catalogue adds an overlay only when the editor selects a new symbol. */
 .badge-360 { position: relative; }
 .badge-360-symbol { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }

@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## Regressão de overflow no desktop estreito — 26/11/2026
+
+Em Chromium, no mesmo documento e com fontes carregadas, a largura rolável caiu de **984 para 768 px** em 768×1024 e de **984 para 844 px** em 844×390. Os dois segmentos do nome do Perfil e os controles das galerias passaram a caber nas respectivas áreas. A matriz diagnóstica com CSS candidato atingiu **26/26** combinações de navegador e viewport (Chromium e Firefox, 13 por navegador, incluindo paisagem), com 13 destinos de fragmento por combinação e sem exceções JavaScript. Uma rodada isolada ainda registrou overflow intermitente de 37 px a 1023 px também na base, sem causa identificada. A repetição isolada e a matriz completa passaram a 1023 px. O P3 passa a cobrir 768×1024 e 844×390, mantendo os demais limites e asserções.
+
+Build e smoke local, formatação, TypeScript, 315 testes, sintaxe P3 e revisão de diff passaram. A matriz é de laboratório e não comprova uso em Safari ou dispositivo físico. [Contrato responsivo](../02-design/RESPONSIVIDADE_E_ACESSIBILIDADE.md).
+
 ## Validação da recompressão sem perda de Olá — 26/11/2026
 
 Comparação pareada da seção em Chromium 158 com base `1ceba7b`, CSS do site e fixture isolada. Foram **25/25** verificações em 320×568, 390×844, 430×932, 1024×768 e 1440×900. Original, cópia otimizada, erro da cópia, substituição editorial e PDF mantiveram a origem esperada. Entre a base, a cópia e a recuperação do original, obtiveram-se capturas da fotografia idênticas por SHA-256, as mesmas dimensões, enquadramento e texto alternativo. O mobile só pediu a foto ao aproximar-se; cada cenário normal pediu uma cópia. No build, formatação, TypeScript, 315 testes e smoke offline passaram.

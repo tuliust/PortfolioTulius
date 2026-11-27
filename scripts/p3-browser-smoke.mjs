@@ -1628,6 +1628,51 @@ try {
     }
   }
 
+
+  {
+    const page = await newAuditPage()
+    try {
+      await page.setViewport({ width: 1280, height: 800 })
+      await page.goto(base, { waitUntil: "networkidle2", timeout: 45000 })
+      await waitForPublicComposition(page, "#perfil .name-lockup")
+      await page.evaluate(() => document.fonts.ready)
+      for (const viewport of [{ width: 768, height: 1024 }, { width: 844, height: 390 }]) {
+        await page.setViewport(viewport)
+        const geometry = await page.evaluate(() => {
+          const name = document.querySelector("#perfil .name-lockup")
+          const content = name.parentElement.getBoundingClientRect()
+          const segments = [...name.children].map((child) => child.getBoundingClientRect())
+          const controls = [...document.querySelectorAll(
+            ".experience-desktop .experience-gallery-footer .experience-gallery-controls",
+          )]
+          return {
+            width: innerWidth,
+            scrollWidth: document.documentElement.scrollWidth,
+            nameInside: segments.length === 2 && segments.every((part) =>
+              part.left >= content.left && part.right <= content.right,
+            ),
+            controlsInside: controls.length > 0 && controls.every((element) => {
+              const box = element.getBoundingClientRect()
+              const footer = element.parentElement.getBoundingClientRect()
+              return box.left >= footer.left && box.right <= footer.right
+            }),
+          }
+        })
+        const pass = geometry.width === geometry.scrollWidth &&
+          geometry.nameInside && geometry.controlsInside
+        if (!pass) failures++
+        console.log("P3_NARROW_DESKTOP " + JSON.stringify({
+          viewport, geometry, result: pass ? "PASS" : "FAIL",
+        }))
+      }
+    } catch (error) {
+      failures++
+      console.log("P3_NARROW_DESKTOP_ERROR " + JSON.stringify({ error: String(error).slice(0, 260) }))
+    } finally {
+      await page.close()
+    }
+  }
+
 } finally {
   await browser.close()
 }

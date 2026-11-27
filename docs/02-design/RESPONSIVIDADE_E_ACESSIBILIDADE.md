@@ -1,5 +1,9 @@
 # Responsividade, UX e acessibilidade
 
+## Perfil e controles de galeria no desktop estreito — 26/11/2026
+
+Entre 768 px e 1024 px (limite superior exclusivo), o nome do Perfil mantém as fontes, o texto e as cores, com tamanho limitado pela largura disponível e quebra quando necessária. Os controles de galeria podem passar à linha seguinte dentro da coluna de desktop. As regras ficam restritas a essa faixa, incluindo a paisagem de 844×390. O P3 verifica largura do documento, segmentos do nome e limites dos controles. [Matriz de testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Navegação por fragmentos e foco — 26/11/2026
 
 A correção ignora fragmentos malformados e resolve IDs válidos codificados antes de restaurar foco, incluindo painel B. Preserva preferência por movimento reduzido, âncoras em fluxo e navegação das experiências. Chromium em produção no SHA `197a41d` confirmou 24/24 seleções de experiências em 320/390/768/1440 px e ausência de overflow horizontal. No build isolado da correção, fragmentos inválidos na abertura, hashchange e histórico não produziram exceção; foco em destinos válidos e painel B codificado PASS. Não equivale a homologação em iPhone físico ou Safari. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
