@@ -1,5 +1,9 @@
 # Estado atual — PortfolioTulius
 
+## Manutenção de performance mobile por conectores — 26/11/2026
+
+Base `0f694c9`, Production READY. A sessão isolada confirmou 311/311 testes antes da alteração e 312/312 depois, 68/68 arquivos, TypeScript, build e smoke offline. A mudança restringe o adiamento da fotografia de Olá à imagem pública atualmente publicada, além do caso anterior, preservando dimensões, alt, enquadramento e original CMS; PDF e desktop não são alterados. A fixture Chromium do componente confirmou ausência de requisição antes da aproximação e carregamento após rolagem (exit 0). A nova homologação P3/P5, métricas Lighthouse e deployment do SHA da alteração devem ser verificados antes de declarar melhoria do LCP em produção. [Evidências](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Encerramento técnico da manutenção de 26/11/2026
 
 Referência homologada [ca63496](https://github.com/tuliust/PortfolioTulius/commit/ca63496b2d945cf2f05e0ac564bc839048c0fd79): Production READY, Validate, Export Docs, P3 e P5 Admin Read-Only SUCCESS. P5 22/22, zero escritas, catálogo das 14 seções e seis experiências validado. P3 zero falhas browser, P6 PASS; LCP mediano mobile 3,172 s e desktop 0,957 s. As pendências P3/P5 desta rodada estão encerradas, sem alteração do design, conteúdo ou infraestrutura. Não inferir homologação de salvamento real, PDF ou iPhone físico a partir dos testes read-only/Chromium. [Evidências por SHA](../05-operacao/TESTES_E_HOMOLOGACAO.md).

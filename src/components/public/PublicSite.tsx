@@ -63,13 +63,24 @@ function Badge360({ config }: { config?: HeroVisualConfig }) {
   )
 }
 
-// Exactly this published CMS image is oversized for the mobile About thumbnail.
-// Reserve its original intrinsic ratio but start downloading it only near view.
-// Other images and any future CMS replacement preserve their normal loading.
+// These two verified public photos are oversized for the mobile About thumbnail.
+// Reserve the original intrinsic ratio and request only near view.
+// Other images and future CMS replacements preserve normal loading.
 export const APPROVED_ABOUT_TABLET =
   "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/a46a4091-bce1-4345-a17f-7d7947a8e903-tulius_tablet.png"
 
-function DeferredAboutTablet({ alt, style }: { alt: string; style?: React.CSSProperties }) {
+const CURRENT_ABOUT_PHOTO =
+  "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/41687064-3d60-43c3-9ee2-ab52c8b609a8-Tulius---Foto-Profissional.png"
+
+export function DeferredAboutTablet({
+  alt,
+  style,
+  src = APPROVED_ABOUT_TABLET,
+}: {
+  alt: string
+  style?: React.CSSProperties
+  src?: string
+}) {
   const elementRef = useRef<HTMLImageElement>(null)
   const [nearViewport, setNearViewport] = useState(false)
 
@@ -97,11 +108,11 @@ function DeferredAboutTablet({ alt, style }: { alt: string; style?: React.CSSPro
   return (
     <img
       ref={elementRef}
-      src={nearViewport ? APPROVED_ABOUT_TABLET : undefined}
+      src={nearViewport ? src : undefined}
       alt={alt}
       style={style}
-      width={900}
-      height={1200}
+      width={src === CURRENT_ABOUT_PHOTO ? 1086 : 900}
+      height={src === CURRENT_ABOUT_PHOTO ? 1448 : 1200}
       loading="lazy"
       decoding="async"
       fetchPriority="low"
@@ -1050,8 +1061,13 @@ function AboutMobile({
         </header>
         {imageSource && (
           <div className="about-mobile-photo">
-            {imageSource === APPROVED_ABOUT_TABLET && !pdfExport ? (
-              <DeferredAboutTablet alt={imageAlt} style={imageFramingStyle(photo?.mediaFraming)} />
+            {(imageSource === APPROVED_ABOUT_TABLET || imageSource === CURRENT_ABOUT_PHOTO) &&
+            !pdfExport ? (
+              <DeferredAboutTablet
+                src={imageSource}
+                alt={imageAlt}
+                style={imageFramingStyle(photo?.mediaFraming)}
+              />
             ) : (
               <img
                 src={imageSource}

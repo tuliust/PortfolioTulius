@@ -1,5 +1,9 @@
 # Biblioteca de mídias e Storage
 
+## Carregamento sob demanda da fotografia atual de Olá — 26/11/2026
+
+O componente público `DeferredAboutTablet` mantém o caso anterior e reconhece também o PNG publicado `41687064-3d60-43c3-9ee2-ab52c8b609a8-Tulius---Foto-Profissional.png` em Olá mobile, reservando 1086×1448 e iniciando a requisição na aproximação de 600 px à viewport, com fallback de observador, lazy loading e prioridade baixa. Outras URLs continuam no caminho normal; PDF mantém o original. O alt e o enquadramento são os do CMS, sem substituição ou upload. Uma derivada WebP sem perdas foi ensaiada, mas não incorporada ao repositório ou publicada. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Compressão de transporte exclusiva da tela mobile — 25/11/2026
 
 Para a mesma URL exata do retrato atual, `ApprovedProfileImage` oferece `public/media/tulius-inicial-600.webp` somente em `screen and (max-width: 767px)`: 35.322 bytes, 600×800, WebP qualidade 90. Alfa idêntico ao PNG; RGB comprimido (RMS pré-multiplicado 0,986/255). Desktop e impressão usam a derivada sem perda descrita abaixo. Nenhuma substituição do original no CMS, upload ou alteração do enquadramento. O preload de build acompanha a mesma separação de viewport. Futuras URLs não reconhecidas usam o original CMS. [Evidências e limites](../05-operacao/TESTES_E_HOMOLOGACAO.md).
