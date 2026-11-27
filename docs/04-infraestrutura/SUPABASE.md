@@ -1,5 +1,9 @@
 # Supabase — configuração de produção
 
+## Referência de reconciliação offline no CI — 26/11/2026
+
+O workflow Hygiene audit compara a árvore local com o snapshot versionado de 24/11/2026, que inclui a migration de vídeo já registrada. O snapshot de 11/11 representa o ponto anterior com 12 itens e gerava `MIGRATION_LEDGER_REMOTE_DRIFT` perante as 13 migrations esperadas. A mesma auditoria offline passou com 26 testes de guardas, 13/13 no ledger e zero diferenças usando o snapshot de 24/11. A validação de snapshot não consulta a produção nem aplica migrations.
+
 ## Upload administrativo de vídeos — 24/11/2026
 
 Provisionamento de vídeo em 24/11/2026: migration `20261124051349_portfolio_experience_videos`, 13ª no ledger, aplicada após homologação isolada Supabase CLI/Docker com seed sintética. Novo bucket `portfolio-videos` público para reprodução, 50.000.000 bytes e `video/mp4`; guarda de escrita exige administrador autenticado, constraint do catálogo ampliada exclusivamente para vídeo. Releitura: novo bucket vazio; 144 objetos antigos e 91 registros de catálogo preservados; buckets existentes inalterados. Nenhum upload/CRUD sintético em produção, nenhuma mudança nas políticas antigas. [Contrato de mídias](../03-cms/MIDIAS_E_STORAGE.md).

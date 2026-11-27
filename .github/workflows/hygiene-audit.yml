@@ -34,4 +34,4 @@ jobs:
       - name: Storage evidence validator syntax
         run: node --check scripts/hygiene/storage-evidence.mjs
       - name: Reconcile remote migration snapshot with Git
-        run: node scripts/hygiene/migration-ledger.mjs --remote scripts/hygiene/fixtures/portfolio-remote-migrations-2026-11-11.json
+        run: node scripts/hygiene/migration-ledger.mjs --remote scripts/hygiene/fixtures/portfolio-remote-migrations-2026-11-24.json
