@@ -20,10 +20,20 @@ describe("Miniatura Sobre carregada sob demanda", () => {
     expect(publicSite).toContain("!pdfExport ? (")
     expect(publicSite).toContain("src={imageSource}")
   })
+  it("mantém o original no PDF e recupera o PNG do CMS se a derivada falhar", () => {
+    expect(publicSite).toContain("src !== CURRENT_ABOUT_PHOTO")
+    expect(publicSite).toContain(
+      'event.currentTarget.getAttribute("src") === OPTIMIZED_ABOUT_PHOTO',
+    )
+    expect(publicSite).toContain("event.currentTarget.src = src")
+    expect(publicSite).toContain(
+      "pdfExport ? { src: desktopImage } : aboutPhotoSource(desktopImage)",
+    )
+  })
   it("reserva proporções e carrega quando a imagem se aproxima da viewport", () => {
     expect(publicSite).toContain('rootMargin: "600px 0px"')
     expect(publicSite).toContain("src = APPROVED_ABOUT_TABLET")
-    expect(publicSite).toContain("src={nearViewport ? src : undefined}")
+    expect(publicSite).toContain("nearViewport ? aboutPhotoSource(src) : {}")
     expect(publicSite).toContain("width={src === CURRENT_ABOUT_PHOTO ? 1086 : 900}")
     expect(publicSite).toContain("height={src === CURRENT_ABOUT_PHOTO ? 1448 : 1200}")
     expect(publicSite).toContain('fetchPriority="low"')

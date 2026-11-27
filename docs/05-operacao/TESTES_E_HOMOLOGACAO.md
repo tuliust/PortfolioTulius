@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## Validação da recompressão sem perda de Olá — 26/11/2026
+
+Comparação pareada da seção em Chromium 158 com base `1ceba7b`, CSS do site e fixture isolada. Foram **25/25** verificações em 320×568, 390×844, 430×932, 1024×768 e 1440×900. Original, cópia otimizada, erro da cópia, substituição editorial e PDF mantiveram a origem esperada. Entre a base, a cópia e a recuperação do original, obtiveram-se capturas da fotografia idênticas por SHA-256, as mesmas dimensões, enquadramento e texto alternativo. O mobile só pediu a foto ao aproximar-se; cada cenário normal pediu uma cópia. No build, formatação, TypeScript, 315 testes e smoke offline passaram.
+
+O WebP alternativo reduziu mais bytes, mas produziu diferenças de até 1/255 por canal no recorte Chromium. A variante PNG passou pela comparação de pixels exata e reduziu 71.339 bytes da fotografia que o Lighthouse de referência solicitou no desktop. Essa foto estava fora da carga inicial mobile monitorada, portanto a economia é medida por recurso e não demonstra redução do LCP do retrato de Perfil. [Contrato de mídia](../03-cms/MIDIAS_E_STORAGE.md).
+
 ## Portabilidade da inspeção nativa do PDF — 26/11/2026
 
 Na base `f0d32b9`, Chromium 158 e Poppler 25.03 produziram nove falhas de inspeção nativa. A extração espacial de Resultados intercalou colunas ou separou letras de “Conteúdo e Imprensa”, encontrado na folha esperada pela extração em ordem de conteúdo. O teste agora consulta os dois modos na mesma folha para os marcadores de Resultados, inclusive para detectar o marcador na folha indevida. Títulos, paginação, texto pesquisável e links continuam verificados.

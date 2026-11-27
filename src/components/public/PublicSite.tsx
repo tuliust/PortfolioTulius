@@ -72,6 +72,21 @@ export const APPROVED_ABOUT_TABLET =
 const CURRENT_ABOUT_PHOTO =
   "https://zfnrhzplwpjpdljraypt.supabase.co/storage/v1/object/public/portfolio-public/41687064-3d60-43c3-9ee2-ab52c8b609a8-Tulius---Foto-Profissional.png"
 
+const OPTIMIZED_ABOUT_PHOTO = "/media/ola-tulius-profissional.png"
+
+function aboutPhotoSource(src: string) {
+  if (src !== CURRENT_ABOUT_PHOTO) return { src }
+
+  return {
+    src: OPTIMIZED_ABOUT_PHOTO,
+    onError: (event: React.SyntheticEvent<HTMLImageElement>) => {
+      if (event.currentTarget.getAttribute("src") === OPTIMIZED_ABOUT_PHOTO) {
+        event.currentTarget.src = src
+      }
+    },
+  }
+}
+
 export function DeferredAboutTablet({
   alt,
   style,
@@ -108,7 +123,7 @@ export function DeferredAboutTablet({
   return (
     <img
       ref={elementRef}
-      src={nearViewport ? src : undefined}
+      {...(nearViewport ? aboutPhotoSource(src) : {})}
       alt={alt}
       style={style}
       width={src === CURRENT_ABOUT_PHOTO ? 1086 : 900}
@@ -1100,7 +1115,7 @@ function AboutMobile({
   )
 }
 
-function AboutDesktop({ section }: { section: PortfolioSection }) {
+function AboutDesktop({ section, pdfExport }: { section: PortfolioSection; pdfExport: boolean }) {
   const itemsA = section.desktopPanelA ?? section.panelA
   const itemsB = section.desktopPanelB ?? section.panelB
   const introductoryItem = itemsA[0]
@@ -1117,7 +1132,7 @@ function AboutDesktop({ section }: { section: PortfolioSection }) {
       <div className={`about-portrait${customDesktopImage ? " has-custom-image" : ""}`}>
         {introductoryItem && (
           <img
-            src={desktopImage}
+            {...(pdfExport ? { src: desktopImage } : aboutPhotoSource(desktopImage))}
             style={imageFramingStyle(introductoryItem.aboutDesktopFraming)}
             alt={introductoryItem.aboutDesktopAlt || "Tulius Tsangaropulos segurando um tablet"}
             loading="lazy"
@@ -1471,7 +1486,7 @@ export function Section({
               onSelectTheme={onSelectTheme}
             />
           ) : section.slug === "sobre" ? (
-            <AboutDesktop section={section} />
+            <AboutDesktop section={section} pdfExport={pdfExport} />
           ) : section.slug === "resultados" ? (
             <ResultsDesktop
               section={section}

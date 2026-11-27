@@ -1,5 +1,9 @@
 # Biblioteca de mídias e Storage
 
+## Cópia PNG otimizada para a fotografia de Olá — 26/11/2026
+
+O site público usa `/media/ola-tulius-profissional.png` somente quando o campo de fotografia de Olá corresponde à URL exata do PNG `41687064-3d60-43c3-9ee2-ab52c8b609a8-Tulius---Foto-Profissional.png`. A cópia preserva dimensões 1086×1448, paleta, alfa e todos os pixels RGBA. A recompressão dos dados PNG reduziu o arquivo de 485.376 para 414.037 bytes (−71.339 bytes, −14,7%). O carregamento sob demanda mobile e o lazy desktop mantêm os mesmos gatilhos. Em caso de erro de transporte, o elemento tenta o PNG original uma vez. Outras URLs e o PDF usam a seleção original do CMS. Alt, enquadramento e originais do Storage são preservados. [Validação](../05-operacao/TESTES_E_HOMOLOGACAO.md).
+
 ## Carregamento sob demanda da fotografia atual de Olá — 26/11/2026
 
 O componente público `DeferredAboutTablet` mantém o caso anterior e reconhece também o PNG publicado `41687064-3d60-43c3-9ee2-ab52c8b609a8-Tulius---Foto-Profissional.png` em Olá mobile, reservando 1086×1448 e iniciando a requisição na aproximação de 600 px à viewport, com fallback de observador, lazy loading e prioridade baixa. Outras URLs continuam no caminho normal; PDF mantém o original. O alt e o enquadramento são os do CMS, sem substituição ou upload. Uma derivada WebP sem perdas foi ensaiada, mas não incorporada ao repositório ou publicada. [Testes](../05-operacao/TESTES_E_HOMOLOGACAO.md).
