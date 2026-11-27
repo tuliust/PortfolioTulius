@@ -1,5 +1,11 @@
 # Testes, CI e homologação
 
+## Portabilidade da inspeção nativa do PDF — 26/11/2026
+
+Na base `f0d32b9`, Chromium 158 e Poppler 25.03 produziram nove falhas de inspeção nativa. A extração espacial de Resultados intercalou colunas ou separou letras de “Conteúdo e Imprensa”, encontrado na folha esperada pela extração em ordem de conteúdo. O teste agora consulta os dois modos na mesma folha para os marcadores de Resultados, inclusive para detectar o marcador na folha indevida. Títulos, paginação, texto pesquisável e links continuam verificados.
+
+No mesmo ambiente, a correção passou em **9/9** casos nativos sintéticos (13 folhas no Desktop integral e 16 no Mobile integral) e **2/2** variantes mobile com CSS de produção compilado. A verificação visual da fixture passou em **6/6**. As amostras são de laboratório, com acesso às fontes aprovadas via proxy do ambiente. O aceite histórico da exportação real permanece registrado no [guia PDF](EXPORTACAO_PDF.md).
+
 ## Confirmação do SHA 5815875 e variabilidade mobile — 26/11/2026
 
 [5815875](https://github.com/tuliust/PortfolioTulius/commit/5815875a8f562d98ace37d8261799cb36bab607f) Production READY; P3 gate verificou o SHA servido. [Validate #45918969944](https://github.com/tuliust/PortfolioTulius/actions/runs/45918969944), [P3 #45918969919](https://github.com/tuliust/PortfolioTulius/actions/runs/45918969919), [PDF Visual QA #45918969988](https://github.com/tuliust/PortfolioTulius/actions/runs/45918969988) e [Export Docs #45918969953](https://github.com/tuliust/PortfolioTulius/actions/runs/45918969953) SUCCESS. Validate confirmou 314 testes/68 arquivos. P3: LCP mobile 4383,451/3272,982/3175,382 ms, mediana 3272,982 ms; performance 90, FCP 2125,817 ms, TBT 28 ms (pior 1947,174 ms), CLS 0. Desktop mediano 943,349 ms/99, CLS máximo 0,002421. P6 PASS, zero falhas browser, 38 capturas sem falhas, P5 público 3/3 sem mutações. P5 Admin Read-Only não disparado neste SHA; PDF SUCCESS é sintético. A oscilação entre amostras exige investigação, não prova causa na alteração de fragmentos. Nenhuma flexibilização de budget. [Diagnóstico e missão proposta para Work](MISSAO_PERFORMANCE_E_HOMOLOGACAO_WORK.md) detalham os indicadores, prioridades e critérios adicionais de conclusão; não constituem nova execução nem substituem este guia.

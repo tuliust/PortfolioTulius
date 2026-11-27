@@ -289,13 +289,22 @@ try {
         depoimentos: "DEPOIMENTOS",
         contato: "CONTATO",
       }
-      const physicalTexts = Array.from({ length: actualPages }, (_, index) => {
+      const readPageText = (index, mode) => {
         const text = execFileSync("pdftotext", [
-          "-f", String(index + 1), "-l", String(index + 1), "-layout", file, "-",
+          "-f", String(index + 1), "-l", String(index + 1), mode, file, "-",
         ], { encoding: "utf8", maxBuffer: 5 * 1024 * 1024 })
         return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
           .toUpperCase().replace(/\s+/g, " ").trim()
-      })
+      }
+      const physicalTexts = Array.from({ length: actualPages }, (_, index) =>
+        readPageText(index, "-layout"),
+      )
+      // Poppler layout mode can insert spaces between tracked glyphs or
+      // interleave columns. Confirm the same phrase on the same physical page
+      // using content-stream order when the spatial extraction differs.
+      const pageIncludes = (index, phrase) =>
+        physicalTexts[index]?.includes(phrase) ||
+        (index >= 0 && readPageText(index, "-raw").includes(phrase))
       for (let index = 0; index < physicalTexts.length; index++) {
         if (physicalTexts[index].length < 20) {
           throw new Error("Blank or truncated physical PDF page " + (index + 1))
@@ -352,9 +361,9 @@ try {
           !sheetText("sobre-diferenciais").includes("CREDIBILIDADE E CRIAM CONEXOES")
         )) throw new Error("Mobile Sobre / Diferenciais boundary violated")
         if (sections.includes("resultados") && (
-          !sheetText("resultados").includes("VISAO GERAL") ||
-          sheetText("resultados").includes("CONTEUDO E IMPRENSA") ||
-          !sheetText("resultados-grupos").includes("CONTEUDO E IMPRENSA")
+          !pageIncludes(printSlugs.indexOf("resultados"), "VISAO GERAL") ||
+          pageIncludes(printSlugs.indexOf("resultados"), "CONTEUDO E IMPRENSA") ||
+          !pageIncludes(printSlugs.indexOf("resultados-grupos"), "CONTEUDO E IMPRENSA")
         )) throw new Error("Mobile Resultados / Temas boundary violated")
       }
       if (device === "desktop") {
@@ -371,8 +380,8 @@ try {
             throw new Error("Incomplete Desktop Trajetória for " + slug)
           }
           if (slug === "resultados" && (
-            !physicalTexts[index].includes("RESULTADOS QUE ORIENTAM DECISOES") ||
-            !physicalTexts[index].includes("CONTEUDO E IMPRENSA")
+            !pageIncludes(index, "RESULTADOS QUE ORIENTAM DECISOES") ||
+            !pageIncludes(index, "CONTEUDO E IMPRENSA")
           )) {
             throw new Error("Incomplete Desktop Results")
           }

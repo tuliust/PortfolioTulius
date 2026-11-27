@@ -1,5 +1,9 @@
 # Exportação PDF — contrato e aceite vigente
 
+## Inspeção de texto pesquisável em Resultados — 26/11/2026
+
+O teste nativo de Resultados consulta a extração espacial do Poppler e usa a ordem do conteúdo da mesma folha se o modo espacial separar letras do título ou intercalar colunas. A verificação continua exigindo os mesmos textos nas folhas físicas corretas e a ausência de “Conteúdo e Imprensa” na Visão Geral mobile. A alteração se aplica à automação sintética, com renderer e fluxo de exportação preservados. [Resultados da validação](TESTES_E_HOMOLOGACAO.md).
+
 ## QA sintética após adiamento da fotografia de Olá — 26/11/2026
 
 [PDF Renderer Visual QA #45915235566](https://github.com/tuliust/PortfolioTulius/actions/runs/45915235566) SUCCESS no SHA [197a41d](https://github.com/tuliust/PortfolioTulius/commit/197a41d2996ea06071b0f50cf080711bcde4c286). Seis modos visuais sem falhas, geração nativa de PDFs pesquisáveis e com links (13 folhas desktop e 16 mobile na fixture integral), fixture CSS compilada PASS e fixture excluída do build público. O adiamento público de Olá não se aplica a PDF; sem mudança de renderer ou fluxo de impressão. Não é nova exportação autenticada com dados reais nem modifica o aceite de 18/11. [Testes](TESTES_E_HOMOLOGACAO.md).
